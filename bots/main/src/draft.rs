@@ -234,6 +234,9 @@ fn draft_prefs(profile: u8, state: &DraftState) -> Vec<DraftChoice> {
             DraftChoice::Willow,
             DraftChoice::CassiAndIssac,
         ],
+        // Per-map plans: the best ladder bot's draft / the Tavi meta draft.
+        8 => BEST.to_vec(),
+        9 => META.to_vec(),
         4 => {
             // Counter: they lean ranged -> divers; they lean melee -> kiters.
             let n_ranged = state.enemy.iter().filter(|ch| RANGED.contains(ch)).count();

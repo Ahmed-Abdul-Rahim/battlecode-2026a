@@ -2,7 +2,10 @@
 //! Keyed by `world::fingerprint` (exact: the draft sees the whole map). Unknown maps
 //! use the general defaults (knob::DEFAULTS + the descriptor-based draft and knobs).
 
-/// Draft preference: 0 scorer, 1 ranged first, 2 melee first, 3 Cassi & Issac first, 4 counter-pick.
+use crate::bc_core::memory::knob;
+
+/// Draft preference: 0 default, 1 ranged first, 2 melee first, 3 Cassi & Issac first, 4 counter-pick,
+/// 8 best-bot draft, 9 Tavi meta draft (draft.rs draft_prefs).
 pub struct MapPlan {
     pub fingerprint: u32,
     pub name: &'static str,
@@ -10,7 +13,36 @@ pub struct MapPlan {
     pub draft: u8,
 }
 
-pub const PLANS: &[MapPlan] = &[];
+pub const PLANS: &[MapPlan] = &[
+    // ambush: build-jungle (gain 0.421)
+    MapPlan { fingerprint: 1258856441, name: "ambush", knobs: &[(knob::BUILD_PROFILE, 0)], draft: 0 },
+    // collision: feasible (gain 0.32)
+    MapPlan { fingerprint: 716959943, name: "collision", knobs: &[(knob::CAMP_FEASIBLE, 1)], draft: 0 },
+    // contest: fight (gain 0.2)
+    MapPlan { fingerprint: 3177043925, name: "contest", knobs: &[(knob::FIGHT_V6, 7)], draft: 0 },
+    // corners: escape (gain 0.22)
+    MapPlan { fingerprint: 3046346062, name: "corners", knobs: &[(knob::CAMP_SAFE, 1)], draft: 0 },
+    // eight: feasible (gain 0.265)
+    MapPlan { fingerprint: 202678423, name: "eight", knobs: &[(knob::CAMP_FEASIBLE, 1)], draft: 0 },
+    // expanse: shop-first (gain 0.42)
+    MapPlan { fingerprint: 1862467813, name: "expanse", knobs: &[(knob::SHOP_FIRST, 1)], draft: 0 },
+    // fragment: draft-best (gain 0.397)
+    MapPlan { fingerprint: 2591669659, name: "fragment", knobs: &[], draft: 8 },
+    // monolith: feasible (gain 0.284)
+    MapPlan { fingerprint: 1347832923, name: "monolith", knobs: &[(knob::CAMP_FEASIBLE, 1)], draft: 0 },
+    // packs: build-jungle (gain 0.479)
+    MapPlan { fingerprint: 4113432899, name: "packs", knobs: &[(knob::BUILD_PROFILE, 0)], draft: 0 },
+    // pilgrimage: feasible (gain 0.368)
+    MapPlan { fingerprint: 4012222300, name: "pilgrimage", knobs: &[(knob::CAMP_FEASIBLE, 1)], draft: 0 },
+    // rows: shop-first (gain 0.121)
+    MapPlan { fingerprint: 3412557625, name: "rows", knobs: &[(knob::SHOP_FIRST, 1)], draft: 0 },
+    // rushbait-v2: escape (gain 0.1)
+    MapPlan { fingerprint: 2062321458, name: "rushbait-v2", knobs: &[(knob::CAMP_SAFE, 1)], draft: 0 },
+    // stampede: build-jungle (gain 0.635)
+    MapPlan { fingerprint: 352761820, name: "stampede", knobs: &[(knob::BUILD_PROFILE, 0)], draft: 0 },
+    // swirl: escape (gain 0.5)
+    MapPlan { fingerprint: 73263638, name: "swirl", knobs: &[(knob::CAMP_SAFE, 1)], draft: 0 },
+];
 
 #[must_use]
 pub fn lookup(fingerprint: u32) -> Option<&'static MapPlan> {
