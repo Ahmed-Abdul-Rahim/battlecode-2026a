@@ -104,7 +104,7 @@ pub mod knob {
         (VALUE_PROFILE, 0),
         (REMOTE_FARMER, 0),
         (HUNT_MODE, 0),
-        (DENY_TRIBUTE, 0),
+        (DENY_TRIBUTE, 1),
         (ENDGAME_BANK, 0),
         (TEAM_FIGHT, 0),
         (COMBAT_SEARCH, 0),
