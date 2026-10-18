@@ -20,6 +20,7 @@ struct DraftCache {
     team_size: usize,
     vecs: [ChampVec; 12],
     weights: ScorerWeights,
+    plan: Option<&'static crate::map_plans::MapPlan>,
 }
 
 thread_local! {
@@ -73,14 +74,29 @@ fn map_info() -> Result<MapInfo> {
     })
 }
 
+/// Exact map identity (see world::fingerprint), from the same grids the champions build.
+fn map_fingerprint() -> Result<u32> {
+    let (w, h) = (cambc::map::width()?, cambc::map::height()?);
+    let walls = sdk::grid(cambc::map::walls()?, w, h)?;
+    let holes = sdk::grid(cambc::map::holes()?, w, h)?;
+    let altars = sdk::grid(cambc::map::altars()?, w, h)?;
+    Ok(crate::world::fingerprint(w, h, &walls, &holes, &altars))
+}
+
 fn build_cache() -> Result<DraftCache> {
     let map = map_info()?;
+    let fp = map_fingerprint()?;
+    let plan = crate::map_plans::lookup(fp);
+    cambc::debug_block! {
+        println!("F {{\"fingerprint\":{fp},\"plan\":\"{}\"}}", plan.map_or("-", |p| p.name));
+    }
     Ok(DraftCache {
         desc: MapDescriptor::from_map(&map),
         map,
         team_size: cambc::draft::team_size()?,
         vecs: ChampionKind::ALL.map(|k| from_kit(&sdk::kit(k))),
         weights: ScorerWeights::default(),
+        plan,
     })
 }
 
@@ -117,7 +133,9 @@ pub fn play() -> Result<()> {
             enemy: picks(Team::Enemy)?,
             team_size: c.team_size,
         };
-        if let Some(choice) = best_pick(&c.desc, &state, &vec_of, &c.weights) {
+        let prefs = draft_prefs(c.plan.map_or(0, |p| p.draft), &state);
+        let forced = prefs.iter().copied().find(|ch| !state.ally.contains(ch));
+        if let Some(choice) = forced.or_else(|| best_pick(&c.desc, &state, &vec_of, &c.weights)) {
             cambc::draft::pick(sdk::draft_choice(choice)?)?;
             state.ally.push(choice);
         }
@@ -126,10 +144,60 @@ pub fn play() -> Result<()> {
         if first || last {
             let allies = kinds(&state.ally);
             let enemies = kinds(&state.enemy);
-            let theta =
+            let mut theta =
                 build_theta(&c.map, c.team_size, &allies, &enemies, &vec_of, team_dps(&allies));
+            for &(k, v) in c.plan.map_or(&[][..], |p| p.knobs) {
+                if let Some(slot) = theta.knobs.get_mut(k) {
+                    *slot = v;
+                }
+            }
             cambc::draft_memory().submit(&theta.encode())?;
         }
         Ok(())
     })
+}
+
+const RANGED: [DraftChoice; 5] = [
+    DraftChoice::Stellar,
+    DraftChoice::Prism,
+    DraftChoice::VesperVale,
+    DraftChoice::Tavi,
+    DraftChoice::Willow,
+];
+const MELEE: [DraftChoice; 5] = [
+    DraftChoice::Varg,
+    DraftChoice::Vendetta,
+    DraftChoice::Ren,
+    DraftChoice::Ryth,
+    DraftChoice::Marcella,
+];
+
+/// Preferred picks for a map plan's draft profile (empty = the scorer decides).
+fn draft_prefs(profile: u8, state: &DraftState) -> Vec<DraftChoice> {
+    match profile {
+        1 => RANGED.to_vec(),
+        2 => MELEE.to_vec(),
+        3 => vec![DraftChoice::CassiAndIssac],
+        // RedDragon's draft (ladder): bruisers plus Tavi and Willow.
+        5 => vec![
+            DraftChoice::Varg,
+            DraftChoice::Ryth,
+            DraftChoice::Tavi,
+            DraftChoice::Ren,
+            DraftChoice::Willow,
+        ],
+        4 => {
+            // Counter: they lean ranged -> divers; they lean melee -> kiters.
+            let n_ranged = state.enemy.iter().filter(|ch| RANGED.contains(ch)).count();
+            let n_melee = state.enemy.len() - n_ranged;
+            if n_ranged >= 2 && n_ranged > n_melee {
+                MELEE.to_vec()
+            } else if n_melee >= 2 && n_melee > n_ranged {
+                RANGED.to_vec()
+            } else {
+                Vec::new()
+            }
+        }
+        _ => Vec::new(),
+    }
 }

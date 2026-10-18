@@ -113,7 +113,7 @@ mod tests {
     #[test]
     fn full_bag_always_tributes_and_empty_never() {
         let mut ctx = Context::neutral();
-        ctx.gems = 80;
+        ctx.gems = 120;
         ctx.dist_altar = Some(90);
         assert!(should_tribute(&ctx));
         ctx.gems = 0;

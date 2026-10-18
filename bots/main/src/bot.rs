@@ -9,7 +9,7 @@ use crate::bc_core::belief::{Belief, GroupObs, GroupState, Sighting};
 use crate::bc_core::champion::{AttackType, ChampionKind, KitInfo};
 use crate::bc_core::fuel::{FuelGovernor, Stage};
 use crate::bc_core::ledger::{Family, Ledger, SelfObs, Stat, ITEM_TYPES};
-use crate::bc_core::memory::{TeamChannel, ThetaMatch, TEAM_CHANNEL_BYTES};
+use crate::bc_core::memory::{knob, TeamChannel, ThetaMatch, TEAM_CHANNEL_BYTES};
 use crate::bc_core::Pos;
 use crate::bc_path::danger::Threat;
 use crate::bc_path::{DistanceOracle, Goal};
@@ -44,8 +44,10 @@ pub struct Bot {
     turns: u32,
     /// Consecutive Engage turns without an attack or cast.
     engage_stall: u32,
-    /// Enemy we couldn't reach, ignored as a fight target until a round.
-    ignore_enemy: Option<(ChampionKind, u32)>,
+    /// Per enemy kind: ignored as a fight target until this round (we couldn't reach it).
+    /// One slot per kind, so several unreachable enemies are ignored together (a single
+    /// slot let the target flip between them forever: the rushbait 2000-round stall).
+    ignore_until: [u32; 12],
 }
 
 /// Engage turns without landing anything before we give up on that enemy.
@@ -56,6 +58,25 @@ const IGNORE_ENEMY_ROUNDS: u32 = 40;
 const GHOST_MAX_AGE: u32 = 8;
 /// Cap on remembered threats per turn (each costs a pass over the path window).
 const MAX_GHOSTS: usize = 5;
+/// Fuel that must remain before the combat search runs (measured ~5-25K per search).
+const COMBAT_SEARCH_MIN_FUEL: u64 = 60_000;
+/// Rollouts stop below this much fuel (the rest of the turn needs it; never over-commit).
+const COMBAT_SEARCH_FLOOR: u64 = 45_000;
+/// Team-fight evaluation radii and decision thresholds (our strength / theirs).
+const SKIRMISH_ALLY_RADIUS: i32 = 4;
+const SKIRMISH_ENEMY_RADIUS: i32 = 5;
+const SKIRMISH_LOSE: f32 = 0.8;
+const SKIRMISH_WIN: f32 = 1.5;
+/// Deny tributes within this many tiles, while above this health fraction.
+const DENY_RADIUS: i32 = 6;
+const DENY_MIN_HP: f32 = 0.35;
+/// From this round, bank everything we carry (knob ENDGAME_BANK).
+const ENDGAME_ROUND: u32 = 1850;
+/// Hunt mode: sightings answered from this far, and the trigger thresholds (mode 2).
+const HUNT_SIGHTING_RADIUS: i32 = 20;
+const HUNT_LATE_ROUND: u32 = 600;
+const HUNT_BEHIND_GEMS: u32 = 300;
+const HUNT_CLOSE_GEMS: u32 = 150;
 /// Teammate sightings further than this are ignored (threat and help alike).
 const TEAM_SIGHTING_RADIUS: i32 = 12;
 /// Reach and damage assumed for an enemy only a teammate saw (its kind isn't shared).
@@ -71,6 +92,7 @@ impl Bot {
         let kind = sdk::kind(me.champion_name()?);
         let kit = sdk::kit(kind);
         let theta = ThetaMatch::decode(cambc::draft_memory().bytes()).unwrap_or_default();
+        let build_profile = theta.knob(knob::BUILD_PROFILE);
         // Slot = our rank among ally champion kinds; stable for the whole match.
         let mut allies: Vec<u8> = cambc::champions(Some(Team::Ally))?
             .iter()
@@ -94,7 +116,7 @@ impl Bot {
             belief,
             theta,
             gov: FuelGovernor::default(),
-            order: shop::build_order(kind),
+            order: shop::build_order_profile(kind, build_profile),
             slot,
             target: None,
             last_hp: 0.0,
@@ -103,7 +125,7 @@ impl Bot {
             items_round: 0,
             turns: 0,
             engage_stall: 0,
-            ignore_enemy: None,
+            ignore_until: [0; 12],
         })
     }
 
@@ -214,26 +236,112 @@ impl Bot {
             self.world.fields.precompute(&|cost| gov.turn_allows(cost + 20_000, fuel()))?;
             mark = self.charge(Stage::Precompute, mark);
 
-            let ctx = self.context(round, my_pos, hp, max_hp, &vis, &chan, state, me)?;
+            let mut ctx = self.context(round, my_pos, hp, max_hp, &vis, &chan, state, me)?;
+            let hunting = self.hunting(&ctx);
+            if hunting {
+                // All-in: no fight margin (the router then fights at advantage >= 1).
+                ctx.knobs.aggression = 255;
+                ctx.team.aggression = 255;
+            }
             mode = gate::rule_gate(&ctx);
             expert = router::select(mode, &ctx, None);
             intent = expert.plan(&ctx);
             // Answer a teammate's call for help: healthy, not carrying a big bag, nothing
             // in our own view, and the fight is close. Safety overrides still win (Routine only).
             let mut assist = None;
+            // Hunting: every healthy champion answers every sighting, from further away.
+            let radius = if hunting { HUNT_SIGHTING_RADIUS } else { TEAM_SIGHTING_RADIUS };
             if mode == Mode::Routine
-                && chan.help
+                && (chan.help || hunting)
                 && vis.enemies.is_empty()
                 && ctx.hp_frac() > ASSIST_MIN_HP
                 && ctx.gems < router::BIG_BAG_GEMS
             {
                 if let Some((p, age)) = shared {
-                    if age <= 1 && (2..=TEAM_SIGHTING_RADIUS).contains(&p.cheb(my_pos)) {
+                    if age <= 1 && (2..=radius).contains(&p.cheb(my_pos)) {
                         intent = Intent::Engage(p);
                         assist = Some(p);
                         telemetry::event(round, champ_name(self.kind), "assist", 1);
                     }
                 }
+            }
+            // Deny tributes: an enemy channelling a tribute nearby loses the whole bag to a
+            // stun, a kill or a fresh altar lock (damage alone doesn't stop it).
+            let deny = self.theta.knob(knob::DENY_TRIBUTE) > 0;
+            if deny && !matches!(mode, Mode::Override(_)) && ctx.hp_frac() > DENY_MIN_HP {
+                if let Some(e) = vis.enemies.iter().find(|e| e.tributing && e.dist <= DENY_RADIUS) {
+                    intent = Intent::Engage(e.pos);
+                }
+            }
+            // Team fight (portfolio choice between fight and retreat, scored for the whole
+            // skirmish): Lanchester square law, strength = total dps x total hp per side.
+            if self.theta.knob(knob::TEAM_FIGHT) > 0 && !matches!(mode, Mode::Override(_)) {
+                if let Some(ratio) = skirmish_ratio(&vis, hp, self.kit_dps()) {
+                    let weakest = vis
+                        .enemies
+                        .iter()
+                        .filter(|e| e.dist <= SKIRMISH_ENEMY_RADIUS && !e.on_spawn)
+                        .min_by(|a, b| a.hp.total_cmp(&b.hp));
+                    match intent {
+                        Intent::Engage(_) | Intent::Kite(_) if ratio < SKIRMISH_LOSE => {
+                            intent = Intent::Retreat
+                        }
+                        Intent::Retreat | Intent::Engage(_) | Intent::Kite(_)
+                            if ratio > SKIRMISH_WIN
+                                && ctx.hp_frac() > 0.5
+                                && ctx.gems < router::BIG_BAG_GEMS =>
+                        {
+                            if let Some(e) = weakest {
+                                intent = Intent::Engage(e.pos);
+                            }
+                        }
+                        _ => {}
+                    }
+                }
+            }
+            // Portfolio combat search: simulate scripted skirmish behaviours, take the best
+            // worst case. Only near enemies and with fuel to spare (sized from measured cost).
+            if self.theta.knob(knob::COMBAT_SEARCH) > 0
+                && !matches!(mode, Mode::Override(_))
+                && fuel() > COMBAT_SEARCH_MIN_FUEL
+                && vis.enemies.iter().any(|e| e.dist <= 6 && !e.on_spawn)
+            {
+                let before = fuel();
+                let pick = crate::skirmish::choose(
+                    &vis,
+                    my_pos,
+                    hp,
+                    self.kit_dps(),
+                    self.kit.attack_range,
+                    ctx.gems,
+                    self.world.spawn_hint,
+                    COMBAT_SEARCH_FLOOR,
+                );
+                telemetry::event(
+                    round,
+                    champ_name(self.kind),
+                    "search_fuel",
+                    before.saturating_sub(fuel()) as i64,
+                );
+                if let Some((plan, target)) = pick {
+                    use crate::skirmish::Plan;
+                    let carrying = ctx.gems >= router::BIG_BAG_GEMS;
+                    intent = match (plan, target) {
+                        (Plan::Retreat, _) => Intent::Retreat,
+                        _ if carrying => intent,
+                        (Plan::Kite, Some(p)) if self.kit.attack_range > 1 => Intent::Kite(p),
+                        (_, Some(p)) => Intent::Engage(p),
+                        (_, None) => intent,
+                    };
+                }
+            }
+            // Endgame: at round 2000 tributed gems decide; never finish holding gems.
+            if self.theta.knob(knob::ENDGAME_BANK) > 0
+                && round >= ENDGAME_ROUND
+                && ctx.gems > 0
+                && !matches!(mode, Mode::Override(_))
+            {
+                intent = Intent::Tribute;
             }
             self.charge(Stage::Brain, mark);
             let claim = match intent {
@@ -256,6 +364,7 @@ impl Bot {
                 let before = fuel();
                 let mut exec = self.exec(me, &vis, my_pos, hurt_this_round);
                 exec.assist = assist;
+                exec.deny_tribute = deny;
                 exec.execute(intent)?;
                 exec_out = exec.out;
                 let total = before.saturating_sub(fuel());
@@ -273,7 +382,9 @@ impl Bot {
                     self.engage_stall += 1;
                     if self.engage_stall >= ENGAGE_STALL_TURNS {
                         if let Some(e) = vis.enemies.iter().find(|e| e.pos == target) {
-                            self.ignore_enemy = Some((e.kind, round + IGNORE_ENEMY_ROUNDS));
+                            if let Some(slot) = self.ignore_until.get_mut(e.kind as usize) {
+                                *slot = round + IGNORE_ENEMY_ROUNDS;
+                            }
                         }
                         self.engage_stall = 0;
                     }
@@ -329,8 +440,29 @@ impl Bot {
             occupied: occupied_tiles(vis, my_pos),
             hurt_this_round: hurt,
             assist: None,
+            deny_tribute: false,
             out: Outcome::default(),
         }
+    }
+
+    /// Hunt mode (knob HUNT_MODE): 1 always; 2 when far behind late, or when the enemy is
+    /// close to winning while ahead of us (only kills can stop them then).
+    fn hunting(&self, ctx: &Context) -> bool {
+        match self.theta.knob(knob::HUNT_MODE) {
+            1 => true,
+            2 => {
+                let (us, them) = (ctx.ally_tributed, ctx.enemy_tributed);
+                let behind_late = ctx.round > HUNT_LATE_ROUND && them >= us + HUNT_BEHIND_GEMS;
+                let they_close =
+                    them + HUNT_CLOSE_GEMS >= ctx.winning_gems && them > us + HUNT_CLOSE_GEMS;
+                behind_late || they_close
+            }
+            _ => false,
+        }
+    }
+
+    fn kit_dps(&self) -> f32 {
+        sdk::dps(self.kit.base_strength, self.kit.base_focus, &self.kit).max(1.0)
     }
 
     fn priority_index(&self, group: usize) -> Option<u8> {
@@ -366,6 +498,8 @@ impl Bot {
                 ranged: kit.attack == AttackType::Ranged,
                 range: kit.attack_range,
                 on_spawn: self.world.terrain.enemy_spawn.get(p),
+                tributing: self.theta.knob(knob::DENY_TRIBUTE) > 0
+                    && e.state().is_ok_and(|s| s.contains(ChampionState::SUBMITTING_GEMS)),
                 kind,
                 handle: e,
             };
@@ -512,7 +646,12 @@ impl Bot {
             if state == GroupState::Respawning && eta > dist + 15.0 {
                 continue;
             }
-            let mut value = g.gems as f32 + g.gold as f32 / 3.0;
+            let mut value = match self.theta.knob(knob::VALUE_PROFILE) {
+                1 => g.gems as f32 + g.gold as f32 / 10.0,
+                2 if self.slot < 2 => g.gems as f32 * 0.3 + g.gold as f32,
+                2 => g.gems as f32 + g.gold as f32 * 0.15,
+                _ => g.gems as f32 + g.gold as f32 / 3.0,
+            };
             let clear = match state {
                 GroupState::RewardAvailable => {
                     value *= 1.5;
@@ -527,14 +666,25 @@ impl Bot {
             }
             if let Some(pi) = self.priority_index(i) {
                 let others = chan.claimants(pi, self.slot as usize);
-                if others > 0 {
+                // Squads: slot pairs (0,1), (2,3) join each other's group (2v1 fights, faster clears).
+                let join = self.theta.knob(knob::SQUAD_JOIN_X10);
+                let buddy =
+                    chan.claims.get((self.slot ^ 1) as usize).copied().flatten() == Some(pi);
+                if join > 0 && buddy {
+                    value *= f32::from(join) / 10.0;
+                } else if others > 0 {
                     // Big groups go faster together; small ones are wasted on two.
                     value *= if g.total_hp >= 3000.0 { 1.1 } else { 0.35 };
                 }
             }
             // Stronger camps hurt: discount by expected damage taken.
             value /= 1.0 + g.max_strength / 100.0;
-            let mut score = value / (dist + clear + (eta - dist).max(0.0) + 5.0);
+            // Remote farmer: the last slot of a 4+ team goes further for quieter groups.
+            let remote = self.theta.knob(knob::REMOTE_FARMER) > 0
+                && self.team_size >= 4
+                && self.slot as usize + 1 == self.team_size;
+            let dist_w = if remote { 0.4 } else { 1.0 };
+            let mut score = value / (dist * dist_w + clear + (eta - dist).max(0.0) + 5.0);
             if self.target == Some(i) {
                 score *= 1.3;
             }
@@ -579,9 +729,8 @@ impl Bot {
         });
         // Enemies on their own spawn heal and can't be reached: never a fight target.
         // Neither is one we just failed to reach (e.g. across a wall).
-        let ignored = |k: ChampionKind| {
-            self.ignore_enemy.is_some_and(|(kind, until)| kind == k && round < until)
-        };
+        let ignored =
+            |k: ChampionKind| self.ignore_until.get(k as usize).is_some_and(|&until| round < until);
         let enemy =
             vis.enemies.iter().find(|e| !e.on_spawn && !ignored(e.kind)).map(|e| EnemyNear {
                 pos: e.pos,
@@ -783,4 +932,25 @@ fn champ_name(kind: ChampionKind) -> &'static str {
         ChampionKind::Varg => "Varg",
         ChampionKind::Tavi => "Tavi",
     }
+}
+
+/// Our skirmish strength over theirs (Lanchester square law: dps sum x hp sum per side),
+/// counting allies within SKIRMISH_ALLY_RADIUS and enemies (seen or remembered) within
+/// SKIRMISH_ENEMY_RADIUS. `None` when no enemy is close enough for it to matter.
+fn skirmish_ratio(vis: &Visible, my_hp: f32, my_dps: f32) -> Option<f32> {
+    let allies = vis.allies.iter().filter(|a| a.dist <= SKIRMISH_ALLY_RADIUS);
+    let (mut ours_hp, mut ours_dps) = (my_hp.max(1.0), my_dps);
+    for a in allies {
+        ours_hp += a.hp.max(0.0);
+        ours_dps += a.dps;
+    }
+    let enemies: Vec<_> =
+        vis.enemies.iter().filter(|e| e.dist <= SKIRMISH_ENEMY_RADIUS && !e.on_spawn).collect();
+    if enemies.is_empty() {
+        return None;
+    }
+    let theirs_hp: f32 = enemies.iter().map(|e| e.hp.max(1.0)).sum();
+    let theirs_dps: f32 = enemies.iter().map(|e| e.dps).sum::<f32>()
+        + vis.ghosts.iter().filter(|g| g.range >= 1).map(|g| g.dps * 0.5).sum::<f32>();
+    Some((ours_hp * ours_dps) / (theirs_hp * theirs_dps.max(1.0)))
 }

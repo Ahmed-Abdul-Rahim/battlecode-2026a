@@ -47,7 +47,7 @@ pub fn knobs_for_map(d: &MapDescriptor) -> [u8; crate::bc_core::memory::KNOB_COU
     let mut k = ThetaMatch::default().knobs;
     // Long walks to the altar justify carrying more before banking.
     let walk = (d.mean_dist * 100.0).clamp(0.0, 80.0);
-    k[knob::TRIBUTE_MIN_GEMS] = (15.0 + walk * 0.25).round() as u8;
+    k[knob::TRIBUTE_MIN_GEMS] = (25.0 + walk * 0.4).round() as u8;
     k[knob::TRIBUTE_DISTANCE_SCALE] = if d.size > 0.5 { 8 } else { 10 };
     // Few, rich groups → more contested → be a little more careful.
     if d.n_groups < 0.3 {

@@ -18,6 +18,49 @@ pub fn primary_stat(kind: ChampionKind) -> Stat {
 /// Emblems to complete, in order. Jungle first (30% less camp damage) because
 /// camp kills destroy carried gems; Monster next (10% more camp damage).
 pub fn build_order(kind: ChampionKind) -> Vec<(Family, Stat)> {
+    build_order_profile(kind, 0)
+}
+
+/// Build order by profile (θ_match knob BUILD_PROFILE; chosen per map from tournaments):
+/// 0 default (Jungle(Health) first), 1 Monster first, 2 all primary stat,
+/// 3 Power/Bruiser primary (as strong ladder teams buy), 4 Power/Jungle/Monster primary,
+/// then default order after: 5 Power ×2, 6 Treasure, 7 Durability(Health), 8 Home, 9 Bruiser.
+pub fn build_order_profile(kind: ChampionKind, profile: u8) -> Vec<(Family, Stat)> {
+    let primary = primary_stat(kind);
+    let (p, j, m, b) = (
+        (Family::Power, primary),
+        (Family::Jungle, primary),
+        (Family::Monster, primary),
+        (Family::Bruiser, primary),
+    );
+    match profile {
+        1 | 5..=9 => {
+            let first: &[(Family, Stat)] = match profile {
+                1 => &[m],
+                5 => &[p, p],
+                6 => &[(Family::Treasure, primary)],
+                7 => &[(Family::Durability, Stat::Health)],
+                8 => &[(Family::Home, Stat::Health)],
+                _ => &[b],
+            };
+            let mut order = first.to_vec();
+            order.extend(default_order(kind));
+            return order;
+        }
+        2 => return [j, m].into_iter().chain([p; 9]).collect(),
+        3 => return [p, b, p, p, j].into_iter().chain([p; 6]).collect(),
+        4 => return [p, j, m].into_iter().chain([p; 8]).collect(),
+        // RedDragon's build (ladder): Monster then Power, all Strength, every champion.
+        10 => {
+            let (ms, ps) = ((Family::Monster, Stat::Strength), (Family::Power, Stat::Strength));
+            return [ms].into_iter().chain([ps; 10]).collect();
+        }
+        _ => {}
+    }
+    default_order(kind)
+}
+
+fn default_order(kind: ChampionKind) -> Vec<(Family, Stat)> {
     let primary = primary_stat(kind);
     let mut order = vec![(Family::Jungle, Stat::Health)];
     if kind == ChampionKind::VesperVale {

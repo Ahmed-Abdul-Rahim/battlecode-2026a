@@ -18,7 +18,9 @@ mod bc_path;
 mod act;
 mod bot;
 mod draft;
+mod map_plans;
 mod sdk;
+mod skirmish;
 mod telemetry;
 mod world;
 

@@ -4,6 +4,7 @@
 //! uses spare fuel; lookups cost ~74 fuel per tile.
 
 use crate::bc_core::geom::DIRS8;
+use crate::bc_core::grid::BitGrid;
 use crate::bc_core::{Pos, Terrain};
 use crate::bc_draft::CampKind;
 use crate::bc_path::{DistanceOracle, Goal};
@@ -64,6 +65,31 @@ pub struct World {
     /// One own-spawn tile, as a straight-line hint before fields exist.
     pub spawn_hint: Pos,
     pub fields: FieldCache,
+}
+
+/// Map identity: FNV-1a over the size and the wall / hole / altar layers. The map is
+/// fully visible from the draft, so this is exact (no estimation needed); the same
+/// bytes are in the debug `M` dump, so harness/map_plans.py computes the same value.
+#[must_use]
+pub fn fingerprint(
+    width: i32,
+    height: i32,
+    walls: &BitGrid,
+    holes: &BitGrid,
+    altars: &BitGrid,
+) -> u32 {
+    let mut h: u32 = 0x811c_9dc5;
+    let mut eat = |b: u8| {
+        h ^= u32::from(b);
+        h = h.wrapping_mul(0x0100_0193);
+    };
+    for v in [width as u16, height as u16] {
+        v.to_le_bytes().into_iter().for_each(&mut eat);
+    }
+    for layer in [walls, holes, altars] {
+        layer.as_bytes().iter().copied().for_each(&mut eat);
+    }
+    h
 }
 
 impl World {

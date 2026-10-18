@@ -18,10 +18,13 @@ use crate::bc_path::{choose_step, DistanceOracle, Goal, Tier};
 use crate::sdk::vec2;
 use crate::telemetry;
 use crate::world::World;
-use cambc::{AbilityKind, AbilityTargetMask, Camp, Champion, ItemType, Result};
+use cambc::{AbilityKind, AbilityTargetMask, Camp, Champion, ConsumableType, ItemType, Result};
 
 /// Fuel that must remain before the deep (A*) pathing tier may run.
 const DEEP_SEARCH_MIN_FUEL: u64 = 75_000;
+/// Altar locks: placement range (tiles) and price (gold).
+const ALTAR_LOCK_RANGE: i32 = 2;
+const ALTAR_LOCK_COST: u32 = 10;
 
 pub struct EnemyView {
     pub handle: Champion,
@@ -35,6 +38,8 @@ pub struct EnemyView {
     pub range: i32,
     /// Standing on its own spawn: heals there and we can't step onto it.
     pub on_spawn: bool,
+    /// Channelling a tribute: a stun, a kill or a new altar lock cancels the whole bag.
+    pub tributing: bool,
     pub kind: crate::bc_core::champion::ChampionKind,
 }
 
@@ -128,6 +133,8 @@ pub struct Exec<'a> {
     pub hurt_this_round: bool,
     /// Walking to a teammate's fight at this position (Engage before the enemy is in view).
     pub assist: Option<Pos>,
+    /// Deny enemy tributes (knob DENY_TRIBUTE): stun / lock / attack tributers, carry a lock.
+    pub deny_tribute: bool,
     pub out: Outcome,
 }
 
@@ -186,7 +193,55 @@ impl Exec<'_> {
                 }
             }
         }
+        // One altar lock in the pocket (10 gold) to cancel enemy tributes.
+        if self.deny_tribute
+            && gold >= ALTAR_LOCK_COST
+            && self.me.consumables()[ConsumableType::AltarLock].count().unwrap_or(1) == 0
+            && self.me.can_buy_consumable(ConsumableType::AltarLock).unwrap_or(false)
+        {
+            if let Err(e) = self.me.buy_consumable(ConsumableType::AltarLock) {
+                telemetry::error("buy_lock", &e);
+            }
+        }
         Ok(())
+    }
+
+    /// Cast a ready crowd-control ability on `enemy` if it is in range. True if cast.
+    fn stun(&mut self, enemy: &EnemyView) -> Result<bool> {
+        if self.out.cast || !self.me.can_cast()? {
+            return Ok(false);
+        }
+        for ability in self.me.abilities() {
+            if !ability.is_cc() || !ability.is_ready()? {
+                continue;
+            }
+            let in_range = ability
+                .info()?
+                .and_then(|i| i.as_dyn().range().ok())
+                .is_some_and(|r| self.my_pos.cheb(enemy.pos) as f32 <= r);
+            if in_range && ability.cast_on(&enemy.handle).unwrap_or(false) {
+                self.out.cast = true;
+                return Ok(true);
+            }
+        }
+        Ok(false)
+    }
+
+    /// Place a carried altar lock on the altar next to `near` (cancels tributes there).
+    fn lock_altar_near(&mut self, near: Pos) -> Result<bool> {
+        let lock = &self.me.consumables()[ConsumableType::AltarLock];
+        if lock.count().unwrap_or(0) == 0 {
+            return Ok(false);
+        }
+        let Some(altar) = self.world.altars.iter().copied().find(|a| a.cheb(near) <= 1) else {
+            return Ok(false);
+        };
+        if self.my_pos.cheb(altar) > ALTAR_LOCK_RANGE
+            || cambc::vision::has_altar_lock(vec2(altar)).unwrap_or(true)
+        {
+            return Ok(false);
+        }
+        Ok(lock.use_at(vec2(altar)).unwrap_or(false))
     }
 
     fn shop(&mut self) -> Result<()> {
@@ -635,6 +690,13 @@ impl Exec<'_> {
             }
             return self.opportunistic_attack();
         };
+        if self.deny_tribute
+            && enemy.tributing
+            && (self.stun(enemy)? || self.lock_altar_near(enemy.pos)?)
+        {
+            telemetry::event(0, "", "deny_tribute", 1);
+            return Ok(());
+        }
         self.cast_support()?;
         let will_move = !self.in_attack_range(enemy.pos);
         self.cast_offensive(enemy.pos, None, Some(&enemy.handle), will_move)?;

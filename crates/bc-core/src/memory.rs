@@ -60,16 +60,46 @@ pub mod knob {
     pub const RECALL_GOLD: usize = 6;
     /// Required fight advantage (percent over 100) to engage an enemy champion.
     pub const FIGHT_MARGIN_PCT: usize = 7;
+    /// Emblem build profile (bc_brain::shop::build_order_profile).
+    pub const BUILD_PROFILE: usize = 8;
+    /// Squad pairs (slots 2k, 2k+1) join each other's camp group: value ×(this/10); 0 = off.
+    pub const SQUAD_JOIN_X10: usize = 9;
+    /// Camp value formula: 0 gems + gold/3, 1 gems + gold/10, 2 slots 0-1 gold / rest gems.
+    pub const VALUE_PROFILE: usize = 10;
+    /// 1 = the last slot of a 4+ team farms far, quiet groups (distance weight 0.4).
+    pub const REMOTE_FARMER: usize = 11;
+    /// Hunt mode: 0 off, 1 always (whole team hunts and pillages), 2 triggered when far
+    /// behind late or when the enemy is close to winning (only kills can stop them).
+    pub const HUNT_MODE: usize = 12;
+    /// 1 = stun / altar-lock / attack enemies channelling a tribute (stun, death or a new
+    /// lock cancels it; damage doesn't), and carry an altar lock (10 gold).
+    pub const DENY_TRIBUTE: usize = 13;
+    /// 1 = bank every carried gem from ENDGAME_ROUND on (at round 2000 gems decide, then gold).
+    pub const ENDGAME_BANK: usize = 14;
+    /// 1 = decide skirmishes team-vs-team (Lanchester square law over all nearby allies and
+    /// enemies) instead of me-vs-one-enemy: retreat from losing fights, focus-fire winning ones.
+    pub const TEAM_FIGHT: usize = 15;
+    /// 1 = portfolio combat search (skirmish.rs) picks the fight behaviour when enemies are close.
+    pub const COMBAT_SEARCH: usize = 16;
 
-    pub const DEFAULTS: [(usize, u8); 8] = [
+    pub const DEFAULTS: [(usize, u8); 17] = [
         (AGGRESSION, 128),
         (RETREAT_HP_PCT, 35),
         (TRIBUTE_MIN_GEMS, 20),
-        (TRIBUTE_MAX_GEMS, 80),
+        (TRIBUTE_MAX_GEMS, 120),
         (TRIBUTE_DISTANCE_SCALE, 10),
         (MONOLITH_MIN_POWER, 40),
         (RECALL_GOLD, 15),
         (FIGHT_MARGIN_PCT, 25),
+        (BUILD_PROFILE, 0),
+        (SQUAD_JOIN_X10, 0),
+        (VALUE_PROFILE, 0),
+        (REMOTE_FARMER, 0),
+        (HUNT_MODE, 0),
+        (DENY_TRIBUTE, 0),
+        (ENDGAME_BANK, 0),
+        (TEAM_FIGHT, 0),
+        (COMBAT_SEARCH, 0),
     ];
 }
 
