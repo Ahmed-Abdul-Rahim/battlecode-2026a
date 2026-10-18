@@ -30,13 +30,18 @@ pub fn routine(ctx: &Context) -> Expert {
     if ctx.gems >= BIG_BAG_GEMS && ctx.hp_frac() < BIG_BAG_MIN_HP && !ctx.at_spawn {
         return Expert::RecallShop;
     }
+    let far_from_spawn = ctx.dist_spawn.is_none_or(|d| d > 15);
+    // Shop first: gold compounds (items speed every later clear), banked gems don't, and a
+    // recall keeps the bag, so spend before walking to the altar.
+    if ctx.knobs.shop_first && ctx.gold >= ctx.knobs.recall_gold && far_from_spawn && !ctx.in_danger() {
+        return Expert::RecallShop;
+    }
     if should_tribute(ctx) {
         return Expert::Tribute;
     }
     if ctx.low_hp() && !ctx.at_spawn {
         return Expert::RecallShop;
     }
-    let far_from_spawn = ctx.dist_spawn.is_none_or(|d| d > 15);
     if ctx.gold >= ctx.knobs.recall_gold && ctx.gems < 10 && far_from_spawn {
         return Expert::RecallShop;
     }

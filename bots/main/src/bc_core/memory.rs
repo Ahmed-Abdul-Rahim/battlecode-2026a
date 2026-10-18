@@ -114,8 +114,11 @@ pub mod knob {
     /// 1 = judge monolith readiness on current (itemised) damage, not base stats
     /// (the base-stat gate never opened: 0 gems on contest in 2000 rounds).
     pub const MONOLITH_LIVE: usize = 27;
+    /// 1 = shop before banking: recall to spend gold even while carrying gems (recall keeps
+    /// them), so items come early and one trip home does both; tribute stays bag-driven.
+    pub const SHOP_FIRST: usize = 28;
 
-    pub const DEFAULTS: [(usize, u8); 28] = [
+    pub const DEFAULTS: [(usize, u8); 29] = [
         (AGGRESSION, 128),
         (RETREAT_HP_PCT, 35),
         (TRIBUTE_MIN_GEMS, 20),
@@ -143,7 +146,8 @@ pub mod knob {
         (PASSIVE_ROLES, 1),
         (DRAFT_BEST, 0),
         (SAFE_ALTAR, 1),
-        (MONOLITH_LIVE, 0),
+        (MONOLITH_LIVE, 1),
+        (SHOP_FIRST, 1),
     ];
 }
 

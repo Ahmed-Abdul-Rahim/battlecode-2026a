@@ -52,8 +52,9 @@ pub struct Bot {
     dmg_taken: f32,
     /// Rounds spent waiting for allies before waking a dangerous group (CAMP_SAFE bit 2).
     gather_wait: u32,
-    /// Our current damage per round with items (CAMP_FEASIBLE).
+    /// Our current damage per round with items (CAMP_FEASIBLE, MONOLITH_LIVE).
     cur_dps: f32,
+    cur_max_hp: f32,
 }
 
 /// Engage turns without landing anything before we give up on that enemy.
@@ -103,6 +104,8 @@ const TAVI_HUNT_RADIUS: i32 = 6;
 /// keeps only CAMP_INFEASIBLE_VALUE of its value.
 const CAMP_FEASIBLE_SLACK: f32 = 3.0;
 const CAMP_INFEASIBLE_VALUE: f32 = 0.1;
+/// MONOLITH_LIVE: attack once pooled team health lasts this fraction of the kill time.
+const MONOLITH_SLACK: f32 = 1.0;
 /// VALUE_PROFILE 4/5: the opening (near camps first: early gold compounds into items).
 const OPENING_ROUNDS: u32 = 120;
 const OPENING_DIST_WEIGHT: f32 = 2.5;
@@ -160,6 +163,7 @@ impl Bot {
             dmg_taken: 0.0,
             gather_wait: 0,
             cur_dps: 0.0,
+            cur_max_hp: 0.0,
         })
     }
 
@@ -205,6 +209,7 @@ impl Bot {
         let hurt_this_round = alive && hp + 0.5 < self.last_hp;
         self.dmg_taken = if alive { (self.last_hp - hp).max(0.0) } else { 0.0 };
         if alive {
+            self.cur_max_hp = max_hp;
             self.cur_dps = sdk::dps(
                 me.strength().unwrap_or(self.kit.base_strength),
                 me.focus().unwrap_or(self.kit.base_focus),
@@ -813,7 +818,16 @@ impl Bot {
         let opening = matches!(value_profile, 4 | 5) && round < OPENING_ROUNDS;
         let mut best: Option<(f32, usize)> = None;
         for (i, g) in self.world.groups.iter().enumerate() {
-            if g.has_monolith
+            if g.has_monolith && live {
+                // The monolith hits the nearest champion for its strength every round: the
+                // team's pooled health must outlast the time its pooled damage needs.
+                let n = self.team_size as f32;
+                let survive = self.cur_max_hp.max(1.0) * n / g.total_strength.max(1.0);
+                let kill = g.total_hp / team_power.max(1.0);
+                if kill > survive * MONOLITH_SLACK {
+                    continue;
+                }
+            } else if g.has_monolith
                 && team_power * 10.0 < f32::from(self.knobs.monolith_min_power) * 100.0
             {
                 continue;
@@ -849,6 +863,8 @@ impl Bot {
                     value *= 1.5;
                     0.0
                 }
+                // A monolith is cleared by the whole team, not one champion.
+                _ if g.has_monolith && live => g.total_hp / team_power.max(1.0),
                 _ => g.total_hp / my_dps,
             };
             // A capture needs one champion; an ally already on the tile has it.

@@ -20,6 +20,8 @@ pub struct Knobs {
     pub monolith_min_power: u8,
     pub recall_gold: u32,
     pub fight_margin_pct: u8,
+    /// SHOP_FIRST: recall to shop while carrying gems, before banking them.
+    pub shop_first: bool,
 }
 
 impl Knobs {
@@ -34,6 +36,7 @@ impl Knobs {
             monolith_min_power: t.knob(knob::MONOLITH_MIN_POWER),
             recall_gold: u32::from(t.knob(knob::RECALL_GOLD)) * 10,
             fight_margin_pct: t.knob(knob::FIGHT_MARGIN_PCT),
+            shop_first: t.knob(knob::SHOP_FIRST) > 0,
         }
     }
 }

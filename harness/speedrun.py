@@ -39,7 +39,7 @@ MAX_ROUNDS = 2000
 
 def score(r: runner.MatchResult, bot: str) -> int:
     gems = r.gems_a if r.bot_a == bot else r.gems_b
-    if r.winner == bot:
+    if r.winner == bot and gems >= WIN_GEMS:
         return r.rounds
     return MAX_ROUNDS + max(0, WIN_GEMS - gems)
 
