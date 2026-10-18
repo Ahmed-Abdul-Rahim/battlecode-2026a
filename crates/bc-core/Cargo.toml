@@ -1,0 +1,8 @@
+[package]
+name = "bc-core"
+description = "SDK-free game state: geometry, terrain, champion kits, ledger, belief, memory codecs, fuel governor"
+version.workspace = true
+edition.workspace = true
+
+[lints]
+workspace = true

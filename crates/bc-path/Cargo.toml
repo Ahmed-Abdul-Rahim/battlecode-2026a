@@ -1,0 +1,11 @@
+[package]
+name = "bc-path"
+description = "Pathing ensemble: cached distance fields, local repair, windowed danger-weighted A*"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+bc-core = { path = "../bc-core" }
+
+[lints]
+workspace = true

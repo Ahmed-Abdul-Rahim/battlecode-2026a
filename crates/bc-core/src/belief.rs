@@ -1,0 +1,247 @@
+//! What a champion believes about things it can't currently see.
+//!
+//! Vision is per champion and not shared, so each bot keeps its own memory of
+//! enemy sightings (decaying with age) and of camp-group respawn timers.
+
+use crate::champion::ChampionKind;
+use crate::geom::Pos;
+
+/// Sightings older than this many rounds are ignored for threat.
+pub const MAX_THREAT_AGE: u32 = 12;
+
+/// How long to assume a spawn-blocked group stays down (it needs the tile freed).
+pub const BLOCKED_RESPAWN_ROUNDS: u32 = 3;
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct Sighting {
+    pub kind: ChampionKind,
+    pub pos: Pos,
+    pub round: u32,
+    pub hp_frac: f32,
+    pub gems: u32,
+    pub attack_range: i32,
+    /// Estimated damage per round the enemy can deal (basic attack + spell share).
+    pub dps: f32,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum GroupState {
+    Unknown,
+    Alive,
+    /// Killed but not captured yet.
+    RewardAvailable,
+    Respawning,
+}
+
+/// What the SDK reported for a group in vision this round.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum GroupObs {
+    Alive,
+    RewardAvailable,
+    /// Remaining respawn rounds (0 = blocked by an occupied spawn tile).
+    Respawning(i32),
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct GroupBelief {
+    pub state: GroupState,
+    pub respawn_at: Option<u32>,
+    pub last_seen: Option<u32>,
+    pub max_respawn: u32,
+}
+
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct Belief {
+    enemies: Vec<Sighting>,
+    groups: Vec<GroupBelief>,
+}
+
+impl Belief {
+    /// `max_respawn[i]` is group `i`'s configured respawn timer.
+    #[must_use]
+    pub fn new(max_respawn: &[u32]) -> Self {
+        Self {
+            enemies: Vec::new(),
+            groups: max_respawn
+                .iter()
+                .map(|&m| GroupBelief {
+                    state: GroupState::Unknown,
+                    respawn_at: None,
+                    last_seen: None,
+                    max_respawn: m,
+                })
+                .collect(),
+        }
+    }
+
+    pub fn see_enemy(&mut self, s: Sighting) {
+        if let Some(old) = self.enemies.iter_mut().find(|e| e.kind == s.kind) {
+            *old = s;
+        } else {
+            self.enemies.push(s);
+        }
+    }
+
+    /// Forget an enemy (e.g. we saw it die).
+    pub fn forget(&mut self, kind: ChampionKind) {
+        self.enemies.retain(|e| e.kind != kind);
+    }
+
+    #[must_use]
+    pub fn enemies(&self) -> &[Sighting] {
+        &self.enemies
+    }
+
+    /// Sightings no older than `max_age` rounds.
+    pub fn recent(&self, round: u32, max_age: u32) -> impl Iterator<Item = &Sighting> {
+        self.enemies.iter().filter(move |e| round.saturating_sub(e.round) <= max_age)
+    }
+
+    /// Pessimistic damage per round that enemies could deal at `p` now, assuming
+    /// each moved one tile per round towards `p` since we last saw it.
+    #[must_use]
+    pub fn threat_at(&self, p: Pos, round: u32) -> f32 {
+        let mut threat = 0.0;
+        for e in &self.enemies {
+            let age = round.saturating_sub(e.round);
+            if age > MAX_THREAT_AGE {
+                continue;
+            }
+            let reach = e.attack_range + 1 + age as i32;
+            if e.pos.cheb(p) <= reach {
+                // Older sightings are less certain.
+                let confidence = 1.0 - age as f32 / (MAX_THREAT_AGE as f32 + 1.0);
+                threat += e.dps * confidence;
+            }
+        }
+        threat
+    }
+
+    pub fn observe_group(&mut self, index: usize, obs: GroupObs, round: u32) {
+        let Some(g) = self.groups.get_mut(index) else { return };
+        g.last_seen = Some(round);
+        match obs {
+            GroupObs::Alive => {
+                g.state = GroupState::Alive;
+                g.respawn_at = None;
+            }
+            GroupObs::RewardAvailable => {
+                g.state = GroupState::RewardAvailable;
+                g.respawn_at = None;
+            }
+            // Timer 0 means "blocked by an occupied spawn tile": it comes back
+            // only once the tile is free, so keep it respawning for a while.
+            GroupObs::Respawning(0) => {
+                g.state = GroupState::Respawning;
+                g.respawn_at = Some(round + BLOCKED_RESPAWN_ROUNDS);
+            }
+            GroupObs::Respawning(timer) => {
+                g.state = GroupState::Respawning;
+                g.respawn_at = Some(round + timer as u32);
+            }
+        }
+    }
+
+    /// We captured it ourselves: the respawn timer starts now.
+    pub fn captured(&mut self, index: usize, round: u32) {
+        if let Some(g) = self.groups.get_mut(index) {
+            g.state = GroupState::Respawning;
+            g.respawn_at = Some(round + g.max_respawn);
+            g.last_seen = Some(round);
+        }
+    }
+
+    #[must_use]
+    pub fn group(&self, index: usize) -> Option<&GroupBelief> {
+        self.groups.get(index)
+    }
+
+    #[must_use]
+    pub fn group_count(&self) -> usize {
+        self.groups.len()
+    }
+
+    /// Best guess of a group's state at `round`, rolling respawn timers forward.
+    #[must_use]
+    pub fn expected_state(&self, index: usize, round: u32) -> GroupState {
+        match self.groups.get(index) {
+            None => GroupState::Unknown,
+            Some(g) => match (g.state, g.respawn_at) {
+                (GroupState::Respawning, Some(at)) if round >= at => GroupState::Alive,
+                (state, _) => state,
+            },
+        }
+    }
+
+    /// Rounds until the group is expected back (0 if it should be up).
+    #[must_use]
+    pub fn rounds_until_up(&self, index: usize, round: u32) -> u32 {
+        match self.groups.get(index) {
+            Some(GroupBelief { state: GroupState::Respawning, respawn_at: Some(at), .. }) => {
+                at.saturating_sub(round)
+            }
+            _ => 0,
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn sighting(pos: Pos, round: u32) -> Sighting {
+        Sighting {
+            kind: ChampionKind::Varg,
+            pos,
+            round,
+            hp_frac: 1.0,
+            gems: 0,
+            attack_range: 1,
+            dps: 50.0,
+        }
+    }
+
+    #[test]
+    fn threat_grows_reach_with_age_and_decays_confidence() {
+        let mut b = Belief::new(&[]);
+        b.see_enemy(sighting(Pos::new(0, 0), 10));
+        let p = Pos::new(5, 0);
+        assert_eq!(b.threat_at(p, 10), 0.0, "too far right now");
+        let later = b.threat_at(p, 13);
+        assert!(later > 0.0 && later < 50.0, "could have walked here, less certain: {later}");
+        assert_eq!(b.threat_at(p, 10 + MAX_THREAT_AGE + 1), 0.0, "stale");
+    }
+
+    #[test]
+    fn same_kind_replaces_previous_sighting() {
+        let mut b = Belief::new(&[]);
+        b.see_enemy(sighting(Pos::new(0, 0), 1));
+        b.see_enemy(sighting(Pos::new(9, 9), 2));
+        assert_eq!(b.enemies().len(), 1);
+        assert_eq!(b.enemies()[0].pos, Pos::new(9, 9));
+        b.forget(ChampionKind::Varg);
+        assert!(b.enemies().is_empty());
+    }
+
+    #[test]
+    fn respawn_timers_roll_forward() {
+        let mut b = Belief::new(&[40, 60]);
+        b.observe_group(0, GroupObs::Respawning(10), 100);
+        assert_eq!(b.expected_state(0, 105), GroupState::Respawning);
+        assert_eq!(b.rounds_until_up(0, 105), 5);
+        assert_eq!(b.expected_state(0, 110), GroupState::Alive);
+        b.captured(1, 200);
+        assert_eq!(b.rounds_until_up(1, 230), 30);
+        assert_eq!(b.expected_state(5, 0), GroupState::Unknown);
+    }
+
+    #[test]
+    fn spawn_blocked_group_is_not_treated_as_up_next_round() {
+        // Regression: Respawning(0) means an occupied spawn tile blocks it. Treating
+        // it as "up next round" made a champion stand on the tile forever.
+        let mut b = Belief::new(&[40]);
+        b.observe_group(0, GroupObs::Respawning(0), 100);
+        assert_eq!(b.expected_state(0, 101), GroupState::Respawning);
+        assert_eq!(b.expected_state(0, 100 + BLOCKED_RESPAWN_ROUNDS), GroupState::Alive);
+    }
+}

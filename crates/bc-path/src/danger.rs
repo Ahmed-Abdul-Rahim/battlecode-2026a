@@ -1,0 +1,82 @@
+//! Danger-weighted step costs inside a [`Window`].
+//!
+//! Base step cost is [`STEP`] so small penalties stay integral. Threats add
+//! cost on every tile they can hit; bushes optionally get a small discount
+//! (stealth: enemies outside can't see in).
+
+use crate::window::{Window, BLOCKED, CELLS};
+use bc_core::{Pos, Terrain};
+
+pub const STEP: u16 = 10;
+
+/// Something that hurts on tiles within `range` (Chebyshev) of `pos`.
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct Threat {
+    pub pos: Pos,
+    pub range: i32,
+    /// Expected damage per round; converted to cost by [`DangerParams::damage_per_cost`].
+    pub dps: f32,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct DangerParams {
+    /// Damage that adds one unit of cost (STEP = one tile of detour).
+    pub damage_per_cost: f32,
+    pub bush_discount: u16,
+}
+
+impl Default for DangerParams {
+    fn default() -> Self {
+        Self { damage_per_cost: 4.0, bush_discount: 2 }
+    }
+}
+
+/// Fill window costs: `BLOCKED` for unwalkable or occupied tiles, otherwise
+/// `STEP + danger − bush discount` (never below 1).
+pub fn fill_costs(
+    win: &Window,
+    terrain: &Terrain,
+    occupied: &dyn Fn(Pos) -> bool,
+    threats: &[Threat],
+    params: DangerParams,
+    out: &mut [u16; CELLS],
+) {
+    for (i, slot) in out.iter_mut().enumerate() {
+        let p = win.pos(i);
+        if !terrain.walkable(p) || occupied(p) {
+            *slot = BLOCKED;
+            continue;
+        }
+        let mut damage = 0.0;
+        for t in threats {
+            if t.pos.cheb(p) <= t.range {
+                damage += t.dps;
+            }
+        }
+        let mut cost = u32::from(STEP) + (damage / params.damage_per_cost) as u32;
+        if terrain.bushes.get(p) {
+            cost = cost.saturating_sub(u32::from(params.bush_discount));
+        }
+        *slot = cost.clamp(1, u32::from(BLOCKED) - 1) as u16;
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn threats_raise_cost_walls_block_bushes_discount() {
+        let t = Terrain::from_ascii(&["..#..", "..\"..", "....."]);
+        let win = Window { origin: Pos::new(0, 0) };
+        let mut costs = [0u16; CELLS];
+        let threat = Threat { pos: Pos::new(0, 0), range: 1, dps: 40.0 };
+        fill_costs(&win, &t, &|_| false, &[threat], DangerParams::default(), &mut costs);
+        let at = |x, y| costs[win.index(Pos::new(x, y)).unwrap()];
+        assert_eq!(at(2, 0), BLOCKED);
+        assert_eq!(at(1, 1), STEP + 10, "in threat range");
+        assert_eq!(at(4, 2), STEP);
+        assert_eq!(at(2, 1), STEP - 2, "bush discount");
+        assert_eq!(at(10, 10), BLOCKED, "outside the map");
+    }
+}

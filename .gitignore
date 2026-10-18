@@ -1,0 +1,39 @@
+# Rust
+target/
+**/*.rs.bk
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# Match runs, replays, telemetry, renders (regenerable)
+runs/
+replays/
+*.replay
+renders/
+datasets/
+
+# ML artefacts (trained weights that ship in the bot live in crates/bc-brain/weights/ and ARE committed)
+ml/**/checkpoints/
+ml/**/*.pt
+ml/**/*.ckpt
+ml/**/data/
+
+# Editors / OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local secrets
+.env
+.cambc/
+bots/*/.cambc/
+matches/
+bots/*/build/
+bots/*/target/

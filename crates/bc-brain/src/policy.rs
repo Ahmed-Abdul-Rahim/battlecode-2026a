@@ -1,0 +1,132 @@
+//! Small control rules shared by experts: tribute timing (the "tribute control
+//! head") and the leader's live team parameters (shared-memory bytes 1–2).
+
+use crate::context::Context;
+
+/// Tribute duration in owner turns: max(1, ceil(gems / 10)).
+#[must_use]
+pub fn tribute_turns(gems: u32) -> u32 {
+    gems.div_ceil(10).max(1)
+}
+
+/// Should we go and bank our gems now?
+///
+/// Carried gems don't score and are lost on death (stolen by a killer, or
+/// destroyed by a camp), so the question is whether the bag is worth the walk.
+/// The bar rises with distance and drops when we're in danger, hurt, late in
+/// the game, or when the bag would win outright.
+#[must_use]
+pub fn should_tribute(ctx: &Context) -> bool {
+    if ctx.gems == 0 || !ctx.alive {
+        return false;
+    }
+    if ctx.ally_tributed + ctx.gems >= ctx.winning_gems {
+        return true;
+    }
+    let k = &ctx.knobs;
+    let team_cap = if ctx.team.tribute_threshold > 0 {
+        u32::from(ctx.team.tribute_threshold)
+    } else {
+        u32::from(k.tribute_max)
+    };
+    if ctx.gems >= u32::from(k.tribute_max).min(team_cap.max(1)) {
+        return true;
+    }
+    let dist = u32::from(ctx.dist_altar.unwrap_or(50));
+    let mut required = u32::from(k.tribute_min) + dist * u32::from(k.tribute_distance_scale) / 10;
+    if ctx.low_hp() || ctx.threat_here > 0.0 {
+        required /= 2;
+    }
+    if ctx.round > 1800 {
+        required /= 2;
+    }
+    if dist <= 2 {
+        required = required.min(5);
+    }
+    ctx.gems >= required
+}
+
+/// Live team strategy parameters written by the round's leader.
+///
+/// Returns `(aggression, tribute_threshold)`. Behind late → more aggressive and
+/// hold gems longer for big captures; ahead → bank often and play safe.
+#[must_use]
+pub fn team_params(
+    ally_tributed: u32,
+    enemy_tributed: u32,
+    round: u32,
+    max_rounds: u32,
+    base_aggression: u8,
+    base_threshold: u8,
+) -> (u8, u8) {
+    let diff = i64::from(ally_tributed) - i64::from(enemy_tributed);
+    let late = round * 4 > max_rounds * 3;
+    let mut aggression = i64::from(base_aggression);
+    let mut threshold = i64::from(base_threshold);
+    if diff > 150 {
+        aggression -= 40;
+        threshold -= 20;
+    } else if diff < -100 && late {
+        aggression += 60;
+        threshold += 20;
+    }
+    if late {
+        threshold -= 10;
+    }
+    (aggression.clamp(0, 255) as u8, threshold.clamp(5, 255) as u8)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn tribute_turns_match_rules() {
+        assert_eq!(tribute_turns(1), 1);
+        assert_eq!(tribute_turns(10), 1);
+        assert_eq!(tribute_turns(11), 2);
+        assert_eq!(tribute_turns(0), 1);
+    }
+
+    #[test]
+    fn tribute_bar_scales_with_distance_and_danger() {
+        let mut ctx = Context::neutral();
+        ctx.gems = 30;
+        ctx.dist_altar = Some(40); // need 20 + 40 = 60
+        assert!(!should_tribute(&ctx));
+        ctx.dist_altar = Some(5); // need 25
+        assert!(should_tribute(&ctx));
+        ctx.dist_altar = Some(40);
+        ctx.threat_here = 10.0; // need 30
+        assert!(should_tribute(&ctx));
+    }
+
+    #[test]
+    fn winning_bag_always_tributes() {
+        let mut ctx = Context::neutral();
+        ctx.ally_tributed = 990;
+        ctx.gems = 12;
+        ctx.dist_altar = Some(90);
+        assert!(should_tribute(&ctx));
+    }
+
+    #[test]
+    fn full_bag_always_tributes_and_empty_never() {
+        let mut ctx = Context::neutral();
+        ctx.gems = 80;
+        ctx.dist_altar = Some(90);
+        assert!(should_tribute(&ctx));
+        ctx.gems = 0;
+        assert!(!should_tribute(&ctx));
+    }
+
+    #[test]
+    fn team_params_respond_to_score() {
+        let base = team_params(0, 0, 100, 2000, 128, 60);
+        assert_eq!(base, (128, 60));
+        let ahead = team_params(400, 100, 500, 2000, 128, 60);
+        assert!(ahead.0 < 128 && ahead.1 < 60);
+        let behind_late = team_params(100, 400, 1600, 2000, 128, 60);
+        assert!(behind_late.0 > 128);
+    }
+}

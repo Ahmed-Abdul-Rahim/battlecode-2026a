@@ -1,0 +1,153 @@
+# Feature schema: the single source of truth for every learned head.
+#
+# Regenerate code after editing:  python ml/features/gen.py
+# Outputs: crates/bc-brain/src/features_gen.rs and ml/features/schema_gen.py
+#
+# Each group is aligned to the SDK query (or computation) that produces it, so
+# dropping a group in feature selection saves its whole fuel cost. `fuel` is the
+# measured or estimated per-turn cost of extracting the group (docs/fuel-budget.md).
+#
+# All features are normalised to roughly [-1, 1] and quantised to int8 as
+# round(clamp(v, -1, 1) * 127).
+#
+# Domain tags (UDA, papers.md P-010/P-011): `inv` = egocentric / map-size
+# invariant, transferable from other MOBA data; `map` = specific to this game.
+# Baseline sources: P-001 / P-003 / P-004 observation designs (unit state,
+# relative positions, HP%, cooldowns) and P-007 (net worth, team sums).
+
+version: 1
+
+groups:
+  - name: self_state
+    fuel: 1300
+    source: "self_champion(): position, health, max_health, strength, focus, can_*, cooldowns, gold, gems, item_count"
+    features:
+      - {name: hp_frac, domain: inv, desc: "health / max_health"}
+      - {name: max_hp, domain: inv, desc: "max_health / 3000"}
+      - {name: strength, domain: inv, desc: "strength / 150"}
+      - {name: focus, domain: inv, desc: "focus / 250"}
+      - {name: is_ranged, domain: inv, desc: "1 if ranged"}
+      - {name: attack_range, domain: inv, desc: "attack range / 3"}
+      - {name: cd0, domain: inv, desc: "ability slot 0 cooldown / 8"}
+      - {name: cd1, domain: inv, desc: "ability slot 1 cooldown / 8"}
+      - {name: can_move, domain: inv, desc: "movement allowance left"}
+      - {name: can_attack, domain: inv, desc: "attack allowance left"}
+      - {name: gems_carried, domain: map, desc: "carried gems / 100"}
+      - {name: gold, domain: inv, desc: "unspent gold / 300"}
+
+  - name: economy
+    fuel: 300
+    source: "global_submitted_gems(Ally/Enemy) + ledger"
+    features:
+      - {name: lifetime_gold, domain: inv, desc: "lifetime gold earned / 5000 (tiebreak)"}
+      - {name: ally_tributed, domain: map, desc: "ally tributed gems / 1000"}
+      - {name: enemy_tributed, domain: map, desc: "enemy tributed gems / 1000"}
+      - {name: tributed_diff, domain: map, desc: "(ally - enemy) tributed / 1000"}
+      - {name: gems_to_win, domain: map, desc: "(1000 - ally tributed - carried) / 1000"}
+      - {name: emblems, domain: inv, desc: "completed emblems / 6"}
+      - {name: has_altar_lock, domain: map, desc: "carrying an altar lock"}
+      - {name: has_tp_crystal, domain: map, desc: "carrying a teleport crystal"}
+
+  - name: enemies
+    fuel: 2000
+    source: "vision::champions(Enemy) + per-enemy position/health/gems"
+    features:
+      - {name: n_visible, domain: inv, desc: "visible enemies / 5"}
+      - {name: nearest_dx, domain: inv, desc: "nearest enemy dx / 8"}
+      - {name: nearest_dy, domain: inv, desc: "nearest enemy dy / 8"}
+      - {name: nearest_dist, domain: inv, desc: "nearest enemy Chebyshev distance / 8"}
+      - {name: nearest_hp_frac, domain: inv, desc: "nearest enemy health fraction"}
+      - {name: nearest_gems, domain: map, desc: "nearest enemy carried gems / 100 (steal value)"}
+      - {name: nearest_ranged, domain: inv, desc: "nearest enemy is ranged"}
+      - {name: nearest_dps, domain: inv, desc: "nearest enemy damage per round / 200"}
+      - {name: dps_in_range, domain: inv, desc: "summed enemy dps that can hit me now / 400"}
+      - {name: second_dist, domain: inv, desc: "second-nearest enemy distance / 8"}
+      - {name: in_range3, domain: inv, desc: "enemies within 3 tiles / 3"}
+      - {name: nearest_stunned, domain: inv, desc: "nearest enemy is stunned"}
+
+  - name: allies
+    fuel: 1700
+    source: "vision::champions(Ally) + per-ally position/health"
+    features:
+      - {name: n_visible, domain: inv, desc: "visible allies / 5"}
+      - {name: nearest_dist, domain: inv, desc: "nearest ally distance / 8"}
+      - {name: nearest_hp_frac, domain: inv, desc: "nearest ally health fraction"}
+      - {name: within3, domain: inv, desc: "allies within 3 tiles / 3"}
+      - {name: dps_near, domain: inv, desc: "ally dps within 3 tiles / 400"}
+      - {name: same_claim, domain: map, desc: "other allies claiming my camp group / 3"}
+
+  - name: camps
+    fuel: 2000
+    source: "vision::camps() + per-camp position/health/state; map camp group rewards (cached)"
+    features:
+      - {name: n_visible, domain: map, desc: "visible camps / 6"}
+      - {name: nearest_dist, domain: map, desc: "nearest camp distance / 8"}
+      - {name: nearest_hp_frac, domain: map, desc: "nearest camp health fraction"}
+      - {name: nearest_awake, domain: map, desc: "nearest camp is awake"}
+      - {name: nearest_dps, domain: map, desc: "nearest camp strength / 200"}
+      - {name: target_hp, domain: map, desc: "target group remaining health / 20000"}
+      - {name: target_gems, domain: map, desc: "target group gem reward / 200"}
+      - {name: target_gold, domain: map, desc: "target group gold reward / 300"}
+      - {name: target_value_density, domain: map, desc: "(gems + gold/3) per 1000 health"}
+      - {name: camp_threat_here, domain: map, desc: "awake camp dps that can hit me / 200"}
+
+  - name: objectives
+    fuel: 400
+    source: "cached distance fields (DistanceField::get ~74 fuel each)"
+    features:
+      - {name: dist_altar, domain: map, desc: "path distance to tribute tiles / 100"}
+      - {name: dist_spawn, domain: map, desc: "path distance to own spawn / 100"}
+      - {name: dist_target, domain: map, desc: "path distance to target group / 100"}
+      - {name: capture_progress, domain: map, desc: "rounds on an uncontested capture tile / 5"}
+      - {name: on_capture_tile, domain: map, desc: "standing on a capturable spawn tile"}
+      - {name: altar_locked, domain: map, desc: "nearest altar has an enemy lock"}
+      - {name: tribute_time, domain: map, desc: "ceil(gems / 10) / 10"}
+      - {name: at_spawn, domain: map, desc: "standing on own spawn"}
+
+  - name: belief
+    fuel: 300
+    source: "guest-side belief map (no SDK calls)"
+    features:
+      - {name: threat_here, domain: inv, desc: "believed enemy dps at my tile / 400"}
+      - {name: last_seen_age, domain: inv, desc: "age of freshest enemy sighting / 12"}
+      - {name: last_seen_dist, domain: inv, desc: "distance to freshest sighting / 50"}
+      - {name: unaccounted, domain: inv, desc: "enemies not seen in 12 rounds / 5"}
+      - {name: shared_sighting_age, domain: inv, desc: "team-channel sighting age / 3 (1 if none)"}
+      - {name: target_respawn_eta, domain: map, desc: "target group rounds until up / 150"}
+
+  - name: team_params
+    fuel: 100
+    source: "shared_memory().read(0, 8) — 8-byte team channel"
+    features:
+      - {name: aggression, domain: inv, desc: "team aggression parameter / 255"}
+      - {name: tribute_threshold, domain: map, desc: "team tribute threshold / 255"}
+      - {name: help_flag, domain: inv, desc: "an ally asked for help this round"}
+      - {name: enemy_tributing, domain: map, desc: "an ally saw an enemy tributing"}
+      - {name: am_leader, domain: inv, desc: "I'm this round's first actor"}
+
+  - name: theta_match
+    fuel: 20
+    source: "draft memory θ_match (decoded once)"
+    features:
+      - {name: knob_aggression, domain: inv, desc: "draft aggression knob / 255"}
+      - {name: knob_retreat_hp, domain: inv, desc: "draft retreat HP% / 100"}
+      - {name: knob_tribute_min, domain: map, desc: "draft tribute minimum / 100"}
+      - {name: film_active, domain: inv, desc: "draft wrote non-identity FiLM parameters"}
+      - {name: map_size, domain: map, desc: "(width * height) / 10000"}
+      - {name: map_monolith, domain: map, desc: "map has a monolith"}
+
+  - name: champion_vectors
+    fuel: 60
+    source: "θ_match champion vectors (P-040/P-041), copied"
+    features:
+      - {name: me_v, domain: inv, count: 16, desc: "my champion vector (int8 / 127)"}
+      - {name: enemy_v, domain: inv, count: 16, desc: "nearest enemy's champion vector"}
+
+  - name: meta
+    fuel: 100
+    source: "round_number(), fuel_remaining()"
+    features:
+      - {name: round_frac, domain: inv, desc: "round / 2000"}
+      - {name: fuel_frac, domain: inv, desc: "fuel remaining / 100000"}
+      - {name: allies_alive, domain: inv, desc: "allies alive / team size"}
+      - {name: just_respawned, domain: inv, desc: "first turn since respawn"}

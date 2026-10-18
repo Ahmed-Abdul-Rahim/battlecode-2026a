@@ -1,0 +1,50 @@
+name: Bug / error
+description: Crash, panic, fuel exhaustion, illegal action, or wrong behaviour in a match
+labels: ["type:bug"]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options:
+        - panic / crash
+        - fuel exhausted (turn suspended)
+        - SDK error returned (ErrorCode)
+        - wrong decision / behaviour
+        - tooling / CI failure
+    validations:
+      required: true
+  - type: input
+    id: bots
+    attributes:
+      label: Bots and commit
+      description: e.g. main@abc1234 vs baseline
+    validations:
+      required: true
+  - type: input
+    id: map
+    attributes:
+      label: Map and round
+      description: e.g. maps/arena.map26a, round 412
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduce
+      description: The exact `cambc run` / `bctools run` command.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / error code
+      description: Paste the relevant telemetry or stderr. Attach a render_frame PNG if it helps.
+      render: text
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected vs actual
+    validations:
+      required: true

@@ -1,0 +1,268 @@
+//! Tier selection: try the cheapest way to get a good step first.
+
+use crate::astar;
+use crate::danger::{fill_costs, DangerParams, Threat, STEP};
+use crate::oracle::{DistanceOracle, Goal};
+use crate::window::{Window, CELLS, SIDE};
+use bc_core::geom::DIRS8;
+use bc_core::{Pos, Terrain};
+use std::cell::Cell;
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Tier {
+    Static,
+    LocalRepair,
+    /// Cheap danger-aware neighbour choice (~2k fuel).
+    Greedy,
+    /// Windowed danger-weighted A* (bounded by `deep_expansions`).
+    Weighted,
+    Fallback,
+    /// Already on a goal tile, or no legal step exists.
+    Stay,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct StepChoice {
+    /// Absolute tile to move to (equal to `me` for [`Tier::Stay`]).
+    pub to: Pos,
+    pub tier: Tier,
+}
+
+/// Inputs describing the live situation around the champion.
+pub struct Situation<'a> {
+    pub me: Pos,
+    pub terrain: &'a Terrain,
+    /// Tiles known to be occupied right now (visible units, revealed blockers).
+    pub occupied: &'a dyn Fn(Pos) -> bool,
+    pub threats: &'a [Threat],
+    /// Use the danger-aware tiers only when some threat is this close (saves fuel).
+    pub danger_radius: i32,
+    pub params: DangerParams,
+    /// A* expansion budget for the deep tier; 0 = cheap greedy only. The bot
+    /// sizes this from fuel left (≈600 fuel per expansion in game).
+    pub deep_expansions: u32,
+}
+
+/// Choose the next tile towards `goal`.
+pub fn choose_step(sit: &Situation<'_>, goal: Goal, oracle: &dyn DistanceOracle) -> StepChoice {
+    let me = sit.me;
+    let stay = StepChoice { to: me, tier: Tier::Stay };
+    let free = |p: Pos| sit.terrain.walkable(p) && !(sit.occupied)(p);
+    let here = oracle.distance(goal, me);
+    if here == Some(0) {
+        return stay;
+    }
+
+    let near_threat = sit.threats.iter().any(|t| t.pos.cheb(me) <= sit.danger_radius + t.range);
+    if near_threat && oracle.is_ready(goal) {
+        if sit.deep_expansions > 0 {
+            if let Some(choice) = weighted(sit, goal, oracle) {
+                return choice;
+            }
+        }
+        if let Some(choice) = greedy(sit, goal, oracle) {
+            return choice;
+        }
+    }
+
+    // Tier 1: an optimal step that's free right now.
+    let optimal: Vec<Pos> =
+        oracle.next_steps(goal, me).into_iter().map(|d| me + d).filter(|&p| free(p)).collect();
+    if let Some(&to) = optimal.first() {
+        return StepChoice { to, tier: Tier::Static };
+    }
+
+    // Tier 2: best free neighbour that doesn't get further from the goal.
+    if let Some(here) = here {
+        let best = DIRS8
+            .iter()
+            .map(|&d| me + d)
+            .filter(|&p| free(p))
+            .filter_map(|p| oracle.distance(goal, p).map(|d| (d, p)))
+            .filter(|&(d, _)| d <= here)
+            .min();
+        if let Some((_, to)) = best {
+            return StepChoice { to, tier: Tier::LocalRepair };
+        }
+    }
+
+    stay
+}
+
+/// Danger cost of standing on `p` (same units as [`fill_costs`]).
+fn danger_at(sit: &Situation<'_>, p: Pos) -> u32 {
+    let damage: f32 = sit.threats.iter().filter(|t| t.pos.cheb(p) <= t.range).map(|t| t.dps).sum();
+    (damage / sit.params.damage_per_cost) as u32
+}
+
+/// Tier 3a: the free neighbour minimising `STEP·distance + danger`. Allows one
+/// step of backtracking to escape a threat; ~8 field lookups.
+fn greedy(sit: &Situation<'_>, goal: Goal, oracle: &dyn DistanceOracle) -> Option<StepChoice> {
+    let here = oracle.distance(goal, sit.me)?;
+    DIRS8
+        .iter()
+        .map(|&d| sit.me + d)
+        .filter(|&p| sit.terrain.walkable(p) && !(sit.occupied)(p))
+        .filter_map(|p| oracle.distance(goal, p).map(|d| (p, d)))
+        .filter(|&(_, d)| d <= here + 1)
+        .map(|(p, d)| (u32::from(d) * u32::from(STEP) + danger_at(sit, p), p))
+        .min_by_key(|&(score, _)| score)
+        .map(|(_, to)| StepChoice { to, tier: Tier::Greedy })
+}
+
+/// Leaving the window is only an estimate, so prefer resolving inside it.
+const EXIT_PENALTY: u32 = 2 * STEP as u32;
+
+const NOT_FETCHED: u16 = u16::MAX - 1;
+const UNREACHABLE: u16 = u16::MAX;
+
+fn weighted(sit: &Situation<'_>, goal: Goal, oracle: &dyn DistanceOracle) -> Option<StepChoice> {
+    let (width, height) = (sit.terrain.width(), sit.terrain.height());
+    let win = Window::around(sit.me, width, height);
+    let mut costs = [0u16; CELLS];
+    fill_costs(&win, sit.terrain, sit.occupied, sit.threats, sit.params, &mut costs);
+    // Each field lookup costs ~74 fuel in game; fetch each window cell at most once.
+    let cache: [Cell<u16>; CELLS] = core::array::from_fn(|_| Cell::new(NOT_FETCHED));
+    let field = |p: Pos| -> Option<u16> {
+        let Some(i) = win.index(p) else { return oracle.distance(goal, p) };
+        if cache[i].get() == NOT_FETCHED {
+            cache[i].set(oracle.distance(goal, p).unwrap_or(UNREACHABLE));
+        }
+        Some(cache[i].get()).filter(|&d| d != UNREACHABLE)
+    };
+    let h = |p: Pos| field(p).map_or(u32::MAX / 4, |d| u32::from(d) * u32::from(STEP));
+    // Only window edges with more map beyond them are real exits.
+    let interior_edge = |p: Pos| {
+        let d = p - win.origin;
+        (d.x == 0 && p.x > 0)
+            || (d.y == 0 && p.y > 0)
+            || (d.x == SIDE - 1 && p.x < width - 1)
+            || (d.y == SIDE - 1 && p.y < height - 1)
+    };
+    let exit = |p: Pos| {
+        if !interior_edge(p) {
+            return None;
+        }
+        field(p).map(|d| u32::from(d) * u32::from(STEP) + EXIT_PENALTY)
+    };
+    let result = astar::search(
+        &win,
+        &costs,
+        sit.me,
+        &|p| field(p) == Some(0),
+        &exit,
+        &h,
+        sit.deep_expansions,
+    )?;
+    (result.first_step != sit.me)
+        .then_some(StepChoice { to: result.first_step, tier: Tier::Weighted })
+}
+
+/// Straight-line fallback when no field is available yet.
+#[must_use]
+pub fn fallback_step(
+    me: Pos,
+    target: Pos,
+    terrain: &Terrain,
+    occupied: &dyn Fn(Pos) -> bool,
+) -> StepChoice {
+    let free = |p: Pos| terrain.walkable(p) && !occupied(p);
+    let direct = me + me.step_towards(target);
+    if direct != me && free(direct) {
+        return StepChoice { to: direct, tier: Tier::Fallback };
+    }
+    let best = DIRS8.iter().map(|&d| me + d).filter(|&p| free(p)).min_by_key(|p| p.cheb(target));
+    match best {
+        Some(to) if to.cheb(target) < me.cheb(target) => StepChoice { to, tier: Tier::Fallback },
+        _ => StepChoice { to: me, tier: Tier::Stay },
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::oracle::BfsOracle;
+
+    fn setup(rows: &[&str], goal_tile: Pos) -> (Terrain, BfsOracle) {
+        let t = Terrain::from_ascii(rows);
+        let mut o = BfsOracle::new(t.width());
+        o.add_field(&t, Goal::AllySpawn, &[goal_tile]);
+        (t, o)
+    }
+
+    fn sit<'a>(
+        me: Pos,
+        t: &'a Terrain,
+        occ: &'a dyn Fn(Pos) -> bool,
+        th: &'a [Threat],
+    ) -> Situation<'a> {
+        Situation {
+            me,
+            terrain: t,
+            occupied: occ,
+            threats: th,
+            danger_radius: 3,
+            params: DangerParams::default(),
+            deep_expansions: 200,
+        }
+    }
+
+    #[test]
+    fn static_tier_when_path_is_clear() {
+        let (t, o) = setup(&["........"], Pos::new(7, 0));
+        let c = choose_step(&sit(Pos::new(0, 0), &t, &|_| false, &[]), Goal::AllySpawn, &o);
+        assert_eq!(c, StepChoice { to: Pos::new(1, 0), tier: Tier::Static });
+    }
+
+    #[test]
+    fn local_repair_when_optimal_step_occupied() {
+        let (t, o) = setup(&["........", "........"], Pos::new(7, 0));
+        let blocker = |p: Pos| p == Pos::new(1, 0) || p == Pos::new(1, 1);
+        let c = choose_step(&sit(Pos::new(0, 0), &t, &blocker, &[]), Goal::AllySpawn, &o);
+        assert_eq!(c.tier, Tier::LocalRepair);
+        assert_eq!(c.to, Pos::new(0, 1), "sideways, not backwards");
+    }
+
+    #[test]
+    fn weighted_tier_avoids_nearby_threat() {
+        let (t, o) = setup(&[".........", ".........", "........."], Pos::new(8, 0));
+        let threats = [Threat { pos: Pos::new(3, 0), range: 1, dps: 400.0 }];
+        let c = choose_step(&sit(Pos::new(0, 0), &t, &|_| false, &threats), Goal::AllySpawn, &o);
+        assert_eq!(c.tier, Tier::Weighted);
+        assert_eq!(c.to, Pos::new(1, 1));
+    }
+
+    #[test]
+    fn greedy_tier_dodges_danger_without_a_search_budget() {
+        let (t, o) = setup(&[".....", ".....", "....."], Pos::new(4, 1));
+        let threats = [Threat { pos: Pos::new(3, 0), range: 1, dps: 400.0 }];
+        let mut s = sit(Pos::new(1, 1), &t, &|_| false, &threats);
+        s.deep_expansions = 0;
+        let c = choose_step(&s, Goal::AllySpawn, &o);
+        assert_eq!(c, StepChoice { to: Pos::new(2, 2), tier: Tier::Greedy }, "(2,1) is in range");
+    }
+
+    #[test]
+    fn search_budget_caps_work() {
+        let (t, o) = setup(&[".........", ".........", "........."], Pos::new(8, 0));
+        let threats = [Threat { pos: Pos::new(3, 0), range: 1, dps: 400.0 }];
+        let mut s = sit(Pos::new(0, 0), &t, &|_| false, &threats);
+        s.deep_expansions = 1;
+        // One expansion can't reach the goal: deep tier gives up, greedy answers.
+        assert_eq!(choose_step(&s, Goal::AllySpawn, &o).tier, Tier::Greedy);
+    }
+
+    #[test]
+    fn stays_on_goal() {
+        let (t, o) = setup(&["..."], Pos::new(1, 0));
+        let c = choose_step(&sit(Pos::new(1, 0), &t, &|_| false, &[]), Goal::AllySpawn, &o);
+        assert_eq!(c.tier, Tier::Stay);
+    }
+
+    #[test]
+    fn fallback_moves_straight_or_around() {
+        let t = Terrain::from_ascii(&["..#..", "....."]);
+        let c = fallback_step(Pos::new(1, 0), Pos::new(4, 0), &t, &|_| false);
+        assert_eq!(c, StepChoice { to: Pos::new(2, 1), tier: Tier::Fallback });
+    }
+}

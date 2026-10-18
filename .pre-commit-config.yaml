@@ -1,0 +1,57 @@
+# Install once per clone:  pre-commit install --hook-type pre-commit --hook-type pre-push
+# Mirrors CI. Fast checks on commit; clippy and tests on push. Hooks don't depend on the
+# project venv (pre-commit manages its own Python), so they work from any git client.
+exclude: ^(sdk/|maps/|\.cambc/|bots/(baseline|starter-python)/|bots/main/src/bc_)
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-added-large-files
+        args: ["--maxkb=1500"]
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.17.1
+    hooks:
+      - id: ruff-check
+      - id: ruff-format
+
+  - repo: local
+    hooks:
+      - id: bot-sync
+        name: vendored crates in bots/main are current
+        entry: python tools/bctools/sync.py --check
+        language: python
+        files: ^(crates/|bots/main/src/)
+        pass_filenames: false
+      - id: feature-codegen
+        name: feature schema codegen is current
+        entry: python ml/features/gen.py --check
+        language: python
+        additional_dependencies: ["pyyaml>=6.0"]
+        files: ^(ml/features/|crates/bc-brain/src/features_gen\.rs)
+        pass_filenames: false
+      - id: cargo-fmt
+        name: cargo fmt (crates)
+        entry: cargo fmt --all -- --check
+        language: system
+        types: [rust]
+        pass_filenames: false
+      - id: cargo-clippy
+        name: cargo clippy (crates)
+        entry: cargo clippy --workspace --all-targets -- -D warnings
+        language: system
+        types: [rust]
+        pass_filenames: false
+        stages: [pre-push]
+      - id: cargo-test
+        name: cargo test (crates)
+        entry: cargo test --workspace
+        language: system
+        types: [rust]
+        pass_filenames: false
+        stages: [pre-push]

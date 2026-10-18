@@ -1,0 +1,47 @@
+# Memory layouts (both memories are model parameters)
+
+Codecs live in `crates/bc-core/src/memory.rs`, with round-trip and corruption tests. Change the code and this file together, and bump the version byte whenever a layout changes.
+
+## Draft memory: θ_match (1024 bytes, written in draft, read-only in game)
+
+The draft bot sees the whole map with 10× fuel. It writes a per-match parameter vector that every champion bot reads once on its first turn. This is where map-specific adaptation happens (the UDA angle: one model, conditioned per map).
+
+| Offset | Size | Field |
+| ---: | ---: | --- |
+| 0 | 2 | magic `BC` |
+| 2 | 1 | layout version (1) |
+| 3 | 1 | team size |
+| 4 | 2 | feature schema hash (u16 LE): must match `features_gen::SCHEMA_HASH` |
+| 6 | 2 | weights hash (u16 LE) |
+| 8 | 8 | role per draft pick: 0 flex, 1 frontline, 2 ranged, 3 support |
+| 16 | 1 | number of camp-priority entries (≤ 15) |
+| 18 | 30 | camp priority: (group index, score 1–255) × 15, best first |
+| 48 | 96 | **FiLM** (γ, β) int8 × 48 hidden units; scale = 1 + γ/64, identity = (0, 0) (P-032) |
+| 144 | 32 | expert knobs (`memory::knob`): aggression, retreat HP %, tribute min/max/distance scale, monolith power, recall gold, fight margin |
+| 176 | 160 | **champion vectors** 10 × 16 int8: allies in slots 0–4, enemies in slots 5–9 |
+| 336 | 10 | champion kind per slot (0xFF = empty) |
+| 352 | 192 | map-descriptor cache (normalised map features × 255) |
+| 544 | 478 | reserved (zero) |
+| 1022 | 2 | CRC-16/CCITT-FALSE of bytes 0..1022 |
+
+All-zero memory, which happens if the draft bot crashed or never wrote, decodes as `Empty`. Bots then fall back to `ThetaMatch::default()`.
+
+## Shared memory: team channel (8 bytes, read/write all match)
+
+Allies act one after another within a round, in priority order, so later allies see what earlier ones wrote this round.
+
+| Byte | Bits | Field |
+| ---: | --- | --- |
+| 0 | 0–1 | version (0 = never written) |
+| 0 | 2 | parity of the round the leader last wrote |
+| 0 | 3–5 | leader slot |
+| 0 | 6 | flag: an ally saw an enemy tributing |
+| 0 | 7 | flag: an ally asked for help |
+| 1 | – | **team aggression parameter** (0–255) |
+| 2 | – | **team tribute threshold** (gems) |
+| 3–5 | 4 × 6 | camp claim per ally slot: θ_match priority index + 1 (0 = none) |
+| 6–7 | x:7 y:7 r:2 | latest enemy sighting; r = round mod 4; (0,0) = none |
+
+**Leader protocol.** The first ally to act in a round sees a stale parity bit and becomes the leader. It clears the per-round flags, ages out sightings older than 2 rounds, and writes bytes 1–2 from `bc_brain::policy::team_params`. When we're ahead it raises aggression less and banks more often; when we're behind late in the match it pushes harder. Every bot reads all 8 bytes as features (`team_params` group) and as inputs to the gate and router.
+
+Bytes 3–7 go through `TeamChannel`. A learned discrete protocol (DIAL P-030, with an IMAC entropy budget P-031) can replace this hand-written codec later.

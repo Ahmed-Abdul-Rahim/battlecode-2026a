@@ -1,0 +1,19 @@
+# Host-side workspace for the SDK-free logic crates. Bots under bots/ are
+# separate cambc workspaces (each declares its own [workspace]) that depend on
+# these crates by path and build for wasm32-wasip1.
+[workspace]
+resolver = "2"
+members = ["crates/*"]
+exclude = ["bots", "sdk"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.99"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+cast_possible_truncation = "allow"

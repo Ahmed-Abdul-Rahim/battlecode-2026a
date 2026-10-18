@@ -1,0 +1,47 @@
+[project]
+name = "bctools"
+version = "0.1.0"
+description = "Match running, replay parsing, rendering, gating, feature selection and MCP tools for our Cambridge Battlecode 2026a bot"
+requires-python = ">=3.11"
+dependencies = [
+    "cambc>=2.2.5",
+    "mcp>=1.2",
+    "numpy>=1.26",
+    "pillow>=10.0",
+    "pyyaml>=6.0",
+    "scikit-learn>=1.4",
+    "mlxtend>=0.23",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "ruff>=0.6", "pre-commit>=3.7"]
+
+[project.scripts]
+bctools = "bctools.cli:main"
+bctools-mcp = "mcp_server.server:main"
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = { "bctools" = "tools/bctools", "mcp_server" = "tools/mcp_server", "ml" = "ml" }
+packages = ["bctools", "mcp_server", "ml", "ml.features", "ml.champions", "ml.distill", "ml.uda"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+extend-exclude = ["sdk", "bots", "ml/features/schema_gen.py"]
+# Respect the excludes even when pre-commit passes file names explicitly.
+force-exclude = true
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF"]
+ignore = ["E501", "RUF001", "RUF002", "RUF003"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["bctools", "mcp_server", "ml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

@@ -1,0 +1,18 @@
+//! Pathing ensemble, cheapest tier first (docs/architecture.md, Phase 4):
+//!
+//! 1. **Static** — precomputed host distance fields behind [`DistanceOracle`];
+//!    a lookup plus a filter on live occupancy. ~1.5k fuel.
+//! 2. **Local repair** — when every optimal step is blocked, take the best
+//!    non-worsening neighbour (D* Lite's repair-not-replan idea, P-062).
+//! 3. **Weighted** — danger-weighted A* in a 15×15 window, with the static field
+//!    as a true-distance heuristic (P-061). ~1.3k fuel for the search itself.
+//! 4. **Fallback** — straight-line step.
+
+pub mod astar;
+pub mod danger;
+pub mod oracle;
+pub mod planner;
+pub mod window;
+
+pub use oracle::{DistanceOracle, Goal};
+pub use planner::{choose_step, StepChoice, Tier};

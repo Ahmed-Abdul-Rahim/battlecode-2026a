@@ -1,0 +1,138 @@
+//! Build θ_match: the per-match parameter vector written to draft memory.
+
+use crate::map::{MapDescriptor, MapInfo};
+use bc_brain::champvec::ChampVec;
+use bc_brain::features_gen::SCHEMA_HASH;
+use bc_core::champion::ChampionKind;
+use bc_core::memory::{knob, ThetaMatch, CHAMP_SLOTS, MAX_PRIORITY_GROUPS, NO_CHAMPION};
+
+/// Roles written per pick (read by champion bots for tie-breaks).
+pub mod role {
+    pub const FLEX: u8 = 0;
+    pub const FRONTLINE: u8 = 1;
+    pub const RANGED: u8 = 2;
+    pub const SUPPORT: u8 = 3;
+}
+
+/// Rank camp groups by value per round of effort from our spawn.
+///
+/// effort = walking distance + time to clear at the team's estimated damage.
+/// Monoliths are skipped (score 0) unless the team is strong enough.
+#[must_use]
+pub fn camp_priority(map: &MapInfo, team_dps: f32, monolith_ok: bool) -> Vec<(u8, u8)> {
+    let mut scored: Vec<(f32, u8)> = map
+        .groups
+        .iter()
+        .enumerate()
+        .filter(|(_, g)| monolith_ok || !g.has_monolith())
+        .map(|(i, g)| {
+            let walk = f32::from(g.dist_from_spawn.unwrap_or(150));
+            let clear = g.total_health() / team_dps.max(1.0);
+            (g.value() / (walk + clear + 5.0), i as u8)
+        })
+        .collect();
+    scored.sort_by(|a, b| b.0.total_cmp(&a.0).then(a.1.cmp(&b.1)));
+    let top = scored.first().map_or(1.0, |s| s.0.max(1e-6));
+    scored
+        .into_iter()
+        .take(MAX_PRIORITY_GROUPS)
+        .map(|(s, i)| (i, (s / top * 255.0).round().clamp(1.0, 255.0) as u8))
+        .collect()
+}
+
+/// Map-adapted knob values (starting from the neutral defaults).
+#[must_use]
+pub fn knobs_for_map(d: &MapDescriptor) -> [u8; bc_core::memory::KNOB_COUNT] {
+    let mut k = ThetaMatch::default().knobs;
+    // Long walks to the altar justify carrying more before banking.
+    let walk = (d.mean_dist * 100.0).clamp(0.0, 80.0);
+    k[knob::TRIBUTE_MIN_GEMS] = (15.0 + walk * 0.25).round() as u8;
+    k[knob::TRIBUTE_DISTANCE_SCALE] = if d.size > 0.5 { 8 } else { 10 };
+    // Few, rich groups → more contested → be a little more careful.
+    if d.n_groups < 0.3 {
+        k[knob::RETREAT_HP_PCT] = 40;
+    }
+    k
+}
+
+/// Assemble θ_match. `allies`/`enemies` are champion kinds in pick order.
+#[must_use]
+pub fn build_theta(
+    map: &MapInfo,
+    team_size: usize,
+    allies: &[ChampionKind],
+    enemies: &[ChampionKind],
+    vec_of: &dyn Fn(ChampionKind) -> ChampVec,
+    team_dps: f32,
+) -> ThetaMatch {
+    let d = MapDescriptor::from_map(map);
+    let mut t = ThetaMatch {
+        team_size: team_size as u8,
+        schema_hash: SCHEMA_HASH,
+        weights_hash: 0,
+        knobs: knobs_for_map(&d),
+        camp_priority: camp_priority(map, team_dps, team_dps >= 600.0),
+        ..ThetaMatch::default()
+    };
+    for (i, &kind) in allies.iter().take(t.roles.len()).enumerate() {
+        let v = vec_of(kind);
+        t.roles[i] = if kind == ChampionKind::Willow {
+            role::SUPPORT
+        } else if v[0] >= 80 {
+            role::FRONTLINE
+        } else if v[3] >= 64 {
+            role::RANGED
+        } else {
+            role::FLEX
+        };
+    }
+    let slots = allies.iter().take(5).chain(enemies.iter().take(CHAMP_SLOTS - 5));
+    t.champ_kinds = [NO_CHAMPION; CHAMP_SLOTS];
+    for (slot, &kind) in slots.enumerate() {
+        let s = if slot < allies.len().min(5) { slot } else { 5 + slot - allies.len().min(5) };
+        t.champ_kinds[s] = kind as u8;
+        t.champ_vecs[s] = vec_of(kind);
+    }
+    for (i, x) in d.to_array().iter().enumerate() {
+        t.map_cache[i] = (x.clamp(0.0, 1.0) * 255.0).round() as u8;
+    }
+    t
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::map::tests::sample_map;
+    use bc_brain::champvec::from_kit;
+    use bc_core::champion::builtin_kit;
+
+    fn vec_of(k: ChampionKind) -> ChampVec {
+        from_kit(&builtin_kit(k))
+    }
+
+    #[test]
+    fn priority_prefers_close_rich_groups_and_skips_monolith_when_weak() {
+        let p = camp_priority(&sample_map(), 150.0, false);
+        assert_eq!(p.len(), 3, "monolith skipped");
+        assert_eq!(p[0].1, 255, "best is normalised to 255");
+        assert!(p.iter().all(|&(i, _)| i != 3));
+        let strong = camp_priority(&sample_map(), 2000.0, true);
+        assert_eq!(strong.len(), 4);
+    }
+
+    #[test]
+    fn theta_carries_vectors_roles_and_schema() {
+        let allies = [ChampionKind::Varg, ChampionKind::Stellar, ChampionKind::Willow];
+        let enemies = [ChampionKind::Ryth];
+        let t = build_theta(&sample_map(), 3, &allies, &enemies, &vec_of, 200.0);
+        assert_eq!(t.schema_hash, SCHEMA_HASH);
+        assert_eq!(t.champ_kinds[0], ChampionKind::Varg as u8);
+        assert_eq!(t.champ_kinds[5], ChampionKind::Ryth as u8, "enemies start at slot 5");
+        assert_eq!(t.champ_vec(ChampionKind::Stellar as u8), Some(&vec_of(ChampionKind::Stellar)));
+        assert_eq!(t.roles[0], role::FRONTLINE);
+        assert_eq!(t.roles[1], role::RANGED);
+        assert_eq!(t.roles[2], role::SUPPORT);
+        let decoded = ThetaMatch::decode(&t.encode()).unwrap();
+        assert_eq!(decoded, t);
+    }
+}

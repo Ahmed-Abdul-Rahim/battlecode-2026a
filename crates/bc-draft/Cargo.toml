@@ -1,0 +1,12 @@
+[package]
+name = "bc-draft"
+description = "Draft: map descriptor, champion scorer, θ_match builder"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+bc-core = { path = "../bc-core" }
+bc-brain = { path = "../bc-brain" }
+
+[lints]
+workspace = true

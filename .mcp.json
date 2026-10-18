@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "bctools": {
+      "command": ".venv/Scripts/python.exe",
+      "args": ["-m", "mcp_server.server"],
+      "env": {}
+    }
+  }
+}

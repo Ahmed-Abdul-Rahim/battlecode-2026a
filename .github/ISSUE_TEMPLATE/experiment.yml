@@ -1,0 +1,40 @@
+name: Experiment
+description: A hypothesis tested with the gate, feature selection, or a training run
+labels: ["type:experiment"]
+body:
+  - type: textarea
+    id: hypothesis
+    attributes:
+      label: Hypothesis
+      description: "If we change X, then Y improves, because Z."
+    validations:
+      required: true
+  - type: input
+    id: papers
+    attributes:
+      label: papers.md IDs
+      description: e.g. P-021, P-024
+  - type: textarea
+    id: method
+    attributes:
+      label: Method
+      description: Branch (exp/...), maps, number of matches, seeds, parameters.
+    validations:
+      required: true
+  - type: input
+    id: metric
+    attributes:
+      label: Success metric
+      description: e.g. gate win rate ≥ 55% with Wilson lower bound > 50% on maps/heldout
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: Result
+      description: Fill in after running. Paste the gate summary and attach plots or renders.
+  - type: textarea
+    id: reflection
+    attributes:
+      label: What we learned
+      description: Kept for the self-improvement loop (Reflexion-style memory, P-082), even when the result is negative.

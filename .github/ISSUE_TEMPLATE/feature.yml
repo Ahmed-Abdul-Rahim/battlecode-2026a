@@ -1,0 +1,47 @@
+name: Feature
+description: New behaviour, tool or capability for the bot or tooling
+labels: ["type:feature"]
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: What should be possible after this lands, and why does it help us win?
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - pathing
+        - combat
+        - economy
+        - draft
+        - brain
+        - features
+        - champions
+        - memory
+        - ml
+        - tooling
+        - mcp
+        - harness
+    validations:
+      required: true
+  - type: textarea
+    id: approach
+    attributes:
+      label: Proposed approach
+      description: Files or crates touched, and the papers.md IDs it relies on (e.g. P-062).
+  - type: input
+    id: fuel
+    attributes:
+      label: Expected fuel cost per turn
+      description: Estimate, or "none" for offline tooling. See docs/fuel-budget.md.
+  - type: textarea
+    id: done
+    attributes:
+      label: Done when
+      description: Tests, gate result or observable behaviour that proves it works.
+    validations:
+      required: true
