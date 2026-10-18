@@ -50,7 +50,7 @@ JITTER = {
 }
 FAMILY = [REFERENCE, *JITTER, "main-v6"]
 # --sanity: just our submitted bots (bots/main-v* are byte-identical to submission/*.zip).
-SUBMISSION = ["main-v4", "main-v5", "main-v6"]
+SUBMISSION = ["main-v4", "main-v5", "main-v6", "main-v7", "main-v8"]
 SANITY = False
 EXPLOIT = ["main-v4", "claude-focus", "claude-pillager", "claude-ambusher", "exploit-qwen-pillager", "baseline"]
 # Ladder teams that beat v5 (runs/ranked_v5): (draft profile in draft.rs, build profile).

@@ -98,9 +98,9 @@ def turn_shares(r: runner.MatchResult, bot: str) -> Counter:
     return c
 
 
-def evaluate(bot: str, out: Path, release: bool) -> dict:
+def evaluate(bot: str, out: Path, release: bool, maps: list[Path] | None = None) -> dict:
     t0 = time.time()
-    results = runner.run_matches(bot, IDLE, out_dir=out / bot, swap=True, release=release)
+    results = runner.run_matches(bot, IDLE, maps=maps, out_dir=out / bot, swap=True, release=release)
     scores = [score(r, bot) for r in results]
     metrics = [stats_metrics(r, bot) for r in results]
     keys = [k for k in metrics[0]] if metrics and metrics[0] else []
@@ -143,6 +143,7 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--bots", nargs="*", default=[], help="existing bots, played as they are")
     p.add_argument("--variants", nargs="*", default=[], help='"name:KNOB=V,KNOB=V" built from bots/main')
     p.add_argument("--release", action="store_true")
+    p.add_argument("--maps", nargs="*", help="map names (default: all)")
     a = p.parse_args(argv)
     out = ROOT / "runs" / "speedrun" / time.strftime("%m%d-%H%M%S")
     out.mkdir(parents=True, exist_ok=True)
@@ -152,7 +153,8 @@ def main(argv: list[str] | None = None) -> int:
         name, knobs = parse_variant(spec)
         jobs.append((name, v6_trials.make("main", f"_sr-{name}", knobs)))
     for name, bot in jobs:
-        table[name] = evaluate(bot, out, a.release)
+        maps = [ROOT / "maps" / f"{m}.map26a" for m in a.maps] if a.maps else None
+        table[name] = evaluate(bot, out, a.release, maps)
         print(line(name, table[name]), flush=True)
         (out / "table.json").write_text(json.dumps(table, indent=1), encoding="utf-8")
     print(f"table: {out / 'table.json'}")

@@ -140,14 +140,14 @@ pub mod knob {
         (ALTAR_LOCK, 0),
         (TAVI_META, 1),
         (RECALL_SAFE, 1),
-        (FIGHT_V6, 7),
+        (FIGHT_V6, 0),
         (STUN_THREAT, 0),
         (CAMP_FEASIBLE, 0),
-        (PASSIVE_ROLES, 1),
+        (PASSIVE_ROLES, 0),
         (DRAFT_BEST, 0),
         (SAFE_ALTAR, 1),
         (MONOLITH_LIVE, 1),
-        (SHOP_FIRST, 1),
+        (SHOP_FIRST, 0),
     ];
 }
 
