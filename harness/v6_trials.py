@@ -48,7 +48,7 @@ JITTER = {
     "main-v5-j3": {"FIGHT_MARGIN_PCT": 20},
     "main-v5-j4": {"FIGHT_MARGIN_PCT": 30},
 }
-FAMILY = [REFERENCE, *JITTER]
+FAMILY = [REFERENCE, *JITTER, "main-v6"]
 EXPLOIT = ["main-v4", "claude-focus", "claude-pillager", "claude-ambusher", "exploit-qwen-pillager", "baseline"]
 # Ladder teams that beat v5 (runs/ranked_v5): (draft profile in draft.rs, build profile).
 MIMICS = {
@@ -73,6 +73,15 @@ TRIALS: dict[str, dict[str, dict[str, int]]] = {
         "deny-ground": {"DENY_TRIBUTE": 2},
         "deny-team": {"DENY_TRIBUTE": 3},
         "altar-lock": {"ALTAR_LOCK": 1},
+    },
+    # v7 ladder fixes (sanity only: the ladder population isn't reproducible locally).
+    "L": {
+        "tavi-meta": {"TAVI_META": 1},
+        "recall-safe": {"RECALL_SAFE": 1},
+        "fight-v6": {"FIGHT_V6": 1},
+        "stun-threat": {"STUN_THREAT": 1},
+        "camp-feasible": {"CAMP_FEASIBLE": 1},
+        "v7-all": {"TAVI_META": 1, "RECALL_SAFE": 1, "FIGHT_V6": 1, "STUN_THREAT": 1, "CAMP_FEASIBLE": 1},
     },
 }
 

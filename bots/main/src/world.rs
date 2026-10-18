@@ -22,6 +22,8 @@ pub struct GroupStatic {
     pub max_respawn: u32,
     pub total_hp: f32,
     pub max_strength: f32,
+    /// Sum of camp strengths: what a lone tank takes per round once the group is awake.
+    pub total_strength: f32,
     pub has_monolith: bool,
 }
 
@@ -151,6 +153,7 @@ impl World {
                 max_respawn: g.max_respawn_timer().max(0) as u32,
                 total_hp: camps.iter().map(|(k, _)| k.health()).sum(),
                 max_strength: camps.iter().map(|(k, _)| k.strength()).fold(0.0, f32::max),
+                total_strength: camps.iter().map(|(k, _)| k.strength()).sum(),
                 has_monolith: camps.iter().any(|(k, _)| *k == CampKind::Monolith),
                 center,
                 tiles,

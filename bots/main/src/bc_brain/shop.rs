@@ -26,7 +26,8 @@ pub fn build_order(kind: ChampionKind) -> Vec<(Family, Stat)> {
 /// 0 default (Jungle(Health) first), 1 Monster first, 2 all primary stat,
 /// 3 Power/Bruiser primary (as strong ladder teams buy), 4 Power/Jungle/Monster primary,
 /// then default order after: 5 Power ×2, 6 Treasure, 7 Durability(Health), 8 Home, 9 Bruiser;
-/// 10 RedDragon (Monster, Power, all Strength), 11 every passive on the primary stat.
+/// 10 RedDragon (Monster, Power, all Strength), 11 every passive on the primary stat,
+/// 12 Tavi field build (every passive on Strength, then Power).
 pub fn build_order_profile(kind: ChampionKind, profile: u8) -> Vec<(Family, Stat)> {
     let primary = primary_stat(kind);
     let (p, j, m, b) = (
@@ -67,6 +68,14 @@ pub fn build_order_profile(kind: ChampionKind, profile: u8) -> Vec<(Family, Stat
             }
             order.extend([j, h, d]);
             order.extend([p; 7]);
+            return order;
+        }
+        // Tavi (ladder meta): every passive on Strength (basic attack + reset), then Power.
+        12 => {
+            let s = |f| (f, Stat::Strength);
+            let mut order: Vec<(Family, Stat)> =
+                [Family::Monster, Family::Jungle, Family::Home, Family::Durability].map(s).to_vec();
+            order.extend([s(Family::Power); 8]);
             return order;
         }
         _ => {}

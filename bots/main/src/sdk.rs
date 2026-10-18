@@ -61,3 +61,27 @@ pub fn dps(strength: f32, focus: f32, kit: &KitInfo) -> f32 {
         .fold(0.0f32, f32::max);
     strength + focus * spell / 8.0
 }
+
+/// Kit has a stun (Cc ability): Tavi, Prism, Cassi, Ryth, Ren.
+pub fn has_stun(kind: ChampionKind) -> bool {
+    use crate::bc_core::champion::AbilityKind as K;
+    kit(kind).abilities.iter().flatten().any(|a| a.kind == K::Cc)
+}
+
+/// Fight-horizon damage for stun / attack-reset kits (STUN_THREAT): the spell and the
+/// reset's extra hit land in the first rounds of a skirmish, so average them over 4
+/// rounds instead of the 8-turn cooldown.
+pub fn dps_burst(strength: f32, focus: f32, kit: &KitInfo) -> f32 {
+    use crate::bc_core::champion::AbilityKind as K;
+    let abilities = || kit.abilities.iter().flatten();
+    let bursty = abilities().any(|a| matches!(a.kind, K::Cc | K::AttackReset));
+    if !bursty {
+        return dps(strength, focus, kit);
+    }
+    let spell = abilities()
+        .filter(|a| matches!(a.kind, K::Damage | K::AoeDamage | K::Cc))
+        .map(|a| a.modifier)
+        .fold(0.0f32, f32::max);
+    let reset = if abilities().any(|a| a.kind == K::AttackReset) { strength } else { 0.0 };
+    strength + (focus * spell + reset) / 4.0
+}

@@ -9,6 +9,12 @@ and writes this file as bot.py with STRATEGY set. Strategies:
             tributers, and drop altar locks to cancel their tributes.
   focus     farm; when enemies show up, the whole team focus-fires the weakest
             one, called through the 8-byte team shared memory.
+  spawncamp ladder "For all beneath": stunners (Ryth, Varg) plus Tavi and Vendetta hold
+            a post just outside the enemy spawn exit and stun/kill whoever walks out;
+            the rest (Stellar) farm and bank.
+  tavihunt  ladder blank-name team: everyone but Tavi farms the nearest camps and banks;
+            Tavi buys shards in the field and hunts carriers / weak champions with its
+            range-4 stun, then banks the stolen bag.
   swarm     two squads + a scout. The scout roams the enemy half and calls the
             enemies it sees; each squad sticks to its rally point (shared memory
             bytes 4..8), farms together and only fights when it outnumbers.
@@ -156,16 +162,58 @@ def write_call(position):
 def strike(target, chase):
     """Attack target if in range, else step towards it when within `chase` tiles."""
     me = cambc.me()
+    if not target.is_visible() or not target.is_alive():
+        return False
     if attack_first_in_range([target]):
-        write_call(target.position())
+        if target.is_visible():
+            write_call(target.position())
         return True
     if distance(me.position(), target.position()) <= chase and move_towards_closest(
         tiles_around(target.position(), 1)
     ):
-        if attack_first_in_range([target]):
+        if target.is_visible() and attack_first_in_range([target]) and target.is_visible():
             write_call(target.position())
         return True
     return False
+
+
+def cast_at_enemy(target):
+    """Fire any ready damage / stun ability at target (unit or ground). True if cast."""
+    me = cambc.me()
+    if not me.can_cast():
+        return False
+    for ability in me.abilities():
+        if not ability.is_ready() or not (ability.is_cc() or ability.is_damage() or ability.is_aoe_damage()):
+            continue
+        try:
+            if ability.can_target_enemies() and ability.use(target):
+                return True
+            if ability.can_target_ground() and ability.use(target.position()):
+                return True
+        except cambc.Error:
+            continue
+    return False
+
+
+def is_kind(champion, *kinds):
+    try:
+        return champion.champion_name() in kinds
+    except cambc.Error:
+        return False
+
+
+def enemy_exit():
+    """Tile 5 steps from the enemy spawn towards the map centre (where they walk out)."""
+    spawn = game_map.spawn_region(Team.ENEMY).positions()
+    sx = sum(p.x for p in spawn) // len(spawn)
+    sy = sum(p.y for p in spawn) // len(spawn)
+    cx, cy = game_map.width() // 2, game_map.height() // 2
+    dx, dy = (cx > sx) - (cx < sx), (cy > sy) - (cy < sy)
+    for k in range(5, 0, -1):
+        p = cambc.Vec2(sx + dx * (k + 1), sy + dy * (k + 1))
+        if game_map.is_in_bounds(p) and not (game_map.walls() | game_map.holes()).is_set(p):
+            return p
+    return cambc.Vec2(sx, sy)
 
 
 class Bot:
@@ -290,6 +338,50 @@ class Bot:
             return
         farm_camps(self)
 
+    def spawncamp(self, enemies):
+        me = cambc.me()
+        C = cambc.ChampionType
+        camper = is_kind(me, C.RYTH, C.VARG, C.TAVI, C.VENDETTA)
+        if enemies:
+            target = min(enemies, key=lambda e: (distance(me.position(), e.position()), e.health()))
+            cast_at_enemy(target)
+            if strike(target, chase=5 if camper else 3):
+                return
+        if not camper or cambc.round_number() < 40:
+            if bank_gems():
+                return
+            farm_camps(self)
+            return
+        if me.gem_count() >= 60 and bank_gems():
+            return
+        if self.post is None:
+            self.post = enemy_exit()
+        if distance(me.position(), self.post) > 2:
+            move_towards_closest(tiles_around(self.post, 1))
+            return
+        attack_first_in_range(cambc.vision.camps())
+
+    def tavihunt(self, enemies):
+        me = cambc.me()
+        if not is_kind(me, cambc.ChampionType.TAVI):
+            if bank_gems():
+                return
+            farm_camps(self)
+            return
+        # Tavi shops anywhere: never walks home to spend.
+        self.shop(Item.POWER_SHARD_OF_STRENGTH)
+        prey = [e for e in enemies if gems_of(e) > 0 or hp_frac(e) < 0.6 or e.is_submitting_gems()]
+        if prey:
+            target = max(prey, key=lambda e: (e.is_submitting_gems(), gems_of(e), -e.health()))
+            cast_at_enemy(target)
+            if strike(target, chase=6):
+                return
+        if me.gem_count() >= 100 and bank_gems():
+            return
+        if enemies and attack_first_in_range(enemies):
+            return
+        farm_camps(self)
+
     def swarm(self, enemies):
         me = cambc.me()
         role = int(me.champion_name()) % 3  # 0 scout, 1 squad A, 2 squad B
@@ -377,7 +469,20 @@ class Bot:
         ):
             me.recall()
             return
-        {"ambusher": self.ambusher, "pillager": self.pillager, "focus": self.focus, "swarm": self.swarm}[
-            STRATEGY
-        ](enemies)
+        strategy = {
+            "ambusher": self.ambusher,
+            "pillager": self.pillager,
+            "focus": self.focus,
+            "swarm": self.swarm,
+            "spawncamp": self.spawncamp,
+            "tavihunt": self.tavihunt,
+        }[STRATEGY]
+        try:
+            strategy(enemies)
+        except cambc.Error:
+            # A target died or left vision mid-turn: spend the rest of the turn farming.
+            try:
+                farm_camps(self)
+            except cambc.Error:
+                pass
         me.set_priority(1 + below(100))

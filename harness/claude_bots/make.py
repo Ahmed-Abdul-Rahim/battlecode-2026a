@@ -13,11 +13,14 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = Path(__file__).with_name("bot.py")
-STRATEGIES = ["ambusher", "pillager", "focus", "swarm"]
+STRATEGIES = ["ambusher", "pillager", "focus", "swarm", "spawncamp:fab", "tavihunt:blank"]
 # Draft preference lists (ChampionDraft values): ranged-only / melee-only compositions.
 DRAFTS = {
     "ranged": [4, 5, 1, 10, 7],  # Stellar, Prism, Vesper Vale, Tavi, Willow
     "melee": [9, 2, 8, 0, 6],  # Varg, Vendetta, Ren, Ryth, Marcella
+    # Ladder teams that beat v5 (runs/ranked_v5).
+    "fab": [9, 4, 2, 0, 10],  # For all beneath: Varg, Stellar, Vendetta, Ryth, Tavi
+    "blank": [4, 10, 9, 5, 2],  # blank name: Stellar, Tavi, Varg, Prism, Vendetta
 }
 DRAFT_PY = """import cambc
 from randomness import below

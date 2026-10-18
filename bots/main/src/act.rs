@@ -139,6 +139,12 @@ pub struct Exec<'a> {
     pub deny_ground: bool,
     /// ALTAR_LOCK: keep a lock in the pocket and leave it on altars we tribute at.
     pub altar_lock: bool,
+    /// TAVI_META: Tavi buys shards anywhere on the map (its passive).
+    pub field_shop: bool,
+    /// RECALL_SAFE: only start a recall nothing can reach before it completes.
+    pub recall_safe: bool,
+    /// Recall channel length (5, or 3 with a Home emblem).
+    pub recall_ticks: i32,
     pub out: Outcome,
 }
 
@@ -152,7 +158,7 @@ impl Exec<'_> {
     }
 
     pub fn execute(&mut self, intent: Intent) -> Result<()> {
-        if self.at_spawn() {
+        if self.at_spawn() || self.field_shop {
             self.buy()?;
         }
         match intent {
@@ -374,9 +380,16 @@ impl Exec<'_> {
         let in_bush = self.world.terrain.bushes.get(self.my_pos);
         // Outside a bush we need distance; inside one, enemies can't see us, so it
         // is enough that none can reach us before the recall finishes.
-        let safe = !self.hurt_this_round
+        let mut safe = !self.hurt_this_round
             && camps_quiet
             && self.vis.enemies.iter().all(|e| e.dist > if in_bush { e.range + 2 } else { 6 });
+        if self.recall_safe {
+            // The channel freezes us for `recall_ticks` turns and any hit cancels it.
+            let ticks = self.recall_ticks;
+            safe = safe
+                && self.vis.enemies.iter().all(|e| e.dist > e.range + 1 + ticks)
+                && self.vis.ghosts.iter().all(|g| g.pos.cheb(self.my_pos) > g.range + ticks);
+        }
         if safe {
             match self.me.recall() {
                 Ok(()) => return Ok(()),

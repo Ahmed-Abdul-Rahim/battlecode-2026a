@@ -52,6 +52,8 @@ pub struct Bot {
     dmg_taken: f32,
     /// Rounds spent waiting for allies before waking a dangerous group (CAMP_SAFE bit 2).
     gather_wait: u32,
+    /// Our current damage per round with items (CAMP_FEASIBLE).
+    cur_dps: f32,
 }
 
 /// Engage turns without landing anything before we give up on that enemy.
@@ -90,6 +92,19 @@ const TEAM_GHOST_RANGE: i32 = 3;
 const TEAM_GHOST_DPS: f32 = 40.0;
 /// Only champions above this health fraction answer a call for help.
 const ASSIST_MIN_HP: f32 = 0.7;
+/// FIGHT_V6: join fights from this health fraction.
+const ASSIST_MIN_HP_V6: f32 = 0.5;
+/// TAVI_META: Tavi's field build (shop.rs profile) and when it starts hunting.
+const TAVI_BUILD_PROFILE: u8 = 12;
+const TAVI_HUNT_EMBLEMS: u32 = 4;
+const TAVI_HUNT_MIN_HP: f32 = 0.5;
+const TAVI_HUNT_RADIUS: i32 = 6;
+/// CAMP_FEASIBLE: a group needing more than this many times our survival time to clear
+/// keeps only CAMP_INFEASIBLE_VALUE of its value.
+const CAMP_FEASIBLE_SLACK: f32 = 1.5;
+const CAMP_INFEASIBLE_VALUE: f32 = 0.1;
+/// FIGHT_V6 last stand: never with a bag this big (the killer takes it).
+const LAST_STAND_MAX_GEMS: u32 = 20;
 
 impl Bot {
     pub fn new() -> Result<Self> {
@@ -99,6 +114,11 @@ impl Bot {
         let kit = sdk::kit(kind);
         let theta = ThetaMatch::decode(cambc::draft_memory().bytes()).unwrap_or_default();
         let build_profile = theta.knob(knob::BUILD_PROFILE);
+        let order = if theta.knob(knob::TAVI_META) > 0 && kind == ChampionKind::Tavi {
+            shop::build_order_profile(kind, TAVI_BUILD_PROFILE)
+        } else {
+            shop::build_order_profile(kind, build_profile)
+        };
         // Slot = our rank among ally champion kinds; stable for the whole match.
         let mut allies: Vec<u8> = cambc::champions(Some(Team::Ally))?
             .iter()
@@ -122,7 +142,7 @@ impl Bot {
             belief,
             theta,
             gov: FuelGovernor::default(),
-            order: shop::build_order_profile(kind, build_profile),
+            order,
             slot,
             target: None,
             last_hp: 0.0,
@@ -134,6 +154,7 @@ impl Bot {
             ignore_until: [0; 12],
             dmg_taken: 0.0,
             gather_wait: 0,
+            cur_dps: 0.0,
         })
     }
 
@@ -178,6 +199,13 @@ impl Bot {
         });
         let hurt_this_round = alive && hp + 0.5 < self.last_hp;
         self.dmg_taken = if alive { (self.last_hp - hp).max(0.0) } else { 0.0 };
+        if alive {
+            self.cur_dps = sdk::dps(
+                me.strength().unwrap_or(self.kit.base_strength),
+                me.focus().unwrap_or(self.kit.base_focus),
+                &self.kit,
+            );
+        }
         if hurt_this_round {
             self.hurt_round = round;
         }
@@ -266,12 +294,16 @@ impl Bot {
             let mut assist = None;
             // Hunting: every healthy champion answers every sighting, from further away.
             let radius = if hunting { HUNT_SIGHTING_RADIUS } else { TEAM_SIGHTING_RADIUS };
-            if mode == Mode::Routine
-                && (chan.help || hunting)
-                && vis.enemies.is_empty()
-                && ctx.hp_frac() > ASSIST_MIN_HP
-                && ctx.gems < router::BIG_BAG_GEMS
-            {
+            let fight_v6 = self.theta.knob(knob::FIGHT_V6) > 0;
+            // FIGHT_V6: join the team's fight unless something is already on us.
+            let free_to_assist = if fight_v6 {
+                !matches!(mode, Mode::Override(_))
+                    && vis.enemies.iter().all(|e| e.dist > 4)
+                    && ctx.hp_frac() > ASSIST_MIN_HP_V6
+            } else {
+                mode == Mode::Routine && vis.enemies.is_empty() && ctx.hp_frac() > ASSIST_MIN_HP
+            };
+            if free_to_assist && (chan.help || hunting) && ctx.gems < router::BIG_BAG_GEMS {
                 if let Some((p, age)) = shared {
                     if age <= 1 && (2..=radius).contains(&p.cheb(my_pos)) {
                         intent = Intent::Engage(p);
@@ -294,6 +326,43 @@ impl Bot {
                             assist = Some(p);
                             telemetry::event(round, champ_name(self.kind), "team_deny", 1);
                         }
+                    }
+                }
+            }
+            // Tavi (ladder meta): once geared, hunt carriers, tributers and weak enemies in reach.
+            if self.theta.knob(knob::TAVI_META) > 0
+                && self.kind == ChampionKind::Tavi
+                && !matches!(mode, Mode::Override(_))
+                && ctx.hp_frac() > TAVI_HUNT_MIN_HP
+                && ctx.gems < router::BIG_BAG_GEMS
+                && self.emblems() >= TAVI_HUNT_EMBLEMS
+            {
+                let allies_near = vis.allies.iter().filter(|a| a.dist <= 4).count();
+                let prey = vis
+                    .enemies
+                    .iter()
+                    .filter(|e| e.dist <= TAVI_HUNT_RADIUS && !e.on_spawn)
+                    .filter(|e| e.gems >= 10 || e.tributing || e.hp < 0.5 * e.max_hp)
+                    .filter(|e| {
+                        vis.enemies.iter().filter(|o| o.pos.cheb(e.pos) <= 4).count() <= allies_near + 1
+                    })
+                    .min_by(|a, b| a.hp.total_cmp(&b.hp));
+                if let Some(e) = prey {
+                    intent = Intent::Engage(e.pos);
+                    telemetry::event(round, champ_name(self.kind), "tavi_hunt", 1);
+                }
+            }
+            // Fight balance: finish kills, take fights we outnumber, and make a last stand
+            // instead of dying in a retreat we can't win; then call the target for the team.
+            if fight_v6 {
+                if let Some((fix, why)) = fight_fix(&ctx, &vis, intent, mode, self.kit.attack_range) {
+                    telemetry::event(round, champ_name(self.kind), why, 1);
+                    intent = fix;
+                }
+                if let Intent::Engage(p) = intent {
+                    if vis.enemies.iter().any(|e| e.pos == p) {
+                        chan.post_sighting(p, round);
+                        chan.help = true;
                     }
                 }
             }
@@ -398,16 +467,36 @@ impl Bot {
                 chan.help = true;
             }
 
-            let channeling = state.intersects(
+            let mut channeling = state.intersects(
                 ChampionState::RECALLING
                     | ChampionState::SUBMITTING_GEMS
                     | ChampionState::TELEPORTING,
             );
+            // A recall is several frozen turns that damage cancels: abort it while we can run.
+            if channeling
+                && state.contains(ChampionState::RECALLING)
+                && self.theta.knob(knob::RECALL_SAFE) > 0
+            {
+                let left = me.remaining_channel_time().unwrap_or(5).max(1);
+                if vis.enemies.iter().any(|e| !e.on_spawn && e.dist <= e.range + left + 1)
+                    && me.cancel_recall().is_ok()
+                {
+                    channeling = false;
+                    telemetry::event(round, champ_name(self.kind), "recall_cancel", 1);
+                }
+            }
             if !channeling {
                 let before = fuel();
                 let deny_ground = self.theta.knob(knob::DENY_TRIBUTE) >= 2;
                 let altar_lock = self.theta.knob(knob::ALTAR_LOCK) > 0;
+                let field_shop =
+                    self.theta.knob(knob::TAVI_META) > 0 && self.kind == ChampionKind::Tavi;
+                let recall_safe = self.theta.knob(knob::RECALL_SAFE) > 0;
+                let recall_ticks = if self.has_home() { 3 } else { 5 };
                 let mut exec = self.exec(me, &vis, my_pos, hurt_this_round);
+                exec.field_shop = field_shop;
+                exec.recall_safe = recall_safe;
+                exec.recall_ticks = recall_ticks;
                 exec.assist = assist;
                 exec.deny_tribute = deny;
                 exec.deny_ground = deny_ground;
@@ -490,6 +579,9 @@ impl Bot {
             deny_tribute: false,
             deny_ground: false,
             altar_lock: false,
+            field_shop: false,
+            recall_safe: false,
+            recall_ticks: 5,
             out: Outcome::default(),
         }
     }
@@ -510,6 +602,19 @@ impl Bot {
         }
     }
 
+    /// Completed emblems we own.
+    fn emblems(&self) -> u32 {
+        self.ledger.items.iter().skip(1).step_by(2).map(|&n| u32::from(n)).sum()
+    }
+
+    /// We own a Home emblem (recall takes 3 ticks instead of 5).
+    fn has_home(&self) -> bool {
+        use crate::bc_core::ledger::item_id;
+        [Stat::Strength, Stat::Health, Stat::Focus]
+            .iter()
+            .any(|&s| self.ledger.items[item_id(Family::Home, s, true) as usize] > 0)
+    }
+
     fn kit_dps(&self) -> f32 {
         sdk::dps(self.kit.base_strength, self.kit.base_focus, &self.kit).max(1.0)
     }
@@ -522,6 +627,7 @@ impl Bot {
 
     fn observe(&mut self, me: &Champion, my_pos: Pos, round: u32) -> Result<Visible> {
         let mut vis = Visible::default();
+        let stun_threat = self.theta.knob(knob::STUN_THREAT) > 0;
         for e in cambc::vision::champions(Some(Team::Enemy))? {
             let Ok(p) = e.position() else { continue };
             let p = pos(p);
@@ -532,11 +638,13 @@ impl Bot {
                 self.belief.forget(kind);
                 continue;
             }
-            let dps = sdk::dps(
-                e.strength().unwrap_or(kit.base_strength),
-                e.focus().unwrap_or(kit.base_focus),
-                &kit,
-            );
+            let (strength, focus) =
+                (e.strength().unwrap_or(kit.base_strength), e.focus().unwrap_or(kit.base_focus));
+            let dps = if stun_threat {
+                sdk::dps_burst(strength, focus, &kit)
+            } else {
+                sdk::dps(strength, focus, &kit)
+            };
             let view = EnemyView {
                 pos: p,
                 dist: my_pos.cheb(p),
@@ -728,6 +836,16 @@ impl Bot {
             }
             // Stronger camps hurt: discount by expected damage taken.
             value /= 1.0 + g.max_strength / 100.0;
+            // Can the champions on it clear it before the tank dies? Gear up on others first.
+            if self.theta.knob(knob::CAMP_FEASIBLE) > 0 && state != GroupState::RewardAvailable {
+                let helpers =
+                    1 + self.priority_index(i).map_or(0, |pi| chan.claimants(pi, self.slot as usize));
+                let survive = self.last_hp.max(1.0) / (g.total_strength * CAMP_DMG_FLOOR).max(1.0);
+                let kill = g.total_hp / (self.cur_dps.max(my_dps) * helpers as f32).max(1.0);
+                if kill > survive * CAMP_FEASIBLE_SLACK {
+                    value *= CAMP_INFEASIBLE_VALUE;
+                }
+            }
             // Remote farmer: the last slot of a 4+ team goes further for quieter groups.
             let remote = self.theta.knob(knob::REMOTE_FARMER) > 0
                 && self.team_size >= 4
@@ -780,8 +898,22 @@ impl Bot {
         // Neither is one we just failed to reach (e.g. across a wall).
         let ignored =
             |k: ChampionKind| self.ignore_until.get(k as usize).is_some_and(|&until| round < until);
-        let enemy =
-            vis.enemies.iter().find(|e| !e.on_spawn && !ignored(e.kind)).map(|e| EnemyNear {
+        let nearest = || vis.enemies.iter().find(|e| !e.on_spawn && !ignored(e.kind));
+        let enemy = if self.theta.knob(knob::FIGHT_V6) > 0 {
+            // Weakest enemy in reach, the team's called target first.
+            let reach = self.kit.attack_range + 2;
+            let called = chan.sighting(round).filter(|&(_, age)| age == 0).map(|(p, _)| p);
+            vis.enemies
+                .iter()
+                .filter(|e| !e.on_spawn && !ignored(e.kind) && e.dist <= reach)
+                .min_by(|a, b| {
+                    (called != Some(a.pos)).cmp(&(called != Some(b.pos))).then(a.hp.total_cmp(&b.hp))
+                })
+                .or_else(nearest)
+        } else {
+            nearest()
+        };
+        let enemy = enemy.map(|e| EnemyNear {
                 pos: e.pos,
                 dist: e.dist,
                 hp: e.hp,
@@ -981,6 +1113,54 @@ fn champ_name(kind: ChampionKind) -> &'static str {
         ChampionKind::Varg => "Varg",
         ChampionKind::Tavi => "Tavi",
     }
+}
+
+/// FIGHT_V6: a better intent when we'd otherwise leave a fight we should take.
+/// Returns the intent and a telemetry tag.
+fn fight_fix(
+    ctx: &Context,
+    vis: &Visible,
+    intent: Intent,
+    mode: Mode,
+    my_range: i32,
+) -> Option<(Intent, &'static str)> {
+    let e = ctx.enemy?;
+    if !matches!(intent, Intent::Retreat | Intent::Shop | Intent::Kite(_)) {
+        return None;
+    }
+    let forced = matches!(mode, Mode::Override(_));
+    let our_dps = (ctx.my_dps + ctx.ally_dps_near).max(1.0);
+    if !forced && ctx.gems < router::BIG_BAG_GEMS {
+        // Finish it: two turns of our damage kill the target.
+        if e.dist <= my_range + 1 && e.hp <= our_dps * 2.0 {
+            return Some((Intent::Engage(e.pos), "finish"));
+        }
+        // Outnumbering: take the even fight.
+        let allies = 1 + vis.allies.iter().filter(|a| a.dist <= 4).count();
+        let enemies = vis.enemies.iter().filter(|o| o.dist <= 5 && !o.on_spawn).count();
+        if allies > enemies && router::fight_advantage(ctx, &e) >= 1.0 {
+            return Some((Intent::Engage(e.pos), "outnumber"));
+        }
+    }
+    // Last stand: something that out-ranges or stuns us is already on us, and walking home
+    // would only feed it the kill: trade damage instead.
+    if ctx.gems >= LAST_STAND_MAX_GEMS {
+        return None;
+    }
+    let on_us: Vec<&EnemyView> =
+        vis.enemies.iter().filter(|o| !o.on_spawn && o.dist <= o.range + 1).collect();
+    let chased = on_us.iter().any(|o| o.ranged || sdk::has_stun(o.kind));
+    let their: f32 = on_us.iter().map(|o| o.dps).sum();
+    let turns_home = ctx.dist_spawn.map_or(5.0, |d| d as f32).min(5.0);
+    if chased && their * turns_home >= ctx.hp {
+        let weakest = on_us
+            .iter()
+            .filter(|o| o.dist <= my_range + 1)
+            .min_by(|a, b| a.hp.total_cmp(&b.hp))
+            .or_else(|| on_us.iter().min_by_key(|o| o.dist))?;
+        return Some((Intent::Engage(weakest.pos), "last_stand"));
+    }
+    None
 }
 
 /// Damage taken from camps is reduced by Jungle (30%); estimates use this floor.

@@ -133,7 +133,10 @@ pub fn play() -> Result<()> {
             enemy: picks(Team::Enemy)?,
             team_size: c.team_size,
         };
-        let prefs = draft_prefs(c.plan.map_or(0, |p| p.draft), &state);
+        let mut prefs = draft_prefs(c.plan.map_or(0, |p| p.draft), &state);
+        if prefs.is_empty() && meta_draft() {
+            prefs = META.to_vec();
+        }
         let forced = prefs.iter().copied().find(|ch| !state.ally.contains(ch));
         if let Some(choice) = forced.or_else(|| best_pick(&c.desc, &state, &vec_of, &c.weights)) {
             cambc::draft::pick(sdk::draft_choice(choice)?)?;
@@ -155,6 +158,20 @@ pub fn play() -> Result<()> {
         }
         Ok(())
     })
+}
+
+/// Ladder meta (every team that beat v5): Varg, field-shopping Tavi, Cassi & Issac (two
+/// bodies for one pick: 4 champions on 3-pick maps), then Stellar and Prism.
+const META: [DraftChoice; 5] = [
+    DraftChoice::Varg,
+    DraftChoice::Tavi,
+    DraftChoice::CassiAndIssac,
+    DraftChoice::Stellar,
+    DraftChoice::Prism,
+];
+
+fn meta_draft() -> bool {
+    crate::bc_core::memory::ThetaMatch::default().knob(crate::bc_core::memory::knob::TAVI_META) > 0
 }
 
 const RANGED: [DraftChoice; 5] = [
