@@ -25,7 +25,8 @@ pub fn build_order(kind: ChampionKind) -> Vec<(Family, Stat)> {
 /// Build order by profile (θ_match knob BUILD_PROFILE; chosen per map from tournaments):
 /// 0 default (Jungle(Health) first), 1 Monster first, 2 all primary stat,
 /// 3 Power/Bruiser primary (as strong ladder teams buy), 4 Power/Jungle/Monster primary,
-/// then default order after: 5 Power ×2, 6 Treasure, 7 Durability(Health), 8 Home, 9 Bruiser.
+/// then default order after: 5 Power ×2, 6 Treasure, 7 Durability(Health), 8 Home, 9 Bruiser;
+/// 10 RedDragon (Monster, Power, all Strength), 11 every passive on the primary stat.
 pub fn build_order_profile(kind: ChampionKind, profile: u8) -> Vec<(Family, Stat)> {
     let primary = primary_stat(kind);
     let (p, j, m, b) = (
@@ -55,6 +56,18 @@ pub fn build_order_profile(kind: ChampionKind, profile: u8) -> Vec<(Family, Stat
         10 => {
             let (ms, ps) = ((Family::Monster, Stat::Strength), (Family::Power, Stat::Strength));
             return [ms].into_iter().chain([ps; 10]).collect();
+        }
+        // Strong ladder teams (runs/ranked_v5): every passive once, all on the primary stat
+        // (the passive doesn't depend on the stat), Monster first, then stack Power.
+        11 => {
+            let (h, d) = ((Family::Home, primary), (Family::Durability, primary));
+            let mut order = vec![m];
+            if kind == ChampionKind::VesperVale {
+                order.push((Family::Treasure, primary));
+            }
+            order.extend([j, h, d]);
+            order.extend([p; 7]);
+            return order;
         }
         _ => {}
     }

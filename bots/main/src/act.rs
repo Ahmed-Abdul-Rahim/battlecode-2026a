@@ -135,6 +135,10 @@ pub struct Exec<'a> {
     pub assist: Option<Pos>,
     /// Deny enemy tributes (knob DENY_TRIBUTE): stun / lock / attack tributers, carry a lock.
     pub deny_tribute: bool,
+    /// DENY_TRIBUTE >= 2: also ground-targeted area stuns (Ryth) on tributers.
+    pub deny_ground: bool,
+    /// ALTAR_LOCK: keep a lock in the pocket and leave it on altars we tribute at.
+    pub altar_lock: bool,
     pub out: Outcome,
 }
 
@@ -168,6 +172,9 @@ impl Exec<'_> {
 
     /// Buy shards along the build order while gold allows (spawn or dead only).
     pub fn buy(&mut self) -> Result<()> {
+        if self.altar_lock {
+            self.buy_lock()?;
+        }
         let mut gold = self.me.gold_count()?;
         for _ in 0..8 {
             if gold < SHARD_COST {
@@ -194,8 +201,14 @@ impl Exec<'_> {
             }
         }
         // One altar lock in the pocket (10 gold) to cancel enemy tributes.
-        if self.deny_tribute
-            && gold >= ALTAR_LOCK_COST
+        if self.deny_tribute && gold >= ALTAR_LOCK_COST {
+            self.buy_lock()?;
+        }
+        Ok(())
+    }
+
+    fn buy_lock(&mut self) -> Result<()> {
+        if self.me.gold_count()? >= ALTAR_LOCK_COST
             && self.me.consumables()[ConsumableType::AltarLock].count().unwrap_or(1) == 0
             && self.me.can_buy_consumable(ConsumableType::AltarLock).unwrap_or(false)
         {
@@ -220,6 +233,16 @@ impl Exec<'_> {
                 .and_then(|i| i.as_dyn().range().ok())
                 .is_some_and(|r| self.my_pos.cheb(enemy.pos) as f32 <= r);
             if in_range && ability.cast_on(&enemy.handle).unwrap_or(false) {
+                self.out.cast = true;
+                return Ok(true);
+            }
+            // Area stuns aimed at the ground (Ryth): cast at the tributer's tile.
+            if in_range
+                && self.deny_ground
+                && !self.out.moved
+                && ability.info()?.is_some_and(|i| i.as_dyn().valid_targets().contains(AbilityTargetMask::GROUND))
+                && ability.cast_at(vec2(enemy.pos)).unwrap_or(false)
+            {
                 self.out.cast = true;
                 return Ok(true);
             }
@@ -668,6 +691,14 @@ impl Exec<'_> {
             if danger > 0.0 && danger * ticks as f32 >= self.me.health()? {
                 telemetry::event(0, "", "tribute_unsafe", 1);
                 return self.recall_or_walk_home();
+            }
+            // Leave our lock on the altar first: it only blocks the enemy.
+            if self.altar_lock
+                && cambc::vision::altar_lock_at(vec2(altar)).is_err()
+                && self.me.consumables()[ConsumableType::AltarLock].count().unwrap_or(0) > 0
+                && self.me.consumables()[ConsumableType::AltarLock].use_at(vec2(altar)).unwrap_or(false)
+            {
+                telemetry::event(0, "", "lock_placed", 1);
             }
             if cambc::vision::has_altar_lock(vec2(altar)).unwrap_or(false) {
                 // Tributing into an enemy lock is converted to attacks on the lock.

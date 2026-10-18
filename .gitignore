@@ -43,3 +43,6 @@ bots/_tune-*/
 bots/main-v*/
 submission/
 bots/_var-*/
+# v6 trial variants and ladder mimics (harness/v6_trials.py)
+bots/_v6-*/
+bots/mimic-*/

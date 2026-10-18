@@ -48,6 +48,10 @@ pub struct Bot {
     /// One slot per kind, so several unreachable enemies are ignored together (a single
     /// slot let the target flip between them forever: the rushbait 2000-round stall).
     ignore_until: [u32; 12],
+    /// Health lost since our previous turn (what is actually hitting us).
+    dmg_taken: f32,
+    /// Rounds spent waiting for allies before waking a dangerous group (CAMP_SAFE bit 2).
+    gather_wait: u32,
 }
 
 /// Engage turns without landing anything before we give up on that enemy.
@@ -70,6 +74,8 @@ const SKIRMISH_WIN: f32 = 1.5;
 /// Deny tributes within this many tiles, while above this health fraction.
 const DENY_RADIUS: i32 = 6;
 const DENY_MIN_HP: f32 = 0.35;
+/// Answer a teammate's tributer alert from this far (DENY_TRIBUTE >= 3).
+const TEAM_DENY_RADIUS: i32 = 14;
 /// From this round, bank everything we carry (knob ENDGAME_BANK).
 const ENDGAME_ROUND: u32 = 1850;
 /// Hunt mode: sightings answered from this far, and the trigger thresholds (mode 2).
@@ -126,6 +132,8 @@ impl Bot {
             turns: 0,
             engage_stall: 0,
             ignore_until: [0; 12],
+            dmg_taken: 0.0,
+            gather_wait: 0,
         })
     }
 
@@ -169,6 +177,7 @@ impl Bot {
             items,
         });
         let hurt_this_round = alive && hp + 0.5 < self.last_hp;
+        self.dmg_taken = if alive { (self.last_hp - hp).max(0.0) } else { 0.0 };
         if hurt_this_round {
             self.hurt_round = round;
         }
@@ -226,6 +235,12 @@ impl Bot {
             if let Some(e) = vis.enemies.first() {
                 chan.post_sighting(e.pos, round);
             }
+            let deny_level = self.theta.knob(knob::DENY_TRIBUTE);
+            if deny_level >= 3 {
+                if let Some(e) = vis.enemies.iter().find(|e| e.tributing) {
+                    chan.post_tributer(e.pos, round);
+                }
+            }
             self.choose_target(my_pos, round, &chan, &vis);
             if let Some(t) = self.target {
                 self.world.fields.prioritise(Goal::Group(t as u8));
@@ -271,6 +286,34 @@ impl Bot {
             if deny && !matches!(mode, Mode::Override(_)) && ctx.hp_frac() > DENY_MIN_HP {
                 if let Some(e) = vis.enemies.iter().find(|e| e.tributing && e.dist <= DENY_RADIUS) {
                     intent = Intent::Engage(e.pos);
+                } else if deny_level >= 3 && chan.enemy_tributing && ctx.gems < router::BIG_BAG_GEMS {
+                    // A teammate saw an enemy channelling: go cancel it (long bags take turns).
+                    if let Some((p, age)) = chan.sighting(round) {
+                        if age <= 1 && p.cheb(my_pos) <= TEAM_DENY_RADIUS {
+                            intent = Intent::Engage(p);
+                            assist = Some(p);
+                            telemetry::event(round, champ_name(self.kind), "team_deny", 1);
+                        }
+                    }
+                }
+            }
+            // Camp safety: camps hit the nearest champion for their strength every round and
+            // don't chase past range 3, so leave while escaping still beats their damage, and
+            // don't be the lone champion that wakes a group it can't survive.
+            let camp_safe = self.theta.knob(knob::CAMP_SAFE);
+            if camp_safe > 0 && !matches!(mode, Mode::Override(_)) {
+                let fix = camp_safety(
+                    camp_safe,
+                    &vis,
+                    intent,
+                    hp,
+                    self.dmg_taken,
+                    self.kit_dps(),
+                    &mut self.gather_wait,
+                );
+                if let Some(fix) = fix {
+                    telemetry::event(round, champ_name(self.kind), "camp_safe", 1);
+                    intent = fix;
                 }
             }
             // Team fight (portfolio choice between fight and retreat, scored for the whole
@@ -362,9 +405,13 @@ impl Bot {
             );
             if !channeling {
                 let before = fuel();
+                let deny_ground = self.theta.knob(knob::DENY_TRIBUTE) >= 2;
+                let altar_lock = self.theta.knob(knob::ALTAR_LOCK) > 0;
                 let mut exec = self.exec(me, &vis, my_pos, hurt_this_round);
                 exec.assist = assist;
                 exec.deny_tribute = deny;
+                exec.deny_ground = deny_ground;
+                exec.altar_lock = altar_lock;
                 exec.execute(intent)?;
                 exec_out = exec.out;
                 let total = before.saturating_sub(fuel());
@@ -441,6 +488,8 @@ impl Bot {
             hurt_this_round: hurt,
             assist: None,
             deny_tribute: false,
+            deny_ground: false,
+            altar_lock: false,
             out: Outcome::default(),
         }
     }
@@ -932,6 +981,76 @@ fn champ_name(kind: ChampionKind) -> &'static str {
         ChampionKind::Varg => "Varg",
         ChampionKind::Tavi => "Tavi",
     }
+}
+
+/// Damage taken from camps is reduced by Jungle (30%); estimates use this floor.
+const CAMP_DMG_FLOOR: f32 = 0.7;
+/// Allies this close count towards clearing the camp we are at.
+const CAMP_ALLY_RADIUS: i32 = 4;
+/// Longest wait for allies before waking a group we can't take alone.
+const GATHER_MAX_WAIT: u32 = 8;
+
+/// CAMP_SAFE (bits: 1 escape, 2 gather): a safer intent when camps are about to kill us.
+fn camp_safety(
+    bits: u8,
+    vis: &Visible,
+    intent: Intent,
+    hp: f32,
+    dmg_taken: f32,
+    my_dps: f32,
+    gather_wait: &mut u32,
+) -> Option<Intent> {
+    let team_dps =
+        my_dps + vis.allies.iter().filter(|a| a.dist <= CAMP_ALLY_RADIUS).map(|a| a.dps).sum::<f32>();
+    // Escape: awake camps in range that target us (no ally is closer to them).
+    if bits & 1 != 0 {
+        let on_me: Vec<&CampView> = vis
+            .camps
+            .iter()
+            .filter(|c| c.awake && c.hp > 0.0 && c.dist <= 3)
+            .filter(|c| !vis.allies.iter().any(|a| a.pos.cheb(c.pos) < c.dist))
+            .collect();
+        if !on_me.is_empty() {
+            let est: f32 = on_me.iter().map(|c| c.strength).sum::<f32>() * CAMP_DMG_FLOOR;
+            let incoming = dmg_taken.max(est).max(1.0);
+            let nearest = on_me.iter().map(|c| c.dist).min().unwrap_or(3);
+            // Hits still taken while walking out of range 3, one tile per turn.
+            let hits_out = (3 - nearest).max(0) as f32 + 1.0;
+            let groups: Vec<Option<usize>> = on_me.iter().map(|c| c.group).collect();
+            let group_hp: f32 = vis
+                .camps
+                .iter()
+                .filter(|c| c.hp > 0.0 && groups.contains(&c.group))
+                .map(|c| c.hp)
+                .sum();
+            let kill_turns = group_hp / team_dps.max(1.0);
+            let survive = hp / incoming;
+            if kill_turns + 1.0 > survive && survive <= hits_out + 1.5 {
+                return Some(Intent::Retreat);
+            }
+        }
+    }
+    // Gather: we'd be first to hit a sleeping group that kills a lone tank before it dies.
+    if bits & 2 != 0 {
+        if let Intent::ClearCamp(g) = intent {
+            let g = Some(g as usize);
+            let group: Vec<&CampView> =
+                vis.camps.iter().filter(|c| c.group == g && c.hp > 0.0).collect();
+            let asleep = !group.is_empty() && group.iter().all(|c| !c.awake);
+            if asleep {
+                let strength: f32 = group.iter().map(|c| c.strength).sum::<f32>() * CAMP_DMG_FLOOR;
+                let group_hp: f32 = group.iter().map(|c| c.hp).sum();
+                let survive = hp / strength.max(1.0);
+                let kill_turns = group_hp / team_dps.max(1.0);
+                if kill_turns + 2.0 > survive && *gather_wait < GATHER_MAX_WAIT {
+                    *gather_wait += 1;
+                    return Some(Intent::Approach(g.unwrap_or(0) as u8));
+                }
+            }
+        }
+        *gather_wait = 0;
+    }
+    None
 }
 
 /// Our skirmish strength over theirs (Lanchester square law: dps sum x hp sum per side),

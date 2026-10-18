@@ -186,6 +186,21 @@ fn draft_prefs(profile: u8, state: &DraftState) -> Vec<DraftChoice> {
             DraftChoice::Ren,
             DraftChoice::Willow,
         ],
+        // Ladder mimics (teams that beat v5, runs/ranked_v5).
+        6 => vec![
+            DraftChoice::Stellar,
+            DraftChoice::Tavi,
+            DraftChoice::Varg,
+            DraftChoice::Prism,
+            DraftChoice::Vendetta,
+        ],
+        7 => vec![
+            DraftChoice::Vendetta,
+            DraftChoice::Varg,
+            DraftChoice::Ryth,
+            DraftChoice::Willow,
+            DraftChoice::CassiAndIssac,
+        ],
         4 => {
             // Counter: they lean ranged -> divers; they lean melee -> kiters.
             let n_ranged = state.enemy.iter().filter(|ch| RANGED.contains(ch)).count();

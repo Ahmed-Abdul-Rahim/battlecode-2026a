@@ -81,8 +81,15 @@ pub mod knob {
     pub const TEAM_FIGHT: usize = 15;
     /// 1 = portfolio combat search (skirmish.rs) picks the fight behaviour when enemies are close.
     pub const COMBAT_SEARCH: usize = 16;
+    /// Camp safety bits: 1 = leave an awake camp while escape still beats its damage (unless
+    /// we out-race it), 2 = don't wake a group a lone champion can't survive until the
+    /// allies nearby can clear it (or a short wait runs out).
+    pub const CAMP_SAFE: usize = 17;
+    /// 1 = carry an altar lock (10 gold, bought before shards) and leave it on every altar we
+    /// tribute at: it blocks only the enemy (3 of their attacks to clear).
+    pub const ALTAR_LOCK: usize = 18;
 
-    pub const DEFAULTS: [(usize, u8); 17] = [
+    pub const DEFAULTS: [(usize, u8); 19] = [
         (AGGRESSION, 128),
         (RETREAT_HP_PCT, 35),
         (TRIBUTE_MIN_GEMS, 20),
@@ -100,6 +107,8 @@ pub mod knob {
         (ENDGAME_BANK, 0),
         (TEAM_FIGHT, 0),
         (COMBAT_SEARCH, 0),
+        (CAMP_SAFE, 0),
+        (ALTAR_LOCK, 0),
     ];
 }
 
@@ -252,7 +261,7 @@ pub const MAX_CLAIM_SLOTS: usize = 6;
 /// | 0 | 0–1 | version (0 = never written) |
 /// | 0 | 2 | parity of the round the leader last wrote |
 /// | 0 | 3–5 | leader slot |
-/// | 0 | 6 | flag: enemy seen tributing |
+/// | 0 | 6 | flag: the sighting is an enemy channelling a tribute (lives with the sighting) |
 /// | 0 | 7 | flag: help requested |
 /// | 1 | – | team aggression parameter |
 /// | 2 | – | team tribute-threshold parameter (gems) |
@@ -335,12 +344,12 @@ impl TeamChannel {
             self.version = CHANNEL_VERSION;
             self.parity = parity;
             self.leader = my_slot & 0b111;
-            self.enemy_tributing = false;
             self.help = false;
             if let Some((_, r)) = self.sighting {
                 // Age 3 is indistinguishable from age −1 next round: drop it now.
                 if (round.wrapping_sub(u32::from(r)) & 0b11) == 3 {
                     self.sighting = None;
+                    self.enemy_tributing = false;
                 }
             }
         }
@@ -348,7 +357,18 @@ impl TeamChannel {
     }
 
     pub fn post_sighting(&mut self, p: Pos, round: u32) {
+        // A fresh tributer alert outranks an ordinary sighting.
+        if self.enemy_tributing && self.sighting(round).is_some_and(|(_, age)| age <= 1) {
+            return;
+        }
         self.sighting = Some((p, (round & 0b11) as u8));
+        self.enemy_tributing = false;
+    }
+
+    /// An enemy is channelling a tribute at `p`: a stun, kill or lock cancels the bag.
+    pub fn post_tributer(&mut self, p: Pos, round: u32) {
+        self.sighting = Some((p, (round & 0b11) as u8));
+        self.enemy_tributing = true;
     }
 
     /// Shared sighting and its age in rounds (0..=2).
