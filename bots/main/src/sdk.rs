@@ -69,7 +69,7 @@ pub fn has_stun(kind: ChampionKind) -> bool {
 }
 
 /// Fight-horizon damage for stun / attack-reset kits (STUN_THREAT): the spell and the
-/// reset's extra hit land in the first rounds of a skirmish, so average them over 4
+/// reset's extra hit land in the first rounds of a skirmish, so average them over 6
 /// rounds instead of the 8-turn cooldown.
 pub fn dps_burst(strength: f32, focus: f32, kit: &KitInfo) -> f32 {
     use crate::bc_core::champion::AbilityKind as K;
@@ -83,5 +83,5 @@ pub fn dps_burst(strength: f32, focus: f32, kit: &KitInfo) -> f32 {
         .map(|a| a.modifier)
         .fold(0.0f32, f32::max);
     let reset = if abilities().any(|a| a.kind == K::AttackReset) { strength } else { 0.0 };
-    strength + (focus * spell + reset) / 4.0
+    strength + (focus * spell + reset) / 6.0
 }

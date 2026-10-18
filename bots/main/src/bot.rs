@@ -101,8 +101,10 @@ const TAVI_HUNT_MIN_HP: f32 = 0.5;
 const TAVI_HUNT_RADIUS: i32 = 6;
 /// CAMP_FEASIBLE: a group needing more than this many times our survival time to clear
 /// keeps only CAMP_INFEASIBLE_VALUE of its value.
-const CAMP_FEASIBLE_SLACK: f32 = 1.5;
+const CAMP_FEASIBLE_SLACK: f32 = 3.0;
 const CAMP_INFEASIBLE_VALUE: f32 = 0.1;
+/// PASSIVE_ROLES: Vesper farms gold groups until she owns this many emblems.
+const VESPER_GOLD_EMBLEMS: u32 = 3;
 /// FIGHT_V6 last stand: never with a bag this big (the killer takes it).
 const LAST_STAND_MAX_GEMS: u32 = 20;
 
@@ -294,9 +296,9 @@ impl Bot {
             let mut assist = None;
             // Hunting: every healthy champion answers every sighting, from further away.
             let radius = if hunting { HUNT_SIGHTING_RADIUS } else { TEAM_SIGHTING_RADIUS };
-            let fight_v6 = self.theta.knob(knob::FIGHT_V6) > 0;
-            // FIGHT_V6: join the team's fight unless something is already on us.
-            let free_to_assist = if fight_v6 {
+            let fight_v6 = self.theta.knob(knob::FIGHT_V6);
+            // FIGHT_V6 bit 2: join the team's fight unless something is already on us.
+            let free_to_assist = if fight_v6 & 2 != 0 {
                 !matches!(mode, Mode::Override(_))
                     && vis.enemies.iter().all(|e| e.dist > 4)
                     && ctx.hp_frac() > ASSIST_MIN_HP_V6
@@ -354,11 +356,15 @@ impl Bot {
             }
             // Fight balance: finish kills, take fights we outnumber, and make a last stand
             // instead of dying in a retreat we can't win; then call the target for the team.
-            if fight_v6 {
-                if let Some((fix, why)) = fight_fix(&ctx, &vis, intent, mode, self.kit.attack_range) {
+            if fight_v6 & (4 | 8) != 0 {
+                if let Some((fix, why)) =
+                    fight_fix(fight_v6, &ctx, &vis, intent, mode, self.kit.attack_range)
+                {
                     telemetry::event(round, champ_name(self.kind), why, 1);
                     intent = fix;
                 }
+            }
+            if fight_v6 & 1 != 0 {
                 if let Intent::Engage(p) = intent {
                     if vis.enemies.iter().any(|e| e.pos == p) {
                         chan.post_sighting(p, round);
@@ -491,7 +497,7 @@ impl Bot {
                 let altar_lock = self.theta.knob(knob::ALTAR_LOCK) > 0;
                 let field_shop =
                     self.theta.knob(knob::TAVI_META) > 0 && self.kind == ChampionKind::Tavi;
-                let recall_safe = self.theta.knob(knob::RECALL_SAFE) > 0;
+                let recall_safe = self.theta.knob(knob::RECALL_SAFE) >= 2;
                 let recall_ticks = if self.has_home() { 3 } else { 5 };
                 let mut exec = self.exec(me, &vis, my_pos, hurt_this_round);
                 exec.field_shop = field_shop;
@@ -600,6 +606,15 @@ impl Bot {
             }
             _ => false,
         }
+    }
+
+    /// Knobs with per-champion adjustments (PASSIVE_ROLES: Prism carries bigger bags).
+    fn role_knobs(&self) -> Knobs {
+        let mut k = self.knobs;
+        if self.theta.knob(knob::PASSIVE_ROLES) > 0 && self.kind == ChampionKind::Prism {
+            k.tribute_min = (u32::from(k.tribute_min) * 3 / 2).min(u32::from(k.tribute_max)) as u8;
+        }
+        k
     }
 
     /// Completed emblems we own.
@@ -809,6 +824,17 @@ impl Bot {
                 2 => g.gems as f32 + g.gold as f32 * 0.15,
                 _ => g.gems as f32 + g.gold as f32 / 3.0,
             };
+            // Passives: Vesper's gold bonus applies to her capture share (gear herself first),
+            // Prism's Focus grows with the gems she carries (she collects them).
+            if self.theta.knob(knob::PASSIVE_ROLES) > 0 {
+                match self.kind {
+                    ChampionKind::VesperVale if self.emblems() < VESPER_GOLD_EMBLEMS => {
+                        value = g.gems as f32 * 0.25 + g.gold as f32 * 1.2;
+                    }
+                    ChampionKind::Prism => value = g.gems as f32 * 1.4 + g.gold as f32 / 3.0,
+                    _ => {}
+                }
+            }
             let clear = match state {
                 GroupState::RewardAvailable => {
                     value *= 1.5;
@@ -899,7 +925,7 @@ impl Bot {
         let ignored =
             |k: ChampionKind| self.ignore_until.get(k as usize).is_some_and(|&until| round < until);
         let nearest = || vis.enemies.iter().find(|e| !e.on_spawn && !ignored(e.kind));
-        let enemy = if self.theta.knob(knob::FIGHT_V6) > 0 {
+        let enemy = if self.theta.knob(knob::FIGHT_V6) & 1 != 0 {
             // Weakest enemy in reach, the team's called target first.
             let reach = self.kit.attack_range + 2;
             let called = chan.sighting(round).filter(|&(_, age)| age == 0).map(|(p, _)| p);
@@ -957,7 +983,7 @@ impl Bot {
             can_afford_shard: self.ledger.gold >= crate::bc_core::ledger::SHARD_COST
                 && next_shard.is_some(),
             channeling: state.intersects(ChampionState::RECALLING | ChampionState::SUBMITTING_GEMS),
-            knobs: self.knobs,
+            knobs: self.role_knobs(),
             team: *chan,
         })
     }
@@ -1118,6 +1144,7 @@ fn champ_name(kind: ChampionKind) -> &'static str {
 /// FIGHT_V6: a better intent when we'd otherwise leave a fight we should take.
 /// Returns the intent and a telemetry tag.
 fn fight_fix(
+    bits: u8,
     ctx: &Context,
     vis: &Visible,
     intent: Intent,
@@ -1130,7 +1157,7 @@ fn fight_fix(
     }
     let forced = matches!(mode, Mode::Override(_));
     let our_dps = (ctx.my_dps + ctx.ally_dps_near).max(1.0);
-    if !forced && ctx.gems < router::BIG_BAG_GEMS {
+    if bits & 4 != 0 && !forced && ctx.gems < router::BIG_BAG_GEMS {
         // Finish it: two turns of our damage kill the target.
         if e.dist <= my_range + 1 && e.hp <= our_dps * 2.0 {
             return Some((Intent::Engage(e.pos), "finish"));
@@ -1144,7 +1171,7 @@ fn fight_fix(
     }
     // Last stand: something that out-ranges or stuns us is already on us, and walking home
     // would only feed it the kill: trade damage instead.
-    if ctx.gems >= LAST_STAND_MAX_GEMS {
+    if bits & 8 == 0 || ctx.gems >= LAST_STAND_MAX_GEMS {
         return None;
     }
     let on_us: Vec<&EnemyView> =

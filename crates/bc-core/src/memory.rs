@@ -91,18 +91,21 @@ pub mod knob {
     /// Ladder meta (v7): draft Varg/Tavi/Cassi&Issac/Stellar/Prism; Tavi buys shards in the
     /// field (its passive), builds Strength on every passive, and hunts once geared.
     pub const TAVI_META: usize = 19;
-    /// 1 = only recall when nothing (seen, remembered or team-sighted) can reach us during the
-    /// channel, and cancel a recall when an enemy closes in (recall is a free kill otherwise).
+    /// 1 = cancel a recall when an enemy closes in (recall is a free kill otherwise);
+    /// 2 = also only start one when nothing seen or remembered can reach us during it.
     pub const RECALL_SAFE: usize = 20;
-    /// 1 = focus the weakest enemy in reach, call it for the team, finish kills, fight when
-    /// outnumbering, and make a last stand instead of dying in a hopeless retreat.
+    /// Fight bits: 1 focus the weakest enemy in reach and call it for the team, 2 join team
+    /// fights from 50% hp, 4 finish kills / fight when outnumbering, 8 last stand.
     pub const FIGHT_V6: usize = 21;
-    /// 1 = value stun / attack-reset kits (Tavi, Prism, Cassi, Ryth) on a 4-round fight horizon.
+    /// 1 = value stun / attack-reset kits (Tavi, Prism, Cassi, Ryth) on a 6-round fight horizon.
     pub const STUN_THREAT: usize = 22;
     /// 1 = discount camp groups the team can't survive yet (farm gold and gear up first).
     pub const CAMP_FEASIBLE: usize = 23;
+    /// 1 = play to passives: Vesper Vale (+20/40% gold) farms gold groups until geared,
+    /// Prism (+0.2 Focus per carried gem) collects gems and carries bigger bags.
+    pub const PASSIVE_ROLES: usize = 24;
 
-    pub const DEFAULTS: [(usize, u8); 24] = [
+    pub const DEFAULTS: [(usize, u8); 25] = [
         (AGGRESSION, 128),
         (RETREAT_HP_PCT, 35),
         (TRIBUTE_MIN_GEMS, 20),
@@ -122,11 +125,12 @@ pub mod knob {
         (COMBAT_SEARCH, 0),
         (CAMP_SAFE, 0),
         (ALTAR_LOCK, 0),
-        (TAVI_META, 0),
-        (RECALL_SAFE, 0),
-        (FIGHT_V6, 0),
+        (TAVI_META, 1),
+        (RECALL_SAFE, 1),
+        (FIGHT_V6, 7),
         (STUN_THREAT, 0),
         (CAMP_FEASIBLE, 0),
+        (PASSIVE_ROLES, 1),
     ];
 }
 

@@ -49,6 +49,9 @@ JITTER = {
     "main-v5-j4": {"FIGHT_MARGIN_PCT": 30},
 }
 FAMILY = [REFERENCE, *JITTER, "main-v6"]
+# --sanity: just our submitted bots (bots/main-v* are byte-identical to submission/*.zip).
+SUBMISSION = ["main-v4", "main-v5", "main-v6"]
+SANITY = False
 EXPLOIT = ["main-v4", "claude-focus", "claude-pillager", "claude-ambusher", "exploit-qwen-pillager", "baseline"]
 # Ladder teams that beat v5 (runs/ranked_v5): (draft profile in draft.rs, build profile).
 MIMICS = {
@@ -82,6 +85,25 @@ TRIALS: dict[str, dict[str, dict[str, int]]] = {
         "stun-threat": {"STUN_THREAT": 1},
         "camp-feasible": {"CAMP_FEASIBLE": 1},
         "v7-all": {"TAVI_META": 1, "RECALL_SAFE": 1, "FIGHT_V6": 1, "STUN_THREAT": 1, "CAMP_FEASIBLE": 1},
+    },
+    "V7b": {
+        "recall-cancel": {"RECALL_SAFE": 1},
+        "fight-focus": {"FIGHT_V6": 1},
+        "fight-assist": {"FIGHT_V6": 2},
+        "fight-finish": {"FIGHT_V6": 4},
+        "fight-stand": {"FIGHT_V6": 8},
+        "stun-threat6": {"STUN_THREAT": 1},
+        "camp-feasible3": {"CAMP_FEASIBLE": 1},
+    },
+    "V7": {
+        "tavi-meta": {"TAVI_META": 1},
+        "recall-safe": {"RECALL_SAFE": 1},
+        "fight-v6": {"FIGHT_V6": 1},
+        "stun-threat": {"STUN_THREAT": 1},
+        "camp-feasible": {"CAMP_FEASIBLE": 1},
+        "passive-roles": {"PASSIVE_ROLES": 1},
+        "v7-all": {"TAVI_META": 1, "RECALL_SAFE": 1, "FIGHT_V6": 1, "STUN_THREAT": 1, "CAMP_FEASIBLE": 1,
+                   "PASSIVE_ROLES": 1},
     },
 }
 
@@ -170,6 +192,14 @@ def evaluate(bot: str, out: Path, pools: list[str]) -> dict:
 def verdict(row: dict, base: dict) -> str:
     if row is base:
         return "control"
+    if SANITY:
+        # Ladder fixes: only guard against breakage (local bots aren't the ladder population).
+        bad = []
+        if row["family"]["win"] < base["family"]["win"] - 0.10:
+            bad.append("regress")
+        if row["suspended"] > 2 * base["suspended"] + 20:
+            bad.append("fuel")
+        return "OK" if not bad else "FAIL(" + ",".join(bad) + ")"
     why = []
     if row["family"]["win"] < base["family"]["win"] + 0.04:
         why.append("family")
@@ -204,7 +234,13 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--rebuild-pools", action="store_true")
     p.add_argument("--no-base", action="store_true", help="reuse base row from --base-from table")
     p.add_argument("--base-from", type=Path)
+    p.add_argument("--sanity", action="store_true", help="only vs submission/ bots v4, v5, v6")
     a = p.parse_args(argv)
+    if a.sanity:
+        global SANITY
+        SANITY = True
+        FAMILY[:] = SUBMISSION
+        a.pools = ["family"]
 
     trials: dict[str, dict[str, int]] = {}
     every = {k: v for t in TRIALS.values() for k, v in t.items()}
