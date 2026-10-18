@@ -49,3 +49,4 @@ bots/mimic-*/
 # speedrun variants (harness/speedrun.py)
 bots/_sr-*/
 bots/_mt-*/
+bots/_oos-*/

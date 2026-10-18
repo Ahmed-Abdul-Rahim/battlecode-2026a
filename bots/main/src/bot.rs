@@ -55,6 +55,8 @@ pub struct Bot {
     /// Our current damage per round with items (CAMP_FEASIBLE, MONOLITH_LIVE).
     cur_dps: f32,
     cur_max_hp: f32,
+    /// TEAM_RESPAWN: a group we just saw go down (index, respawn round) to broadcast.
+    saw_down: Option<(usize, u32)>,
 }
 
 /// Engage turns without landing anything before we give up on that enemy.
@@ -104,6 +106,10 @@ const TAVI_HUNT_RADIUS: i32 = 6;
 /// keeps only CAMP_INFEASIBLE_VALUE of its value.
 const CAMP_FEASIBLE_SLACK: f32 = 3.0;
 const CAMP_INFEASIBLE_VALUE: f32 = 0.1;
+/// EN_ROUTE: only for targets this far; detour, solo clear time and damage limits.
+const EN_ROUTE_MIN_DIST: i32 = 15;
+const EN_ROUTE_DETOUR: i32 = 6;
+const EN_ROUTE_MAX_CLEAR: f32 = 25.0;
 /// MONOLITH_LIVE: attack once pooled team health lasts this fraction of the kill time.
 const MONOLITH_SLACK: f32 = 1.0;
 /// VALUE_PROFILE 4/5: the opening (near camps first: early gold compounds into items).
@@ -164,6 +170,7 @@ impl Bot {
             gather_wait: 0,
             cur_dps: 0.0,
             cur_max_hp: 0.0,
+            saw_down: None,
         })
     }
 
@@ -227,7 +234,8 @@ impl Bot {
         cambc::shared_memory().read(0, &mut raw)?;
         let mut chan = TeamChannel::decode(raw);
         let leader = chan.begin_turn(round, self.slot);
-        if leader {
+        let team_respawn = self.theta.knob(knob::TEAM_RESPAWN) > 0;
+        if leader && !team_respawn {
             let (aggression, threshold) = policy::team_params(
                 self.ledger.ally_tributed,
                 self.ledger.enemy_tributed,
@@ -278,6 +286,9 @@ impl Bot {
                 if let Some(e) = vis.enemies.iter().find(|e| e.tributing) {
                     chan.post_tributer(e.pos, round);
                 }
+            }
+            if team_respawn {
+                self.share_respawns(&mut chan, round);
             }
             self.choose_target(my_pos, round, &chan, &vis);
             if let Some(t) = self.target {
@@ -625,6 +636,23 @@ impl Bot {
         k
     }
 
+    /// The team channel as the brain reads it. Under TEAM_RESPAWN bytes 1-2 carry respawn
+    /// timers, so aggression / threshold are computed locally (a pure function of public state).
+    fn team_view(&self, chan: &TeamChannel, round: u32) -> TeamChannel {
+        let mut team = *chan;
+        if self.theta.knob(knob::TEAM_RESPAWN) > 0 {
+            (team.aggression, team.tribute_threshold) = policy::team_params(
+                self.ledger.ally_tributed,
+                self.ledger.enemy_tributed,
+                round,
+                cambc::constants().max_rounds,
+                self.knobs.aggression,
+                self.knobs.tribute_max,
+            );
+        }
+        team
+    }
+
     /// Completed emblems we own.
     fn emblems(&self) -> u32 {
         self.ledger.items.iter().skip(1).step_by(2).map(|&n| u32::from(n)).sum()
@@ -779,6 +807,10 @@ impl Bot {
                     {
                         telemetry::event(round, champ_name(self.kind), "captured", i as i64);
                     }
+                    let fresh = self.belief.group(i).is_none_or(|b| b.state != GroupState::Respawning);
+                    if fresh && t > 0 {
+                        self.saw_down = Some((i, round + t as u32));
+                    }
                     self.belief.observe_group(i, GroupObs::Respawning(t), round);
                 }
                 Ok(CampGroupState::Alive) => self.belief.observe_group(i, GroupObs::Alive, round),
@@ -910,7 +942,70 @@ impl Bot {
                 best = Some((score, i));
             }
         }
+        if self.theta.knob(knob::EN_ROUTE) > 0 {
+            if let Some((_, far)) = best {
+                if let Some(stop) = self.en_route_stop(far, my_pos, round, chan) {
+                    best = Some((0.0, stop));
+                }
+            }
+        }
         self.target = best.map(|(_, i)| i);
+    }
+
+    /// EN_ROUTE: a small camp just off the way to `far` that we can clear and survive alone.
+    fn en_route_stop(&self, far: usize, my_pos: Pos, round: u32, chan: &TeamChannel) -> Option<usize> {
+        let to_far = self.group_distance(far, my_pos)? as i32;
+        if to_far <= EN_ROUTE_MIN_DIST {
+            return None;
+        }
+        let dps = self.cur_dps.max(10.0);
+        let mut pick: Option<(f32, usize)> = None;
+        for (i, g) in self.world.groups.iter().enumerate() {
+            if i == far || g.has_monolith || g.gold + g.gems == 0 {
+                continue;
+            }
+            if !matches!(self.belief.expected_state(i, round), GroupState::Alive | GroupState::Unknown) {
+                continue;
+            }
+            if self.priority_index(i).is_some_and(|pi| chan.claimants(pi, self.slot as usize) > 0) {
+                continue;
+            }
+            let (Some(d1), Some(d2)) = (self.group_distance(i, my_pos), self.group_distance(far, g.center))
+            else {
+                continue;
+            };
+            let detour = d1 as i32 + d2 as i32 - to_far;
+            let clear = g.total_hp / dps;
+            let damage = g.total_strength * CAMP_DMG_FLOOR * clear;
+            if detour > EN_ROUTE_DETOUR || clear > EN_ROUTE_MAX_CLEAR || damage > self.last_hp * 0.7 {
+                continue;
+            }
+            let cost = detour as f32 + clear;
+            if pick.is_none_or(|(c, _)| cost < c) {
+                pick = Some((cost, i));
+            }
+        }
+        pick.map(|(_, i)| i)
+    }
+
+    /// TEAM_RESPAWN: read the team's last "group went down" and post ours.
+    /// Bytes 1-2 (aggression / tribute_threshold fields) carry group + 1 and respawn round mod 256.
+    fn share_respawns(&mut self, chan: &mut TeamChannel, round: u32) {
+        let g = usize::from(chan.aggression);
+        if g > 0 && g <= self.world.groups.len() {
+            // Respawn rounds lie within [round - 100, round + 155]: unwrap the low byte there.
+            let base = round.saturating_sub(100);
+            let at = base + (u32::from(chan.tribute_threshold).wrapping_sub(base) & 0xFF);
+            let i = g - 1;
+            let known = self.belief.group(i).is_some_and(|b| b.last_seen == Some(round));
+            if at > round && !known {
+                self.belief.observe_group(i, GroupObs::Respawning((at - round) as i32), round);
+            }
+        }
+        if let Some((i, at)) = self.saw_down.take() {
+            chan.aggression = (i + 1).min(255) as u8;
+            chan.tribute_threshold = (at & 0xFF) as u8;
+        }
     }
 
     // ---- context ----------------------------------------------------------
@@ -1009,7 +1104,7 @@ impl Bot {
                 && next_shard.is_some(),
             channeling: state.intersects(ChampionState::RECALLING | ChampionState::SUBMITTING_GEMS),
             knobs: self.role_knobs(),
-            team: *chan,
+            team: self.team_view(chan, round),
         })
     }
 

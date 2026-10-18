@@ -55,6 +55,8 @@ CANDIDATES: dict[str, tuple[dict[str, int], int]] = {
     "fight": ({"FIGHT_V6": 7}, 0),
     "passive": ({"PASSIVE_ROLES": 1}, 0),
     "draft-best": ({"DRAFT_BEST": 1}, 8),
+    "no-enroute": ({"EN_ROUTE": 0}, 0),
+    "no-respawn": ({"TEAM_RESPAWN": 0}, 0),
 }
 
 

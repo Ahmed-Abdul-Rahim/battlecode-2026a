@@ -117,8 +117,15 @@ pub mod knob {
     /// 1 = shop before banking: recall to spend gold even while carrying gems (recall keeps
     /// them), so items come early and one trip home does both; tribute stays bag-driven.
     pub const SHOP_FIRST: usize = 28;
+    /// 1 = on the way to a far target, first take a small camp we can clear and survive
+    /// alone within a short detour (gold on the path; stampede ran past it all game).
+    pub const EN_ROUTE: usize = 29;
+    /// 1 = share respawn timers: whoever sees a group go down writes (group, respawn round)
+    /// into channel bytes 1-2 (team params are computed locally instead), so allies stop
+    /// walking to camps a teammate already cleared.
+    pub const TEAM_RESPAWN: usize = 30;
 
-    pub const DEFAULTS: [(usize, u8); 29] = [
+    pub const DEFAULTS: [(usize, u8); 31] = [
         (AGGRESSION, 128),
         (RETREAT_HP_PCT, 35),
         (TRIBUTE_MIN_GEMS, 20),
@@ -148,6 +155,8 @@ pub mod knob {
         (SAFE_ALTAR, 1),
         (MONOLITH_LIVE, 1),
         (SHOP_FIRST, 0),
+        (EN_ROUTE, 1),
+        (TEAM_RESPAWN, 1),
     ];
 }
 
