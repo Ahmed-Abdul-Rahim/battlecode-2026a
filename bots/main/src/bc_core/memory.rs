@@ -65,7 +65,8 @@ pub mod knob {
     pub const BUILD_PROFILE: usize = 8;
     /// Squad pairs (slots 2k, 2k+1) join each other's camp group: value ×(this/10); 0 = off.
     pub const SQUAD_JOIN_X10: usize = 9;
-    /// Camp value formula: 0 gems + gold/3, 1 gems + gold/10, 2 slots 0-1 gold / rest gems.
+    /// Camp value formula: 0 gems + gold/3, 1 gems + gold/10, 2 slots 0-1 gold / rest gems,
+    /// 4 gems + gold x0.6, 5 gems + gold (4/5 also prefer near camps in the opening).
     pub const VALUE_PROFILE: usize = 10;
     /// 1 = the last slot of a 4+ team farms far, quiet groups (distance weight 0.4).
     pub const REMOTE_FARMER: usize = 11;
@@ -105,8 +106,16 @@ pub mod knob {
     /// 1 = play to passives: Vesper Vale (+20/40% gold) farms gold groups until geared,
     /// Prism (+0.2 Focus per carried gem) collects gems and carries bigger bags.
     pub const PASSIVE_ROLES: usize = 24;
+    /// 1 = draft like the best ladder bot: Stellar, Ren, Cassi & Issac, Ryth, Varg.
+    pub const DRAFT_BEST: usize = 25;
+    /// 1 = never route tributes to an altar next to the enemy spawn when another exists
+    /// (enemies there make every tribute "unsafe": we looped for whole games on swirl).
+    pub const SAFE_ALTAR: usize = 26;
+    /// 1 = judge monolith readiness on current (itemised) damage, not base stats
+    /// (the base-stat gate never opened: 0 gems on contest in 2000 rounds).
+    pub const MONOLITH_LIVE: usize = 27;
 
-    pub const DEFAULTS: [(usize, u8); 25] = [
+    pub const DEFAULTS: [(usize, u8); 28] = [
         (AGGRESSION, 128),
         (RETREAT_HP_PCT, 35),
         (TRIBUTE_MIN_GEMS, 20),
@@ -115,9 +124,9 @@ pub mod knob {
         (MONOLITH_MIN_POWER, 40),
         (RECALL_GOLD, 15),
         (FIGHT_MARGIN_PCT, 25),
-        (BUILD_PROFILE, 0),
+        (BUILD_PROFILE, 2),
         (SQUAD_JOIN_X10, 0),
-        (VALUE_PROFILE, 0),
+        (VALUE_PROFILE, 4),
         (REMOTE_FARMER, 0),
         (HUNT_MODE, 0),
         (DENY_TRIBUTE, 1),
@@ -132,6 +141,9 @@ pub mod knob {
         (STUN_THREAT, 0),
         (CAMP_FEASIBLE, 0),
         (PASSIVE_ROLES, 1),
+        (DRAFT_BEST, 0),
+        (SAFE_ALTAR, 1),
+        (MONOLITH_LIVE, 0),
     ];
 }
 

@@ -103,6 +103,9 @@ const TAVI_HUNT_RADIUS: i32 = 6;
 /// keeps only CAMP_INFEASIBLE_VALUE of its value.
 const CAMP_FEASIBLE_SLACK: f32 = 3.0;
 const CAMP_INFEASIBLE_VALUE: f32 = 0.1;
+/// VALUE_PROFILE 4/5: the opening (near camps first: early gold compounds into items).
+const OPENING_ROUNDS: u32 = 120;
+const OPENING_DIST_WEIGHT: f32 = 2.5;
 /// PASSIVE_ROLES: Vesper farms gold groups until she owns this many emblems.
 const VESPER_GOLD_EMBLEMS: u32 = 3;
 /// FIGHT_V6 last stand: never with a bag this big (the killer takes it).
@@ -110,11 +113,11 @@ const LAST_STAND_MAX_GEMS: u32 = 20;
 
 impl Bot {
     pub fn new() -> Result<Self> {
-        let world = World::build()?;
+        let theta = ThetaMatch::decode(cambc::draft_memory().bytes()).unwrap_or_default();
+        let world = World::build(theta.knob(knob::SAFE_ALTAR) > 0)?;
         let me = cambc::self_champion()?.ok_or_else(|| sdk::local_error("no self champion"))?;
         let kind = sdk::kind(me.champion_name()?);
         let kit = sdk::kit(kind);
-        let theta = ThetaMatch::decode(cambc::draft_memory().bytes()).unwrap_or_default();
         let build_profile = theta.knob(knob::BUILD_PROFILE);
         let order = if theta.knob(knob::TAVI_META) > 0 && kind == ChampionKind::Tavi {
             shop::build_order_profile(kind, TAVI_BUILD_PROFILE)
@@ -803,7 +806,11 @@ impl Bot {
     /// Value per round of effort, with claims, respawn timers and hysteresis.
     fn choose_target(&mut self, my_pos: Pos, round: u32, chan: &TeamChannel, vis: &Visible) {
         let my_dps = sdk::dps(self.kit.base_strength, self.kit.base_focus, &self.kit).max(10.0);
-        let team_power = my_dps * self.team_size as f32;
+        let live = self.theta.knob(knob::MONOLITH_LIVE) > 0;
+        let team_power = if live { self.cur_dps.max(my_dps) } else { my_dps } * self.team_size as f32;
+        let value_profile = self.theta.knob(knob::VALUE_PROFILE);
+        // VALUE_PROFILE 4/5: near camps first in the opening (gold now beats gems later).
+        let opening = matches!(value_profile, 4 | 5) && round < OPENING_ROUNDS;
         let mut best: Option<(f32, usize)> = None;
         for (i, g) in self.world.groups.iter().enumerate() {
             if g.has_monolith
@@ -818,8 +825,10 @@ impl Bot {
             if state == GroupState::Respawning && eta > dist + 15.0 {
                 continue;
             }
-            let mut value = match self.theta.knob(knob::VALUE_PROFILE) {
+            let mut value = match value_profile {
                 1 => g.gems as f32 + g.gold as f32 / 10.0,
+                4 => g.gems as f32 + g.gold as f32 * 0.6,
+                5 => g.gems as f32 + g.gold as f32,
                 2 if self.slot < 2 => g.gems as f32 * 0.3 + g.gold as f32,
                 2 => g.gems as f32 + g.gold as f32 * 0.15,
                 _ => g.gems as f32 + g.gold as f32 / 3.0,
@@ -876,7 +885,7 @@ impl Bot {
             let remote = self.theta.knob(knob::REMOTE_FARMER) > 0
                 && self.team_size >= 4
                 && self.slot as usize + 1 == self.team_size;
-            let dist_w = if remote { 0.4 } else { 1.0 };
+            let dist_w = if remote { 0.4 } else if opening { OPENING_DIST_WEIGHT } else { 1.0 };
             let mut score = value / (dist * dist_w + clear + (eta - dist).max(0.0) + 5.0);
             if self.target == Some(i) {
                 score *= 1.3;

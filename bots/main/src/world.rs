@@ -12,6 +12,9 @@ use crate::sdk::{self, pos, vec2};
 use cambc::{Bitboard, CampGroup, DistanceField, Result, Team};
 use std::collections::VecDeque;
 
+/// An altar this close to the enemy spawn is skipped by SAFE_ALTAR (if another exists).
+const UNSAFE_ALTAR_SPAWN_DIST: i32 = 6;
+
 pub struct GroupStatic {
     pub sdk: CampGroup,
     pub center: Pos,
@@ -95,7 +98,9 @@ pub fn fingerprint(
 }
 
 impl World {
-    pub fn build() -> Result<Self> {
+    /// `safe_altar`: drop altars next to the enemy spawn from tribute routing when another
+    /// altar exists (knob SAFE_ALTAR).
+    pub fn build(safe_altar: bool) -> Result<Self> {
         let width = cambc::map::width()?;
         let height = cambc::map::height()?;
         let walls = cambc::map::walls()?;
@@ -162,7 +167,15 @@ impl World {
         }
 
         // SDK positions(): ~600 fuel. BitGrid::positions() would scan every tile (~150k).
-        let altar_list: Vec<Pos> = altars.positions()?.into_iter().map(pos).collect();
+        let mut altar_list: Vec<Pos> = altars.positions()?.into_iter().map(pos).collect();
+        if safe_altar {
+            let enemy: Vec<Pos> = enemy_spawn.positions()?.into_iter().map(pos).collect();
+            let near_enemy =
+                |a: &Pos| enemy.iter().any(|e| e.cheb(*a) <= UNSAFE_ALTAR_SPAWN_DIST);
+            if altar_list.iter().any(|a| !near_enemy(a)) {
+                altar_list.retain(|a| !near_enemy(a));
+            }
+        }
         let spawn_hint = ally_spawn.positions()?.first().copied().map(pos).unwrap_or_default();
         let mut altar_roots = Bitboard::new()?;
         for &a in &altar_list {

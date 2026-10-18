@@ -46,3 +46,5 @@ bots/_var-*/
 # v6 trial variants and ladder mimics (harness/v6_trials.py)
 bots/_v6-*/
 bots/mimic-*/
+# speedrun variants (harness/speedrun.py)
+bots/_sr-*/

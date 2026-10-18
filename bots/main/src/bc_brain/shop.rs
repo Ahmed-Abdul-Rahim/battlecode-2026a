@@ -27,7 +27,7 @@ pub fn build_order(kind: ChampionKind) -> Vec<(Family, Stat)> {
 /// 3 Power/Bruiser primary (as strong ladder teams buy), 4 Power/Jungle/Monster primary,
 /// then default order after: 5 Power ×2, 6 Treasure, 7 Durability(Health), 8 Home, 9 Bruiser;
 /// 10 RedDragon (Monster, Power, all Strength), 11 every passive on the primary stat,
-/// 12 Tavi field build (every passive on Strength, then Power).
+/// 12 Tavi field build (every passive on Strength, then Power), 13 best-bot Power build.
 pub fn build_order_profile(kind: ChampionKind, profile: u8) -> Vec<(Family, Stat)> {
     let primary = primary_stat(kind);
     let (p, j, m, b) = (
@@ -68,6 +68,19 @@ pub fn build_order_profile(kind: ChampionKind, profile: u8) -> Vec<(Family, Stat
             }
             order.extend([j, h, d]);
             order.extend([p; 7]);
+            return order;
+        }
+        // Best ladder bot: Power on the damage stat from the first emblem (Power counts as six
+        // shards), one Durability and one Home (Health) along the way. Ryth on Strength: its
+        // passive turns a Health shard into only +1 Strength, a Strength shard gives +5.
+        13 => {
+            let damage = if kind == ChampionKind::Ryth { Stat::Strength } else { primary };
+            let pw = (Family::Power, damage);
+            let mut order = vec![pw; 4];
+            order.push((Family::Durability, Stat::Health));
+            order.extend([pw; 4]);
+            order.push((Family::Home, Stat::Health));
+            order.extend([pw; 6]);
             return order;
         }
         // Tavi (ladder meta): every passive on Strength (basic attack + reset), then Power.

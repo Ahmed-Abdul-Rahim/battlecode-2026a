@@ -134,7 +134,9 @@ pub fn play() -> Result<()> {
             team_size: c.team_size,
         };
         let mut prefs = draft_prefs(c.plan.map_or(0, |p| p.draft), &state);
-        if prefs.is_empty() && meta_draft() {
+        if prefs.is_empty() && default_knob(crate::bc_core::memory::knob::DRAFT_BEST) > 0 {
+            prefs = BEST.to_vec();
+        } else if prefs.is_empty() && meta_draft() {
             prefs = META.to_vec();
         }
         let forced = prefs.iter().copied().find(|ch| !state.ally.contains(ch));
@@ -169,6 +171,20 @@ const META: [DraftChoice; 5] = [
     DraftChoice::Stellar,
     DraftChoice::Prism,
 ];
+
+/// The best ladder bot's draft (best_bot_dump/): two Power-Focus casters, the double pick,
+/// then Ryth and Varg. 3-pick maps get Stellar, Ren, Cassi & Issac.
+const BEST: [DraftChoice; 5] = [
+    DraftChoice::Stellar,
+    DraftChoice::Ren,
+    DraftChoice::CassiAndIssac,
+    DraftChoice::Ryth,
+    DraftChoice::Varg,
+];
+
+fn default_knob(index: usize) -> u8 {
+    crate::bc_core::memory::ThetaMatch::default().knob(index)
+}
 
 fn meta_draft() -> bool {
     crate::bc_core::memory::ThetaMatch::default().knob(crate::bc_core::memory::knob::TAVI_META) > 0
