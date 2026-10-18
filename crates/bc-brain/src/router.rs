@@ -9,10 +9,25 @@ use crate::int8::Mlp;
 use crate::policy::should_tribute;
 use bc_core::belief::GroupState;
 
+/// Carried gems worth protecting before tributing.
+pub const BIG_BAG_GEMS: u32 = 100;
+/// Below this health fraction a big-bag carrier recalls to heal first.
+pub const BIG_BAG_MIN_HP: f32 = 0.6;
+/// On spawn below this health fraction, stay a turn to heal to full.
+pub const SPAWN_HEAL_BELOW: f32 = 0.9;
+
 /// Default heuristic for routine turns: shop, bank, heal, capture, farm.
 #[must_use]
 pub fn routine(ctx: &Context) -> Expert {
-    if ctx.at_spawn && ctx.can_afford_shard {
+    // Spawn heals only at the end of a turn spent on it: a hurt champion that just
+    // arrived must hold for that turn, or it walks off, stays hurt and recalls again
+    // (a loop that idled some champions for most of a match).
+    if ctx.at_spawn && (ctx.can_afford_shard || ctx.hp_frac() < SPAWN_HEAL_BELOW) {
+        return Expert::RecallShop;
+    }
+    // A big bag is the whole game on some maps (the killer takes it): heal at
+    // spawn first (recall keeps carried gems) instead of limping to an altar.
+    if ctx.gems >= BIG_BAG_GEMS && ctx.hp_frac() < BIG_BAG_MIN_HP && !ctx.at_spawn {
         return Expert::RecallShop;
     }
     if should_tribute(ctx) {
@@ -54,7 +69,9 @@ pub fn rule_route(ctx: &Context) -> Expert {
             f32::from(ctx.knobs.fight_margin_pct) / 100.0 * (255.0 - f32::from(aggression)) / 127.0;
         // A gem carrier is worth chasing: the killer takes the whole bag.
         let bounty = if e.gems >= 20 { 0.2 } else { 0.0 };
-        if advantage >= 1.0 + margin - bounty {
+        // Carrying a big bag ourselves: only take one-sided fights (losing hands it over).
+        let risk = if ctx.gems >= BIG_BAG_GEMS { 1.0 } else { 0.0 };
+        if advantage >= 1.0 + margin - bounty + risk {
             return Expert::Fight;
         }
         if e.dist <= 4 {
@@ -165,6 +182,46 @@ mod tests {
         ctx.ally_dps_near = 150.0;
         assert!(fight_advantage(&ctx, &strong) > 1.5);
         assert_eq!(rule_route(&ctx), Expert::Fight);
+    }
+
+    #[test]
+    fn big_bag_heals_before_tributing() {
+        let mut ctx = Context::neutral();
+        ctx.gems = BIG_BAG_GEMS;
+        ctx.hp = ctx.max_hp * 0.4;
+        assert_eq!(routine(&ctx), Expert::RecallShop, "hurt carrier recalls (keeps gems)");
+        ctx.hp = ctx.max_hp;
+        assert_eq!(routine(&ctx), Expert::Tribute, "healthy carrier banks");
+        ctx.at_spawn = true;
+        ctx.hp = ctx.max_hp * 0.4;
+        assert_eq!(routine(&ctx), Expert::RecallShop, "home but hurt: one turn on spawn heals");
+        ctx.hp = ctx.max_hp;
+        ctx.can_afford_shard = false;
+        assert_eq!(routine(&ctx), Expert::Tribute, "home and healed: go bank");
+    }
+
+    #[test]
+    fn hurt_champion_on_spawn_holds_to_heal() {
+        let mut ctx = Context::neutral();
+        ctx.at_spawn = true;
+        ctx.can_afford_shard = false;
+        ctx.hp = ctx.max_hp * 0.28;
+        assert_eq!(routine(&ctx), Expert::RecallShop, "stay on spawn until the turn-end heal");
+        ctx.gems = 40;
+        assert_eq!(routine(&ctx), Expert::RecallShop, "heal before walking the bag to an altar");
+        ctx.hp = ctx.max_hp;
+        assert_ne!(routine(&ctx), Expert::RecallShop, "healthy: go");
+    }
+
+    #[test]
+    fn big_bag_avoids_even_fights() {
+        let mut ctx = Context::neutral();
+        ctx.enemies_in_range = 1;
+        ctx.enemy = Some(enemy(300.0, 40.0, false));
+        assert_eq!(rule_route(&ctx), Expert::Fight);
+        ctx.gems = BIG_BAG_GEMS;
+        ctx.enemy = Some(enemy(900.0, 60.0, false));
+        assert_ne!(rule_route(&ctx), Expert::Fight, "close duel while carrying the bag");
     }
 
     #[test]

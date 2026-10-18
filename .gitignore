@@ -37,3 +37,9 @@ bots/*/.cambc/
 matches/
 bots/*/build/
 bots/*/target/
+
+# Knob-tuning candidates (harness/tune_knobs.py)
+bots/_tune-*/
+bots/main-v*/
+submission/
+bots/_var-*/

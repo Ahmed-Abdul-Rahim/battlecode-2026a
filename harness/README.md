@@ -18,6 +18,34 @@ This is a placeholder and interface contract for the local-LLM harness. The harn
 
 Start the server: `.venv/Scripts/python.exe -m mcp_server.server` (stdio). Any MCP client works, for example the `mcp` Python SDK's `ClientSession`, or a tool-calling wrapper around an OpenAI-compatible local server (llama.cpp, vLLM). Tools are listed in docs/self-improvement.md. `draft_issue` needs `confirm=true` to file.
 
+## League + knob tuning (built 2026-10-18)
+
+Two scripts put roles 1 and 2 into practice. Both are local only.
+
+- **`harness/qwen_league.py`**: Qwen writes Python exploiter bots, one per strategy (`rush`, `hunter`, `stealer`, `banker`, `pack`). Each one is copied from `bots/starter-python` into `bots/exploit-qwen-<strategy>/`, smoke-tested against `main`, and repaired from its logged errors (`--repairs`). `--refine <s>` asks Qwen for a stronger version of an existing bot. The script needs the qwen llama-server on `127.0.0.1:11435`, which the qwen MCP server starts on its first `ask`. Its log is `runs/qwen-league/log.jsonl`.
+- **`harness/tune_knobs.py`**: coordinate descent over `main`'s θ_match knob defaults (`knob::DEFAULTS` in `crates/bc-core/src/memory.rs`). It plays against the pool `baseline`, `starter-python` and `exploit-qwen-*`, on the non-held-out maps only, both sides. The objective is the win score plus 0.25 × the normalised gem margin. The trace is in `runs/tune/<ts>/`. `--apply runs/tune/<ts>/best.json` writes the winning knobs into `crates/` and runs `bctools sync`. After that, gate as usual.
+
+- **`harness/claude_bots/`**: hand-written exploiters `claude-ambusher`, `claude-pillager` and `claude-focus` (shared-memory focus fire). `python harness/claude_bots/make.py` regenerates `bots/claude-*`.
+- **`harness/league_gate.py <bot> [--release] [--pool ...]`**: the candidate against the whole league (fixed bots, Qwen and claude exploiters, `main-v*` self-play snapshots, which are gitignored copies of past `main`). It plays all maps on both sides and reports per-opponent win rate, held-out win rate and fuel-suspended turns.
+- **`ml/distill/train_np.py`**: numpy-only router distillation, so no PyTorch is needed. It writes a BCW1 int8 blob and checks the int8 accuracy. `bots/main-learned` loads it, but as of 2026-10-18 it isn't shipped because it failed non-inferiority: 47% vs main, and 9× the suspended turns.
+
+What the league found (2026-10-18): pillagers beat `main` by killing a hurt big-bag carrier near the altar. The fixes that passed the league gate:
+- hide in a bush when retreating;
+- remembered ("ghost") threats;
+- no unsafe tribute channel;
+- a big bag at low HP recalls first;
+- a big bag avoids even fights;
+- reading the team's shared sighting, and answering help calls.
+
+Tried and rejected by the gate:
+- an adaptive deep-search fuel threshold (over-commits; suspended turns ×100);
+- escape dash and chase dash;
+- melee peel and the sacrifice rule;
+- wards;
+- the learned router.
+
+Teleport crystals were skipped: only `ambush` has unreachable groups (96 gems).
+
 ## Deferred (decided in planning, 2026-10-18)
 
 - OpenJev / small-model yes/no tool (licence: CC BY-NC 4.0, so check before any non-research use).

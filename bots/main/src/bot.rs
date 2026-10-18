@@ -11,6 +11,7 @@ use crate::bc_core::fuel::{FuelGovernor, Stage};
 use crate::bc_core::ledger::{Family, Ledger, SelfObs, Stat, ITEM_TYPES};
 use crate::bc_core::memory::{TeamChannel, ThetaMatch, TEAM_CHANNEL_BYTES};
 use crate::bc_core::Pos;
+use crate::bc_path::danger::Threat;
 use crate::bc_path::{DistanceOracle, Goal};
 use crate::sdk::{self, fuel, pos};
 use crate::telemetry::{self, TurnLog};
@@ -51,6 +52,17 @@ pub struct Bot {
 const ENGAGE_STALL_TURNS: u32 = 4;
 /// How long to ignore an unreachable enemy.
 const IGNORE_ENEMY_ROUNDS: u32 = 40;
+/// Remembered enemies (not in vision) count as threats this many rounds after the sighting.
+const GHOST_MAX_AGE: u32 = 8;
+/// Cap on remembered threats per turn (each costs a pass over the path window).
+const MAX_GHOSTS: usize = 5;
+/// Teammate sightings further than this are ignored (threat and help alike).
+const TEAM_SIGHTING_RADIUS: i32 = 12;
+/// Reach and damage assumed for an enemy only a teammate saw (its kind isn't shared).
+const TEAM_GHOST_RANGE: i32 = 3;
+const TEAM_GHOST_DPS: f32 = 40.0;
+/// Only champions above this health fraction answer a call for help.
+const ASSIST_MIN_HP: f32 = 0.7;
 
 impl Bot {
     pub fn new() -> Result<Self> {
@@ -160,7 +172,7 @@ impl Bot {
         }
 
         let mut exec_out = Outcome::default();
-        let (mode, expert, intent);
+        let (mode, expert, mut intent);
         if !alive {
             // Dead champions still get a turn: shop.
             chan.set_claim(self.slot as usize, None);
@@ -174,8 +186,21 @@ impl Bot {
             // ---- surroundings ----------------------------------------------
             let mut mark = fuel();
             self.gov.record(Stage::Observe, fuel_start.saturating_sub(mark));
-            let vis = self.observe(me, my_pos, round)?;
+            let mut vis = self.observe(me, my_pos, round)?;
             mark = self.charge(Stage::Observe, mark);
+            // A teammate's sighting (vision isn't shared): treat it as a threat we can't see.
+            let shared = chan.sighting(round);
+            if let Some((p, age)) = shared {
+                let unseen = vis.enemies.iter().all(|e| e.pos.cheb(p) > 2);
+                if unseen && vis.ghosts.len() < MAX_GHOSTS && p.cheb(my_pos) <= TEAM_SIGHTING_RADIUS
+                {
+                    vis.ghosts.push(Threat {
+                        pos: p,
+                        range: TEAM_GHOST_RANGE + age as i32,
+                        dps: TEAM_GHOST_DPS,
+                    });
+                }
+            }
             if let Some(e) = vis.enemies.first() {
                 chan.post_sighting(e.pos, round);
             }
@@ -193,6 +218,23 @@ impl Bot {
             mode = gate::rule_gate(&ctx);
             expert = router::select(mode, &ctx, None);
             intent = expert.plan(&ctx);
+            // Answer a teammate's call for help: healthy, not carrying a big bag, nothing
+            // in our own view, and the fight is close. Safety overrides still win (Routine only).
+            let mut assist = None;
+            if mode == Mode::Routine
+                && chan.help
+                && vis.enemies.is_empty()
+                && ctx.hp_frac() > ASSIST_MIN_HP
+                && ctx.gems < router::BIG_BAG_GEMS
+            {
+                if let Some((p, age)) = shared {
+                    if age <= 1 && (2..=TEAM_SIGHTING_RADIUS).contains(&p.cheb(my_pos)) {
+                        intent = Intent::Engage(p);
+                        assist = Some(p);
+                        telemetry::event(round, champ_name(self.kind), "assist", 1);
+                    }
+                }
+            }
             self.charge(Stage::Brain, mark);
             let claim = match intent {
                 Intent::ClearCamp(g) | Intent::Capture(g) | Intent::Approach(g) => {
@@ -213,6 +255,7 @@ impl Bot {
             if !channeling {
                 let before = fuel();
                 let mut exec = self.exec(me, &vis, my_pos, hurt_this_round);
+                exec.assist = assist;
                 exec.execute(intent)?;
                 exec_out = exec.out;
                 let total = before.saturating_sub(fuel());
@@ -285,6 +328,7 @@ impl Bot {
             my_pos,
             occupied: occupied_tiles(vis, my_pos),
             hurt_this_round: hurt,
+            assist: None,
             out: Outcome::default(),
         }
     }
@@ -337,6 +381,23 @@ impl Bot {
             vis.enemies.push(view);
         }
         vis.enemies.sort_by_key(|e| e.dist);
+        // Enemies seen recently but not now (stepped into a bush or out of sight):
+        // keep them as pessimistic threats so pathing avoids where they vanished.
+        for s in self.belief.recent(round, GHOST_MAX_AGE) {
+            if vis.ghosts.len() >= MAX_GHOSTS || vis.enemies.iter().any(|e| e.kind == s.kind) {
+                continue;
+            }
+            let age = round.saturating_sub(s.round);
+            if age == 0 || s.pos.cheb(my_pos) > 12 {
+                continue;
+            }
+            let confidence = 1.0 - age as f32 / (GHOST_MAX_AGE as f32 + 1.0);
+            vis.ghosts.push(Threat {
+                pos: s.pos,
+                range: s.attack_range + 1 + (age as i32 + 1) / 2,
+                dps: s.dps * confidence,
+            });
+        }
 
         for a in cambc::vision::champions(Some(Team::Ally))? {
             let Ok(p) = a.position() else { continue };

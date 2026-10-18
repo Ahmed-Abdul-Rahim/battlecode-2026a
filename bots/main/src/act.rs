@@ -63,10 +63,12 @@ pub struct Visible {
     pub enemies: Vec<EnemyView>,
     pub allies: Vec<AllyView>,
     pub camps: Vec<CampView>,
+    /// Enemies seen in the last few rounds but not now (likely in a bush), widened by age.
+    pub ghosts: Vec<Threat>,
 }
 
 impl Visible {
-    /// Things that could hurt us, for danger-weighted pathing.
+    /// Things that could hurt us, for danger-weighted pathing (remembered enemies included).
     pub fn threats(&self, ignore_group: Option<usize>) -> Vec<Threat> {
         let camps = self
             .camps
@@ -77,7 +79,15 @@ impl Visible {
             .map(|c| Threat { pos: c.pos, range: 3, dps: c.strength });
         let enemies =
             self.enemies.iter().map(|e| Threat { pos: e.pos, range: e.range + 1, dps: e.dps });
-        camps.chain(enemies).collect()
+        camps.chain(enemies).chain(self.ghosts.iter().copied()).collect()
+    }
+
+    /// Damage per round that visible and remembered enemies could bring to `p` within `rounds`.
+    pub fn reachable_dps(&self, p: Pos, rounds: i32) -> f32 {
+        let seen = self.enemies.iter().filter(|e| e.pos.cheb(p) <= e.range + rounds).map(|e| e.dps);
+        let ghosts =
+            self.ghosts.iter().filter(|g| g.pos.cheb(p) <= g.range + rounds).map(|g| g.dps);
+        seen.chain(ghosts).sum()
     }
 }
 
@@ -116,6 +126,8 @@ pub struct Exec<'a> {
     pub my_pos: Pos,
     pub occupied: Vec<Pos>,
     pub hurt_this_round: bool,
+    /// Walking to a teammate's fight at this position (Engage before the enemy is in view).
+    pub assist: Option<Pos>,
     pub out: Outcome,
 }
 
@@ -280,17 +292,59 @@ impl Exec<'_> {
     }
 
     fn recall_or_walk_home(&mut self) -> Result<()> {
+        let camps_quiet = self.vis.camps.iter().all(|c| !c.awake || c.dist > 4);
+        let in_bush = self.world.terrain.bushes.get(self.my_pos);
+        // Outside a bush we need distance; inside one, enemies can't see us, so it
+        // is enough that none can reach us before the recall finishes.
         let safe = !self.hurt_this_round
-            && self.vis.enemies.iter().all(|e| e.dist > 6)
-            && self.vis.camps.iter().all(|c| !c.awake || c.dist > 4);
+            && camps_quiet
+            && self.vis.enemies.iter().all(|e| e.dist > if in_bush { e.range + 2 } else { 6 });
         if safe {
             match self.me.recall() {
                 Ok(()) => return Ok(()),
                 Err(e) => telemetry::error("recall", &e),
             }
         }
+        if !self.vis.enemies.is_empty() && !self.hurt_this_round {
+            // Hidden with a healthy ally close: hold and let them take the fight.
+            let tank_near = self.vis.allies.iter().any(|a| a.dist <= 3 && a.hp >= 0.6 * a.max_hp);
+            if in_bush && tank_near {
+                return Ok(());
+            }
+            if !in_bush && self.duck_into_bush()? {
+                return Ok(());
+            }
+        }
         let threats = self.vis.threats(None);
         self.walk(Goal::AllySpawn, &threats)
+    }
+
+    /// Step into an adjacent bush that no visible enemy can hit. True if we moved.
+    fn duck_into_bush(&mut self) -> Result<bool> {
+        if !self.me.can_move()? {
+            return Ok(false);
+        }
+        let enemies = &self.vis.enemies;
+        let exposed = |p: Pos| enemies.iter().any(|e| e.pos.cheb(p) <= e.range + 1);
+        let best = DIRS8
+            .iter()
+            .map(|&d| self.my_pos + d)
+            .filter(|&p| {
+                self.world.terrain.bushes.get(p)
+                    && self.world.terrain.walkable(p)
+                    && !self.occupied.contains(&p)
+                    && !exposed(p)
+            })
+            .max_by_key(|&p| enemies.iter().map(|e| e.pos.cheb(p)).min().unwrap_or(0));
+        let Some(to) = best else { return Ok(false) };
+        if self.me.move_absolute(vec2(to)).unwrap_or(false) {
+            telemetry::event(0, "", "hide_bush", 1);
+            self.my_pos = to;
+            self.out.moved = true;
+            self.out.tier = Some(Tier::Fallback);
+            return Ok(true);
+        }
+        Ok(false)
     }
 
     // ----- combat helpers -------------------------------------------------
@@ -552,6 +606,14 @@ impl Exec<'_> {
 
     fn tribute(&mut self) -> Result<()> {
         if let Some(altar) = self.world.altar_in_range(self.my_pos) {
+            // Damage doesn't stop a tribute but death does (and drops the bag to the
+            // killer): don't start a channel that enemies can kill us during.
+            let ticks = (self.me.gem_count()?.div_ceil(10)).max(1) as i32;
+            let danger = self.vis.reachable_dps(self.my_pos, ticks);
+            if danger > 0.0 && danger * ticks as f32 >= self.me.health()? {
+                telemetry::event(0, "", "tribute_unsafe", 1);
+                return self.recall_or_walk_home();
+            }
             if cambc::vision::has_altar_lock(vec2(altar)).unwrap_or(false) {
                 // Tributing into an enemy lock is converted to attacks on the lock.
                 telemetry::event(0, "", "altar_locked", 1);
@@ -568,6 +630,9 @@ impl Exec<'_> {
     fn engage(&mut self, target: Pos) -> Result<()> {
         let vis = self.vis;
         let Some(enemy) = vis.enemies.iter().find(|e| e.pos == target) else {
+            if self.assist == Some(target) {
+                return self.step_by(|p| p.cheb(target));
+            }
             return self.opportunistic_attack();
         };
         self.cast_support()?;
