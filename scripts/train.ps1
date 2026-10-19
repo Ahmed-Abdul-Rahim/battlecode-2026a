@@ -12,7 +12,7 @@ Set-Location $root
 function Stop-Trainers {
     Get-CimInstance Win32_Process -Filter "Name='python.exe'" |
         Where-Object { $_.CommandLine -match 'league_train|coevo' } |
-        ForEach-Object { Stop-Process -Id $_.ProcessId -Force; "stopped $($_.ProcessId)" }
+        ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue; "stopped $($_.ProcessId)" }
     Remove-Item runs\league\lock, runs\coevo\lock -ErrorAction SilentlyContinue
 }
 
