@@ -20,6 +20,7 @@ mod bot;
 mod draft;
 mod map_plans;
 mod sdk;
+mod learned;
 mod skirmish;
 mod telemetry;
 mod world;
