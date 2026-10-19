@@ -51,6 +51,8 @@ pub struct Bot {
     /// One slot per kind, so several unreachable enemies are ignored together (a single
     /// slot let the target flip between them forever: the rushbait 2000-round stall).
     ignore_until: [u32; 12],
+    /// Policy-pack death hotspots for this map: (tile, weight 0..1).
+    hotspots: Vec<(Pos, f32)>,
     /// Health lost since our previous turn (what is actually hitting us).
     dmg_taken: f32,
     /// Rounds spent waiting for allies before waking a dangerous group (CAMP_SAFE bit 2).
@@ -120,6 +122,10 @@ const OPENING_ROUNDS: u32 = 120;
 const OPENING_DIST_WEIGHT: f32 = 2.5;
 /// PASSIVE_ROLES: Vesper farms gold groups until she owns this many emblems.
 const VESPER_GOLD_EMBLEMS: u32 = 3;
+/// Pack hotspots: considered within this radius, at most this many, scaled from this dps.
+const HOTSPOT_RADIUS: i32 = 8;
+const MAX_HOTSPOTS: usize = 4;
+const HOTSPOT_DPS: f32 = 60.0;
 /// FIGHT_V6 last stand: never with a bag this big (the killer takes it).
 const LAST_STAND_MAX_GEMS: u32 = 20;
 
@@ -127,6 +133,21 @@ impl Bot {
     pub fn new() -> Result<Self> {
         let theta = ThetaMatch::decode(cambc::draft_memory().bytes()).unwrap_or_default();
         let world = World::build(theta.knob(knob::SAFE_ALTAR) > 0)?;
+        // Policy pack: this map's learned parameters and hotspots (harness/pack.py).
+        let fp = crate::world::fingerprint(
+            world.width,
+            world.height,
+            &world.terrain.walls,
+            &world.terrain.holes,
+            &world.terrain.altars,
+        );
+        let entry = crate::pack::lookup(fp);
+        crate::learned::init(entry.theta);
+        let hotspots: Vec<(Pos, f32)> = entry
+            .hotspots
+            .chunks_exact(3)
+            .map(|c| (Pos::new(i32::from(c[0]), i32::from(c[1])), f32::from(c[2]) / 255.0))
+            .collect();
         let me = cambc::self_champion()?.ok_or_else(|| sdk::local_error("no self champion"))?;
         let kind = sdk::kind(me.champion_name()?);
         let kit = sdk::kit(kind);
@@ -169,6 +190,7 @@ impl Bot {
             turns: 0,
             engage_stall: 0,
             ignore_until: [0; 12],
+            hotspots,
             dmg_taken: 0.0,
             gather_wait: 0,
             cur_dps: 0.0,
@@ -281,6 +303,13 @@ impl Bot {
                     });
                 }
             }
+            // Learned death hotspots near us act as standing threats (pathing steers around them).
+            let hot_w = crate::learned::hotspot_w();
+            if hot_w > 0.0 {
+                for &(p, w) in self.hotspots.iter().filter(|(p, _)| p.cheb(my_pos) <= HOTSPOT_RADIUS).take(MAX_HOTSPOTS) {
+                    vis.ghosts.push(Threat { pos: p, range: 1, dps: HOTSPOT_DPS * w * hot_w });
+                }
+            }
             if let Some(e) = vis.enemies.first() {
                 chan.post_sighting(e.pos, round);
             }
@@ -328,7 +357,7 @@ impl Bot {
             } else {
                 mode == Mode::Routine
                     && vis.enemies.is_empty()
-                    && ctx.hp_frac() > ASSIST_MIN_HP * crate::learned::W[crate::learned::ASSIST_HP]
+                    && ctx.hp_frac() > ASSIST_MIN_HP * crate::learned::w(crate::learned::ASSIST_HP)
             };
             if free_to_assist && (chan.help || hunting) && ctx.gems < router::BIG_BAG_GEMS {
                 if let Some((p, age)) = shared {
@@ -635,15 +664,15 @@ impl Bot {
 
     /// Knobs with per-champion adjustments (PASSIVE_ROLES: Prism carries bigger bags).
     fn role_knobs(&self) -> Knobs {
-        use crate::learned::{self as l, W};
+        use crate::learned as l;
         let mut k = self.knobs;
         let scale = |v: u8, w: f32| (f32::from(v) * w).round().clamp(0.0, 255.0) as u8;
-        k.fight_margin_pct = scale(k.fight_margin_pct, W[l::FIGHT_MARGIN]);
-        k.retreat_hp_pct = scale(k.retreat_hp_pct, W[l::RETREAT_HP]).min(95);
-        k.aggression = scale(k.aggression, W[l::AGGRESSION]);
-        k.tribute_min = scale(k.tribute_min, W[l::TRIBUTE_MIN]);
-        k.tribute_max = scale(k.tribute_max, W[l::TRIBUTE_MAX]).max(k.tribute_min);
-        k.recall_gold = (k.recall_gold as f32 * W[l::RECALL_GOLD]).round().max(30.0) as u32;
+        k.fight_margin_pct = scale(k.fight_margin_pct, l::w(l::FIGHT_MARGIN));
+        k.retreat_hp_pct = scale(k.retreat_hp_pct, l::w(l::RETREAT_HP)).min(95);
+        k.aggression = scale(k.aggression, l::w(l::AGGRESSION));
+        k.tribute_min = scale(k.tribute_min, l::w(l::TRIBUTE_MIN));
+        k.tribute_max = scale(k.tribute_max, l::w(l::TRIBUTE_MAX)).max(k.tribute_min);
+        k.recall_gold = (k.recall_gold as f32 * l::w(l::RECALL_GOLD)).round().max(30.0) as u32;
         if self.theta.knob(knob::PASSIVE_ROLES) > 0 && self.kind == ChampionKind::Prism {
             k.tribute_min = (u32::from(k.tribute_min) * 3 / 2).min(u32::from(k.tribute_max)) as u8;
         }
@@ -713,8 +742,8 @@ impl Bot {
 
     /// FIGHT . psi (learned.rs): log-multiplier on the fight advantage.
     fn fight_bias(&self, ctx: &Context, vis: &Visible) -> f32 {
-        use crate::learned::FIGHT;
-        if FIGHT.iter().all(|&w| w == 0.0) {
+        let fight_w = crate::learned::fight();
+        if fight_w.iter().all(|&w| w == 0.0) {
             return 0.0;
         }
         let Some(e) = ctx.enemy else { return 0.0 };
@@ -729,7 +758,7 @@ impl Bot {
             ctx.dist_spawn.map_or(1.0, |d| f32::from(d) / 20.0),
             1.0,
         ];
-        FIGHT.iter().zip(psi).map(|(w, x)| w * x).sum::<f32>().clamp(-3.0, 3.0)
+        fight_w.iter().zip(psi).map(|(w, x)| w * x).sum::<f32>().clamp(-3.0, 3.0)
     }
 
     /// exp(TARGET . phi) (learned.rs): learned correction to a camp group's score.
@@ -744,8 +773,8 @@ impl Bot {
         round: u32,
         chan: &TeamChannel,
     ) -> f32 {
-        use crate::learned::TARGET;
-        if TARGET.iter().all(|&w| w == 0.0) {
+        let target_w = crate::learned::target();
+        if target_w.iter().all(|&w| w == 0.0) {
             return 1.0;
         }
         let others = self.priority_index(i).map_or(0, |pi| chan.claimants(pi, self.slot as usize));
@@ -762,7 +791,7 @@ impl Bot {
             self.emblems() as f32 / 5.0,
             round as f32 / 1000.0,
         ];
-        TARGET.iter().zip(phi).map(|(w, x)| w * x).sum::<f32>().clamp(-4.0, 4.0).exp()
+        target_w.iter().zip(phi).map(|(w, x)| w * x).sum::<f32>().clamp(-4.0, 4.0).exp()
     }
 
     /// Completed emblems we own.
@@ -985,7 +1014,7 @@ impl Bot {
             }
             let mut value = match value_profile {
                 1 => g.gems as f32 + g.gold as f32 / 10.0,
-                4 => g.gems as f32 * crate::learned::W[crate::learned::GEM] + g.gold as f32 * 0.6 * crate::learned::W[crate::learned::GOLD],
+                4 => g.gems as f32 * crate::learned::w(crate::learned::GEM) + g.gold as f32 * 0.6 * crate::learned::w(crate::learned::GOLD),
                 5 => g.gems as f32 + g.gold as f32,
                 2 if self.slot < 2 => g.gems as f32 * 0.3 + g.gold as f32,
                 2 => g.gems as f32 + g.gold as f32 * 0.15,
@@ -1004,7 +1033,7 @@ impl Bot {
             }
             let clear = match state {
                 GroupState::RewardAvailable => {
-                    value *= 1.5 * crate::learned::W[crate::learned::REWARD];
+                    value *= 1.5 * crate::learned::w(crate::learned::REWARD);
                     0.0
                 }
                 // A monolith is cleared by the whole team, not one champion.
@@ -1026,11 +1055,11 @@ impl Bot {
                     value *= f32::from(join) / 10.0;
                 } else if others > 0 {
                     // Big groups go faster together; small ones are wasted on two.
-                    value *= if g.total_hp >= 3000.0 { 1.1 } else { 0.35 * crate::learned::W[crate::learned::SHARED_SMALL] };
+                    value *= if g.total_hp >= 3000.0 { 1.1 } else { 0.35 * crate::learned::w(crate::learned::SHARED_SMALL) };
                 }
             }
             // Stronger camps hurt: discount by expected damage taken.
-            value /= 1.0 + g.max_strength / 100.0 * crate::learned::W[crate::learned::STRENGTH_DISCOUNT];
+            value /= 1.0 + g.max_strength / 100.0 * crate::learned::w(crate::learned::STRENGTH_DISCOUNT);
             // Can the champions on it clear it before the tank dies? Gear up on others first.
             if self.theta.knob(knob::CAMP_FEASIBLE) > 0 && state != GroupState::RewardAvailable {
                 let helpers =
@@ -1045,13 +1074,13 @@ impl Bot {
             let remote = self.theta.knob(knob::REMOTE_FARMER) > 0
                 && self.team_size >= 4
                 && self.slot as usize + 1 == self.team_size;
-            let dist_w = if remote { 0.4 } else if opening { OPENING_DIST_WEIGHT * crate::learned::W[crate::learned::OPENING_DIST] } else { 1.0 }
-                * crate::learned::W[crate::learned::DIST];
+            let dist_w = if remote { 0.4 } else if opening { OPENING_DIST_WEIGHT * crate::learned::w(crate::learned::OPENING_DIST) } else { 1.0 }
+                * crate::learned::w(crate::learned::DIST);
             let mut score =
-                value / (dist * dist_w + clear * crate::learned::W[crate::learned::CLEAR] + (eta - dist).max(0.0) + 5.0);
+                value / (dist * dist_w + clear * crate::learned::w(crate::learned::CLEAR) + (eta - dist).max(0.0) + 5.0);
             score *= self.target_bias(g, dist, clear, eta, i, round, chan);
             if self.target == Some(i) {
-                score *= 1.3 * crate::learned::W[crate::learned::HYSTERESIS];
+                score *= 1.3 * crate::learned::w(crate::learned::HYSTERESIS);
             }
             if best.is_none_or(|(b, _)| score > b) {
                 best = Some((score, i));
@@ -1092,8 +1121,8 @@ impl Bot {
             let detour = d1 as i32 + d2 as i32 - to_far;
             let clear = g.total_hp / dps;
             let damage = g.total_strength * CAMP_DMG_FLOOR * clear;
-            if detour as f32 > EN_ROUTE_DETOUR as f32 * crate::learned::W[crate::learned::EN_DETOUR]
-                || clear > EN_ROUTE_MAX_CLEAR * crate::learned::W[crate::learned::EN_CLEAR]
+            if detour as f32 > EN_ROUTE_DETOUR as f32 * crate::learned::w(crate::learned::EN_DETOUR)
+                || clear > EN_ROUTE_MAX_CLEAR * crate::learned::w(crate::learned::EN_CLEAR)
                 || damage > self.last_hp * 0.7
             {
                 continue;

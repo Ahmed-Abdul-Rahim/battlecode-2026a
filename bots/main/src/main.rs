@@ -21,6 +21,7 @@ mod draft;
 mod map_plans;
 mod sdk;
 mod learned;
+mod pack;
 mod skirmish;
 mod telemetry;
 mod world;

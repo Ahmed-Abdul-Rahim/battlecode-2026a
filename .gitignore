@@ -54,3 +54,10 @@ bots/_es-*/
 bots/_lg-*/
 bots/auto-v*/
 runs/league/lock
+bots/lin-b/
+bots/coA-v*/
+bots/coB-v*/
+bots/_coA-*/
+bots/_coB-*/
+bots/_hot-*/
+runs/coevo/lock

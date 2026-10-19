@@ -35,3 +35,53 @@ pub const F_N: usize = 9;
 pub const FIGHT: [f32; F_N] = [0.0; F_N];
 pub const ROUTER: bool = false;
 pub const EPSILON: f32 = 0.0;
+/// Hotspot threat weight (pack hotspots become threats near us; 0 = off).
+pub const HOTSPOT_W: f32 = 0.0;
+
+/// Full parameter vector: W (N) + TARGET (T_N) + FIGHT (F_N) + HOTSPOT_W.
+pub const P_N: usize = N + T_N + F_N + 1;
+
+static PARAMS: std::sync::OnceLock<[f32; P_N]> = std::sync::OnceLock::new();
+
+/// Install this map's parameters (from the policy pack's θ section, if any). Call once.
+pub fn init(theta: Option<&[u8]>) {
+    let mut p = [0.0f32; P_N];
+    p[..N].copy_from_slice(&W);
+    p[N..N + T_N].copy_from_slice(&TARGET);
+    p[N + T_N..N + T_N + F_N].copy_from_slice(&FIGHT);
+    p[P_N - 1] = HOTSPOT_W;
+    if let Some(b) = theta.filter(|b| b.len() == P_N * 4) {
+        for (i, c) in b.chunks_exact(4).enumerate() {
+            p[i] = f32::from_le_bytes([c[0], c[1], c[2], c[3]]);
+        }
+    }
+    let _ = PARAMS.set(p);
+}
+
+fn params() -> &'static [f32; P_N] {
+    if PARAMS.get().is_none() {
+        init(None);
+    }
+    PARAMS.get().expect("set by init")
+}
+
+/// Multiplier `i` (index into W).
+#[must_use]
+pub fn w(i: usize) -> f32 {
+    params()[i]
+}
+
+#[must_use]
+pub fn target() -> &'static [f32] {
+    &params()[N..N + T_N]
+}
+
+#[must_use]
+pub fn fight() -> &'static [f32] {
+    &params()[N + T_N..N + T_N + F_N]
+}
+
+#[must_use]
+pub fn hotspot_w() -> f32 {
+    params()[P_N - 1]
+}

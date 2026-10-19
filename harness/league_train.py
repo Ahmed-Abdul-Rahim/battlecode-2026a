@@ -281,7 +281,7 @@ def gate_candidate(st: dict, bot: str, cyc: Path, rng: random.Random, quick: boo
 
 
 def sh(args: list[str], **kw) -> subprocess.CompletedProcess:
-    return subprocess.run(args, cwd=ROOT, capture_output=True, text=True, **kw)
+    return subprocess.run(args, cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace", **kw)
 
 
 def promote(st: dict, bot: str, info: dict, auto_submit: bool) -> str:
