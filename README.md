@@ -44,10 +44,10 @@ python scripts\handoff.py pack                 # -> handoff.zip (~3 MB); add --w
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts\setup.ps1
 python scripts\handoff.py restore handoff.zip  # unpacks state + rebuilds bots/main-v*, co*-v* from the zips
-scripts	rain.ps1 start                        # resume training; scripts	rain.ps1 status to check
+scripts\train.ps1 start                        # resume training; scripts\train.ps1 status to check
 ```
 
-Without `handoff.zip`, ask for the `submission/` zips. Run `python scripts\handoff.py refs` to unzip them into `bots/main-v*`, then `scripts	rain.ps1 start` begins a fresh run from the committed champion.
+Without `handoff.zip`, ask for the `submission/` zips. Run `python scripts\handoff.py refs` to unzip them into `bots/main-v*`, then `scripts\train.ps1 start` begins a fresh run from the committed champion.
 
 Uploading stays manual and needs the team's agreement (`docs/cambc-cli.md`).
 
@@ -91,9 +91,9 @@ In Claude Code: `/improve [focus]` runs one gated self-improvement iteration (do
 ## Training (learned layer)
 
 ```powershell
-scripts	rain.ps1 start     # league trainer + co-evolution daemons (resumable)
-scripts	rain.ps1 status    # champions, Elo, acceptances, ladder, which zip to upload
-scripts	rain.ps1 stop
+scripts\train.ps1 start     # league trainer + co-evolution daemons (resumable)
+scripts\train.ps1 status    # champions, Elo, acceptances, ladder, which zip to upload
+scripts\train.ps1 stop
 ```
 
 What is learned (θ, policy pack, router), how the daemons work and how to extend them: [docs/training.md](docs/training.md).
