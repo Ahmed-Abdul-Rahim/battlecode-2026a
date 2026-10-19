@@ -48,9 +48,14 @@ BLOCKS = [
     ("FIGHT", F_NAMES, "lin", -3.0, 3.0, 0.2),
     ("HOT", ["hotspot_w"], "lin", 0.0, 0.0, 0.0),
     ("U", [f"{o}.{p}" for o in U_OPTIONS for p in U_PHI], "lin", -4.0, 4.0, 0.3),
-    ("X", X_NAMES, "lin", 0.0, 60.0, 0.0),
+    # X (4 floats in Rust): split so each extra gets its own bounds and step.
+    ("X.flag", X_NAMES[:1], "lin", 0.0, 1.0, 0.3),        # Tavi re-spec: > 0.5 = on
+    ("X.fuel", X_NAMES[1:2], "lin", 25.0, 60.0, 3.0),     # arbiter fuel floor (k fuel)
+    ("X.reserved", X_NAMES[2:], "lin", 0.0, 0.0, 0.0),
 ]
-RUST_LEN = {"W": "N", "TARGET": "T_N", "FIGHT": "F_N", "U": "U_N", "X": "X_N"}
+RUST_LEN = {"W": "N", "TARGET": "T_N", "FIGHT": "F_N", "U": "U_N"}
+#: Blocks that together form one Rust array (name, length const).
+RUST_SPLIT = {"X": (("X.flag", "X.fuel", "X.reserved"), "X_N")}
 
 
 def names() -> list[str]:
@@ -76,7 +81,14 @@ def defaults(learned: Path = LEARNED) -> list[float]:
     """Bot-space defaults from learned.rs (what a build without a pack θ plays)."""
     text = learned.read_text(encoding="utf-8")
     out = []
+    x_vals = _arr(text, "X") or []
+    x_at = 0
     for block, ns, scale, *_ in BLOCKS:
+        if block.startswith("X."):
+            vals = x_vals[x_at:x_at + len(ns)]
+            out += vals + [0.0] * (len(ns) - len(vals))
+            x_at += len(ns)
+            continue
         name = {"HOT": "HOTSPOT_W"}.get(block, block)
         if block == "HOT":
             m = re.search(r"pub const HOTSPOT_W: f32 = ([-\d.]+);", text)
@@ -120,6 +132,11 @@ def sigma0() -> list[float]:
 def check(learned: Path = LEARNED) -> list[str]:
     text = learned.read_text(encoding="utf-8")
     errs = []
+    for arr, (blocks, const) in RUST_SPLIT.items():
+        n = sum(len(ns) for b, ns, *_ in BLOCKS if b in blocks)
+        m = re.search(rf"pub const {const}: usize = (\d+);", text)
+        if not m or int(m.group(1)) != n:
+            errs.append(f"{arr}: registry has {n}, learned.rs {const} = {m and m.group(1)}")
     for block, ns, *_ in BLOCKS:
         if block not in RUST_LEN:
             continue
