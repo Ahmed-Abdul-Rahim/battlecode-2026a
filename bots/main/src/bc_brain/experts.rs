@@ -102,6 +102,11 @@ pub enum Intent {
     /// Recall (if away from spawn) and buy.
     Shop,
     Hold,
+    /// Step just outside the reach of the camp / melee enemy at this position (aggro swap:
+    /// the camp turns to the nearest ally) while casting at it from range when possible.
+    StepBack(Pos),
+    /// Walk home without recalling (no frozen channel).
+    WalkHome,
 }
 
 fn farm(ctx: &Context) -> Intent {

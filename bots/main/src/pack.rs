@@ -4,7 +4,9 @@
 //! code. Format (little-endian): magic "BCPK", version u16, entry count u16, then entries:
 //! fingerprint u32 (0 = global fallback), section count u16, sections (tag u8, len u32,
 //! bytes). Tags: 1 θ (f32 × learned::P_N), 2 hotspots ((x u8, y u8, weight u8) × n),
-//! 3 opening (u8 group indices, slot-major: OPENING_SLOTS × OPENING_LEN, 255 = none).
+//! 3 opening (n sides u8, then per side: spawn x u8, y u8, KINDS × OPENING_LEN group
+//! indices, 255 = none), 4 draft (team sizes 3/4/5 × DRAFT_LEN DraftChoice, 255 = none),
+//! 5 build (KINDS × BUILD_LEN emblems as family * 3 + stat, 255 = end).
 //! An empty pack (no entries) leaves the bot exactly as compiled.
 
 static PACK: &[u8] = include_bytes!("pack/pack.bin");
@@ -12,14 +14,52 @@ static PACK: &[u8] = include_bytes!("pack/pack.bin");
 pub const TAG_THETA: u8 = 1;
 pub const TAG_HOTSPOTS: u8 = 2;
 pub const TAG_OPENING: u8 = 3;
-pub const OPENING_SLOTS: usize = 6;
+pub const TAG_DRAFT: u8 = 4;
+pub const TAG_BUILD: u8 = 5;
+pub const KINDS: usize = 12;
 pub const OPENING_LEN: usize = 4;
+pub const DRAFT_LEN: usize = 5;
+pub const BUILD_LEN: usize = 12;
 
 #[derive(Default, Clone, Copy)]
 pub struct Entry {
     pub theta: Option<&'static [u8]>,
     pub hotspots: &'static [u8],
     pub opening: &'static [u8],
+    pub draft: &'static [u8],
+    pub build: &'static [u8],
+}
+
+impl Entry {
+    /// Draft preference for this team size (pack TAG_DRAFT), as DraftChoice values.
+    #[must_use]
+    pub fn draft_for(&self, team_size: usize) -> Vec<u8> {
+        let i = team_size.clamp(3, 5) - 3;
+        self.draft.get(i * DRAFT_LEN..(i + 1) * DRAFT_LEN).map_or_else(Vec::new, |s| {
+            s.iter().copied().take_while(|&b| b != 255).collect()
+        })
+    }
+
+    /// Emblem order for a champion kind (pack TAG_BUILD), as (family, stat) indices.
+    #[must_use]
+    pub fn build_for(&self, kind: usize) -> Vec<(u8, u8)> {
+        self.build.get(kind * BUILD_LEN..(kind + 1) * BUILD_LEN).map_or_else(Vec::new, |s| {
+            s.iter().copied().take_while(|&b| b != 255).map(|b| (b / 3, b % 3)).collect()
+        })
+    }
+
+    /// Opening groups for a champion kind on the spawn side closest to `spawn`.
+    #[must_use]
+    pub fn opening_for(&self, spawn: (i32, i32), kind: usize) -> Vec<u8> {
+        let b = self.opening;
+        let Some(&n) = b.first() else { return Vec::new() };
+        let side_len = 2 + KINDS * OPENING_LEN;
+        let best = (0..usize::from(n))
+            .filter_map(|s| b.get(1 + s * side_len..1 + (s + 1) * side_len))
+            .min_by_key(|side| (i32::from(side[0]) - spawn.0).abs().max((i32::from(side[1]) - spawn.1).abs()));
+        best.and_then(|side| side.get(2 + kind * OPENING_LEN..2 + (kind + 1) * OPENING_LEN))
+            .map_or_else(Vec::new, |s| s.iter().copied().take_while(|&g| g != 255).collect())
+    }
 }
 
 fn u16_at(b: &[u8], i: usize) -> Option<u16> {
@@ -52,6 +92,8 @@ pub fn lookup(fingerprint: u32) -> Entry {
                 TAG_THETA => e.theta = Some(data),
                 TAG_HOTSPOTS => e.hotspots = data,
                 TAG_OPENING => e.opening = data,
+                TAG_DRAFT => e.draft = data,
+                TAG_BUILD => e.build = data,
                 _ => {}
             }
             at = start + len as usize;

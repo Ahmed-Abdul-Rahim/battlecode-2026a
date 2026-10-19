@@ -39,7 +39,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import pack as packlib
+import params
 import v6_trials
+from league_gate import suspended
 
 from bctools import ROOT, runner
 
@@ -47,15 +49,25 @@ CAMBC = ROOT / ".venv" / "Scripts" / "cambc.exe"
 OUT = ROOT / "runs" / "coevo"
 STATE = OUT / "state.json"
 LOCK = OUT / "lock"
-N_W, N_T, N_F = 18, 10, 9
-P_N = N_W + N_T + N_F + 1
+N_W = 18
 LAMBDA = 8
-SIGMA0 = [0.25] * N_W + [0.2] * (N_T + N_F) + [0.0]
+#: Fitness penalty per suspended (out-of-fuel) turn per game: a learned policy must not buy
+#: strength by risking a frozen champion.
+SUSP_W = 0.002
 ACCEPT_GAIN = 0.05
 DEATH_W = 0.01
 MARGIN_W = 0.25
 CROSS_EVERY = 10
 FIXED = ["main-v13b", "main-v12"]
+#: Opponents per candidate evaluation (x2 sides on the map). The engine is deterministic
+#: but chaotic (a no-op code change flips ~25% of winners), so few games are noise.
+N_OPPS = 5
+#: Re-check an accepted candidate on this many fresh opponents before it counts.
+N_CONFIRM = 4
+MIMIC_REFRESH_EVERY = 30
+LINEAGES = ("A", "B", "C")
+#: Lineage C: imitation-initialised from a top-team mimic (harness/mimic.py).
+LINEAGE_C_SPEC = next((p for p in (ROOT / "runs" / "mimic" / "nyx.spec.json", ROOT / "data" / "mimic" / "nyx.spec.json") if p.exists()), ROOT / "data" / "mimic" / "nyx.spec.json")
 LINEAGE_B_KNOBS = {"DRAFT_BEST": 1, "BUILD_PROFILE": 13}
 
 
@@ -64,27 +76,31 @@ def sh(args: list[str]) -> subprocess.CompletedProcess:
 
 
 def base_theta(src: str) -> list[float]:
-    """The lineage's compiled defaults as a θ vector (log W, TARGET, FIGHT, HOTSPOT_W)."""
-    text = (ROOT / "bots" / src / "src" / "learned.rs").read_text(encoding="utf-8")
-
-    def arr(name: str, n: int, d: float) -> list[float]:
-        m = re.search(rf"pub const {name}: \[f32; \w+\] = \[(.*?)\];", text, re.S)
-        if not m or ";" in m.group(1):
-            return [d] * n
-        v = [float(x) for x in m.group(1).split(",") if x.strip()]
-        return v if len(v) == n else [d] * n
-
-    return [math.log(max(w, 1e-3)) for w in arr("W", N_W, 1.0)] + arr("TARGET", N_T, 0.0) + arr("FIGHT", N_F, 0.0) + [0.0]
+    """The lineage's compiled defaults as a search-space θ (harness/params.py layout)."""
+    return params.to_search(params.defaults(ROOT / "bots" / src / "src" / "learned.rs"))
 
 
-def to_pack_theta(theta: list[float]) -> list[float]:
-    w = [math.exp(min(max(x, math.log(0.2)), math.log(5.0))) for x in theta[:N_W]]
-    rest = [min(max(x, -3.0), 3.0) for x in theta[N_W:]]
-    return w + rest
+def full_theta(theta: list[float], src: str) -> list[float]:
+    """Pad an older, shorter θ with the lineage defaults for the parameters added since."""
+    base = base_theta(src)
+    return list(theta) + base[len(theta):]
 
 
-def write_pack(path: Path, pack: dict[str, list[float]]) -> None:
-    packlib.write({"maps": {m: {"theta": to_pack_theta(t)} for m, t in pack.items()}}, path)
+def to_pack_theta(theta: list[float], src: str = "main") -> list[float]:
+    return params.to_bot(theta, params.defaults(ROOT / "bots" / src / "src" / "learned.rs"))
+
+
+def write_pack(path: Path, pack: dict[str, list[float]], base: dict | None = None) -> None:
+    """Evolved per-map theta on top of an optional base spec (lineage C keeps the mimic's
+    draft / build / opening sections)."""
+    maps = {m: dict(e) for m, e in ((base or {}).get("maps") or {}).items()}
+    for m, th in pack.items():
+        maps.setdefault(m, {})["theta"] = to_pack_theta(th)  # noqa: B023
+    packlib.write({"maps": maps}, path)
+
+
+def mimic_bots() -> list[str]:
+    return sorted(q.name for q in (ROOT / "bots").glob("mimic-*") if q.is_dir())
 
 
 def make(lin: dict, name: str, pack: dict[str, list[float]]) -> str:
@@ -96,19 +112,20 @@ def make(lin: dict, name: str, pack: dict[str, list[float]]) -> str:
         shutil.copytree(src / "src", d / "src")
     else:
         shutil.copytree(src, d, ignore=shutil.ignore_patterns(".cambc", "target"))
-    write_pack(d / "src" / "pack" / "pack.bin", pack)
+    write_pack(d / "src" / "pack" / "pack.bin", pack, lin.get("base"))
     return bot
 
 
 def fitness(results: list[runner.MatchResult], bot: str) -> tuple[float, float]:
     n = max(len(results), 1)
     win = sum(r.score_for(bot) for r in results) / n
+    susp = suspended(results, bot)[0] / n
     margin = deaths = 0.0
     for r in results:
         ours, theirs = (r.gems_a, r.gems_b) if r.bot_a == bot else (r.gems_b, r.gems_a)
         margin += (ours - theirs) / max(ours + theirs, 1)
         deaths += r.deaths_a if r.bot_a == bot else r.deaths_b
-    return win + MARGIN_W * margin / n - DEATH_W * deaths / n, win
+    return win + MARGIN_W * margin / n - DEATH_W * deaths / n - SUSP_W * susp, win
 
 
 def play_map(bot: str, opps: list[str], mp: Path, out: Path) -> list[runner.MatchResult]:
@@ -137,6 +154,39 @@ def init_state() -> dict:
     return st
 
 
+def ensure_lineage_c(st: dict) -> None:
+    if "C" in st["lineages"] or not LINEAGE_C_SPEC.exists():
+        return
+    linc = ROOT / "bots" / "lin-c"
+    if linc.exists():
+        shutil.rmtree(linc)
+    shutil.copytree(ROOT / "bots" / "main", linc, ignore=shutil.ignore_patterns(".cambc", "target"))
+    base = json.loads(LINEAGE_C_SPEC.read_text(encoding="utf-8"))
+    # The mimic's theta seeds lineage C's per-map theta (log space for the W multipliers).
+    dflt = params.defaults(ROOT / "bots" / "lin-c" / "src" / "learned.rs")
+    pack = {m: params.to_search(list(e["theta"]) + dflt[len(e["theta"]):])
+            for m, e in base["maps"].items() if e.get("theta")}
+    lin = {"src": "lin-c", "pack": pack, "version": 0, "map_rr": 0, "sigma": {}, "base": base}
+    snap = make(lin, "coC-v0", pack)
+    lin["champion"] = snap
+    lin["hall"] = [snap]
+    st["lineages"]["C"] = lin
+
+
+def refresh_mimics() -> str:
+    """Re-extract the top teams from newly downloaded games and rebuild the mimic bots."""
+    r = sh([sys.executable, str(ROOT / "harness" / "mimic.py"), "--all-top"])
+    n = 0
+    for spec in (ROOT / "runs" / "mimic").glob("*.spec.json"):
+        bot = ROOT / "bots" / ("mimic-" + spec.name.replace(".spec.json", ""))
+        if bot.exists():
+            shutil.rmtree(bot)
+        shutil.copytree(ROOT / "bots" / "main", bot, ignore=shutil.ignore_patterns(".cambc", "target"))
+        packlib.write(json.loads(spec.read_text(encoding="utf-8")), bot / "src" / "pack" / "pack.bin")
+        n += 1
+    return f"mimics refreshed: {n} (rc {r.returncode})"
+
+
 def save(st: dict) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     tmp = STATE.with_suffix(".tmp")
@@ -144,9 +194,9 @@ def save(st: dict) -> None:
     tmp.replace(STATE)
 
 
-def pfsp(st: dict, me: str, other: dict, k: int, rng: random.Random) -> list[str]:
-    cands = [b for b in other["hall"][-6:] + FIXED if (ROOT / "bots" / b).exists()]
-    cands = list(dict.fromkeys(cands))
+def pfsp(st: dict, me: str, others: list[dict], k: int, rng: random.Random, exclude: set | None = None) -> list[str]:
+    pool = [b for o in others for b in o["hall"][-6:]] + FIXED + mimic_bots()
+    cands = [b for b in dict.fromkeys(pool) if (ROOT / "bots" / b).exists() and b not in (exclude or set())]
     w = [(1.0 - st["pwin"].get(f"{me}|{b}", 0.5)) ** 2 + 0.05 for b in cands]
     out = []
     while cands and len(out) < k:
@@ -157,14 +207,16 @@ def pfsp(st: dict, me: str, other: dict, k: int, rng: random.Random) -> list[str
 
 
 def evolve_map(st: dict, key: str, rng: random.Random, cyc: Path) -> dict:
-    lin, other = st["lineages"][key], st["lineages"]["B" if key == "A" else "A"]
+    lin = st["lineages"][key]
+    others = [v for k2, v in st["lineages"].items() if k2 != key]
     all_maps = runner.list_maps()
     mp = all_maps[lin["map_rr"] % len(all_maps)]
     lin["map_rr"] += 1
     name = mp.stem
-    theta = lin["pack"].get(name) or base_theta(lin["src"])
-    sigma = lin["sigma"].get(name, SIGMA0)
-    opps = pfsp(st, lin["champion"], other, 3, rng)
+    theta = full_theta(lin["pack"].get(name) or base_theta(lin["src"]), lin["src"])
+    s0 = params.sigma0()
+    sigma = list(lin["sigma"].get(name, s0)) + s0[len(lin["sigma"].get(name, s0)):]
+    opps = pfsp(st, lin["champion"], others, N_OPPS, rng)
     champ_res = play_map(lin["champion"], opps, mp, cyc / "champ")
     champ_fit, _ = fitness(champ_res, lin["champion"])
     for o in opps:
@@ -185,14 +237,20 @@ def evolve_map(st: dict, key: str, rng: random.Random, cyc: Path) -> dict:
     lin["sigma"][name] = [max(0.03, min(0.6, s * (1.15 if best_f > champ_fit else 0.85))) for s in sigma]
     entry = {"lineage": key, "map": name, "opps": opps, "champ_fit": round(champ_fit, 3), "best_fit": round(best_f, 3)}
     if best_f >= champ_fit + ACCEPT_GAIN:
+        # Confirmation on fresh opponents (guards against chaos noise) + head-to-head.
+        fresh = pfsp(st, lin["champion"], others, N_CONFIRM, rng, exclude=set(opps))
+        cf, chf = best_f, champ_fit
+        if fresh:
+            cf, _ = fitness(play_map(best_bot, fresh, mp, cyc / "confirm"), best_bot)
+            chf, _ = fitness(play_map(lin["champion"], fresh, mp, cyc / "confirm-champ"), lin["champion"])
         h2h = runner.run_matches(best_bot, lin["champion"], maps=[mp], out_dir=cyc / "h2h", release=True)
         hw = sum(r.score_for(best_bot) for r in h2h) / max(len(h2h), 1)
-        entry["h2h"] = hw
-        if hw >= 0.5:
+        entry.update({"h2h": hw, "confirm": round(cf, 3), "confirm_champ": round(chf, 3)})
+        if hw >= 0.5 and cf >= chf:
             lin["pack"][name] = best_theta
             lin["version"] += 1
             snap = make(lin, f"co{key}-v{lin['version']}", lin["pack"])
-            write_pack(ROOT / "bots" / lin["src"] / "src" / "pack" / "pack.bin", lin["pack"])
+            write_pack(ROOT / "bots" / lin["src"] / "src" / "pack" / "pack.bin", lin["pack"], lin.get("base"))
             lin["champion"] = snap
             lin["hall"].append(snap)
             entry["accepted"] = snap
@@ -206,16 +264,22 @@ def evolve_map(st: dict, key: str, rng: random.Random, cyc: Path) -> dict:
 
 
 def cross_check(st: dict, cyc: Path) -> str:
-    a, b = st["lineages"]["A"]["champion"], st["lineages"]["B"]["champion"]
-    rs = runner.run_matches(a, b, out_dir=cyc / "cross", release=True)
-    wa = sum(r.score_for(a) for r in rs) / max(len(rs), 1)
-    st["pairs"][f"{a}|{b}"] = wa
+    champs = [st["lineages"][k]["champion"] for k in LINEAGES if k in st["lineages"]]
+    msgs = []
+    for i, a in enumerate(champs):
+        for b in champs[i + 1:] + ["main-v13b"]:
+            if a == b:
+                continue
+            rs = runner.run_matches(a, b, out_dir=cyc / "cross" / f"{a}-{b}", release=True)
+            wa = sum(r.score_for(a) for r in rs) / max(len(rs), 1)
+            st["pairs"][f"{a}|{b}"] = wa
+            msgs.append(f"{a} vs {b}: {wa:.3f}")
     elo = bradley_terry(st["pairs"])
     st["elo"] = elo
-    lines = ["# Co-evolution", "", f"Cross-check {a} vs {b}: {wa:.3f}", "", "| bot | Elo |", "|---|---|"]
+    lines = ["# Co-evolution", "", *[f"- {m}" for m in msgs], "", "| bot | Elo |", "|---|---|"]
     lines += [f"| {k} | {v:.0f} |" for k, v in sorted(elo.items(), key=lambda kv: -kv[1])]
     (OUT / "report.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
-    return f"cross {a} vs {b}: {wa:.3f}"
+    return "cross: " + "; ".join(msgs)
 
 
 def bradley_terry(pairs: dict[str, float], iters: int = 200) -> dict[str, float]:
@@ -242,6 +306,7 @@ def main(argv: list[str] | None = None) -> int:
     LOCK.write_text(str(os.getpid()))
     try:
         st = init_state()
+        ensure_lineage_c(st)
         save(st)
         rng = random.Random(st["cycle"] + 99)
         n = 0
@@ -249,7 +314,10 @@ def main(argv: list[str] | None = None) -> int:
             n += 1
             st["cycle"] += 1
             LOCK.write_text(str(os.getpid()))
-            key = "A" if st["cycle"] % 2 else "B"
+            keys = [k for k in LINEAGES if k in st["lineages"]]
+            key = keys[st["cycle"] % len(keys)]
+            if st["cycle"] % MIMIC_REFRESH_EVERY == 0:
+                print("   " + refresh_mimics(), flush=True)
             cyc = OUT / "cycles" / f"{st['cycle']:05d}-{key}"
             t0 = time.time()
             try:

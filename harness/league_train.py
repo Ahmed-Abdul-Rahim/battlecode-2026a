@@ -186,7 +186,8 @@ def save_state(st: dict) -> None:
 
 
 def pfsp(st: dict, k: int, rng: random.Random) -> list[str]:
-    pool = [b for b in st["pool"] if b != st["champion"] and (ROOT / "bots" / b).exists()]
+    mimics = sorted(q.name for q in (ROOT / "bots").glob("mimic-*") if q.is_dir())
+    pool = [b for b in dict.fromkeys(st["pool"] + mimics) if b != st["champion"] and (ROOT / "bots" / b).exists()]
     weights = [(1.0 - st["pwin"].get(b, 0.5)) ** 2 + 0.05 for b in pool]
     chosen = []
     while pool and len(chosen) < k:

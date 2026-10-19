@@ -38,8 +38,21 @@ pub const EPSILON: f32 = 0.0;
 /// Hotspot threat weight (pack hotspots become threats near us; 0 = off).
 pub const HOTSPOT_W: f32 = 0.0;
 
-/// Full parameter vector: W (N) + TARGET (T_N) + FIGHT (F_N) + HOTSPOT_W.
-pub const P_N: usize = N + T_N + F_N + 1;
+/// Utility arbiter weights (utility.rs): OPTIONS x PHI, row-major, 0 = keep the rule intent.
+pub const U_N: usize = 60;
+pub const U: [f32; U_N] = [0.0; U_N];
+/// Extras: [Tavi re-spec flag, arbiter fuel floor (k fuel), reserved, reserved].
+pub const X_N: usize = 4;
+pub const X_TAVI_RESPEC: usize = 0;
+pub const X_F_CHEAP: usize = 1;
+pub const X: [f32; X_N] = [0.0, 30.0, 0.0, 0.0];
+
+/// Full parameter vector: W (N) + TARGET (T_N) + FIGHT (F_N) + HOTSPOT_W + U (U_N) + X (X_N).
+/// harness/params.py mirrors this layout (python harness/params.py --check).
+pub const P_N: usize = N + T_N + F_N + 1 + U_N + X_N;
+const H_AT: usize = N + T_N + F_N;
+const U_AT: usize = H_AT + 1;
+const X_AT: usize = U_AT + U_N;
 
 static PARAMS: std::sync::OnceLock<[f32; P_N]> = std::sync::OnceLock::new();
 
@@ -49,9 +62,12 @@ pub fn init(theta: Option<&[u8]>) {
     p[..N].copy_from_slice(&W);
     p[N..N + T_N].copy_from_slice(&TARGET);
     p[N + T_N..N + T_N + F_N].copy_from_slice(&FIGHT);
-    p[P_N - 1] = HOTSPOT_W;
-    if let Some(b) = theta.filter(|b| b.len() == P_N * 4) {
-        for (i, c) in b.chunks_exact(4).enumerate() {
+    p[H_AT] = HOTSPOT_W;
+    p[U_AT..U_AT + U_N].copy_from_slice(&U);
+    p[X_AT..X_AT + X_N].copy_from_slice(&X);
+    // Packs written for a shorter layout fill a prefix; the rest keeps the compiled values.
+    if let Some(b) = theta {
+        for (i, c) in b.chunks_exact(4).take(P_N).enumerate() {
             p[i] = f32::from_le_bytes([c[0], c[1], c[2], c[3]]);
         }
     }
@@ -83,5 +99,15 @@ pub fn fight() -> &'static [f32] {
 
 #[must_use]
 pub fn hotspot_w() -> f32 {
-    params()[P_N - 1]
+    params()[H_AT]
+}
+
+#[must_use]
+pub fn utility() -> &'static [f32] {
+    &params()[U_AT..U_AT + U_N]
+}
+
+#[must_use]
+pub fn extra(i: usize) -> f32 {
+    params()[X_AT + i]
 }

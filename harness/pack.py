@@ -23,7 +23,35 @@ ROOT = Path(__file__).resolve().parents[1]
 FINGERPRINTS = ROOT / "runs" / "variants" / "fingerprints.json"
 PACK = ROOT / "bots" / "main" / "src" / "pack" / "pack.bin"
 OUR_ENGINE = ("main", "_lg-", "auto-v", "_es-", "_v6-", "_sr-", "_mt-", "_oos-", "_var-", "_tune")
-TAG_THETA, TAG_HOTSPOTS, TAG_OPENING = 1, 2, 3
+TAG_THETA, TAG_HOTSPOTS, TAG_OPENING, TAG_DRAFT, TAG_BUILD = 1, 2, 3, 4, 5
+KINDS, OPENING_LEN, DRAFT_LEN, BUILD_LEN = 12, 4, 5, 12
+
+
+def _opening_bytes(sides: list[dict]) -> bytes:
+    out = bytearray([len(sides)])
+    for s in sides:
+        out += bytes([s["spawn"][0] & 0xFF, s["spawn"][1] & 0xFF])
+        for k in range(KINDS):
+            route = (s["kinds"].get(str(k)) or s["kinds"].get(k) or [])[:OPENING_LEN]
+            out += bytes(route + [255] * (OPENING_LEN - len(route)))
+    return bytes(out)
+
+
+def _draft_bytes(draft: dict) -> bytes:
+    out = bytearray()
+    for n in (3, 4, 5):
+        picks = (draft.get(str(n)) or draft.get(n) or [])[:DRAFT_LEN]
+        out += bytes(picks + [255] * (DRAFT_LEN - len(picks)))
+    return bytes(out)
+
+
+def _build_bytes(build: dict) -> bytes:
+    out = bytearray()
+    for k in range(KINDS):
+        seq = (build.get(str(k)) or build.get(k) or [])[:BUILD_LEN]
+        vals = [f * 3 + s for f, s in seq]
+        out += bytes(vals + [255] * (BUILD_LEN - len(vals)))
+    return bytes(out)
 K_HOTSPOTS = 24
 
 
@@ -44,7 +72,11 @@ def write(spec: dict, out: Path = PACK) -> int:
         if e.get("hotspots"):
             sections.append((TAG_HOTSPOTS, bytes(v for h in e["hotspots"] for v in (h[0], h[1], h[2]))))
         if e.get("opening"):
-            sections.append((TAG_OPENING, bytes(e["opening"])))
+            sections.append((TAG_OPENING, _opening_bytes(e["opening"])))
+        if e.get("draft"):
+            sections.append((TAG_DRAFT, _draft_bytes(e["draft"])))
+        if e.get("build"):
+            sections.append((TAG_BUILD, _build_bytes(e["build"])))
         blob += struct.pack("<IH", fp, len(sections))
         for tag, data in sections:
             blob += struct.pack("<BI", tag, len(data)) + data

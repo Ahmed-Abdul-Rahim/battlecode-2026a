@@ -50,3 +50,19 @@ Teleport crystals were skipped: only `ambush` has unreachable groups (96 gems).
 
 - OpenJev / small-model yes/no tool (licence: CC BY-NC 4.0, so check before any non-research use).
 - Mamba / SSM belief model.
+
+## Learned layer and training daemons (2026-10-19)
+
+See [docs/training.md](../docs/training.md) for the full hand-off guide. Scripts:
+
+| Script | What it does |
+| --- | --- |
+| `coevo.py` | Co-evolution: lineages A (ours), B (top-team comp), C (mimic-initialised) evolve per-map θ by ES against each other's hall of fame + mimics; confirmed acceptances become `bots/co<L>-vN` + zip; Elo in `runs/coevo/report.md` |
+| `league_train.py` | Global ES / offline-RL router / both (UCB bandit), gate vs champion + league, auto-promotion, ladder watcher, optional `--auto-submit` |
+| `params.py` | Registry of the 102 trainable parameters (layout, scale, bounds); `--check` vs `learned.rs` |
+| `pack.py` | Policy-pack writer (θ, draft, builds, openings, hotspots) and hotspot miner |
+| `mimic.py` | Clone a ladder team's macro (draft, builds, openings, cadence) into a pack spec |
+| `ladder_study.py` | Per-team tempo / survival / comp / build table from match summaries |
+| `speedrun.py` | Rounds to 1000 gems vs `bots/idle` (absolute farming speed) |
+| `map_tune.py` | Per-map knob plans (`map_plans.rs`) |
+| `status.py` | One-screen status; `scripts/train.ps1 status` |

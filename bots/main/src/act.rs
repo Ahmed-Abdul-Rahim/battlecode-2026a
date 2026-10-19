@@ -145,6 +145,8 @@ pub struct Exec<'a> {
     pub recall_safe: bool,
     /// Recall channel length (5, or 3 with a Home emblem).
     pub recall_ticks: i32,
+    /// Tavi re-spec: on spawn, sell emblems whose family is not in the build order.
+    pub tavi_respec: bool,
     pub out: Outcome,
 }
 
@@ -171,6 +173,12 @@ impl Exec<'_> {
             Intent::Retreat => self.retreat(),
             Intent::Shop => self.shop(),
             Intent::Hold => self.opportunistic_attack(),
+            Intent::StepBack(p) => self.step_back(p),
+            Intent::WalkHome => {
+                self.cast_support()?;
+                let threats = self.vis.threats(None);
+                self.walk(Goal::AllySpawn, &threats)
+            }
         }
     }
 
@@ -180,6 +188,9 @@ impl Exec<'_> {
     pub fn buy(&mut self) -> Result<()> {
         if self.altar_lock {
             self.buy_lock()?;
+        }
+        if self.tavi_respec && self.at_spawn() {
+            self.respec()?;
         }
         let mut gold = self.me.gold_count()?;
         for _ in 0..8 {
@@ -209,6 +220,28 @@ impl Exec<'_> {
         // One altar lock in the pocket (10 gold) to cancel enemy tributes.
         if self.deny_tribute && gold >= ALTAR_LOCK_COST {
             self.buy_lock()?;
+        }
+        Ok(())
+    }
+
+    /// Tavi only: sell (full refund on spawn) completed emblems of families the build order
+    /// no longer wants, so the gold goes into the current plan.
+    fn respec(&mut self) -> Result<()> {
+        use crate::bc_core::ledger::{decode_item, ITEM_TYPES};
+        if !self.me.can_sell().unwrap_or(false) {
+            return Ok(());
+        }
+        for id in 0..ITEM_TYPES as u8 {
+            let Some((family, _, true)) = decode_item(id) else { continue };
+            if self.ledger.items[id as usize] == 0 || self.order.iter().any(|&(f, _)| f == family) {
+                continue;
+            }
+            if let Ok(item) = ItemType::try_from(u32::from(id)) {
+                if self.me.sell(item).is_ok() {
+                    self.ledger.items[id as usize] -= 1;
+                    telemetry::event(0, "", "respec_sell", i64::from(id));
+                }
+            }
         }
         Ok(())
     }
@@ -778,6 +811,24 @@ impl Exec<'_> {
         }
         let goal = enemy.pos;
         self.step_by(|p| p.cheb(goal))
+    }
+
+    /// Aggro swap: move to the edge of `from`'s reach (camps hit range 3; spells reach 4)
+    /// preferring tiles near allies, then cast at it if it is a camp still in spell range.
+    fn step_back(&mut self, from: Pos) -> Result<()> {
+        let vis = self.vis;
+        let allies: Vec<Pos> = vis.allies.iter().map(|a| a.pos).collect();
+        let reach = vis.enemies.iter().find(|e| e.pos == from).map_or(3, |e| e.range + 1);
+        self.step_by(|p| {
+            let d = p.cheb(from);
+            let edge = if d > reach { (d - reach - 1).abs() } else { 10 * (reach + 1 - d) };
+            let near_ally = allies.iter().map(|a| a.cheb(p)).min().unwrap_or(8).min(8);
+            edge * 4 + near_ally
+        })?;
+        if let Some(camp) = vis.camps.iter().find(|c| c.pos == from && c.hp > 0.0) {
+            self.cast_offensive(camp.pos, Some(&camp.handle), None, true)?;
+        }
+        self.opportunistic_attack()
     }
 
     fn retreat(&mut self) -> Result<()> {

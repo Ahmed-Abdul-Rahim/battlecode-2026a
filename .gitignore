@@ -61,3 +61,7 @@ bots/_coA-*/
 bots/_coB-*/
 bots/_hot-*/
 runs/coevo/lock
+bots/mimic-*/
+bots/lin-c/
+bots/coC-v*/
+bots/_coC-*/

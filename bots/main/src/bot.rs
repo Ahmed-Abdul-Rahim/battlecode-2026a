@@ -53,6 +53,9 @@ pub struct Bot {
     ignore_until: [u32; 12],
     /// Policy-pack death hotspots for this map: (tile, weight 0..1).
     hotspots: Vec<(Pos, f32)>,
+    /// Policy-pack opening route for this champion kind and spawn side (group indices).
+    opening: Vec<u8>,
+    opening_idx: usize,
     /// Health lost since our previous turn (what is actually hitting us).
     dmg_taken: f32,
     /// Rounds spent waiting for allies before waking a dangerous group (CAMP_SAFE bit 2).
@@ -122,6 +125,8 @@ const OPENING_ROUNDS: u32 = 120;
 const OPENING_DIST_WEIGHT: f32 = 2.5;
 /// PASSIVE_ROLES: Vesper farms gold groups until she owns this many emblems.
 const VESPER_GOLD_EMBLEMS: u32 = 3;
+/// Policy-pack opening routes are followed until this round.
+const PACK_OPENING_ROUNDS: u32 = 200;
 /// Pack hotspots: considered within this radius, at most this many, scaled from this dps.
 const HOTSPOT_RADIUS: i32 = 8;
 const MAX_HOTSPOTS: usize = 4;
@@ -152,7 +157,15 @@ impl Bot {
         let kind = sdk::kind(me.champion_name()?);
         let kit = sdk::kit(kind);
         let build_profile = theta.knob(knob::BUILD_PROFILE);
-        let order = if theta.knob(knob::TAVI_META) > 0 && kind == ChampionKind::Tavi {
+        let opening = entry.opening_for((world.spawn_hint.x, world.spawn_hint.y), kind as usize);
+        let pack_build = entry.build_for(kind as usize);
+        let order = if !pack_build.is_empty() {
+            // Policy-pack build (mimicked from top teams / evolved per map).
+            pack_build
+                .iter()
+                .filter_map(|&(f, s)| Some((*Family::ALL.get(usize::from(f))?, *Stat::ALL.get(usize::from(s))?)))
+                .collect()
+        } else if theta.knob(knob::TAVI_META) > 0 && kind == ChampionKind::Tavi {
             shop::build_order_profile(kind, TAVI_BUILD_PROFILE)
         } else {
             shop::build_order_profile(kind, build_profile)
@@ -191,6 +204,8 @@ impl Bot {
             engage_stall: 0,
             ignore_until: [0; 12],
             hotspots,
+            opening,
+            opening_idx: 0,
             dmg_taken: 0.0,
             gather_wait: 0,
             cur_dps: 0.0,
@@ -426,6 +441,22 @@ impl Bot {
                     }
                 }
             }
+            // Utility arbiter (learned, per map): scores keep / step back / support / fight /
+            // walk home / recall together. Heuristics remain the fallback when fuel is short.
+            let cheap_fuel = u64::from(crate::learned::extra(crate::learned::X_F_CHEAP) as u32) * 1000;
+            if !matches!(mode, Mode::Override(_)) && fuel() > cheap_fuel.max(gate::LOW_FUEL) {
+                if let Some((choice, k)) = crate::utility::choose(
+                    &ctx,
+                    &vis,
+                    my_pos,
+                    self.kit.attack_range,
+                    crate::learned::utility(),
+                    intent,
+                ) {
+                    telemetry::event(round, champ_name(self.kind), "utility", k as i64);
+                    intent = choice;
+                }
+            }
             // Camp safety: camps hit the nearest champion for their strength every round and
             // don't chase past range 3, so leave while escaping still beats their damage, and
             // don't be the lone champion that wakes a group it can't survive.
@@ -553,10 +584,13 @@ impl Bot {
                     self.theta.knob(knob::TAVI_META) > 0 && self.kind == ChampionKind::Tavi;
                 let recall_safe = self.theta.knob(knob::RECALL_SAFE) >= 2;
                 let recall_ticks = if self.has_home() { 3 } else { 5 };
+                let tavi_respec =
+                    self.kind == ChampionKind::Tavi && crate::learned::extra(crate::learned::X_TAVI_RESPEC) > 0.5;
                 let mut exec = self.exec(me, &vis, my_pos, hurt_this_round);
                 exec.field_shop = field_shop;
                 exec.recall_safe = recall_safe;
                 exec.recall_ticks = recall_ticks;
+                exec.tavi_respec = tavi_respec;
                 exec.assist = assist;
                 exec.deny_tribute = deny;
                 exec.deny_ground = deny_ground;
@@ -642,6 +676,7 @@ impl Bot {
             field_shop: false,
             recall_safe: false,
             recall_ticks: 5,
+            tavi_respec: false,
             out: Outcome::default(),
         }
     }
@@ -983,6 +1018,10 @@ impl Bot {
 
     /// Value per round of effort, with claims, respawn timers and hysteresis.
     fn choose_target(&mut self, my_pos: Pos, round: u32, chan: &TeamChannel, vis: &Visible) {
+        if let Some(g) = self.opening_target(my_pos, round, chan) {
+            self.target = Some(g);
+            return;
+        }
         let my_dps = sdk::dps(self.kit.base_strength, self.kit.base_focus, &self.kit).max(10.0);
         let live = self.theta.knob(knob::MONOLITH_LIVE) > 0;
         let team_power = if live { self.cur_dps.max(my_dps) } else { my_dps } * self.team_size as f32;
@@ -1094,6 +1133,28 @@ impl Bot {
             }
         }
         self.target = best.map(|(_, i)| i);
+    }
+
+    /// Policy-pack opening: the next group of this champion's opening route while it is up,
+    /// reachable and not claimed by an ally (pointer moves on once the group goes down).
+    fn opening_target(&mut self, my_pos: Pos, round: u32, chan: &TeamChannel) -> Option<usize> {
+        if round > PACK_OPENING_ROUNDS {
+            return None;
+        }
+        while let Some(&g) = self.opening.get(self.opening_idx) {
+            let g = usize::from(g);
+            let gone = g >= self.world.groups.len()
+                || self.group_distance(g, my_pos).is_none()
+                || matches!(self.belief.expected_state(g, round), GroupState::Respawning);
+            let taken = self.priority_index(g).is_some_and(|pi| chan.claimants(pi, self.slot as usize) > 0)
+                && self.target != Some(g);
+            if gone || taken {
+                self.opening_idx += 1;
+                continue;
+            }
+            return Some(g);
+        }
+        None
     }
 
     /// EN_ROUTE: a small camp just off the way to `far` that we can clear and survive alone.

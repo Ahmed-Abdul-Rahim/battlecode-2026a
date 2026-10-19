@@ -44,4 +44,6 @@ Allies act one after another within a round, in priority order, so later allies 
 
 **Leader protocol.** The first ally to act in a round sees a stale parity bit and becomes the leader. It clears the per-round flags, ages out sightings older than 2 rounds, and writes bytes 1–2 from `bc_brain::policy::team_params`. When we're ahead it raises aggression less and banks more often; when we're behind late in the match it pushes harder. Every bot reads all 8 bytes as features (`team_params` group) and as inputs to the gate and router.
 
+**TEAM_RESPAWN (knob 30, on since v12).** Bytes 1–2 instead carry a *respawn broadcast*: byte 1 = camp group + 1 that someone just saw go down (0 = none), byte 2 = its respawn round mod 256 (unwrapped to the window [round − 100, round + 155]). Allies load it into their respawn belief, so they stop walking to camps a teammate cleared. Aggression and tribute threshold are then computed locally by every bot (`Bot::team_view`); they are a pure function of public state.
+
 Bytes 3–7 go through `TeamChannel`. A learned discrete protocol (DIAL P-030, with an IMAC entropy budget P-031) can replace this hand-written codec later.

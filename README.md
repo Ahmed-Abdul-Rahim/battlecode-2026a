@@ -51,6 +51,16 @@ cambc view runs\<dir>\<match>.repl26a             # official visualiser
 
 In Claude Code: `/improve [focus]` runs one gated self-improvement iteration (docs/self-improvement.md).
 
+## Training (learned layer)
+
+```powershell
+scripts	rain.ps1 start     # league trainer + co-evolution daemons (resumable)
+scripts	rain.ps1 status    # champions, Elo, acceptances, ladder, which zip to upload
+scripts	rain.ps1 stop
+```
+
+What is learned (θ, policy pack, router), how the daemons work and how to extend them: [docs/training.md](docs/training.md).
+
 ## Rules of the road
 
 - **Never `cambc submit` (or `match-groups`, `login`, `ladder`) without the team agreeing.** All tooling is local-only.
@@ -60,4 +70,4 @@ In Claude Code: `/improve [focus]` runs one gated self-improvement iteration (do
 
 ## Docs
 
-[architecture](docs/architecture.md) · [fuel budget](docs/fuel-budget.md) · [memory layout](docs/memory-layout.md) · [feature selection](docs/feature-selection.md) · [champion vectors](docs/champions.md) · [self-improvement loop](docs/self-improvement.md) · [cambc CLI notes](docs/cambc-cli.md) · [papers](docs/papers.md) · [game rules](docs/GameRules.md) · [Rust SDK](docs/BotAPIRust.md)
+[training](docs/training.md) · [architecture](docs/architecture.md) · [fuel budget](docs/fuel-budget.md) · [memory layout](docs/memory-layout.md) · [feature selection](docs/feature-selection.md) · [champion vectors](docs/champions.md) · [self-improvement loop](docs/self-improvement.md) · [cambc CLI notes](docs/cambc-cli.md) · [papers](docs/papers.md) · [game rules](docs/GameRules.md) · [Rust SDK](docs/BotAPIRust.md)

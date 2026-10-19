@@ -21,6 +21,8 @@ struct DraftCache {
     vecs: [ChampVec; 12],
     weights: ScorerWeights,
     plan: Option<&'static crate::map_plans::MapPlan>,
+    /// Policy-pack draft for this map and team size (harness/mimic.py, ES).
+    pack_draft: Vec<DraftChoice>,
 }
 
 thread_local! {
@@ -97,6 +99,14 @@ fn build_cache() -> Result<DraftCache> {
         vecs: ChampionKind::ALL.map(|k| from_kit(&sdk::kit(k))),
         weights: ScorerWeights::default(),
         plan,
+        pack_draft: {
+            let team_size = cambc::draft::team_size()?;
+            crate::pack::lookup(fp)
+                .draft_for(team_size)
+                .into_iter()
+                .filter_map(DraftChoice::from_u8)
+                .collect()
+        },
     })
 }
 
@@ -134,6 +144,9 @@ pub fn play() -> Result<()> {
             team_size: c.team_size,
         };
         let mut prefs = draft_prefs(c.plan.map_or(0, |p| p.draft), &state);
+        if prefs.is_empty() && !c.pack_draft.is_empty() {
+            prefs = c.pack_draft.clone();
+        }
         if prefs.is_empty() && default_knob(crate::bc_core::memory::knob::DRAFT_BEST) > 0 {
             prefs = BEST.to_vec();
         } else if prefs.is_empty() && meta_draft() {
