@@ -21,4 +21,4 @@ pub const TRIBUTE_MAX: usize = 16;
 pub const ASSIST_HP: usize = 17;
 pub const N: usize = 18;
 
-pub const W: [f32; N] = [1.0; N];
+pub const W: [f32; N] = [0.7876, 1.2157, 1.4097, 1.5734, 0.5485, 0.8665, 0.9721, 1.0198, 1.4299, 0.6160, 1.2942, 0.6647, 1.0231, 0.6231, 1.1889, 1.4531, 0.9168, 1.1860];
