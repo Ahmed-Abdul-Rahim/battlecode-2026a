@@ -4,6 +4,9 @@
 use crate::act::{occupied_tiles, AllyView, CampView, EnemyView, Exec, Outcome, Visible};
 use crate::bc_brain::context::{Context, EnemyNear, Knobs, TargetGroup};
 use crate::bc_brain::features::{extract, GroupMask, RawEconomy, RawObs, RawSelf};
+use crate::bc_brain::experts::N_EXPERTS;
+use crate::bc_brain::features_gen::SCHEMA_HASH;
+use crate::bc_brain::int8::Mlp;
 use crate::bc_brain::{gate, policy, router, shop, Expert, Intent, Mode};
 use crate::bc_core::belief::{Belief, GroupObs, GroupState, Sighting};
 use crate::bc_core::champion::{AttackType, ChampionKind, KitInfo};
@@ -308,7 +311,8 @@ impl Bot {
                 ctx.team.aggression = 255;
             }
             mode = gate::rule_gate(&ctx);
-            expert = router::select(mode, &ctx, None);
+            ctx.fight_bias = self.fight_bias(&ctx, &vis);
+            expert = self.pick_expert(mode, &ctx, me);
             intent = expert.plan(&ctx);
             // Answer a teammate's call for help: healthy, not carrying a big bag, nothing
             // in our own view, and the fight is close. Safety overrides still win (Routine only).
@@ -663,6 +667,104 @@ impl Bot {
         team
     }
 
+    /// Expert for this turn: exploration (RL data builds), the learned router (offline RL),
+    /// else the rules.
+    fn pick_expert(&self, mode: Mode, ctx: &Context, me: &Champion) -> Expert {
+        use crate::learned::{EPSILON, ROUTER};
+        if EPSILON > 0.0 && !matches!(mode, Mode::Override(_)) && self.turns.is_multiple_of(4) {
+            // Deterministic hash: the engine has no RNG and runs must stay reproducible.
+            let h = (self.turns.wrapping_mul(2_654_435_761) ^ u32::from(self.slot).wrapping_mul(40_503))
+                .rotate_left(13)
+                .wrapping_mul(2_246_822_519);
+            if (h % 10_000) as f32 / 10_000.0 < EPSILON {
+                let options: Vec<Expert> =
+                    (0..N_EXPERTS).filter_map(Expert::from_index).filter(|&e| feasible(e, ctx)).collect();
+                if !options.is_empty() {
+                    return options[(h / 10_000) as usize % options.len()];
+                }
+            }
+        }
+        if ROUTER && !matches!(mode, Mode::Override(_)) && fuel() > LEARNED_MIN_FUEL {
+            if let Some(e) = self.learned_expert(ctx, me) {
+                return e;
+            }
+        }
+        router::select(mode, ctx, None)
+    }
+
+    fn learned_expert(&self, ctx: &Context, me: &Champion) -> Option<Expert> {
+        LEARNED.with(|cell| {
+            let mlp =
+                cell.get_or_init(|| Mlp::parse_for_schema(ROUTER_BLOB, SCHEMA_HASH).ok()).as_ref()?;
+            let raw = self.raw_obs(ctx, me).ok()?;
+            let features = extract(&raw, GroupMask::ALL);
+            let mut logits = [0i32; N_EXPERTS];
+            if mlp.forward(features.values(), Some(&self.theta.film[..]), &mut logits) != N_EXPERTS {
+                return None;
+            }
+            let mut order: [usize; N_EXPERTS] = core::array::from_fn(|i| i);
+            order.sort_by_key(|&i| core::cmp::Reverse(logits[i]));
+            if logits[order[0]] - logits[order[1]] < LEARNED_MARGIN {
+                return None;
+            }
+            Expert::from_index(order[0]).filter(|&e| feasible(e, ctx))
+        })
+    }
+
+    /// FIGHT . psi (learned.rs): log-multiplier on the fight advantage.
+    fn fight_bias(&self, ctx: &Context, vis: &Visible) -> f32 {
+        use crate::learned::FIGHT;
+        if FIGHT.iter().all(|&w| w == 0.0) {
+            return 0.0;
+        }
+        let Some(e) = ctx.enemy else { return 0.0 };
+        let psi = [
+            ctx.hp_frac(),
+            e.hp / e.max_hp.max(1.0),
+            vis.allies.iter().filter(|a| a.dist <= 4).count() as f32,
+            vis.enemies.iter().filter(|o| o.dist <= 5 && !o.on_spawn).count() as f32,
+            f32::from(u8::from(ctx.ranged)),
+            f32::from(u8::from(e.ranged)),
+            ctx.gems as f32 / 100.0,
+            ctx.dist_spawn.map_or(1.0, |d| f32::from(d) / 20.0),
+            1.0,
+        ];
+        FIGHT.iter().zip(psi).map(|(w, x)| w * x).sum::<f32>().clamp(-3.0, 3.0)
+    }
+
+    /// exp(TARGET . phi) (learned.rs): learned correction to a camp group's score.
+    #[allow(clippy::too_many_arguments)]
+    fn target_bias(
+        &self,
+        g: &crate::world::GroupStatic,
+        dist: f32,
+        clear: f32,
+        eta: f32,
+        i: usize,
+        round: u32,
+        chan: &TeamChannel,
+    ) -> f32 {
+        use crate::learned::TARGET;
+        if TARGET.iter().all(|&w| w == 0.0) {
+            return 1.0;
+        }
+        let others = self.priority_index(i).map_or(0, |pi| chan.claimants(pi, self.slot as usize));
+        let damage = g.total_strength * clear / self.last_hp.max(1.0);
+        let phi = [
+            g.gems as f32 / 100.0,
+            g.gold as f32 / 100.0,
+            dist / 20.0,
+            clear / 50.0,
+            eta / 50.0,
+            others as f32,
+            damage.min(5.0),
+            self.ledger.gems as f32 / 100.0,
+            self.emblems() as f32 / 5.0,
+            round as f32 / 1000.0,
+        ];
+        TARGET.iter().zip(phi).map(|(w, x)| w * x).sum::<f32>().clamp(-4.0, 4.0).exp()
+    }
+
     /// Completed emblems we own.
     fn emblems(&self) -> u32 {
         self.ledger.items.iter().skip(1).step_by(2).map(|&n| u32::from(n)).sum()
@@ -947,6 +1049,7 @@ impl Bot {
                 * crate::learned::W[crate::learned::DIST];
             let mut score =
                 value / (dist * dist_w + clear * crate::learned::W[crate::learned::CLEAR] + (eta - dist).max(0.0) + 5.0);
+            score *= self.target_bias(g, dist, clear, eta, i, round, chan);
             if self.target == Some(i) {
                 score *= 1.3 * crate::learned::W[crate::learned::HYSTERESIS];
             }
@@ -1087,6 +1190,7 @@ impl Bot {
         let focus = me.focus().unwrap_or(self.kit.base_focus);
         let next_shard = shop::next_shard(&self.order, &self.ledger);
         Ok(Context {
+            fight_bias: 0.0,
             round,
             alive: true,
             me: my_pos,
@@ -1273,6 +1377,29 @@ fn champ_name(kind: ChampionKind) -> &'static str {
         ChampionKind::Ren => "Ren",
         ChampionKind::Varg => "Varg",
         ChampionKind::Tavi => "Tavi",
+    }
+}
+
+/// Learned router weights (BCW1 blob, ml/distill / harness/league_train.py offline RL).
+static ROUTER_BLOB: &[u8] = include_bytes!("weights/router.bin");
+/// Logit gap (int32 accumulator units) the learned router needs over its runner-up.
+const LEARNED_MARGIN: i32 = 1_700;
+/// Below this much fuel left, skip feature extraction + inference (rule router only).
+const LEARNED_MIN_FUEL: u64 = 65_000;
+
+thread_local! {
+    static LEARNED: std::cell::OnceCell<Option<Mlp>> = const { std::cell::OnceCell::new() };
+}
+
+/// An expert the situation allows (exploration and the learned router never pick nonsense).
+fn feasible(e: Expert, ctx: &Context) -> bool {
+    match e {
+        Expert::Fight => ctx.enemy.is_some() && ctx.gems < router::BIG_BAG_GEMS,
+        Expert::Kite => ctx.enemy.is_some(),
+        Expert::Tribute => ctx.gems > 0,
+        Expert::Capture => ctx.target.is_some_and(|t| t.state == GroupState::RewardAvailable),
+        Expert::Scout | Expert::AltarLock => false,
+        _ => true,
     }
 }
 

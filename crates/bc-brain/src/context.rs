@@ -74,6 +74,8 @@ pub struct EnemyNear {
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Context {
+    /// Learned log-multiplier on the fight advantage (bots/main/src/learned.rs FIGHT . psi).
+    pub fight_bias: f32,
     pub round: u32,
     pub alive: bool,
     pub me: Pos,
@@ -130,6 +132,7 @@ impl Context {
     #[must_use]
     pub fn neutral() -> Self {
         Self {
+            fight_bias: 0.0,
             round: 100,
             alive: true,
             me: Pos::new(10, 10),

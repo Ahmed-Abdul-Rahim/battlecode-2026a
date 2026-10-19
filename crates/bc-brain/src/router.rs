@@ -66,7 +66,7 @@ pub fn fight_advantage(ctx: &Context, e: &EnemyNear) -> f32 {
 #[must_use]
 pub fn rule_route(ctx: &Context) -> Expert {
     if let Some(e) = ctx.enemy {
-        let advantage = fight_advantage(ctx, &e);
+        let advantage = fight_advantage(ctx, &e) * ctx.fight_bias.exp();
         // Aggression (team channel overrides the draft knob) shrinks the margin.
         let aggression =
             if ctx.team.version > 0 { ctx.team.aggression } else { ctx.knobs.aggression };
