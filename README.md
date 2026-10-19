@@ -2,7 +2,7 @@
 
 Our entry for Cambridge Battlecode **cambc2026a** (season ends ~18 Nov 2026). Rust bot, Python tooling.
 
-**Status:** v0 heuristic core + sparse mixture-of-experts wins **34/34** against the starter bot (17 maps × both sides), mean ~27k fuel/turn, 0 exhausted turns. Learned heads, feature selection, champion vectors and UDA are scaffolded and tested; they need self-play data and the GPU box.
+**Status (2026-10-19):** heuristic engine plus a learned layer: per-map policy packs, a utility arbiter and a router, trained by self-running daemons (co-evolution, ES, offline RL). The latest packaged versions are in `submission/` (gitignored, see the hand-off section). The engine is on branch `exp/v6-features`; read [docs/training.md](docs/training.md) first.
 
 ## Quick start (Windows)
 
@@ -15,6 +15,41 @@ pytest -q                         # Python tooling tests
 ```
 
 Linux / WSL / GPU box: `bash scripts/setup.sh [--ml]`.
+
+## Hand-off: setting up on another PC
+
+Git carries the code and the **trained knowledge**:
+- `bots/main/src/learned.rs`, `bots/main/src/pack/pack.bin`, `bots/main/src/weights/router.bin` and `bots/main/src/map_plans.rs`;
+- the extracted top-team clones in `data/mimic/`.
+
+Some things are gitignored on purpose and have to be handed over by hand:
+
+| What | Why it's needed | How |
+| --- | --- | --- |
+| `submission/*.zip` | Every packaged version. The trainers' frozen opponents (`bots/main-v4` … `main-v13b`) and the lineage champions are unzipped from these. **Required** | `handoff.zip` |
+| `runs/coevo/state.json`, `runs/league/state.json` | Continue the current training run (lineages, Elo, ladder history). Optional: without them, training restarts from the committed champion | `handoff.zip` |
+| `bots/lin-b`, `bots/lin-c` | Source of co-evolution lineages B and C. Only needed to continue a run | `handoff.zip` |
+| `runs/mimic/`, `best_bot_dump/` | Top-team clones (also in `data/mimic/`) and the best-bot games | `handoff.zip` |
+| `runs/ladder_*`, `runs/ranked_v5` | Downloaded ladder summaries (~150 MB), for the ladder study and mimic re-extraction. Optional | `handoff.zip --with-ladder` |
+| `.venv`, `target/`, `bots/*/.cambc` | Build products | recreated by `scripts/setup.ps1` / builds |
+
+**On this PC:**
+
+```powershell
+python scripts\handoff.py pack                 # -> handoff.zip (~3 MB); add --with-ladder for match data
+```
+
+**On the new PC**, after `git clone` and `git checkout exp/v6-features`:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\setup.ps1
+python scripts\handoff.py restore handoff.zip  # unpacks state + rebuilds bots/main-v*, co*-v* from the zips
+scripts	rain.ps1 start                        # resume training; scripts	rain.ps1 status to check
+```
+
+Without `handoff.zip`, ask for the `submission/` zips. Run `python scripts\handoff.py refs` to unzip them into `bots/main-v*`, then `scripts	rain.ps1 start` begins a fresh run from the committed champion.
+
+Uploading stays manual and needs the team's agreement (`docs/cambc-cli.md`).
 
 ## Layout
 
@@ -34,7 +69,9 @@ Linux / WSL / GPU box: `bash scripts/setup.sh [--ml]`.
 | `ml/distill/`, `ml/uda/` | int8 blobs + teacher→student distillation; DANN scaffold (GPU box) |
 | `maps/`, `maps/heldout/` | Platform map pool; held-out copies for the generalisation check |
 | `docs/` | Rules, SDK reference, architecture, fuel budget, memory layout, papers registry, … |
-| `harness/` | Contract for the teammate's local-LLM harness |
+| `harness/` | Training and evaluation: `coevo.py`, `league_train.py` (daemons), `speedrun.py`, `map_tune.py`, `mimic.py`, `ladder_study.py`, `params.py`, `pack.py`, `status.py` (see [harness/README.md](harness/README.md)) |
+| `scripts/` | `setup.ps1`/`setup.sh`, `train.ps1`/`train.sh` (start/stop/status/logs), `handoff.py` |
+| `data/mimic/` | Extracted top-team macro clones (draft, builds, openings, cadence) |
 
 ## Everyday commands
 
