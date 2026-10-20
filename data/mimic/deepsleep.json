@@ -358,7 +358,7 @@
   ]
  },
  "cadence": {
-  "bag": 29.6,
+  "bag": 31.0,
   "first_emblem": 257,
   "shops_per_100r": 0.75
  },
@@ -382,7 +382,7 @@
    0
   ]
  },
- "games": 15,
+ "games": 20,
  "opening": {
   "boss-battle": [
    {
@@ -569,5 +569,5 @@
   ]
  },
  "team": "DeepSleep",
- "win_rate": 0.667
+ "win_rate": 0.65
 }

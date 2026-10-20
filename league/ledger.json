@@ -3158,10 +3158,10 @@
  ],
  "pool": [
   {
-   "games": 55,
-   "macro_hash": "1a290626dfdc",
+   "games": 60,
+   "macro_hash": "7180812a75ce",
    "name": "Intercontinental Fish",
-   "since": "2026-10-20T20:26:36Z",
+   "since": "2026-10-20T20:31:39Z",
    "slug": "intercontinental-fish",
    "static": false,
    "teamId": "1890540d-1ffc-4847-adbf-d0d08772f268",
@@ -3169,119 +3169,119 @@
   },
   {
    "games": 50,
-   "macro_hash": "79f700662a64",
+   "macro_hash": "5bc1e1d61b19",
    "name": "Sponge(Albert and Bob)",
-   "since": "2026-10-20T20:26:45Z",
+   "since": "2026-10-20T20:31:43Z",
    "slug": "sponge-albert-and-bob",
    "static": false,
    "teamId": "26824601-d225-427f-bd2d-ce8aa9faa392",
    "why": "top2"
   },
   {
-   "games": 50,
-   "macro_hash": "d3deb864dc89",
-   "name": "Nyx",
-   "since": "2026-10-20T20:26:58Z",
-   "slug": "nyx",
-   "static": false,
-   "teamId": "6f7fd199-4115-4fe0-8752-525bd8ccad8d",
-   "why": "top3"
-  },
-  {
-   "games": 30,
-   "macro_hash": "ce1bb1024f1f",
+   "games": 35,
+   "macro_hash": "fd8be345dceb",
    "name": ":3",
-   "since": "2026-10-20T20:27:13Z",
+   "since": "2026-10-20T20:31:53Z",
    "slug": "3",
    "static": false,
    "teamId": "bbe481a7-4575-4826-9a3e-f81c28205de8",
+   "why": "top3"
+  },
+  {
+   "games": 55,
+   "macro_hash": "0302dcc91dbd",
+   "name": "Nyx",
+   "since": "2026-10-20T20:32:03Z",
+   "slug": "nyx",
+   "static": false,
+   "teamId": "6f7fd199-4115-4fe0-8752-525bd8ccad8d",
    "why": "top4"
   },
   {
-   "games": 5,
-   "macro_hash": "deab3a0806fc",
+   "games": 15,
+   "macro_hash": "0c18361520cb",
    "name": "F\u00fcrFortnite",
-   "since": "2026-10-20T20:27:27Z",
+   "since": "2026-10-20T20:32:11Z",
    "slug": "f-rfortnite",
    "static": false,
    "teamId": "fa706d6e-9f66-44b0-bd81-1ed3dad69a99",
    "why": "top5"
   },
   {
-   "games": 10,
-   "macro_hash": "d23a5ebfebe3",
-   "name": "EMPEROR Tung",
-   "since": "2026-10-20T20:27:47Z",
-   "slug": "emperor-tung",
-   "static": false,
-   "teamId": "a1e82708-dfd3-4609-8b9a-69f652d12185",
-   "why": "top6"
-  },
-  {
-   "games": 50,
-   "macro_hash": "68288d4d8d8e",
+   "games": 60,
+   "macro_hash": "6e36a1408113",
    "name": "Sneaky Bush Campers",
-   "since": "2026-10-20T20:28:09Z",
+   "since": "2026-10-20T20:32:28Z",
    "slug": "sneaky-bush-campers",
    "static": false,
    "teamId": "4d0fe2ae-015f-4365-9705-463ff71e4291",
+   "why": "top6"
+  },
+  {
+   "games": 25,
+   "macro_hash": "74f46ff6cff9",
+   "name": "EMPEROR Tung",
+   "since": "2026-10-20T20:32:43Z",
+   "slug": "emperor-tung",
+   "static": false,
+   "teamId": "a1e82708-dfd3-4609-8b9a-69f652d12185",
    "why": "top7"
   },
   {
-   "games": 20,
-   "macro_hash": "2942a748110e",
+   "games": 30,
+   "macro_hash": "7ef803d4ec6d",
    "name": "Tartarus",
-   "since": "2026-10-20T20:28:25Z",
+   "since": "2026-10-20T20:33:03Z",
    "slug": "tartarus",
    "static": false,
    "teamId": "59f5706f-16db-4ae0-bb3f-deadb41cdc50",
    "why": "top8"
   },
   {
-   "games": 35,
-   "macro_hash": "c79b8049c566",
+   "games": 50,
+   "macro_hash": "ed57415d8b65",
    "name": "Trzy Kwaterki",
-   "since": "2026-10-20T20:28:46Z",
+   "since": "2026-10-20T20:33:19Z",
    "slug": "trzy-kwaterki",
    "static": false,
    "teamId": "36258abf-3fd0-4827-8fa5-2a217438cf6f",
    "why": "top9"
   },
   {
-   "games": 35,
-   "macro_hash": "a0a76b93ca79",
+   "games": 40,
+   "macro_hash": "0a9807a4196a",
    "name": "Zarzorki",
-   "since": "2026-10-20T20:29:09Z",
+   "since": "2026-10-20T20:33:28Z",
    "slug": "zarzorki",
    "static": false,
    "teamId": "c0a5d0a5-eb8f-4aa7-8d6a-8e74ed78874c",
    "why": "top10"
   },
   {
-   "games": 10,
-   "macro_hash": "3c4b31611fe4",
+   "games": 15,
+   "macro_hash": "6f10b8c60e22",
    "name": "Lone Oski",
-   "since": "2026-10-20T20:29:29Z",
+   "since": "2026-10-20T20:33:37Z",
    "slug": "lone-oski",
    "static": false,
    "teamId": "554677ee-3b56-4fb8-a5df-28b476bfa8c1",
    "why": "loss"
   },
   {
-   "games": 15,
-   "macro_hash": "647314577322",
+   "games": 20,
+   "macro_hash": "778e16997abc",
    "name": "DeepSleep",
-   "since": "2026-10-20T20:29:51Z",
+   "since": "2026-10-20T20:33:47Z",
    "slug": "deepsleep",
    "static": false,
    "teamId": "c14b952b-899c-4f25-a4f8-d3a4b06cbf9a",
    "why": "loss"
   },
   {
-   "games": 10,
-   "macro_hash": "57c7e1b1d2e9",
+   "games": 15,
+   "macro_hash": "d981d2721b2a",
    "name": "Hidden Lock Pickers",
-   "since": "2026-10-20T20:30:14Z",
+   "since": "2026-10-20T20:33:56Z",
    "slug": "hidden-lock-pickers",
    "static": false,
    "teamId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
@@ -3599,6 +3599,81 @@
     }
    ],
    "time": "2026-10-20T20:26:11Z"
+  },
+  {
+   "teams": [
+    {
+     "name": "Intercontinental Fish",
+     "rank": 1,
+     "rating": 2309.1,
+     "slug": "intercontinental-fish",
+     "teamId": "1890540d-1ffc-4847-adbf-d0d08772f268"
+    },
+    {
+     "name": "Sponge(Albert and Bob)",
+     "rank": 2,
+     "rating": 2085.6,
+     "slug": "sponge-albert-and-bob",
+     "teamId": "26824601-d225-427f-bd2d-ce8aa9faa392"
+    },
+    {
+     "name": ":3",
+     "rank": 3,
+     "rating": 2070.2,
+     "slug": "3",
+     "teamId": "bbe481a7-4575-4826-9a3e-f81c28205de8"
+    },
+    {
+     "name": "Nyx",
+     "rank": 4,
+     "rating": 2064.2,
+     "slug": "nyx",
+     "teamId": "6f7fd199-4115-4fe0-8752-525bd8ccad8d"
+    },
+    {
+     "name": "F\u00fcrFortnite",
+     "rank": 5,
+     "rating": 2056.5,
+     "slug": "f-rfortnite",
+     "teamId": "fa706d6e-9f66-44b0-bd81-1ed3dad69a99"
+    },
+    {
+     "name": "Sneaky Bush Campers",
+     "rank": 6,
+     "rating": 2037.7,
+     "slug": "sneaky-bush-campers",
+     "teamId": "4d0fe2ae-015f-4365-9705-463ff71e4291"
+    },
+    {
+     "name": "EMPEROR Tung",
+     "rank": 7,
+     "rating": 2036.5,
+     "slug": "emperor-tung",
+     "teamId": "a1e82708-dfd3-4609-8b9a-69f652d12185"
+    },
+    {
+     "name": "Tartarus",
+     "rank": 8,
+     "rating": 2014.2,
+     "slug": "tartarus",
+     "teamId": "59f5706f-16db-4ae0-bb3f-deadb41cdc50"
+    },
+    {
+     "name": "Trzy Kwaterki",
+     "rank": 9,
+     "rating": 2009.3,
+     "slug": "trzy-kwaterki",
+     "teamId": "36258abf-3fd0-4827-8fa5-2a217438cf6f"
+    },
+    {
+     "name": "Zarzorki",
+     "rank": 10,
+     "rating": 1991.7,
+     "slug": "zarzorki",
+     "teamId": "c0a5d0a5-eb8f-4aa7-8d6a-8e74ed78874c"
+    }
+   ],
+   "time": "2026-10-20T20:31:27Z"
   }
  ]
 }

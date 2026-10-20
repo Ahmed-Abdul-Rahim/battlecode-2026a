@@ -1,7 +1,7 @@
 {
  "build": {},
  "cadence": {
-  "bag": 17.0,
+  "bag": 16.7,
   "first_emblem": null,
   "shops_per_100r": null
  },
@@ -25,8 +25,8 @@
    10
   ]
  },
- "games": 10,
+ "games": 15,
  "opening": {},
  "team": "Hidden Lock Pickers",
- "win_rate": 0.7
+ "win_rate": 0.533
 }
