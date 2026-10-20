@@ -126,6 +126,15 @@
    "time": "2026-10-20T17:30:07.063Z",
    "win": false
   },
+  "229095ae-e09b-4b26-9930-311a9aeb27a7": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "lanes",
+   "opp": "Rogue Lock Pickers",
+   "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
+   "time": "2026-10-20T18:10:10.514Z",
+   "win": false
+  },
   "23a318f0-b34f-48e3-a3bd-220f03523f28": {
    "kind": "ranked",
    "live": null,
@@ -477,6 +486,15 @@
    "time": "2026-10-20T16:00:07.664Z",
    "win": false
   },
+  "8d902203-eb97-42b3-8fc0-e00eadf36319": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "quadrants",
+   "opp": "Rogue Lock Pickers",
+   "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
+   "time": "2026-10-20T18:10:10.514Z",
+   "win": true
+  },
   "8df737fe-c8d0-4a4f-b6ad-665f48e41e30": {
    "kind": "ranked",
    "live": null,
@@ -511,6 +529,15 @@
    "opp": "Mousa",
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
    "time": "2026-10-20T18:00:13.679Z",
+   "win": true
+  },
+  "908a1687-3a9e-41a7-b3cd-91902b28e0fd": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "elkring",
+   "opp": "Rogue Lock Pickers",
+   "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
+   "time": "2026-10-20T18:10:10.514Z",
    "win": true
   },
   "915df6ef-9017-48df-bf0f-b76b814279d8": {
@@ -792,6 +819,15 @@
    "time": "2026-10-20T16:20:07.816Z",
    "win": false
   },
+  "e4bd7274-a182-4428-a32e-7972f59e79db": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "packs",
+   "opp": "Rogue Lock Pickers",
+   "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
+   "time": "2026-10-20T18:10:10.515Z",
+   "win": false
+  },
   "e602660e-6c66-4c75-8ea3-21df7ad01d2a": {
    "kind": "ranked",
    "live": null,
@@ -835,6 +871,15 @@
    "opp": "Slough Reps",
    "oppId": "fd3a404c-954b-4628-a418-7a8e57fb3783",
    "time": "2026-10-20T15:10:13.186Z",
+   "win": true
+  },
+  "f02347a5-5757-42c7-91ef-e74db4b06984": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "monolith",
+   "opp": "Rogue Lock Pickers",
+   "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
+   "time": "2026-10-20T18:10:10.515Z",
    "win": true
   },
   "f07abe10-a225-469b-837b-c1ba0ecbd755": {
@@ -1812,6 +1857,40 @@
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
    "status": "needs-human",
    "time": "2026-10-20T18:00:13.679Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "champion": 47
+   },
+   "deaths_them": 21,
+   "deaths_us": 47,
+   "gems_them": "1026",
+   "gems_us": "402",
+   "hint": "map not in maps/ yet: the next map sync registers it",
+   "id": "e4bd7274-a182-4428-a32e-7972f59e79db",
+   "map": "packs",
+   "opp": "Rogue Lock Pickers",
+   "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
+   "status": "needs-human",
+   "time": "2026-10-20T18:10:10.515Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "camp": 9,
+    "champion": 12
+   },
+   "deaths_them": 24,
+   "deaths_us": 21,
+   "gems_them": "1010",
+   "gems_us": "672",
+   "id": "229095ae-e09b-4b26-9930-311a9aeb27a7",
+   "map": "lanes",
+   "opp": "Rogue Lock Pickers",
+   "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
+   "status": "open",
+   "time": "2026-10-20T18:10:10.514Z",
    "tries_at": 0
   }
  ],
