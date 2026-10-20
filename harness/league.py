@@ -50,6 +50,13 @@ import time
 from collections import Counter
 from pathlib import Path
 
+if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
+    with contextlib.suppress(Exception):
+        sys.stdout.reconfigure(encoding="utf-8", errors="backslashreplace")
+if sys.stderr.encoding and sys.stderr.encoding.lower() != "utf-8":
+    with contextlib.suppress(Exception):
+        sys.stderr.reconfigure(encoding="utf-8", errors="backslashreplace")
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
@@ -116,7 +123,11 @@ LOCKED = frozenset(params.W_NAMES.index(n) for n in ("recall_gold", "tribute_min
 
 
 def log(msg: str) -> None:
-    print(f"[{time.strftime('%H:%M:%S')}] {msg}", flush=True)
+    try:
+        print(f"[{time.strftime('%H:%M:%S')}] {msg}", flush=True)
+    except Exception:
+        safe = msg.encode("ascii", "backslashreplace").decode("ascii")
+        print(f"[{time.strftime('%H:%M:%S')}] {safe}", flush=True)
 
 
 def now_iso() -> str:
@@ -1349,19 +1360,19 @@ def cycle(a: argparse.Namespace, rng: random.Random) -> None:
     rep = map_report(ch, led)
     if rep["missing"] or rep["dropped"]:
         log(
-            f"maps out of sync: no fingerprint/geometry for {rep['missing']}, θ not in pack for {rep['dropped']}"
+            f"maps out of sync: no fingerprint/geometry for {rep['missing']}, theta not in pack for {rep['dropped']}"
         )
         if a.lead and rep["missing"]:
             local["last_sync"] = 0  # register them now, not in up to 3 h
     seeded = seed_maps(ch, led)
     apply_champion(ch)
     if seeded:
-        log(f"new maps get default θ until trained: {', '.join(seeded)}")
+        log(f"new maps get default theta until trained: {', '.join(seeded)}")
         save_json(CHAMPION, ch)
         if use_git:
             publish(
                 [CHAMPION, PACK],
-                f"league: default θ for {len(seeded)} new maps",
+                f"league: default theta for {len(seeded)} new maps",
                 h2h_decider(cyc, ch["maps"]),
             )
             ch = load_champion()
@@ -1480,7 +1491,10 @@ def cmd_run(a: argparse.Namespace) -> int:
             except SystemExit:
                 raise
             except Exception as ex:  # keep the daemon alive; the log has the error
-                log(f"cycle error: {ex!r}")
+                try:
+                    log(f"cycle error: {ex!r}")
+                except Exception:
+                    log("cycle error: [unprintable exception]")
                 time.sleep(30)
     finally:
         LOCK.unlink(missing_ok=True)

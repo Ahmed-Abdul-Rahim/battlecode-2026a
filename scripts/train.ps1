@@ -36,7 +36,7 @@ switch ($cmd) {
             $p = Join-Path $scratch $f
             if (Test-Path $p) { Move-Item -Force $p ($p -replace '\.(log|err)$', '.prev.$1') }
         }
-        $procArgs = @("-u", $league, "run", "--forever") + $rest
+        $procArgs = @("-X", "utf8", "-u", $league, "run", "--forever") + $rest
         Start-Process -WindowStyle Hidden -FilePath $py -ArgumentList $procArgs -WorkingDirectory $root `
             -RedirectStandardOutput (Join-Path $scratch "league.log") -RedirectStandardError (Join-Path $scratch "league.err")
         Write-Host "league started ($($rest -join ' ')). Log: runs\league\league.log; status: scripts\train.ps1 status" -ForegroundColor Green
@@ -46,6 +46,6 @@ switch ($cmd) {
         $log = Join-Path $scratch "league.log"
         if (Test-Path $log) { Get-Content $log -Wait -Tail 40 } else { Write-Host "no log yet: start the league first" }
     }
-    "once" { & $py -u $league run --cycles 1 @rest }
-    default { & $py $league $cmd @rest }
+    "once" { & $py -X utf8 -u $league run --cycles 1 @rest }
+    default { & $py -X utf8 $league $cmd @rest }
 }
