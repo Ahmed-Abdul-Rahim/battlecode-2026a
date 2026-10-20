@@ -36,6 +36,15 @@
    "time": "2026-10-20T18:20:10.476Z",
    "win": true
   },
+  "06fbf774-86be-47ef-89fc-c81c37441471": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "lanes",
+   "opp": "dominos",
+   "oppId": "f437e066-15f3-4a27-8ec3-9687cb68696b",
+   "time": "2026-10-20T18:40:10.897Z",
+   "win": false
+  },
   "077f8383-b95f-4834-b982-3305b6b04e85": {
    "kind": "ranked",
    "live": null,
@@ -414,6 +423,15 @@
    "time": "2026-10-20T18:30:06.486Z",
    "win": false
   },
+  "6a1a8e73-3efd-4f6b-a6c2-915283213694": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "collision",
+   "opp": "dominos",
+   "oppId": "f437e066-15f3-4a27-8ec3-9687cb68696b",
+   "time": "2026-10-20T18:40:10.898Z",
+   "win": true
+  },
   "6a605f93-fb00-4a39-88a4-92f2e935a134": {
    "kind": "unranked",
    "live": 1,
@@ -466,6 +484,15 @@
    "opp": ":blauerdrache:",
    "oppId": "56492446-eca6-4557-9a40-559bd4c318dc",
    "time": "2026-10-20T16:30:26.059Z",
+   "win": false
+  },
+  "745b5ef9-57e1-4d36-ad4f-5da7b6d0ccae": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "hooks",
+   "opp": "dominos",
+   "oppId": "f437e066-15f3-4a27-8ec3-9687cb68696b",
+   "time": "2026-10-20T18:40:10.897Z",
    "win": false
   },
   "7529169e-4f10-44b9-86de-ee5af2296dbf": {
@@ -720,6 +747,15 @@
    "time": "2026-10-20T15:00:17.843Z",
    "win": false
   },
+  "b20d372d-fd85-41ac-a265-a561f5b136b6": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "quadrants",
+   "opp": "dominos",
+   "oppId": "f437e066-15f3-4a27-8ec3-9687cb68696b",
+   "time": "2026-10-20T18:40:10.898Z",
+   "win": true
+  },
   "b7d44330-f4f0-4423-a1d5-5b4cdaff8fca": {
    "kind": "ranked",
    "live": null,
@@ -925,6 +961,15 @@
    "opp": "test_2580",
    "oppId": "e89db5d4-c0a7-43eb-9d6d-23732bae07a5",
    "time": "2026-10-20T16:40:04.457Z",
+   "win": true
+  },
+  "edcf9156-ed24-42b4-b0fd-3ddcac3988bf": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "rows",
+   "opp": "dominos",
+   "oppId": "f437e066-15f3-4a27-8ec3-9687cb68696b",
+   "time": "2026-10-20T18:40:10.898Z",
    "win": true
   },
   "edea21af-c49f-40f5-9d0a-1f0fa92f110d": {
@@ -1179,13 +1224,14 @@
    },
    "deaths_them": 27,
    "deaths_us": 41,
+   "fixed_in": 4,
    "gems_them": "1100",
    "gems_us": "748",
    "id": "decc64aa-4891-439c-91fc-497d990698c6",
    "map": "elkring",
    "opp": "Hungry Hungry Hungry",
    "oppId": "88c01e3a-ac73-431d-8fb8-5dd482a5418b",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-20T16:10:05.811Z",
    "tries_at": 0
   },
@@ -1262,13 +1308,14 @@
    },
    "deaths_them": 55,
    "deaths_us": 64,
+   "fixed_in": 4,
    "gems_them": "1023",
    "gems_us": "682",
    "id": "09cc995d-51bd-4d64-9526-b9cbdd07744f",
    "map": "elkring",
    "opp": "Aviators",
    "oppId": "0948671e-bedc-4ca1-8dde-2526adff3d0e",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-20T15:50:11.039Z",
    "tries_at": 0
   },
@@ -1279,13 +1326,14 @@
    },
    "deaths_them": 26,
    "deaths_us": 38,
+   "fixed_in": 4,
    "gems_them": "1015",
    "gems_us": "902",
    "id": "1c926c84-84da-4fb9-ae58-6ad7a1666c66",
    "map": "elkring",
    "opp": "Sigma Coder",
    "oppId": "db94d858-5170-41ef-ad90-b2faf85dd5e8",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-20T15:40:12.934Z",
    "tries_at": 0
   },
@@ -1364,13 +1412,14 @@
    },
    "deaths_them": 14,
    "deaths_us": 49,
+   "fixed_in": 4,
    "gems_them": "1001",
    "gems_us": "297",
    "id": "29f2fe43-7348-4022-97c0-32fdfe7baf0c",
    "map": "elkring",
    "opp": "Patient Stunners",
    "oppId": "3edd1441-9f24-4e2c-9645-d8f1e489a2c0",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-20T15:20:09.962Z",
    "tries_at": 0
   },
@@ -1672,13 +1721,14 @@
    },
    "deaths_them": 11,
    "deaths_us": 25,
+   "fixed_in": 4,
    "gems_them": "1009",
    "gems_us": "436",
    "id": "52a5a323-111c-4813-84b0-7d4e859d790b",
    "map": "elkring",
    "opp": "ggez",
    "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-20T17:10:06.134Z",
    "tries_at": 0
   },
@@ -2076,14 +2126,49 @@
    },
    "deaths_them": 1,
    "deaths_us": 27,
+   "fixed_in": 4,
    "gems_them": "1034",
    "gems_us": "352",
    "id": "f4386295-0a8a-4275-9ab4-87b1ff1cb1ba",
    "map": "elkring",
    "opp": "Argon enjoyers",
    "oppId": "5d6858ca-2352-4585-af55-3d79b614f824",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-20T18:20:10.477Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 3,
+    "Unknown entity kind (2)": 5
+   },
+   "deaths_them": 8,
+   "deaths_us": 8,
+   "gems_them": "1005",
+   "gems_us": "928",
+   "id": "06fbf774-86be-47ef-89fc-c81c37441471",
+   "map": "lanes",
+   "opp": "dominos",
+   "oppId": "f437e066-15f3-4a27-8ec3-9687cb68696b",
+   "status": "open",
+   "time": "2026-10-20T18:40:10.897Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 59,
+    "Unknown entity kind (2)": 11
+   },
+   "deaths_them": 39,
+   "deaths_us": 70,
+   "gems_them": "638",
+   "gems_us": "165",
+   "id": "745b5ef9-57e1-4d36-ad4f-5da7b6d0ccae",
+   "map": "hooks",
+   "opp": "dominos",
+   "oppId": "f437e066-15f3-4a27-8ec3-9687cb68696b",
+   "status": "open",
+   "time": "2026-10-20T18:40:10.897Z",
    "tries_at": 0
   }
  ],
