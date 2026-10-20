@@ -428,7 +428,7 @@
   ]
  },
  "cadence": {
-  "bag": 40.0,
+  "bag": 38.3,
   "first_emblem": 170,
   "shops_per_100r": 0.98
  },
@@ -452,7 +452,7 @@
    10
   ]
  },
- "games": 55,
+ "games": 65,
  "opening": {
   "ambush": [
    {
@@ -1271,5 +1271,5 @@
   ]
  },
  "team": "Nyx",
- "win_rate": 0.709
+ "win_rate": 0.692
 }

@@ -1,32 +1,32 @@
 {
  "build": {},
  "cadence": {
-  "bag": 16.7,
+  "bag": 26.2,
   "first_emblem": null,
   "shops_per_100r": null
  },
  "draft": {
   "3": [
    3,
-   8,
-   4
+   0,
+   10
   ],
   "4": [
    3,
-   8,
-   4,
-   9
+   0,
+   10,
+   2
   ],
   "5": [
    3,
-   8,
-   4,
-   9,
-   10
+   0,
+   10,
+   2,
+   6
   ]
  },
- "games": 15,
+ "games": 10,
  "opening": {},
- "team": "Hidden Lock Pickers",
- "win_rate": 0.533
+ "team": "Patient Gem Thieves",
+ "win_rate": 0.7
 }

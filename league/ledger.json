@@ -216,6 +216,15 @@
    "time": "2026-10-20T19:10:09.463Z",
    "win": false
   },
+  "24e34e4c-2f0f-4ed9-8c6c-9e8862fb552e": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "yellow-brick-road",
+   "opp": "eclipsed Sunlight",
+   "oppId": "dba8d35f-fd1d-432d-8ba5-9f076cb3dcac",
+   "time": "2026-10-20T20:40:10.182Z",
+   "win": false
+  },
   "250227f6-cefa-4267-b0db-b0ccdc7accb5": {
    "kind": "ranked",
    "live": 1,
@@ -396,6 +405,15 @@
    "time": "2026-10-20T18:00:13.679Z",
    "win": false
   },
+  "3dc40c96-da21-4f59-bdfb-3b4adf595519": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "hooks",
+   "opp": "eclipsed Sunlight",
+   "oppId": "dba8d35f-fd1d-432d-8ba5-9f076cb3dcac",
+   "time": "2026-10-20T20:40:10.182Z",
+   "win": true
+  },
   "3e73e89f-7896-42fe-8bc3-8f86a4afe51f": {
    "kind": "ranked",
    "live": 1,
@@ -413,6 +431,15 @@
    "oppId": "0e2abba9-e657-4025-a4e6-a1eed7c5dea0",
    "time": "2026-10-20T16:20:07.816Z",
    "win": false
+  },
+  "41bc95c2-d828-4939-bb3c-95177dbe2858": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "the-farm",
+   "opp": "eclipsed Sunlight",
+   "oppId": "dba8d35f-fd1d-432d-8ba5-9f076cb3dcac",
+   "time": "2026-10-20T20:40:10.182Z",
+   "win": true
   },
   "481909ab-1a45-4898-95b3-c3dbee65e3e4": {
    "kind": "ranked",
@@ -540,6 +567,15 @@
    "time": "2026-10-20T17:50:06.264Z",
    "win": false
   },
+  "56a4be68-ccfc-4bd5-9188-53594cd1c2f1": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "elkring",
+   "opp": "eclipsed Sunlight",
+   "oppId": "dba8d35f-fd1d-432d-8ba5-9f076cb3dcac",
+   "time": "2026-10-20T20:40:10.182Z",
+   "win": true
+  },
   "5717e6c6-2895-4512-86b5-65a2e894c9f3": {
    "kind": "ranked",
    "live": 1,
@@ -566,6 +602,15 @@
    "oppId": "88c01e3a-ac73-431d-8fb8-5dd482a5418b",
    "time": "2026-10-20T16:10:05.811Z",
    "win": false
+  },
+  "5aa5ac5a-7983-4c10-8bcd-74f8e0eaa44e": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "corridors",
+   "opp": "Patient Gem Thieves",
+   "oppId": "cfd44d0a-4d7b-42db-a1e6-e04ff397f391",
+   "time": "2026-10-20T20:30:13.466Z",
+   "win": true
   },
   "5c8ffbb8-b8a1-47cc-b1b9-02e19a59d83c": {
    "kind": "ranked",
@@ -945,6 +990,15 @@
    "time": "2026-10-20T18:20:10.477Z",
    "win": true
   },
+  "9be91c94-03cc-4b83-bf45-96047e119f8d": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "the-farm",
+   "opp": "Patient Gem Thieves",
+   "oppId": "cfd44d0a-4d7b-42db-a1e6-e04ff397f391",
+   "time": "2026-10-20T20:30:13.466Z",
+   "win": false
+  },
   "9cb1a85a-1985-4abd-bc26-746061c244c7": {
    "kind": "ranked",
    "live": null,
@@ -970,6 +1024,15 @@
    "opp": "Stubborn Altar Keepers",
    "oppId": "625bb51a-8d9e-4035-a16e-ce4eea8eb739",
    "time": "2026-10-20T19:00:08.517Z",
+   "win": true
+  },
+  "9decaa54-c39b-4f64-a310-826cad48d174": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "rushbait-v2",
+   "opp": "eclipsed Sunlight",
+   "oppId": "dba8d35f-fd1d-432d-8ba5-9f076cb3dcac",
+   "time": "2026-10-20T20:40:10.182Z",
    "win": true
   },
   "9f9f807a-4769-4651-86ed-7547e5e5b51e": {
@@ -1098,6 +1161,15 @@
    "time": "2026-10-20T18:40:10.898Z",
    "win": true
   },
+  "b2e8318e-6ec6-4cd5-b7b2-4e9afdabccf2": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "fragment",
+   "opp": "Patient Gem Thieves",
+   "oppId": "cfd44d0a-4d7b-42db-a1e6-e04ff397f391",
+   "time": "2026-10-20T20:30:13.466Z",
+   "win": false
+  },
   "b4539a7b-de75-41a2-a5d9-7aca0320a0aa": {
    "kind": "ranked",
    "live": 1,
@@ -1106,6 +1178,15 @@
    "oppId": "625bb51a-8d9e-4035-a16e-ce4eea8eb739",
    "time": "2026-10-20T19:00:08.517Z",
    "win": true
+  },
+  "b506c246-2cc5-48c7-ba33-fdad66437855": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "gold-rush",
+   "opp": "Patient Gem Thieves",
+   "oppId": "cfd44d0a-4d7b-42db-a1e6-e04ff397f391",
+   "time": "2026-10-20T20:30:13.466Z",
+   "win": false
   },
   "b65eddd7-d9a0-4522-8af9-dcd65ac98a52": {
    "kind": "ranked",
@@ -1457,6 +1538,15 @@
    "oppId": "1890540d-1ffc-4847-adbf-d0d08772f268",
    "time": "2026-10-20T17:51:26.716Z",
    "win": false
+  },
+  "f0afc7f1-ba21-4cdd-87d3-4d9f3f2105ab": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "stampede",
+   "opp": "Patient Gem Thieves",
+   "oppId": "cfd44d0a-4d7b-42db-a1e6-e04ff397f391",
+   "time": "2026-10-20T20:30:13.466Z",
+   "win": true
   },
   "f1043ea0-411a-4af9-81d3-44aa6013a4b6": {
    "kind": "ranked",
@@ -2462,13 +2552,14 @@
    },
    "deaths_them": 21,
    "deaths_us": 47,
+   "fixed_in": 8,
    "gems_them": "1026",
    "gems_us": "402",
    "id": "e4bd7274-a182-4428-a32e-7972f59e79db",
    "map": "packs",
    "opp": "Rogue Lock Pickers",
    "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-20T18:10:10.515Z",
    "tries_at": 0
   },
@@ -2772,13 +2863,14 @@
    },
    "deaths_them": 16,
    "deaths_us": 16,
+   "fixed_in": 8,
    "gems_them": "1004",
    "gems_us": "752",
    "id": "5e7c2860-45d1-4196-8641-42a13638f9bf",
    "map": "packs",
    "opp": "Rataturing",
    "oppId": "0a7f58a2-84f8-4c83-abdc-82d7fe4d4558",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-20T19:20:09.080Z",
    "tries_at": 0
   },
@@ -3083,6 +3175,73 @@
    "status": "open",
    "time": "2026-10-20T20:10:09.725Z",
    "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (2)": 1
+   },
+   "deaths_them": 2,
+   "deaths_us": 1,
+   "gems_them": "1008",
+   "gems_us": "59",
+   "id": "24e34e4c-2f0f-4ed9-8c6c-9e8862fb552e",
+   "map": "yellow-brick-road",
+   "opp": "eclipsed Sunlight",
+   "oppId": "dba8d35f-fd1d-432d-8ba5-9f076cb3dcac",
+   "status": "open",
+   "time": "2026-10-20T20:40:10.182Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 32,
+    "Unknown entity kind (2)": 1
+   },
+   "deaths_them": 7,
+   "deaths_us": 33,
+   "gems_them": "418",
+   "gems_us": "320",
+   "id": "b2e8318e-6ec6-4cd5-b7b2-4e9afdabccf2",
+   "map": "fragment",
+   "opp": "Patient Gem Thieves",
+   "oppId": "cfd44d0a-4d7b-42db-a1e6-e04ff397f391",
+   "status": "open",
+   "time": "2026-10-20T20:30:13.466Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 5,
+    "Unknown entity kind (2)": 21
+   },
+   "deaths_them": 9,
+   "deaths_us": 26,
+   "gems_them": "579",
+   "gems_us": "0",
+   "id": "9be91c94-03cc-4b83-bf45-96047e119f8d",
+   "map": "the-farm",
+   "opp": "Patient Gem Thieves",
+   "oppId": "cfd44d0a-4d7b-42db-a1e6-e04ff397f391",
+   "status": "open",
+   "time": "2026-10-20T20:30:13.466Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 4,
+    "Unknown entity kind (2)": 18
+   },
+   "deaths_them": 22,
+   "deaths_us": 22,
+   "gems_them": "578",
+   "gems_us": "469",
+   "id": "b506c246-2cc5-48c7-ba33-fdad66437855",
+   "map": "gold-rush",
+   "opp": "Patient Gem Thieves",
+   "oppId": "cfd44d0a-4d7b-42db-a1e6-e04ff397f391",
+   "status": "open",
+   "time": "2026-10-20T20:30:13.466Z",
+   "tries_at": 1
   }
  ],
  "map_files": {
@@ -3158,133 +3317,133 @@
  ],
  "pool": [
   {
-   "games": 60,
-   "macro_hash": "7180812a75ce",
+   "games": 70,
+   "macro_hash": "e683b67088f7",
    "name": "Intercontinental Fish",
-   "since": "2026-10-20T20:31:39Z",
+   "since": "2026-10-20T20:44:34Z",
    "slug": "intercontinental-fish",
    "static": false,
    "teamId": "1890540d-1ffc-4847-adbf-d0d08772f268",
    "why": "top1"
   },
   {
-   "games": 50,
-   "macro_hash": "5bc1e1d61b19",
+   "games": 65,
+   "macro_hash": "c6c2c3c390f9",
    "name": "Sponge(Albert and Bob)",
-   "since": "2026-10-20T20:31:43Z",
+   "since": "2026-10-20T20:44:51Z",
    "slug": "sponge-albert-and-bob",
    "static": false,
    "teamId": "26824601-d225-427f-bd2d-ce8aa9faa392",
    "why": "top2"
   },
   {
-   "games": 35,
-   "macro_hash": "fd8be345dceb",
+   "games": 40,
+   "macro_hash": "f6ae4bddcccf",
    "name": ":3",
-   "since": "2026-10-20T20:31:53Z",
+   "since": "2026-10-20T20:45:02Z",
    "slug": "3",
    "static": false,
    "teamId": "bbe481a7-4575-4826-9a3e-f81c28205de8",
    "why": "top3"
   },
   {
-   "games": 55,
-   "macro_hash": "0302dcc91dbd",
-   "name": "Nyx",
-   "since": "2026-10-20T20:32:03Z",
-   "slug": "nyx",
-   "static": false,
-   "teamId": "6f7fd199-4115-4fe0-8752-525bd8ccad8d",
-   "why": "top4"
-  },
-  {
-   "games": 15,
-   "macro_hash": "0c18361520cb",
+   "games": 25,
+   "macro_hash": "6b36407d3b16",
    "name": "F\u00fcrFortnite",
-   "since": "2026-10-20T20:32:11Z",
+   "since": "2026-10-20T20:45:18Z",
    "slug": "f-rfortnite",
    "static": false,
    "teamId": "fa706d6e-9f66-44b0-bd81-1ed3dad69a99",
+   "why": "top4"
+  },
+  {
+   "games": 65,
+   "macro_hash": "f1f463a03ac2",
+   "name": "Nyx",
+   "since": "2026-10-20T20:45:35Z",
+   "slug": "nyx",
+   "static": false,
+   "teamId": "6f7fd199-4115-4fe0-8752-525bd8ccad8d",
    "why": "top5"
   },
   {
-   "games": 60,
-   "macro_hash": "6e36a1408113",
+   "games": 70,
+   "macro_hash": "53c9851051cc",
    "name": "Sneaky Bush Campers",
-   "since": "2026-10-20T20:32:28Z",
+   "since": "2026-10-20T20:45:51Z",
    "slug": "sneaky-bush-campers",
    "static": false,
    "teamId": "4d0fe2ae-015f-4365-9705-463ff71e4291",
    "why": "top6"
   },
   {
-   "games": 25,
-   "macro_hash": "74f46ff6cff9",
+   "games": 35,
+   "macro_hash": "c200f67c85d4",
    "name": "EMPEROR Tung",
-   "since": "2026-10-20T20:32:43Z",
+   "since": "2026-10-20T20:46:08Z",
    "slug": "emperor-tung",
    "static": false,
    "teamId": "a1e82708-dfd3-4609-8b9a-69f652d12185",
    "why": "top7"
   },
   {
-   "games": 30,
-   "macro_hash": "7ef803d4ec6d",
+   "games": 40,
+   "macro_hash": "04d50d863585",
    "name": "Tartarus",
-   "since": "2026-10-20T20:33:03Z",
+   "since": "2026-10-20T20:46:32Z",
    "slug": "tartarus",
    "static": false,
    "teamId": "59f5706f-16db-4ae0-bb3f-deadb41cdc50",
    "why": "top8"
   },
   {
-   "games": 50,
-   "macro_hash": "ed57415d8b65",
+   "games": 90,
+   "macro_hash": "1f421b87c5f0",
    "name": "Trzy Kwaterki",
-   "since": "2026-10-20T20:33:19Z",
+   "since": "2026-10-20T20:46:58Z",
    "slug": "trzy-kwaterki",
    "static": false,
    "teamId": "36258abf-3fd0-4827-8fa5-2a217438cf6f",
    "why": "top9"
   },
   {
-   "games": 40,
-   "macro_hash": "0a9807a4196a",
-   "name": "Zarzorki",
-   "since": "2026-10-20T20:33:28Z",
-   "slug": "zarzorki",
+   "games": 25,
+   "macro_hash": "40ddffb3db01",
+   "name": "Let's LARP again",
+   "since": "2026-10-20T20:47:22Z",
+   "slug": "let-s-larp-again",
    "static": false,
-   "teamId": "c0a5d0a5-eb8f-4aa7-8d6a-8e74ed78874c",
+   "teamId": "d2ef7d2c-be90-44e8-be4e-807bc580cc7c",
    "why": "top10"
   },
   {
-   "games": 15,
-   "macro_hash": "6f10b8c60e22",
-   "name": "Lone Oski",
-   "since": "2026-10-20T20:33:37Z",
-   "slug": "lone-oski",
+   "games": 10,
+   "macro_hash": "3cf278a00707",
+   "name": "eclipsed Sunlight",
+   "since": "2026-10-20T20:47:46Z",
+   "slug": "eclipsed-sunlight",
    "static": false,
-   "teamId": "554677ee-3b56-4fb8-a5df-28b476bfa8c1",
+   "teamId": "dba8d35f-fd1d-432d-8ba5-9f076cb3dcac",
+   "why": "loss"
+  },
+  {
+   "games": 10,
+   "macro_hash": "e2c5667e0c69",
+   "name": "Patient Gem Thieves",
+   "since": "2026-10-20T20:48:11Z",
+   "slug": "patient-gem-thieves",
+   "static": false,
+   "teamId": "cfd44d0a-4d7b-42db-a1e6-e04ff397f391",
    "why": "loss"
   },
   {
    "games": 20,
-   "macro_hash": "778e16997abc",
-   "name": "DeepSleep",
-   "since": "2026-10-20T20:33:47Z",
-   "slug": "deepsleep",
+   "macro_hash": "4aa606223bcb",
+   "name": "Lone Oski",
+   "since": "2026-10-20T20:48:29Z",
+   "slug": "lone-oski",
    "static": false,
-   "teamId": "c14b952b-899c-4f25-a4f8-d3a4b06cbf9a",
-   "why": "loss"
-  },
-  {
-   "games": 15,
-   "macro_hash": "d981d2721b2a",
-   "name": "Hidden Lock Pickers",
-   "since": "2026-10-20T20:33:56Z",
-   "slug": "hidden-lock-pickers",
-   "static": false,
-   "teamId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
+   "teamId": "554677ee-3b56-4fb8-a5df-28b476bfa8c1",
    "why": "loss"
   }
  ],
@@ -3674,6 +3833,81 @@
     }
    ],
    "time": "2026-10-20T20:31:27Z"
+  },
+  {
+   "teams": [
+    {
+     "name": "Intercontinental Fish",
+     "rank": 1,
+     "rating": 2301.8,
+     "slug": "intercontinental-fish",
+     "teamId": "1890540d-1ffc-4847-adbf-d0d08772f268"
+    },
+    {
+     "name": "Sponge(Albert and Bob)",
+     "rank": 2,
+     "rating": 2081.1,
+     "slug": "sponge-albert-and-bob",
+     "teamId": "26824601-d225-427f-bd2d-ce8aa9faa392"
+    },
+    {
+     "name": ":3",
+     "rank": 3,
+     "rating": 2071.9,
+     "slug": "3",
+     "teamId": "bbe481a7-4575-4826-9a3e-f81c28205de8"
+    },
+    {
+     "name": "F\u00fcrFortnite",
+     "rank": 4,
+     "rating": 2061.1,
+     "slug": "f-rfortnite",
+     "teamId": "fa706d6e-9f66-44b0-bd81-1ed3dad69a99"
+    },
+    {
+     "name": "Nyx",
+     "rank": 5,
+     "rating": 2058.5,
+     "slug": "nyx",
+     "teamId": "6f7fd199-4115-4fe0-8752-525bd8ccad8d"
+    },
+    {
+     "name": "Sneaky Bush Campers",
+     "rank": 6,
+     "rating": 2045.0,
+     "slug": "sneaky-bush-campers",
+     "teamId": "4d0fe2ae-015f-4365-9705-463ff71e4291"
+    },
+    {
+     "name": "EMPEROR Tung",
+     "rank": 7,
+     "rating": 2034.8,
+     "slug": "emperor-tung",
+     "teamId": "a1e82708-dfd3-4609-8b9a-69f652d12185"
+    },
+    {
+     "name": "Tartarus",
+     "rank": 8,
+     "rating": 2022.3,
+     "slug": "tartarus",
+     "teamId": "59f5706f-16db-4ae0-bb3f-deadb41cdc50"
+    },
+    {
+     "name": "Trzy Kwaterki",
+     "rank": 9,
+     "rating": 2015.0,
+     "slug": "trzy-kwaterki",
+     "teamId": "36258abf-3fd0-4827-8fa5-2a217438cf6f"
+    },
+    {
+     "name": "Let's LARP again",
+     "rank": 10,
+     "rating": 1986.0,
+     "slug": "let-s-larp-again",
+     "teamId": "d2ef7d2c-be90-44e8-be4e-807bc580cc7c"
+    }
+   ],
+   "time": "2026-10-20T20:44:17Z"
   }
  ]
 }
