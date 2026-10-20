@@ -72,6 +72,15 @@
    "time": "2026-10-20T16:50:05.756Z",
    "win": true
   },
+  "17847a00-41b5-48f4-aa7d-c2a3d7e0f3f3": {
+   "kind": "ranked",
+   "live": null,
+   "map": "expanse",
+   "opp": "haha",
+   "oppId": "70dc8c4e-5d63-4f8d-8915-1b9c7fe7fee7",
+   "time": "2026-10-20T17:20:08.637Z",
+   "win": true
+  },
   "1bfb2d1c-c351-40d7-97f7-41b525716554": {
    "kind": "ranked",
    "live": null,
@@ -144,6 +153,15 @@
    "time": "2026-10-20T15:00:17.843Z",
    "win": false
   },
+  "3a320f21-2229-4517-906d-0464a173e2f9": {
+   "kind": "ranked",
+   "live": null,
+   "map": "islands",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "time": "2026-10-20T17:10:06.134Z",
+   "win": true
+  },
   "3b85a483-28fa-4294-a15f-c82949bdd92d": {
    "kind": "ranked",
    "live": null,
@@ -207,6 +225,15 @@
    "time": "2026-10-20T16:30:26.059Z",
    "win": true
   },
+  "52a5a323-111c-4813-84b0-7d4e859d790b": {
+   "kind": "ranked",
+   "live": null,
+   "map": "elkring",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "time": "2026-10-20T17:10:06.134Z",
+   "win": false
+  },
   "58e2915f-a159-4571-ba54-fb4d6702bc31": {
    "kind": "ranked",
    "live": null,
@@ -241,6 +268,15 @@
    "opp": ":blauerdrache:",
    "oppId": "56492446-eca6-4557-9a40-559bd4c318dc",
    "time": "2026-10-20T16:30:26.059Z",
+   "win": false
+  },
+  "6dfe4487-639f-4bcb-b868-21da68ba68bd": {
+   "kind": "ranked",
+   "live": null,
+   "map": "collision",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "time": "2026-10-20T17:10:06.134Z",
    "win": false
   },
   "71cf9a7e-ffbd-455c-9ba1-c81a8a00a7d8": {
@@ -288,6 +324,15 @@
    "time": "2026-10-20T16:00:07.664Z",
    "win": false
   },
+  "7cb76357-8c00-461c-8e41-bef6791229c3": {
+   "kind": "ranked",
+   "live": null,
+   "map": "monolith",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "time": "2026-10-20T17:10:06.134Z",
+   "win": false
+  },
   "7df61bb9-02dd-47a1-9a90-bf6732c1d5f6": {
    "kind": "ranked",
    "live": null,
@@ -315,6 +360,15 @@
    "time": "2026-10-20T15:00:17.843Z",
    "win": true
   },
+  "8e186b37-aa68-413e-b8a6-341e4b2f704a": {
+   "kind": "ranked",
+   "live": null,
+   "map": "corners",
+   "opp": "haha",
+   "oppId": "70dc8c4e-5d63-4f8d-8915-1b9c7fe7fee7",
+   "time": "2026-10-20T17:20:08.637Z",
+   "win": true
+  },
   "8edc05bc-234f-42c2-ad98-f1b2fa29691a": {
    "kind": "ranked",
    "live": null,
@@ -333,6 +387,15 @@
    "time": "2026-10-20T17:00:08.371Z",
    "win": false
   },
+  "9872a596-2d12-4e55-a208-a246e060ad63": {
+   "kind": "ranked",
+   "live": null,
+   "map": "corners",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "time": "2026-10-20T17:10:06.134Z",
+   "win": false
+  },
   "9cb1a85a-1985-4abd-bc26-746061c244c7": {
    "kind": "ranked",
    "live": null,
@@ -341,6 +404,15 @@
    "oppId": "3edd1441-9f24-4e2c-9645-d8f1e489a2c0",
    "time": "2026-10-20T15:20:09.962Z",
    "win": true
+  },
+  "a634c31f-6b63-4c95-9ca2-c2ef338686c6": {
+   "kind": "ranked",
+   "live": null,
+   "map": "corridors",
+   "opp": "haha",
+   "oppId": "70dc8c4e-5d63-4f8d-8915-1b9c7fe7fee7",
+   "time": "2026-10-20T17:20:08.637Z",
+   "win": false
   },
   "a6983059-0dec-4754-8ae8-e60235cd0301": {
    "kind": "ranked",
@@ -448,6 +520,15 @@
    "opp": "Silent Fog Walkers",
    "oppId": "0e2abba9-e657-4025-a4e6-a1eed7c5dea0",
    "time": "2026-10-20T16:20:07.815Z",
+   "win": true
+  },
+  "cf48ace7-8c5e-4eb8-b40c-a934120ac0a9": {
+   "kind": "ranked",
+   "live": null,
+   "map": "broken-curve",
+   "opp": "haha",
+   "oppId": "70dc8c4e-5d63-4f8d-8915-1b9c7fe7fee7",
+   "time": "2026-10-20T17:20:08.637Z",
    "win": true
   },
   "cffb46ba-8a9a-4864-b608-206a7e977c9e": {
@@ -565,6 +646,15 @@
    "opp": "Slough Reps",
    "oppId": "fd3a404c-954b-4628-a418-7a8e57fb3783",
    "time": "2026-10-20T15:10:13.186Z",
+   "win": true
+  },
+  "f3fa1011-999d-4ec5-b282-5cc020291c16": {
+   "kind": "ranked",
+   "live": null,
+   "map": "big-world",
+   "opp": "haha",
+   "oppId": "70dc8c4e-5d63-4f8d-8915-1b9c7fe7fee7",
+   "time": "2026-10-20T17:20:08.638Z",
    "win": true
   },
   "f5837cb3-68fa-414d-b459-6439bd37fcec": {
@@ -1157,6 +1247,90 @@
    "status": "open",
    "time": "2026-10-20T16:40:04.457Z",
    "tries_at": 0
+  },
+  {
+   "contexts": {
+    "camp": 54,
+    "champion": 4
+   },
+   "deaths_them": 56,
+   "deaths_us": 58,
+   "gems_them": "992",
+   "gems_us": "180",
+   "id": "a634c31f-6b63-4c95-9ca2-c2ef338686c6",
+   "map": "corridors",
+   "opp": "haha",
+   "oppId": "70dc8c4e-5d63-4f8d-8915-1b9c7fe7fee7",
+   "status": "open",
+   "time": "2026-10-20T17:20:08.637Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 24
+   },
+   "deaths_them": 8,
+   "deaths_us": 26,
+   "gems_them": "1040",
+   "gems_us": "458",
+   "id": "6dfe4487-639f-4bcb-b868-21da68ba68bd",
+   "map": "collision",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "status": "open",
+   "time": "2026-10-20T17:10:06.134Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "camp": 8,
+    "champion": 8
+   },
+   "deaths_them": 22,
+   "deaths_us": 16,
+   "gems_them": "1036",
+   "gems_us": "502",
+   "id": "9872a596-2d12-4e55-a208-a246e060ad63",
+   "map": "corners",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "status": "open",
+   "time": "2026-10-20T17:10:06.134Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "camp": 4,
+    "champion": 21
+   },
+   "deaths_them": 11,
+   "deaths_us": 25,
+   "gems_them": "1009",
+   "gems_us": "436",
+   "id": "52a5a323-111c-4813-84b0-7d4e859d790b",
+   "map": "elkring",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "status": "open",
+   "time": "2026-10-20T17:10:06.134Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "champion": 17
+   },
+   "deaths_them": 29,
+   "deaths_us": 17,
+   "gems_them": "1009",
+   "gems_us": "853",
+   "id": "7cb76357-8c00-461c-8e41-bef6791229c3",
+   "map": "monolith",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "status": "open",
+   "time": "2026-10-20T17:10:06.134Z",
+   "tries_at": 0
   }
  ],
  "map_files": {
@@ -1207,44 +1381,54 @@
  ],
  "pool": [
   {
-   "games": 30,
-   "macro_hash": "74f2d8c30b7c",
+   "games": 50,
+   "macro_hash": "acb3cb5069e6",
    "name": "Intercontinental Fish",
-   "since": "2026-10-20T17:07:09Z",
+   "since": "2026-10-20T17:23:02Z",
    "slug": "intercontinental-fish",
    "static": false,
    "teamId": "1890540d-1ffc-4847-adbf-d0d08772f268",
    "why": "top1"
   },
   {
-   "games": 40,
-   "macro_hash": "e30182bde25b",
-   "name": "Nyx",
-   "since": "2026-10-20T17:07:25Z",
-   "slug": "nyx",
-   "static": false,
-   "teamId": "6f7fd199-4115-4fe0-8752-525bd8ccad8d",
-   "why": "top2"
-  },
-  {
-   "games": 35,
-   "macro_hash": "9727f97b4b0e",
+   "games": 45,
+   "macro_hash": "41e77a29f3e5",
    "name": "Sponge(Albert and Bob)",
-   "since": "2026-10-20T17:07:39Z",
+   "since": "2026-10-20T17:23:10Z",
    "slug": "sponge-albert-and-bob",
    "static": false,
    "teamId": "26824601-d225-427f-bd2d-ce8aa9faa392",
+   "why": "top2"
+  },
+  {
+   "games": 45,
+   "macro_hash": "c76d6a5f9976",
+   "name": "Nyx",
+   "since": "2026-10-20T17:23:19Z",
+   "slug": "nyx",
+   "static": false,
+   "teamId": "6f7fd199-4115-4fe0-8752-525bd8ccad8d",
    "why": "top3"
   },
   {
-   "games": 35,
-   "macro_hash": "8fa93f013721",
+   "games": 40,
+   "macro_hash": "0b6e455b3a0c",
    "name": "Sneaky Bush Campers",
-   "since": "2026-10-20T17:07:41Z",
+   "since": "2026-10-20T17:23:29Z",
    "slug": "sneaky-bush-campers",
    "static": false,
    "teamId": "4d0fe2ae-015f-4365-9705-463ff71e4291",
    "why": "top4"
+  },
+  {
+   "games": 25,
+   "macro_hash": "61b09c3c32cd",
+   "name": ":3",
+   "since": "2026-10-20T17:23:31Z",
+   "slug": "3",
+   "static": false,
+   "teamId": "bbe481a7-4575-4826-9a3e-f81c28205de8",
+   "why": "top5"
   },
   {
    "games": 15,
@@ -1252,88 +1436,78 @@
    "name": "Let's LARP again",
    "since": "2026-10-20T17:07:49Z",
    "slug": "let-s-larp-again",
-   "static": false,
+   "static": true,
    "teamId": "d2ef7d2c-be90-44e8-be4e-807bc580cc7c",
-   "why": "top5"
-  },
-  {
-   "games": 15,
-   "macro_hash": "c5ae8acd439d",
-   "name": ":3",
-   "since": "2026-10-20T17:08:04Z",
-   "slug": "3",
-   "static": false,
-   "teamId": "bbe481a7-4575-4826-9a3e-f81c28205de8",
    "why": "top6"
   },
   {
-   "games": 10,
-   "macro_hash": "e0d8cd95632a",
+   "games": 15,
+   "macro_hash": "2543770d6c89",
    "name": "Tartarus",
-   "since": "2026-10-20T17:08:12Z",
+   "since": "2026-10-20T17:23:36Z",
    "slug": "tartarus",
    "static": false,
    "teamId": "59f5706f-16db-4ae0-bb3f-deadb41cdc50",
    "why": "top7"
   },
   {
-   "games": 10,
-   "macro_hash": "640719f81d07",
-   "name": "procless",
-   "since": "2026-10-20T17:08:20Z",
-   "slug": "procless",
+   "games": 25,
+   "macro_hash": "c6fb8d49918b",
+   "name": "Trzy Kwaterki",
+   "since": "2026-10-20T17:23:39Z",
+   "slug": "trzy-kwaterki",
    "static": false,
-   "teamId": "8df7e1cd-0d60-413b-9331-f5427ce9ca88",
+   "teamId": "36258abf-3fd0-4827-8fa5-2a217438cf6f",
    "why": "top8"
   },
   {
-   "games": 15,
-   "macro_hash": "3e79747b6126",
+   "games": 25,
+   "macro_hash": "120d65c7409c",
    "name": "Zarzorki",
-   "since": "2026-10-20T17:08:28Z",
+   "since": "2026-10-20T17:23:41Z",
    "slug": "zarzorki",
    "static": false,
    "teamId": "c0a5d0a5-eb8f-4aa7-8d6a-8e74ed78874c",
    "why": "top9"
   },
   {
-   "games": 15,
-   "macro_hash": "5f1ce0b73118",
-   "name": "Trzy Kwaterki",
-   "since": "2026-10-20T17:08:37Z",
-   "slug": "trzy-kwaterki",
+   "games": 20,
+   "macro_hash": "0cf892f204ae",
+   "name": "procless",
+   "since": "2026-10-20T17:23:50Z",
+   "slug": "procless",
    "static": false,
-   "teamId": "36258abf-3fd0-4827-8fa5-2a217438cf6f",
+   "teamId": "8df7e1cd-0d60-413b-9331-f5427ce9ca88",
    "why": "top10"
   },
   {
    "games": 10,
-   "macro_hash": "63b09dfc4356",
+   "macro_hash": "9b09d14ba35c",
+   "name": "haha",
+   "since": "2026-10-20T17:24:08Z",
+   "slug": "haha",
+   "static": false,
+   "teamId": "70dc8c4e-5d63-4f8d-8915-1b9c7fe7fee7",
+   "why": "loss"
+  },
+  {
+   "games": 15,
+   "macro_hash": "d61463be4a6e",
+   "name": "ggez",
+   "since": "2026-10-20T17:24:14Z",
+   "slug": "ggez",
+   "static": false,
+   "teamId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "why": "loss"
+  },
+  {
+   "games": 20,
+   "macro_hash": "d5962d8f8982",
    "name": "knownasjason",
-   "since": "2026-10-20T17:08:52Z",
+   "since": "2026-10-20T17:24:32Z",
    "slug": "knownasjason",
    "static": false,
    "teamId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
-   "why": "loss"
-  },
-  {
-   "games": 10,
-   "macro_hash": "52e6bc1c7746",
-   "name": "Crimson Bush Campers",
-   "since": "2026-10-20T17:09:07Z",
-   "slug": "crimson-bush-campers",
-   "static": false,
-   "teamId": "2451bf9d-9782-4060-b8b4-fc2e7a69ef9a",
-   "why": "loss"
-  },
-  {
-   "games": 10,
-   "macro_hash": "50f2df849fdb",
-   "name": "test_2580",
-   "since": "2026-10-20T17:09:24Z",
-   "slug": "test-2580",
-   "static": false,
-   "teamId": "e89db5d4-c0a7-43eb-9d6d-23732bae07a5",
    "why": "loss"
   }
  ],
@@ -1488,6 +1662,81 @@
     }
    ],
    "time": "2026-10-20T17:07:05Z"
+  },
+  {
+   "teams": [
+    {
+     "name": "Intercontinental Fish",
+     "rank": 1,
+     "rating": 2310.3,
+     "slug": "intercontinental-fish",
+     "teamId": "1890540d-1ffc-4847-adbf-d0d08772f268"
+    },
+    {
+     "name": "Sponge(Albert and Bob)",
+     "rank": 2,
+     "rating": 2082.7,
+     "slug": "sponge-albert-and-bob",
+     "teamId": "26824601-d225-427f-bd2d-ce8aa9faa392"
+    },
+    {
+     "name": "Nyx",
+     "rank": 3,
+     "rating": 2080.2,
+     "slug": "nyx",
+     "teamId": "6f7fd199-4115-4fe0-8752-525bd8ccad8d"
+    },
+    {
+     "name": "Sneaky Bush Campers",
+     "rank": 4,
+     "rating": 2059.9,
+     "slug": "sneaky-bush-campers",
+     "teamId": "4d0fe2ae-015f-4365-9705-463ff71e4291"
+    },
+    {
+     "name": ":3",
+     "rank": 5,
+     "rating": 2043.5,
+     "slug": "3",
+     "teamId": "bbe481a7-4575-4826-9a3e-f81c28205de8"
+    },
+    {
+     "name": "Let's LARP again",
+     "rank": 6,
+     "rating": 2030.8,
+     "slug": "let-s-larp-again",
+     "teamId": "d2ef7d2c-be90-44e8-be4e-807bc580cc7c"
+    },
+    {
+     "name": "Tartarus",
+     "rank": 7,
+     "rating": 2014.5,
+     "slug": "tartarus",
+     "teamId": "59f5706f-16db-4ae0-bb3f-deadb41cdc50"
+    },
+    {
+     "name": "Trzy Kwaterki",
+     "rank": 8,
+     "rating": 1996.3,
+     "slug": "trzy-kwaterki",
+     "teamId": "36258abf-3fd0-4827-8fa5-2a217438cf6f"
+    },
+    {
+     "name": "Zarzorki",
+     "rank": 9,
+     "rating": 1994.8,
+     "slug": "zarzorki",
+     "teamId": "c0a5d0a5-eb8f-4aa7-8d6a-8e74ed78874c"
+    },
+    {
+     "name": "procless",
+     "rank": 10,
+     "rating": 1992.2,
+     "slug": "procless",
+     "teamId": "8df7e1cd-0d60-413b-9331-f5427ce9ca88"
+    }
+   ],
+   "time": "2026-10-20T17:22:46Z"
   }
  ]
 }
