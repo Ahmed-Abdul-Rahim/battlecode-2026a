@@ -123,8 +123,11 @@ pub mod knob {
     /// into channel bytes 1-2 (team params are computed locally instead), so allies stop
     /// walking to camps a teammate already cleared.
     pub const TEAM_RESPAWN: usize = 30;
+    /// 1 = combat state machine with 2-bit history counters and help calls with intent and
+    /// time left in the team channel (bc_core::combat; alert / engage / disengage / assist).
+    pub const COMBAT_FSM: usize = 31;
 
-    pub const DEFAULTS: [(usize, u8); 31] = [
+    pub const DEFAULTS: [(usize, u8); 32] = [
         (AGGRESSION, 128),
         (RETREAT_HP_PCT, 35),
         (TRIBUTE_MIN_GEMS, 20),
@@ -156,6 +159,7 @@ pub mod knob {
         (SHOP_FIRST, 0),
         (EN_ROUTE, 1),
         (TEAM_RESPAWN, 1),
+        (COMBAT_FSM, 0),
     ];
 }
 
@@ -298,10 +302,13 @@ impl ThetaMatch {
 }
 
 pub const TEAM_CHANNEL_BYTES: usize = 8;
-pub const CHANNEL_VERSION: u8 = 1;
+pub const CHANNEL_VERSION: u8 = 2;
 pub const MAX_CLAIM_SLOTS: usize = 6;
+/// Claims are 3 bits per slot: priority index 0..=6 (+1; 0 = none). Camps further down the
+/// priority list can't be claimed (the bits went to enemy health and help calls).
+pub const MAX_CLAIM_INDEX: u8 = 6;
 
-/// Decoded 8-byte team channel.
+/// Decoded 8-byte team channel (layout version 2).
 ///
 /// | byte | bits | field |
 /// |---|---|---|
@@ -309,11 +316,14 @@ pub const MAX_CLAIM_SLOTS: usize = 6;
 /// | 0 | 2 | parity of the round the leader last wrote |
 /// | 0 | 3–5 | leader slot |
 /// | 0 | 6 | flag: the sighting is an enemy channelling a tribute (lives with the sighting) |
-/// | 0 | 7 | flag: help requested |
+/// | 0 | 7 | flag: help requested; with COMBAT_FSM the sighting is a help call (bits 36–39) |
 /// | 1 | – | team aggression parameter |
 /// | 2 | – | team tribute-threshold parameter (gems) |
-/// | 3–5 | 4 bits × 6 | claim per ally slot: priority index + 1, 0 = none |
-/// | 6–7 | x:7, y:7, r:2 | latest enemy sighting; r = round mod 4; (0,0) = none |
+/// | 3–7 | bits 0–17 | claim per ally slot, 3 bits: priority index + 1, 0 = none |
+/// | 3–7 | bits 18–33 | sighting x:7, y:7, r:2 (round mod 4); (0,0) = none |
+/// | 3–7 | bits 34–35 | sighted enemy health in quarters (0 < 25 % … 3 ≥ 75 %) |
+/// | 3–7 | bits 36–37 | help-call intent (combat::CallIntent: fight, escape, finish, abort) |
+/// | 3–7 | bits 38–39 | help-call time left (combat::time_left_turns buckets) |
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub struct TeamChannel {
     pub version: u8,
@@ -326,19 +336,29 @@ pub struct TeamChannel {
     /// Per ally slot: `Some(index into θ_match.camp_priority)`.
     pub claims: [Option<u8>; MAX_CLAIM_SLOTS],
     sighting: Option<(Pos, u8)>,
+    /// Sighted enemy health, quarters (3 = unknown or healthy).
+    enemy_hp_q: u8,
+    call_intent: u8,
+    call_time: u8,
+    /// Not encoded. COMBAT_FSM: help calls live with the sighting's age (2 rounds) instead
+    /// of being cleared by each round's leader, so allies acting before the caller see them.
+    pub keep_calls: bool,
 }
 
 impl TeamChannel {
     #[must_use]
     pub fn decode(b: [u8; TEAM_CHANNEL_BYTES]) -> Self {
-        let claims_bits = u32::from(b[3]) | u32::from(b[4]) << 8 | u32::from(b[5]) << 16;
+        let mut v = 0u64;
+        for (i, byte) in b[3..8].iter().enumerate() {
+            v |= u64::from(*byte) << (8 * i);
+        }
         let mut claims = [None; MAX_CLAIM_SLOTS];
         for (i, c) in claims.iter_mut().enumerate() {
-            let v = (claims_bits >> (4 * i)) & 0xF;
-            *c = (v != 0).then(|| (v - 1) as u8);
+            let x = (v >> (3 * i)) & 0b111;
+            *c = (x != 0).then(|| (x - 1) as u8);
         }
-        let s = u16::from_le_bytes([b[6], b[7]]);
-        let (x, y, r) = (i32::from(s & 0x7F), i32::from(s >> 7 & 0x7F), (s >> 14) as u8);
+        let (x, y, r) =
+            (((v >> 18) & 0x7F) as i32, ((v >> 25) & 0x7F) as i32, ((v >> 32) & 0b11) as u8);
         Self {
             version: b[0] & 0b11,
             parity: b[0] >> 2 & 1 == 1,
@@ -349,6 +369,10 @@ impl TeamChannel {
             tribute_threshold: b[2],
             claims,
             sighting: (x != 0 || y != 0).then_some((Pos::new(x, y), r)),
+            enemy_hp_q: ((v >> 34) & 0b11) as u8,
+            call_intent: ((v >> 36) & 0b11) as u8,
+            call_time: ((v >> 38) & 0b11) as u8,
+            keep_calls: false,
         }
     }
 
@@ -362,22 +386,21 @@ impl TeamChannel {
             | u8::from(self.help) << 7;
         b[1] = self.aggression;
         b[2] = self.tribute_threshold;
-        let mut claims_bits = 0u32;
+        let mut v = 0u64;
         for (i, c) in self.claims.iter().enumerate() {
-            if let Some(v) = c {
-                claims_bits |= (u32::from(*v).min(14) + 1) << (4 * i);
+            if let Some(x) = c {
+                v |= (u64::from((*x).min(MAX_CLAIM_INDEX)) + 1) << (3 * i);
             }
         }
-        b[3..6].copy_from_slice(&claims_bits.to_le_bytes()[..3]);
-        let s = match self.sighting {
-            Some((p, r)) => {
-                (p.x.clamp(0, 127) as u16)
-                    | (p.y.clamp(0, 127) as u16) << 7
-                    | u16::from(r & 0b11) << 14
-            }
-            None => 0,
-        };
-        b[6..8].copy_from_slice(&s.to_le_bytes());
+        if let Some((p, r)) = self.sighting {
+            v |= (p.x.clamp(0, 127) as u64) << 18
+                | (p.y.clamp(0, 127) as u64) << 25
+                | u64::from(r & 0b11) << 32;
+        }
+        v |= u64::from(self.enemy_hp_q & 0b11) << 34
+            | u64::from(self.call_intent & 0b11) << 36
+            | u64::from(self.call_time & 0b11) << 38;
+        b[3..8].copy_from_slice(&v.to_le_bytes()[..5]);
         b
     }
 
@@ -391,12 +414,15 @@ impl TeamChannel {
             self.version = CHANNEL_VERSION;
             self.parity = parity;
             self.leader = my_slot & 0b111;
-            self.help = false;
+            if !self.keep_calls {
+                self.help = false;
+            }
             if let Some((_, r)) = self.sighting {
                 // Age 3 is indistinguishable from age −1 next round: drop it now.
                 if (round.wrapping_sub(u32::from(r)) & 0b11) == 3 {
                     self.sighting = None;
                     self.enemy_tributing = false;
+                    self.help = false;
                 }
             }
         }
@@ -404,18 +430,71 @@ impl TeamChannel {
     }
 
     pub fn post_sighting(&mut self, p: Pos, round: u32) {
-        // A fresh tributer alert outranks an ordinary sighting.
-        if self.enemy_tributing && self.sighting(round).is_some_and(|(_, age)| age <= 1) {
+        self.post_sighting_hp(p, round, 1.0);
+    }
+
+    /// An enemy at `p` with this health fraction (shared so allies can judge the fight).
+    pub fn post_sighting_hp(&mut self, p: Pos, round: u32, hp_frac: f32) {
+        // A fresh tributer alert (or, with COMBAT_FSM, help call) outranks an ordinary sighting.
+        let fresh = self.sighting(round).is_some_and(|(_, age)| age <= 1);
+        if fresh && (self.enemy_tributing || (self.keep_calls && self.help)) {
             return;
         }
         self.sighting = Some((p, (round & 0b11) as u8));
+        self.enemy_hp_q = hp_quarter(hp_frac);
         self.enemy_tributing = false;
+        if self.keep_calls {
+            self.help = false;
+        }
     }
 
     /// An enemy is channelling a tribute at `p`: a stun, kill or lock cancels the bag.
     pub fn post_tributer(&mut self, p: Pos, round: u32) {
         self.sighting = Some((p, (round & 0b11) as u8));
         self.enemy_tributing = true;
+        if self.keep_calls {
+            self.help = false;
+        }
+    }
+
+    /// Broadcast a help call (COMBAT_FSM). A fresh call elsewhere is only replaced by a more
+    /// urgent one that can still be saved; an abort only cancels a call at (about) its own
+    /// position, i.e. the caller's own.
+    pub fn post_call(&mut self, call: crate::combat::Call, round: u32, enemy_hp_frac: f32) {
+        use crate::combat::CallIntent;
+        if let Some((cur, age)) = self.call(round) {
+            let same = cur.pos.cheb(call.pos) <= 3;
+            let more_urgent = call.intent != CallIntent::Abort
+                && (cur.intent == CallIntent::Abort || call.time_left < cur.time_left);
+            if age <= 1 && !same && !more_urgent {
+                return;
+            }
+        } else if call.intent == CallIntent::Abort {
+            return; // nothing to cancel
+        }
+        self.sighting = Some((call.pos, (round & 0b11) as u8));
+        self.enemy_hp_q = hp_quarter(enemy_hp_frac);
+        self.enemy_tributing = false;
+        self.help = true;
+        self.call_intent = call.intent as u8;
+        self.call_time = call.time_left & 0b11;
+    }
+
+    /// The team's help call (COMBAT_FSM) and its age, if one is live.
+    #[must_use]
+    pub fn call(&self, round: u32) -> Option<(crate::combat::Call, u32)> {
+        if !self.help || self.enemy_tributing {
+            return None;
+        }
+        let (pos, age) = self.sighting(round)?;
+        let intent = crate::combat::CallIntent::from_bits(self.call_intent);
+        Some((crate::combat::Call { pos, intent, time_left: self.call_time }, age))
+    }
+
+    /// Health fraction of the shared sighting's enemy (quarter midpoints; 0.875 if unknown).
+    #[must_use]
+    pub fn sighting_hp(&self) -> f32 {
+        0.125 + 0.25 * f32::from(self.enemy_hp_q.min(3))
     }
 
     /// Shared sighting and its age in rounds (0..=2).
@@ -426,7 +505,7 @@ impl TeamChannel {
 
     pub fn set_claim(&mut self, slot: usize, priority_index: Option<u8>) {
         if let Some(c) = self.claims.get_mut(slot) {
-            *c = priority_index.map(|v| v.min(14));
+            *c = priority_index.filter(|&v| v <= MAX_CLAIM_INDEX);
         }
     }
 
@@ -439,6 +518,10 @@ impl TeamChannel {
             .filter(|&(i, c)| i != my_slot && *c == Some(priority_index))
             .count()
     }
+}
+
+fn hp_quarter(hp_frac: f32) -> u8 {
+    (hp_frac.clamp(0.0, 0.999) * 4.0) as u8
 }
 
 #[cfg(test)]
@@ -504,13 +587,48 @@ mod tests {
             ..TeamChannel::default()
         };
         c.set_claim(0, Some(2));
-        c.set_claim(5, Some(14));
+        c.set_claim(5, Some(6));
+        c.set_claim(3, Some(9)); // beyond 3 bits: not claimable
         c.post_sighting(Pos::new(99, 87), 41);
         let d = TeamChannel::decode(c.encode());
         assert_eq!(d, c);
         assert_eq!(d.claimants(2, 3), 1);
         assert_eq!(d.claimants(2, 0), 0, "own claim not counted");
         assert_eq!(d.sighting(42), Some((Pos::new(99, 87), 1)));
+        assert_eq!(d.claims[3], None);
+        assert_eq!(d.claims[5], Some(6));
+    }
+
+    #[test]
+    fn help_calls_round_trip_and_keep_priority() {
+        use crate::combat::{Call, CallIntent};
+        let mut c = TeamChannel { keep_calls: true, ..TeamChannel::default() };
+        c.begin_turn(10, 0);
+        c.set_claim(2, Some(4));
+        let fight = Call { pos: Pos::new(40, 50), intent: CallIntent::Fight, time_left: 2 };
+        c.post_call(fight, 10, 0.3);
+        let mut d = TeamChannel::decode(c.encode());
+        d.keep_calls = true;
+        assert_eq!(d.call(10), Some((fight, 0)));
+        assert!((d.sighting_hp() - 0.375).abs() < 1e-6);
+        assert_eq!(d.claims[2], Some(4), "claims untouched by the call bits");
+        // An ordinary sighting doesn't overwrite a fresh call...
+        d.post_sighting_hp(Pos::new(5, 5), 10, 1.0);
+        assert_eq!(d.call(10).map(|(c, _)| c.pos), Some(Pos::new(40, 50)));
+        // ...a less urgent call elsewhere doesn't either; a more urgent one does.
+        d.post_call(Call { pos: Pos::new(5, 5), intent: CallIntent::Fight, time_left: 3 }, 10, 0.5);
+        assert_eq!(d.call(10).map(|(c, _)| c.pos), Some(Pos::new(40, 50)));
+        let escape = Call { pos: Pos::new(5, 5), intent: CallIntent::Escape, time_left: 1 };
+        d.post_call(escape, 10, 0.5);
+        assert_eq!(d.call(10).map(|(c, _)| c.intent), Some(CallIntent::Escape));
+        // The caller's own abort cancels it; the call survives the next leader and then ages out.
+        d.post_call(Call { pos: Pos::new(6, 5), intent: CallIntent::Abort, time_left: 0 }, 10, 0.5);
+        assert_eq!(d.call(10).map(|(c, _)| c.intent), Some(CallIntent::Abort));
+        d.begin_turn(11, 0);
+        assert!(d.call(11).is_some(), "keep_calls: the leader doesn't clear calls");
+        d.begin_turn(12, 0);
+        d.begin_turn(13, 0);
+        assert_eq!(d.call(13), None);
     }
 
     #[test]

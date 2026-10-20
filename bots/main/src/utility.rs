@@ -23,7 +23,14 @@ pub const PHI: usize = 10;
 
 /// The arbiter's pick: a new intent and the option index (for telemetry), or None to keep.
 #[must_use]
-pub fn choose(ctx: &Context, vis: &Visible, my_pos: Pos, my_range: i32, u: &[f32], intent: Intent) -> Option<(Intent, usize)> {
+pub fn choose(
+    ctx: &Context,
+    vis: &Visible,
+    my_pos: Pos,
+    my_range: i32,
+    u: &[f32],
+    intent: Intent,
+) -> Option<(Intent, usize)> {
     if u.len() < OPTIONS * PHI || u.iter().all(|&w| w == 0.0) {
         return None;
     }
@@ -45,15 +52,23 @@ pub fn choose(ctx: &Context, vis: &Visible, my_pos: Pos, my_range: i32, u: &[f32
     let enemy_dps = vis.reachable_dps(my_pos, 1);
     let enemies_near = vis.enemies.iter().filter(|e| e.dist <= 5 && !e.on_spawn).count();
     let allies_near = vis.allies.iter().filter(|a| a.dist <= 4).count();
-    let ally_in_trouble = vis.allies.iter().filter(|a| a.dist <= 8 && a.hp < 0.5 * a.max_hp).find_map(|a| {
-        vis.enemies.iter().filter(|e| e.pos.cheb(a.pos) <= e.range + 1 && !e.on_spawn).min_by_key(|e| e.pos.cheb(a.pos))
-    });
+    let ally_in_trouble =
+        vis.allies.iter().filter(|a| a.dist <= 8 && a.hp < 0.5 * a.max_hp).find_map(|a| {
+            vis.enemies
+                .iter()
+                .filter(|e| e.pos.cheb(a.pos) <= e.range + 1 && !e.on_spawn)
+                .min_by_key(|e| e.pos.cheb(a.pos))
+        });
     let weakest = vis
         .enemies
         .iter()
         .filter(|e| !e.on_spawn && e.dist <= my_range + 2)
         .min_by(|a, b| a.hp.total_cmp(&b.hp));
-    let melee_on_me = vis.enemies.iter().filter(|e| !e.ranged && e.dist <= 2 && !e.on_spawn).min_by_key(|e| e.dist);
+    let melee_on_me = vis
+        .enemies
+        .iter()
+        .filter(|e| !e.ranged && e.dist <= 2 && !e.on_spawn)
+        .min_by_key(|e| e.dist);
     let phi = [
         1.0,
         ctx.hp_frac(),
@@ -66,7 +81,8 @@ pub fn choose(ctx: &Context, vis: &Visible, my_pos: Pos, my_range: i32, u: &[f32
         ctx.dist_spawn.map_or(1.0, |d| f32::from(d) / 20.0),
         f32::from(u8::from(ctx.ranged)),
     ];
-    let score = |k: usize| -> f32 { u[k * PHI..(k + 1) * PHI].iter().zip(phi).map(|(w, x)| w * x).sum() };
+    let score =
+        |k: usize| -> f32 { u[k * PHI..(k + 1) * PHI].iter().zip(phi).map(|(w, x)| w * x).sum() };
     let step_from = camp_on_me.map(|c| c.pos).or_else(|| melee_on_me.map(|e| e.pos));
     let candidates: [(usize, Option<Intent>); OPTIONS] = [
         (KEEP, Some(intent)),

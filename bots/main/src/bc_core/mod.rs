@@ -7,6 +7,7 @@
 
 pub mod belief;
 pub mod champion;
+pub mod combat;
 pub mod crc;
 pub mod fuel;
 pub mod geom;

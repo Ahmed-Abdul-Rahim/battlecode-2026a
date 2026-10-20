@@ -23,7 +23,10 @@ pub const TRIBUTE_MAX: usize = 16;
 pub const ASSIST_HP: usize = 17;
 pub const N: usize = 18;
 
-pub const W: [f32; N] = [0.8767, 0.8706, 1.4981, 1.0030, 0.6848, 1.3941, 1.6960, 0.9492, 1.2156, 0.9570, 1.1999, 1.3028, 1.2043, 1.0134, 0.9485, 0.6669, 0.7462, 2.1408];
+pub const W: [f32; N] = [
+    0.8767, 0.8706, 1.4981, 1.0030, 0.6848, 1.3941, 1.6960, 0.9492, 1.2156, 0.9570, 1.1999, 1.3028,
+    1.2043, 1.0134, 0.9485, 0.6669, 0.7462, 2.1408,
+];
 
 /// Camp-target scorer: score *= exp(TARGET . phi), phi = [gems/100, gold/100, dist/20,
 /// clear/50, respawn eta/50, other claimants, damage taken/hp, our bag/100, emblems/5, round/1000].
@@ -41,10 +44,14 @@ pub const HOTSPOT_W: f32 = 0.0;
 /// Utility arbiter weights (utility.rs): OPTIONS x PHI, row-major, 0 = keep the rule intent.
 pub const U_N: usize = 60;
 pub const U: [f32; U_N] = [0.0; U_N];
-/// Extras: [Tavi re-spec flag, arbiter fuel floor (k fuel), reserved, reserved].
+/// Extras: [Tavi re-spec flag, arbiter fuel floor (k fuel), FSM alert turns, FSM assist reach].
 pub const X_N: usize = 4;
 pub const X_TAVI_RESPEC: usize = 0;
 pub const X_F_CHEAP: usize = 1;
+/// COMBAT_FSM tuning (bc_core::combat::Tuning::from_learned): quiet turns before ALERT ends,
+/// and how far (x the caller's time left) we travel to help. 0 = the defaults (old packs).
+pub const X_FSM_ALERT: usize = 2;
+pub const X_FSM_ASSIST: usize = 3;
 pub const X: [f32; X_N] = [0.0, 30.0, 0.0, 0.0];
 
 /// Full parameter vector: W (N) + TARGET (T_N) + FIGHT (F_N) + HOTSPOT_W + U (U_N) + X (X_N).
@@ -67,8 +74,8 @@ pub fn init(theta: Option<&[u8]>) {
     p[X_AT..X_AT + X_N].copy_from_slice(&X);
     // Packs written for a shorter layout fill a prefix; the rest keeps the compiled values.
     if let Some(b) = theta {
-        for (i, c) in b.chunks_exact(4).take(P_N).enumerate() {
-            p[i] = f32::from_le_bytes([c[0], c[1], c[2], c[3]]);
+        for (i, c) in b.as_chunks::<4>().0.iter().take(P_N).enumerate() {
+            p[i] = f32::from_le_bytes(*c);
         }
     }
     let _ = PARAMS.set(p);

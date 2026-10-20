@@ -15,9 +15,19 @@ pub struct MapPlan {
 
 pub const PLANS: &[MapPlan] = &[
     // ambush: build-jungle (gain 0.421)
-    MapPlan { fingerprint: 1258856441, name: "ambush", knobs: &[(knob::BUILD_PROFILE, 0)], draft: 0 },
+    MapPlan {
+        fingerprint: 1258856441,
+        name: "ambush",
+        knobs: &[(knob::BUILD_PROFILE, 0)],
+        draft: 0,
+    },
     // collision: feasible (gain 0.32)
-    MapPlan { fingerprint: 716959943, name: "collision", knobs: &[(knob::CAMP_FEASIBLE, 1)], draft: 0 },
+    MapPlan {
+        fingerprint: 716959943,
+        name: "collision",
+        knobs: &[(knob::CAMP_FEASIBLE, 1)],
+        draft: 0,
+    },
     // contest: fight (gain 0.2)
     MapPlan { fingerprint: 3177043925, name: "contest", knobs: &[(knob::FIGHT_V6, 7)], draft: 0 },
     // corners: escape (gain 0.22)
@@ -29,17 +39,42 @@ pub const PLANS: &[MapPlan] = &[
     // fragment: draft-best (gain 0.397)
     MapPlan { fingerprint: 2591669659, name: "fragment", knobs: &[], draft: 8 },
     // monolith: feasible (gain 0.284)
-    MapPlan { fingerprint: 1347832923, name: "monolith", knobs: &[(knob::CAMP_FEASIBLE, 1)], draft: 0 },
+    MapPlan {
+        fingerprint: 1347832923,
+        name: "monolith",
+        knobs: &[(knob::CAMP_FEASIBLE, 1)],
+        draft: 0,
+    },
     // packs: build-jungle (gain 0.479)
-    MapPlan { fingerprint: 4113432899, name: "packs", knobs: &[(knob::BUILD_PROFILE, 0)], draft: 0 },
+    MapPlan {
+        fingerprint: 4113432899,
+        name: "packs",
+        knobs: &[(knob::BUILD_PROFILE, 0)],
+        draft: 0,
+    },
     // pilgrimage: feasible (gain 0.368)
-    MapPlan { fingerprint: 4012222300, name: "pilgrimage", knobs: &[(knob::CAMP_FEASIBLE, 1)], draft: 0 },
+    MapPlan {
+        fingerprint: 4012222300,
+        name: "pilgrimage",
+        knobs: &[(knob::CAMP_FEASIBLE, 1)],
+        draft: 0,
+    },
     // rows: shop-first (gain 0.121)
     MapPlan { fingerprint: 3412557625, name: "rows", knobs: &[(knob::SHOP_FIRST, 1)], draft: 0 },
     // rushbait-v2: escape (gain 0.1)
-    MapPlan { fingerprint: 2062321458, name: "rushbait-v2", knobs: &[(knob::CAMP_SAFE, 1)], draft: 0 },
+    MapPlan {
+        fingerprint: 2062321458,
+        name: "rushbait-v2",
+        knobs: &[(knob::CAMP_SAFE, 1)],
+        draft: 0,
+    },
     // stampede: build-jungle (gain 0.635)
-    MapPlan { fingerprint: 352761820, name: "stampede", knobs: &[(knob::BUILD_PROFILE, 0)], draft: 0 },
+    MapPlan {
+        fingerprint: 352761820,
+        name: "stampede",
+        knobs: &[(knob::BUILD_PROFILE, 0)],
+        draft: 0,
+    },
     // swirl: escape (gain 0.5)
     MapPlan { fingerprint: 73263638, name: "swirl", knobs: &[(knob::CAMP_SAFE, 1)], draft: 0 },
 ];

@@ -35,9 +35,9 @@ impl Entry {
     #[must_use]
     pub fn draft_for(&self, team_size: usize) -> Vec<u8> {
         let i = team_size.clamp(3, 5) - 3;
-        self.draft.get(i * DRAFT_LEN..(i + 1) * DRAFT_LEN).map_or_else(Vec::new, |s| {
-            s.iter().copied().take_while(|&b| b != 255).collect()
-        })
+        self.draft
+            .get(i * DRAFT_LEN..(i + 1) * DRAFT_LEN)
+            .map_or_else(Vec::new, |s| s.iter().copied().take_while(|&b| b != 255).collect())
     }
 
     /// Emblem order for a champion kind (pack TAG_BUILD), as (family, stat) indices.
@@ -56,7 +56,9 @@ impl Entry {
         let side_len = 2 + KINDS * OPENING_LEN;
         let best = (0..usize::from(n))
             .filter_map(|s| b.get(1 + s * side_len..1 + (s + 1) * side_len))
-            .min_by_key(|side| (i32::from(side[0]) - spawn.0).abs().max((i32::from(side[1]) - spawn.1).abs()));
+            .min_by_key(|side| {
+                (i32::from(side[0]) - spawn.0).abs().max((i32::from(side[1]) - spawn.1).abs())
+            });
         best.and_then(|side| side.get(2 + kind * OPENING_LEN..2 + (kind + 1) * OPENING_LEN))
             .map_or_else(Vec::new, |s| s.iter().copied().take_while(|&g| g != 255).collect())
     }
@@ -85,7 +87,9 @@ pub fn lookup(fingerprint: u32) -> Entry {
         at += 6;
         let mut e = Entry::default();
         for _ in 0..ns {
-            let (Some(&tag), Some(len)) = (b.get(at), u32_at(b, at + 1)) else { return Entry::default() };
+            let (Some(&tag), Some(len)) = (b.get(at), u32_at(b, at + 1)) else {
+                return Entry::default();
+            };
             let start = at + 5;
             let Some(data) = b.get(start..start + len as usize) else { return Entry::default() };
             match tag {

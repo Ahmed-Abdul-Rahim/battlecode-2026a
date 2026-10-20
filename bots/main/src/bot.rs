@@ -3,13 +3,14 @@
 
 use crate::act::{occupied_tiles, AllyView, CampView, EnemyView, Exec, Outcome, Visible};
 use crate::bc_brain::context::{Context, EnemyNear, Knobs, TargetGroup};
-use crate::bc_brain::features::{extract, GroupMask, RawEconomy, RawObs, RawSelf};
 use crate::bc_brain::experts::N_EXPERTS;
+use crate::bc_brain::features::{extract, GroupMask, RawEconomy, RawObs, RawSelf};
 use crate::bc_brain::features_gen::SCHEMA_HASH;
 use crate::bc_brain::int8::Mlp;
 use crate::bc_brain::{gate, policy, router, shop, Expert, Intent, Mode};
 use crate::bc_core::belief::{Belief, GroupObs, GroupState, Sighting};
 use crate::bc_core::champion::{AttackType, ChampionKind, KitInfo};
+use crate::bc_core::combat::{CallIn, CallIntent, Directive, EnemyIn, Fsm, Inputs, Tuning};
 use crate::bc_core::fuel::{FuelGovernor, Stage};
 use crate::bc_core::ledger::{Family, Ledger, SelfObs, Stat, ITEM_TYPES};
 use crate::bc_core::memory::{knob, TeamChannel, ThetaMatch, TEAM_CHANNEL_BYTES};
@@ -65,6 +66,10 @@ pub struct Bot {
     cur_max_hp: f32,
     /// TEAM_RESPAWN: a group we just saw go down (index, respawn round) to broadcast.
     saw_down: Option<(usize, u32)>,
+    /// COMBAT_FSM: combat state machine with history (bc_core::combat).
+    fsm: Fsm,
+    /// COMBAT_FSM: the enemy we watched last turn (kind, hp), to measure damage dealt.
+    fsm_seen: Option<(ChampionKind, f32)>,
 }
 
 /// Engage turns without landing anything before we give up on that enemy.
@@ -150,7 +155,9 @@ impl Bot {
         crate::learned::init(entry.theta);
         let hotspots: Vec<(Pos, f32)> = entry
             .hotspots
-            .chunks_exact(3)
+            .as_chunks::<3>()
+            .0
+            .iter()
             .map(|c| (Pos::new(i32::from(c[0]), i32::from(c[1])), f32::from(c[2]) / 255.0))
             .collect();
         let me = cambc::self_champion()?.ok_or_else(|| sdk::local_error("no self champion"))?;
@@ -163,7 +170,9 @@ impl Bot {
             // Policy-pack build (mimicked from top teams / evolved per map).
             pack_build
                 .iter()
-                .filter_map(|&(f, s)| Some((*Family::ALL.get(usize::from(f))?, *Stat::ALL.get(usize::from(s))?)))
+                .filter_map(|&(f, s)| {
+                    Some((*Family::ALL.get(usize::from(f))?, *Stat::ALL.get(usize::from(s))?))
+                })
                 .collect()
         } else if theta.knob(knob::TAVI_META) > 0 && kind == ChampionKind::Tavi {
             shop::build_order_profile(kind, TAVI_BUILD_PROFILE)
@@ -211,6 +220,8 @@ impl Bot {
             cur_dps: 0.0,
             cur_max_hp: 0.0,
             saw_down: None,
+            fsm: Fsm::default(),
+            fsm_seen: None,
         })
     }
 
@@ -273,6 +284,8 @@ impl Bot {
         let mut raw = [0u8; TEAM_CHANNEL_BYTES];
         cambc::shared_memory().read(0, &mut raw)?;
         let mut chan = TeamChannel::decode(raw);
+        let fsm_on = self.theta.knob(knob::COMBAT_FSM) > 0;
+        chan.keep_calls = fsm_on;
         let leader = chan.begin_turn(round, self.slot);
         let team_respawn = self.theta.knob(knob::TEAM_RESPAWN) > 0;
         if leader && !team_respawn {
@@ -293,6 +306,27 @@ impl Bot {
         if !alive {
             // Dead champions still get a turn: shop.
             chan.set_claim(self.slot as usize, None);
+            if fsm_on {
+                // Died mid-fight: tell anyone on the way not to come.
+                let dead = Inputs {
+                    round,
+                    alive: false,
+                    me: my_pos,
+                    hp_frac: 0.0,
+                    big_bag: false,
+                    enemy: None,
+                    threat_eta: None,
+                    hurt: false,
+                    survive_turns: 0.0,
+                    fight_threshold: 1.0,
+                    call: None,
+                    recall_ticks: 5,
+                };
+                if let (_, Some(call)) = self.fsm.step(&dead, &Tuning::default()) {
+                    chan.post_call(call, round, 1.0);
+                }
+                self.fsm_seen = None;
+            }
             let vis = Visible::default();
             let mut exec = self.exec(me, &vis, my_pos, false);
             exec.buy()?;
@@ -307,7 +341,11 @@ impl Bot {
             mark = self.charge(Stage::Observe, mark);
             // A teammate's sighting (vision isn't shared): treat it as a threat we can't see.
             let shared = chan.sighting(round);
-            if let Some((p, age)) = shared {
+            // An escape or abort call marks an ally, not an enemy: no ghost there.
+            let ally_call = chan
+                .call(round)
+                .is_some_and(|(c, _)| matches!(c.intent, CallIntent::Escape | CallIntent::Abort));
+            if let Some((p, age)) = shared.filter(|_| !(fsm_on && ally_call)) {
                 let unseen = vis.enemies.iter().all(|e| e.pos.cheb(p) > 2);
                 if unseen && vis.ghosts.len() < MAX_GHOSTS && p.cheb(my_pos) <= TEAM_SIGHTING_RADIUS
                 {
@@ -321,12 +359,17 @@ impl Bot {
             // Learned death hotspots near us act as standing threats (pathing steers around them).
             let hot_w = crate::learned::hotspot_w();
             if hot_w > 0.0 {
-                for &(p, w) in self.hotspots.iter().filter(|(p, _)| p.cheb(my_pos) <= HOTSPOT_RADIUS).take(MAX_HOTSPOTS) {
+                for &(p, w) in self
+                    .hotspots
+                    .iter()
+                    .filter(|(p, _)| p.cheb(my_pos) <= HOTSPOT_RADIUS)
+                    .take(MAX_HOTSPOTS)
+                {
                     vis.ghosts.push(Threat { pos: p, range: 1, dps: HOTSPOT_DPS * w * hot_w });
                 }
             }
             if let Some(e) = vis.enemies.first() {
-                chan.post_sighting(e.pos, round);
+                chan.post_sighting_hp(e.pos, round, e.hp / e.max_hp.max(1.0));
             }
             let deny_level = self.theta.knob(knob::DENY_TRIBUTE);
             if deny_level >= 3 {
@@ -374,7 +417,12 @@ impl Bot {
                     && vis.enemies.is_empty()
                     && ctx.hp_frac() > ASSIST_MIN_HP * crate::learned::w(crate::learned::ASSIST_HP)
             };
-            if free_to_assist && (chan.help || hunting) && ctx.gems < router::BIG_BAG_GEMS {
+            // COMBAT_FSM answers calls itself (by intent and time left); hunting still swarms.
+            if (!fsm_on || hunting)
+                && free_to_assist
+                && (chan.help || hunting)
+                && ctx.gems < router::BIG_BAG_GEMS
+            {
                 if let Some((p, age)) = shared {
                     if age <= 1 && (2..=radius).contains(&p.cheb(my_pos)) {
                         intent = Intent::Engage(p);
@@ -389,7 +437,8 @@ impl Bot {
             if deny && !matches!(mode, Mode::Override(_)) && ctx.hp_frac() > DENY_MIN_HP {
                 if let Some(e) = vis.enemies.iter().find(|e| e.tributing && e.dist <= DENY_RADIUS) {
                     intent = Intent::Engage(e.pos);
-                } else if deny_level >= 3 && chan.enemy_tributing && ctx.gems < router::BIG_BAG_GEMS {
+                } else if deny_level >= 3 && chan.enemy_tributing && ctx.gems < router::BIG_BAG_GEMS
+                {
                     // A teammate saw an enemy channelling: go cancel it (long bags take turns).
                     if let Some((p, age)) = chan.sighting(round) {
                         if age <= 1 && p.cheb(my_pos) <= TEAM_DENY_RADIUS {
@@ -415,7 +464,8 @@ impl Bot {
                     .filter(|e| e.dist <= TAVI_HUNT_RADIUS && !e.on_spawn)
                     .filter(|e| e.gems >= 10 || e.tributing || e.hp < 0.5 * e.max_hp)
                     .filter(|e| {
-                        vis.enemies.iter().filter(|o| o.pos.cheb(e.pos) <= 4).count() <= allies_near + 1
+                        vis.enemies.iter().filter(|o| o.pos.cheb(e.pos) <= 4).count()
+                            <= allies_near + 1
                     })
                     .min_by(|a, b| a.hp.total_cmp(&b.hp));
                 if let Some(e) = prey {
@@ -433,7 +483,7 @@ impl Bot {
                     intent = fix;
                 }
             }
-            if fight_v6 & 1 != 0 {
+            if fight_v6 & 1 != 0 && !fsm_on {
                 if let Intent::Engage(p) = intent {
                     if vis.enemies.iter().any(|e| e.pos == p) {
                         chan.post_sighting(p, round);
@@ -443,7 +493,8 @@ impl Bot {
             }
             // Utility arbiter (learned, per map): scores keep / step back / support / fight /
             // walk home / recall together. Heuristics remain the fallback when fuel is short.
-            let cheap_fuel = u64::from(crate::learned::extra(crate::learned::X_F_CHEAP) as u32) * 1000;
+            let cheap_fuel =
+                u64::from(crate::learned::extra(crate::learned::X_F_CHEAP) as u32) * 1000;
             if !matches!(mode, Mode::Override(_)) && fuel() > cheap_fuel.max(gate::LOW_FUEL) {
                 if let Some((choice, k)) = crate::utility::choose(
                     &ctx,
@@ -538,6 +589,23 @@ impl Bot {
                     };
                 }
             }
+            // Combat state machine: memory between turns (alert / engage / disengage / help).
+            if fsm_on {
+                let (fixed, helping) = self.fsm_turn(
+                    round,
+                    my_pos,
+                    &ctx,
+                    &vis,
+                    &mut chan,
+                    mode,
+                    intent,
+                    hurt_this_round,
+                );
+                intent = fixed;
+                if helping.is_some() {
+                    assist = helping;
+                }
+            }
             // Endgame: at round 2000 tributed gems decide; never finish holding gems.
             if self.theta.knob(knob::ENDGAME_BANK) > 0
                 && round >= ENDGAME_ROUND
@@ -554,7 +622,7 @@ impl Bot {
                 _ => None,
             };
             chan.set_claim(self.slot as usize, claim);
-            if ctx.low_hp() && ctx.in_danger() {
+            if !fsm_on && ctx.low_hp() && ctx.in_danger() {
                 chan.help = true;
             }
 
@@ -584,8 +652,8 @@ impl Bot {
                     self.theta.knob(knob::TAVI_META) > 0 && self.kind == ChampionKind::Tavi;
                 let recall_safe = self.theta.knob(knob::RECALL_SAFE) >= 2;
                 let recall_ticks = if self.has_home() { 3 } else { 5 };
-                let tavi_respec =
-                    self.kind == ChampionKind::Tavi && crate::learned::extra(crate::learned::X_TAVI_RESPEC) > 0.5;
+                let tavi_respec = self.kind == ChampionKind::Tavi
+                    && crate::learned::extra(crate::learned::X_TAVI_RESPEC) > 0.5;
                 let mut exec = self.exec(me, &vis, my_pos, hurt_this_round);
                 exec.field_shop = field_shop;
                 exec.recall_safe = recall_safe;
@@ -643,6 +711,156 @@ impl Bot {
         }
         let _ = (mode, expert, intent, exec_out);
         Ok(())
+    }
+
+    /// COMBAT_FSM: one step of the combat state machine (bc_core::combat). Returns the intent
+    /// (replaced or not) and the ally position we're heading to help, if any.
+    #[allow(clippy::too_many_arguments)]
+    fn fsm_turn(
+        &mut self,
+        round: u32,
+        my_pos: Pos,
+        ctx: &Context,
+        vis: &Visible,
+        chan: &mut TeamChannel,
+        mode: Mode,
+        intent: Intent,
+        hurt: bool,
+    ) -> (Intent, Option<Pos>) {
+        let mut tuning = Tuning::from_learned(
+            crate::learned::extra(crate::learned::X_FSM_ALERT),
+            crate::learned::extra(crate::learned::X_FSM_ASSIST),
+        );
+        tuning.retreat_hp = f32::from(ctx.knobs.retreat_hp_pct) / 100.0;
+        let big_bag = ctx.gems >= router::BIG_BAG_GEMS;
+        // The enemy the rule layers are looking at, with its kind and reach.
+        let seen =
+            ctx.enemy.and_then(|n| vis.enemies.iter().find(|e| e.pos == n.pos).map(|e| (n, e)));
+        let enemy = seen.map(|(n, e)| EnemyIn {
+            pos: e.pos,
+            dist: e.dist,
+            range: e.range,
+            kind: e.kind as usize,
+            hp_frac: e.hp / e.max_hp.max(1.0),
+            advantage: router::fight_advantage(ctx, &n) * ctx.fight_bias.exp(),
+        });
+        // History: damage we did to the enemy we watched last turn vs what champions did to us.
+        if let Some((_, e)) = seen {
+            let dealt = match self.fsm_seen {
+                Some((k, hp)) if k == e.kind => (hp - e.hp).max(0.0),
+                _ => 0.0,
+            };
+            let champs_hit_us = vis.enemies.iter().any(|x| !x.on_spawn && x.dist <= x.range + 1);
+            let taken = if champs_hit_us { self.dmg_taken } else { 0.0 };
+            if e.dist <= e.range + 2 {
+                self.fsm.hist.record(Some(e.kind as usize), dealt, taken);
+            }
+        }
+        self.fsm_seen = seen.map(|(_, e)| (e.kind, e.hp));
+        // Turns until something seen or remembered can hit us (enemies move a tile a turn).
+        let threat_eta = vis
+            .enemies
+            .iter()
+            .filter(|e| !e.on_spawn)
+            .map(|e| (e.dist - e.range).max(0))
+            .chain(vis.ghosts.iter().map(|g| (g.pos.cheb(my_pos) - g.range).max(0)))
+            .min();
+        let incoming: f32 = vis
+            .enemies
+            .iter()
+            .filter(|e| !e.on_spawn && e.dist <= e.range + 2)
+            .map(|e| e.dps)
+            .sum::<f32>()
+            + ctx.camp_threat_here;
+        let survive_turns = if incoming > 0.0 { ctx.hp / incoming } else { 99.0 };
+        let aggression =
+            if ctx.team.version > 0 { ctx.team.aggression } else { ctx.knobs.aggression };
+        let margin =
+            f32::from(ctx.knobs.fight_margin_pct) / 100.0 * (255.0 - f32::from(aggression)) / 127.0;
+        let spawn = self.world.spawn_hint;
+        let call = chan.call(round).map(|(c, age)| {
+            // Cover an escaping ally a few tiles along its way home.
+            let mut escort = c.pos;
+            for _ in 0..3 {
+                escort = escort.step_towards(spawn);
+            }
+            CallIn {
+                pos: c.pos,
+                intent: c.intent,
+                time_left: c.time_left,
+                age,
+                my_eta: c.pos.cheb(my_pos),
+                escort_point: escort,
+            }
+        });
+        let inp = Inputs {
+            round,
+            alive: true,
+            me: my_pos,
+            hp_frac: ctx.hp_frac(),
+            big_bag,
+            enemy,
+            threat_eta,
+            hurt,
+            survive_turns,
+            fight_threshold: 1.0 + margin,
+            call,
+            recall_ticks: if self.has_home() { 3 } else { 5 },
+        };
+        let before = self.fsm.state;
+        let (dir, out_call) = self.fsm.step(&inp, &tuning);
+        if self.fsm.state != before {
+            telemetry::event(round, champ_name(self.kind), self.fsm.state.name(), 1);
+        }
+        if let Some(c) = out_call {
+            chan.post_call(c, round, enemy.map_or(1.0, |e| e.hp_frac));
+        }
+        // A channel (capture 5 turns, tribute 1 per 10 gems) must finish before anything arrives.
+        let channel_turns = match intent {
+            Intent::Capture(_) => 5,
+            Intent::Tribute => ctx.gems.div_ceil(10).max(1) as i32,
+            _ => 0,
+        };
+        let channel_safe = threat_eta.is_none_or(|t| t > channel_turns + 1);
+        let overridden = matches!(mode, Mode::Override(_));
+        match dir {
+            Directive::Keep => (intent, None),
+            Directive::NoChannel => {
+                let fixed = match intent {
+                    // Waking a camp with an enemy in sight invites a third party.
+                    Intent::ClearCamp(g) if threat_eta.is_some_and(|t| t <= tuning.alert_eta) => {
+                        Intent::Approach(g)
+                    }
+                    Intent::Capture(_) | Intent::Tribute if !channel_safe => Intent::Hold,
+                    i => i,
+                };
+                (fixed, None)
+            }
+            Directive::Engage(p) => {
+                // Under the low-health safety override only a last stand (can't escape) fights.
+                let stand = !big_bag
+                    && enemy.is_some_and(|e| {
+                        e.dist <= e.range && e.advantage >= tuning.last_stand_advantage
+                    });
+                if overridden && !stand {
+                    return (intent, None);
+                }
+                let kite =
+                    self.kit.attack_range > 1 && enemy.is_some_and(|e| e.pos == p && e.range <= 1);
+                (if kite { Intent::Kite(p) } else { Intent::Engage(p) }, None)
+            }
+            Directive::Disengage => (Intent::WalkHome, None),
+            Directive::Recover => (Intent::Retreat, None),
+            Directive::Assist(p) if !overridden => (Intent::Engage(p), Some(p)),
+            Directive::Escort(p) if !overridden => {
+                // Fight only the chaser near the carrier; otherwise stand on its way home.
+                match vis.enemies.iter().find(|e| !e.on_spawn && e.pos.cheb(p) <= 4) {
+                    Some(e) if !big_bag => (Intent::Engage(e.pos), None),
+                    _ => (Intent::Engage(p), Some(p)),
+                }
+            }
+            Directive::Assist(_) | Directive::Escort(_) => (intent, None),
+        }
     }
 
     /// Charge fuel spent since `mark` to `stage`; returns the new mark.
@@ -737,12 +955,15 @@ impl Bot {
         use crate::learned::{EPSILON, ROUTER};
         if EPSILON > 0.0 && !matches!(mode, Mode::Override(_)) && self.turns.is_multiple_of(4) {
             // Deterministic hash: the engine has no RNG and runs must stay reproducible.
-            let h = (self.turns.wrapping_mul(2_654_435_761) ^ u32::from(self.slot).wrapping_mul(40_503))
-                .rotate_left(13)
-                .wrapping_mul(2_246_822_519);
+            let h = (self.turns.wrapping_mul(2_654_435_761)
+                ^ u32::from(self.slot).wrapping_mul(40_503))
+            .rotate_left(13)
+            .wrapping_mul(2_246_822_519);
             if (h % 10_000) as f32 / 10_000.0 < EPSILON {
-                let options: Vec<Expert> =
-                    (0..N_EXPERTS).filter_map(Expert::from_index).filter(|&e| feasible(e, ctx)).collect();
+                let options: Vec<Expert> = (0..N_EXPERTS)
+                    .filter_map(Expert::from_index)
+                    .filter(|&e| feasible(e, ctx))
+                    .collect();
                 if !options.is_empty() {
                     return options[(h / 10_000) as usize % options.len()];
                 }
@@ -758,12 +979,14 @@ impl Bot {
 
     fn learned_expert(&self, ctx: &Context, me: &Champion) -> Option<Expert> {
         LEARNED.with(|cell| {
-            let mlp =
-                cell.get_or_init(|| Mlp::parse_for_schema(ROUTER_BLOB, SCHEMA_HASH).ok()).as_ref()?;
+            let mlp = cell
+                .get_or_init(|| Mlp::parse_for_schema(ROUTER_BLOB, SCHEMA_HASH).ok())
+                .as_ref()?;
             let raw = self.raw_obs(ctx, me).ok()?;
             let features = extract(&raw, GroupMask::ALL);
             let mut logits = [0i32; N_EXPERTS];
-            if mlp.forward(features.values(), Some(&self.theta.film[..]), &mut logits) != N_EXPERTS {
+            if mlp.forward(features.values(), Some(&self.theta.film[..]), &mut logits) != N_EXPERTS
+            {
                 return None;
             }
             let mut order: [usize; N_EXPERTS] = core::array::from_fn(|i| i);
@@ -983,7 +1206,8 @@ impl Bot {
                     {
                         telemetry::event(round, champ_name(self.kind), "captured", i as i64);
                     }
-                    let fresh = self.belief.group(i).is_none_or(|b| b.state != GroupState::Respawning);
+                    let fresh =
+                        self.belief.group(i).is_none_or(|b| b.state != GroupState::Respawning);
                     if fresh && t > 0 {
                         self.saw_down = Some((i, round + t as u32));
                     }
@@ -1024,7 +1248,8 @@ impl Bot {
         }
         let my_dps = sdk::dps(self.kit.base_strength, self.kit.base_focus, &self.kit).max(10.0);
         let live = self.theta.knob(knob::MONOLITH_LIVE) > 0;
-        let team_power = if live { self.cur_dps.max(my_dps) } else { my_dps } * self.team_size as f32;
+        let team_power =
+            if live { self.cur_dps.max(my_dps) } else { my_dps } * self.team_size as f32;
         let value_profile = self.theta.knob(knob::VALUE_PROFILE);
         // VALUE_PROFILE 4/5: near camps first in the opening (gold now beats gems later).
         let opening = matches!(value_profile, 4 | 5) && round < OPENING_ROUNDS;
@@ -1053,7 +1278,10 @@ impl Bot {
             }
             let mut value = match value_profile {
                 1 => g.gems as f32 + g.gold as f32 / 10.0,
-                4 => g.gems as f32 * crate::learned::w(crate::learned::GEM) + g.gold as f32 * 0.6 * crate::learned::w(crate::learned::GOLD),
+                4 => {
+                    g.gems as f32 * crate::learned::w(crate::learned::GEM)
+                        + g.gold as f32 * 0.6 * crate::learned::w(crate::learned::GOLD)
+                }
                 5 => g.gems as f32 + g.gold as f32,
                 2 if self.slot < 2 => g.gems as f32 * 0.3 + g.gold as f32,
                 2 => g.gems as f32 + g.gold as f32 * 0.15,
@@ -1094,15 +1322,21 @@ impl Bot {
                     value *= f32::from(join) / 10.0;
                 } else if others > 0 {
                     // Big groups go faster together; small ones are wasted on two.
-                    value *= if g.total_hp >= 3000.0 { 1.1 } else { 0.35 * crate::learned::w(crate::learned::SHARED_SMALL) };
+                    value *= if g.total_hp >= 3000.0 {
+                        1.1
+                    } else {
+                        0.35 * crate::learned::w(crate::learned::SHARED_SMALL)
+                    };
                 }
             }
             // Stronger camps hurt: discount by expected damage taken.
-            value /= 1.0 + g.max_strength / 100.0 * crate::learned::w(crate::learned::STRENGTH_DISCOUNT);
+            value /=
+                1.0 + g.max_strength / 100.0 * crate::learned::w(crate::learned::STRENGTH_DISCOUNT);
             // Can the champions on it clear it before the tank dies? Gear up on others first.
             if self.theta.knob(knob::CAMP_FEASIBLE) > 0 && state != GroupState::RewardAvailable {
-                let helpers =
-                    1 + self.priority_index(i).map_or(0, |pi| chan.claimants(pi, self.slot as usize));
+                let helpers = 1 + self
+                    .priority_index(i)
+                    .map_or(0, |pi| chan.claimants(pi, self.slot as usize));
                 let survive = self.last_hp.max(1.0) / (g.total_strength * CAMP_DMG_FLOOR).max(1.0);
                 let kill = g.total_hp / (self.cur_dps.max(my_dps) * helpers as f32).max(1.0);
                 if kill > survive * CAMP_FEASIBLE_SLACK {
@@ -1113,10 +1347,18 @@ impl Bot {
             let remote = self.theta.knob(knob::REMOTE_FARMER) > 0
                 && self.team_size >= 4
                 && self.slot as usize + 1 == self.team_size;
-            let dist_w = if remote { 0.4 } else if opening { OPENING_DIST_WEIGHT * crate::learned::w(crate::learned::OPENING_DIST) } else { 1.0 }
-                * crate::learned::w(crate::learned::DIST);
-            let mut score =
-                value / (dist * dist_w + clear * crate::learned::w(crate::learned::CLEAR) + (eta - dist).max(0.0) + 5.0);
+            let dist_w = if remote {
+                0.4
+            } else if opening {
+                OPENING_DIST_WEIGHT * crate::learned::w(crate::learned::OPENING_DIST)
+            } else {
+                1.0
+            } * crate::learned::w(crate::learned::DIST);
+            let mut score = value
+                / (dist * dist_w
+                    + clear * crate::learned::w(crate::learned::CLEAR)
+                    + (eta - dist).max(0.0)
+                    + 5.0);
             score *= self.target_bias(g, dist, clear, eta, i, round, chan);
             if self.target == Some(i) {
                 score *= 1.3 * crate::learned::w(crate::learned::HYSTERESIS);
@@ -1146,8 +1388,9 @@ impl Bot {
             let gone = g >= self.world.groups.len()
                 || self.group_distance(g, my_pos).is_none()
                 || matches!(self.belief.expected_state(g, round), GroupState::Respawning);
-            let taken = self.priority_index(g).is_some_and(|pi| chan.claimants(pi, self.slot as usize) > 0)
-                && self.target != Some(g);
+            let taken =
+                self.priority_index(g).is_some_and(|pi| chan.claimants(pi, self.slot as usize) > 0)
+                    && self.target != Some(g);
             if gone || taken {
                 self.opening_idx += 1;
                 continue;
@@ -1158,7 +1401,13 @@ impl Bot {
     }
 
     /// EN_ROUTE: a small camp just off the way to `far` that we can clear and survive alone.
-    fn en_route_stop(&self, far: usize, my_pos: Pos, round: u32, chan: &TeamChannel) -> Option<usize> {
+    fn en_route_stop(
+        &self,
+        far: usize,
+        my_pos: Pos,
+        round: u32,
+        chan: &TeamChannel,
+    ) -> Option<usize> {
         let to_far = self.group_distance(far, my_pos)? as i32;
         if to_far <= EN_ROUTE_MIN_DIST {
             return None;
@@ -1169,13 +1418,17 @@ impl Bot {
             if i == far || g.has_monolith || g.gold + g.gems == 0 {
                 continue;
             }
-            if !matches!(self.belief.expected_state(i, round), GroupState::Alive | GroupState::Unknown) {
+            if !matches!(
+                self.belief.expected_state(i, round),
+                GroupState::Alive | GroupState::Unknown
+            ) {
                 continue;
             }
             if self.priority_index(i).is_some_and(|pi| chan.claimants(pi, self.slot as usize) > 0) {
                 continue;
             }
-            let (Some(d1), Some(d2)) = (self.group_distance(i, my_pos), self.group_distance(far, g.center))
+            let (Some(d1), Some(d2)) =
+                (self.group_distance(i, my_pos), self.group_distance(far, g.center))
             else {
                 continue;
             };
@@ -1261,21 +1514,23 @@ impl Bot {
                 .iter()
                 .filter(|e| !e.on_spawn && !ignored(e.kind) && e.dist <= reach)
                 .min_by(|a, b| {
-                    (called != Some(a.pos)).cmp(&(called != Some(b.pos))).then(a.hp.total_cmp(&b.hp))
+                    (called != Some(a.pos))
+                        .cmp(&(called != Some(b.pos)))
+                        .then(a.hp.total_cmp(&b.hp))
                 })
                 .or_else(nearest)
         } else {
             nearest()
         };
         let enemy = enemy.map(|e| EnemyNear {
-                pos: e.pos,
-                dist: e.dist,
-                hp: e.hp,
-                max_hp: e.max_hp,
-                dps: e.dps,
-                gems: e.gems,
-                ranged: e.ranged,
-            });
+            pos: e.pos,
+            dist: e.dist,
+            hp: e.hp,
+            max_hp: e.max_hp,
+            dps: e.dps,
+            gems: e.gems,
+            ranged: e.ranged,
+        });
         let strength = me.strength().unwrap_or(self.kit.base_strength);
         let focus = me.focus().unwrap_or(self.kit.base_focus);
         let next_shard = shop::next_shard(&self.order, &self.ledger);
@@ -1559,8 +1814,8 @@ fn camp_safety(
     my_dps: f32,
     gather_wait: &mut u32,
 ) -> Option<Intent> {
-    let team_dps =
-        my_dps + vis.allies.iter().filter(|a| a.dist <= CAMP_ALLY_RADIUS).map(|a| a.dps).sum::<f32>();
+    let team_dps = my_dps
+        + vis.allies.iter().filter(|a| a.dist <= CAMP_ALLY_RADIUS).map(|a| a.dps).sum::<f32>();
     // Escape: awake camps in range that target us (no ally is closer to them).
     if bits & 1 != 0 {
         let on_me: Vec<&CampView> = vis
@@ -1603,7 +1858,7 @@ fn camp_safety(
                 let kill_turns = group_hp / team_dps.max(1.0);
                 if kill_turns + 2.0 > survive && *gather_wait < GATHER_MAX_WAIT {
                     *gather_wait += 1;
-                    return Some(Intent::Approach(g.unwrap_or(0) as u8));
+                    return Some(Intent::Approach(g.map_or(0, |v| v as u8)));
                 }
             }
         }

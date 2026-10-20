@@ -18,13 +18,13 @@ mod bc_path;
 mod act;
 mod bot;
 mod draft;
-mod map_plans;
-mod sdk;
 mod learned;
+mod map_plans;
 mod pack;
-mod utility;
+mod sdk;
 mod skirmish;
 mod telemetry;
+mod utility;
 mod world;
 
 fn main() -> cambc::Result<()> {

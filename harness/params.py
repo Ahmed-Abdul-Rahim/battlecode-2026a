@@ -7,7 +7,7 @@ The bot's learned vector (bots/main/src/learned.rs, P_N floats) is, in order:
   FIGHT    9  fight-advantage bias weights (bot.rs fight_bias)                      linear
   HOT      1  death-hotspot threat weight (off: tested harmful)                     linear
   U       60  utility arbiter, 6 options x 10 features (utility.rs)                 linear
-  X        4  extras: Tavi re-spec flag, arbiter fuel floor (k fuel), 2 reserved    linear
+  X        4  extras: Tavi re-spec flag, arbiter fuel floor (k fuel), FSM alert/assist
 
 Search space: W in log space (exp() on write), the rest linear, each with bounds and an
 initial ES step. A policy-pack θ section holds the *bot-space* floats (after exp) and may
@@ -67,7 +67,7 @@ U_PHI = [
     "spawn_dist",
     "ranged",
 ]
-X_NAMES = ["tavi_respec", "arbiter_fuel_floor_k", "reserved0", "reserved1"]
+X_NAMES = ["tavi_respec", "arbiter_fuel_floor_k", "fsm_alert_turns", "fsm_assist_eta"]
 
 # (block, names, scale, lo, hi, sigma0) -- lo/hi in search space.
 BLOCKS = [
@@ -79,11 +79,13 @@ BLOCKS = [
     # X (4 floats in Rust): split so each extra gets its own bounds and step.
     ("X.flag", X_NAMES[:1], "lin", 0.0, 1.0, 0.3),  # Tavi re-spec: > 0.5 = on
     ("X.fuel", X_NAMES[1:2], "lin", 25.0, 60.0, 3.0),  # arbiter fuel floor (k fuel)
-    ("X.reserved", X_NAMES[2:], "lin", 0.0, 0.0, 0.0),
+    # COMBAT_FSM (bc_core::combat::Tuning): 0 = default (6 turns / x1.0), else 2..12 / 0.5..2.
+    ("X.alert", X_NAMES[2:3], "lin", 0.0, 12.0, 1.0),
+    ("X.assist", X_NAMES[3:4], "lin", 0.0, 2.0, 0.2),
 ]
 RUST_LEN = {"W": "N", "TARGET": "T_N", "FIGHT": "F_N", "U": "U_N"}
 #: Blocks that together form one Rust array (name, length const).
-RUST_SPLIT = {"X": (("X.flag", "X.fuel", "X.reserved"), "X_N")}
+RUST_SPLIT = {"X": (("X.flag", "X.fuel", "X.alert", "X.assist"), "X_N")}
 
 
 def names() -> list[str]:

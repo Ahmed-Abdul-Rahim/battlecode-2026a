@@ -170,8 +170,7 @@ impl World {
         let mut altar_list: Vec<Pos> = altars.positions()?.into_iter().map(pos).collect();
         if safe_altar {
             let enemy: Vec<Pos> = enemy_spawn.positions()?.into_iter().map(pos).collect();
-            let near_enemy =
-                |a: &Pos| enemy.iter().any(|e| e.cheb(*a) <= UNSAFE_ALTAR_SPAWN_DIST);
+            let near_enemy = |a: &Pos| enemy.iter().any(|e| e.cheb(*a) <= UNSAFE_ALTAR_SPAWN_DIST);
             if altar_list.iter().any(|a| !near_enemy(a)) {
                 altar_list.retain(|a| !near_enemy(a));
             }

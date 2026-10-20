@@ -279,7 +279,9 @@ impl Exec<'_> {
             if in_range
                 && self.deny_ground
                 && !self.out.moved
-                && ability.info()?.is_some_and(|i| i.as_dyn().valid_targets().contains(AbilityTargetMask::GROUND))
+                && ability
+                    .info()?
+                    .is_some_and(|i| i.as_dyn().valid_targets().contains(AbilityTargetMask::GROUND))
                 && ability.cast_at(vec2(enemy.pos)).unwrap_or(false)
             {
                 self.out.cast = true;
@@ -742,7 +744,9 @@ impl Exec<'_> {
             if self.altar_lock
                 && cambc::vision::altar_lock_at(vec2(altar)).is_err()
                 && self.me.consumables()[ConsumableType::AltarLock].count().unwrap_or(0) > 0
-                && self.me.consumables()[ConsumableType::AltarLock].use_at(vec2(altar)).unwrap_or(false)
+                && self.me.consumables()[ConsumableType::AltarLock]
+                    .use_at(vec2(altar))
+                    .unwrap_or(false)
             {
                 telemetry::event(0, "", "lock_placed", 1);
             }
