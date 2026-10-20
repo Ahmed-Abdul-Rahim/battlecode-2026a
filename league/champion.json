@@ -6407,6 +6407,15 @@
   },
   "packs": {
    "DESKTOP-QVEMEEE": 1
+  },
+  "pilgrimage": {
+   "DESKTOP-QVEMEEE": 1
+  },
+  "shortcut": {
+   "DESKTOP-QVEMEEE": 1
+  },
+  "stampede": {
+   "DESKTOP-QVEMEEE": 1
   }
  },
  "version": 8
