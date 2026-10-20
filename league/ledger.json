@@ -180,6 +180,24 @@
    "time": "2026-10-20T16:50:05.756Z",
    "win": false
   },
+  "24a10b64-aa0e-4579-9731-78e3d251cb75": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "rows",
+   "opp": "tvojtatko",
+   "oppId": "0263b3aa-28cf-469f-abd3-e07327c6e757",
+   "time": "2026-10-20T19:10:09.463Z",
+   "win": true
+  },
+  "24db83af-12cc-41ac-9203-3795aeb53716": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "yellow-brick-road",
+   "opp": "tvojtatko",
+   "oppId": "0263b3aa-28cf-469f-abd3-e07327c6e757",
+   "time": "2026-10-20T19:10:09.463Z",
+   "win": false
+  },
   "274b84ee-1784-4176-9be9-a11b7a944612": {
    "kind": "ranked",
    "live": null,
@@ -801,6 +819,15 @@
    "time": "2026-10-20T15:00:17.843Z",
    "win": false
   },
+  "ae521971-996c-46cd-b9e8-b897370844da": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "eight",
+   "opp": "tvojtatko",
+   "oppId": "0263b3aa-28cf-469f-abd3-e07327c6e757",
+   "time": "2026-10-20T19:10:09.463Z",
+   "win": false
+  },
   "b20d372d-fd85-41ac-a265-a561f5b136b6": {
    "kind": "ranked",
    "live": 1,
@@ -844,6 +871,15 @@
    "opp": "Sigma Coder",
    "oppId": "db94d858-5170-41ef-ad90-b2faf85dd5e8",
    "time": "2026-10-20T15:40:12.934Z",
+   "win": true
+  },
+  "c34b7546-1a3a-4c11-b480-224bccfca6fe": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "islands",
+   "opp": "tvojtatko",
+   "oppId": "0263b3aa-28cf-469f-abd3-e07327c6e757",
+   "time": "2026-10-20T19:10:09.463Z",
    "win": true
   },
   "c39784f6-74fb-4a21-bd95-c532fc3bd0b1": {
@@ -1079,6 +1115,15 @@
    "oppId": "fd3a404c-954b-4628-a418-7a8e57fb3783",
    "time": "2026-10-20T15:10:13.186Z",
    "win": true
+  },
+  "ef9fdda2-e670-4e74-9158-07c4d3fbb6d1": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "elkring",
+   "opp": "tvojtatko",
+   "oppId": "0263b3aa-28cf-469f-abd3-e07327c6e757",
+   "time": "2026-10-20T19:10:09.463Z",
+   "win": false
   },
   "f02347a5-5757-42c7-91ef-e74db4b06984": {
    "kind": "ranked",
@@ -2315,6 +2360,58 @@
    "status": "open",
    "time": "2026-10-20T19:00:08.517Z",
    "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 54,
+    "Unknown entity kind (2)": 2
+   },
+   "deaths_them": 15,
+   "deaths_us": 56,
+   "gems_them": "1002",
+   "gems_us": "81",
+   "id": "ae521971-996c-46cd-b9e8-b897370844da",
+   "map": "eight",
+   "opp": "tvojtatko",
+   "oppId": "0263b3aa-28cf-469f-abd3-e07327c6e757",
+   "status": "open",
+   "time": "2026-10-20T19:10:09.463Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 4,
+    "Unknown entity kind (2)": 1
+   },
+   "deaths_them": 0,
+   "deaths_us": 5,
+   "gems_them": "0",
+   "gems_us": "0",
+   "hint": "map not in maps/ yet: the next map sync registers it",
+   "id": "24db83af-12cc-41ac-9203-3795aeb53716",
+   "map": "yellow-brick-road",
+   "opp": "tvojtatko",
+   "oppId": "0263b3aa-28cf-469f-abd3-e07327c6e757",
+   "status": "needs-human",
+   "time": "2026-10-20T19:10:09.463Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 28,
+    "Unknown entity kind (2)": 10
+   },
+   "deaths_them": 15,
+   "deaths_us": 38,
+   "gems_them": "1002",
+   "gems_us": "847",
+   "id": "ef9fdda2-e670-4e74-9158-07c4d3fbb6d1",
+   "map": "elkring",
+   "opp": "tvojtatko",
+   "oppId": "0263b3aa-28cf-469f-abd3-e07327c6e757",
+   "status": "open",
+   "time": "2026-10-20T19:10:09.463Z",
+   "tries_at": 1
   }
  ],
  "map_files": {
