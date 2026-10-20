@@ -32,13 +32,41 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 LEARNED = ROOT / "bots" / "main" / "src" / "learned.rs"
 
-W_NAMES = ["gem", "gold", "dist", "clear", "strength_discount", "reward", "hysteresis", "shared_small",
-           "opening_dist", "en_detour", "en_clear", "fight_margin", "retreat_hp", "aggression", "recall_gold",
-           "tribute_min", "tribute_max", "assist_hp"]
+W_NAMES = [
+    "gem",
+    "gold",
+    "dist",
+    "clear",
+    "strength_discount",
+    "reward",
+    "hysteresis",
+    "shared_small",
+    "opening_dist",
+    "en_detour",
+    "en_clear",
+    "fight_margin",
+    "retreat_hp",
+    "aggression",
+    "recall_gold",
+    "tribute_min",
+    "tribute_max",
+    "assist_hp",
+]
 T_NAMES = ["gems", "gold", "dist", "clear", "eta", "claimants", "damage", "bag", "emblems", "round"]
 F_NAMES = ["hp", "enemy_hp", "allies", "enemies", "ranged", "enemy_ranged", "bag", "spawn_dist", "bias"]
 U_OPTIONS = ["keep", "step_back", "support", "fight", "walk_home", "recall"]
-U_PHI = ["bias", "hp", "camp_dps", "enemy_dps", "enemies", "allies", "ally_trouble", "bag", "spawn_dist", "ranged"]
+U_PHI = [
+    "bias",
+    "hp",
+    "camp_dps",
+    "enemy_dps",
+    "enemies",
+    "allies",
+    "ally_trouble",
+    "bag",
+    "spawn_dist",
+    "ranged",
+]
 X_NAMES = ["tavi_respec", "arbiter_fuel_floor_k", "reserved0", "reserved1"]
 
 # (block, names, scale, lo, hi, sigma0) -- lo/hi in search space.
@@ -49,8 +77,8 @@ BLOCKS = [
     ("HOT", ["hotspot_w"], "lin", 0.0, 0.0, 0.0),
     ("U", [f"{o}.{p}" for o in U_OPTIONS for p in U_PHI], "lin", -4.0, 4.0, 0.3),
     # X (4 floats in Rust): split so each extra gets its own bounds and step.
-    ("X.flag", X_NAMES[:1], "lin", 0.0, 1.0, 0.3),        # Tavi re-spec: > 0.5 = on
-    ("X.fuel", X_NAMES[1:2], "lin", 25.0, 60.0, 3.0),     # arbiter fuel floor (k fuel)
+    ("X.flag", X_NAMES[:1], "lin", 0.0, 1.0, 0.3),  # Tavi re-spec: > 0.5 = on
+    ("X.fuel", X_NAMES[1:2], "lin", 25.0, 60.0, 3.0),  # arbiter fuel floor (k fuel)
     ("X.reserved", X_NAMES[2:], "lin", 0.0, 0.0, 0.0),
 ]
 RUST_LEN = {"W": "N", "TARGET": "T_N", "FIGHT": "F_N", "U": "U_N"}
@@ -85,7 +113,7 @@ def defaults(learned: Path = LEARNED) -> list[float]:
     x_at = 0
     for block, ns, scale, *_ in BLOCKS:
         if block.startswith("X."):
-            vals = x_vals[x_at:x_at + len(ns)]
+            vals = x_vals[x_at : x_at + len(ns)]
             out += vals + [0.0] * (len(ns) - len(vals))
             x_at += len(ns)
             continue
@@ -115,7 +143,7 @@ def to_search(bot: list[float]) -> list[float]:
 def to_bot(search: list[float], base: list[float] | None = None) -> list[float]:
     """Search vector (possibly shorter: older states) -> clipped bot-space floats."""
     base_s = to_search(base or defaults())
-    full = list(search) + base_s[len(search):]
+    full = list(search) + base_s[len(search) :]
     out, i = [], 0
     for _, ns, scale, lo, hi, _ in BLOCKS:
         for _ in ns:
@@ -157,7 +185,7 @@ def main(argv: list[str]) -> int:
         return 1 if errs else 0
     if a.list:
         d = defaults()
-        for n, v in zip(names(), d):
+        for n, v in zip(names(), d, strict=False):
             print(f"{n:28s} {v:8.4f}")
     return 0
 

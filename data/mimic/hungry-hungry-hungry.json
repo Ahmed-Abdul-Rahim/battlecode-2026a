@@ -1,0 +1,32 @@
+{
+ "build": {},
+ "cadence": {
+  "bag": 28.6,
+  "first_emblem": null,
+  "shops_per_100r": null
+ },
+ "draft": {
+  "3": [
+   4,
+   8,
+   3
+  ],
+  "4": [
+   4,
+   8,
+   3,
+   0
+  ],
+  "5": [
+   4,
+   8,
+   3,
+   0,
+   9
+  ]
+ },
+ "games": 10,
+ "opening": {},
+ "team": "Hungry Hungry Hungry",
+ "win_rate": 0.6
+}

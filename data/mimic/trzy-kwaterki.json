@@ -1,0 +1,32 @@
+{
+ "build": {},
+ "cadence": {
+  "bag": 24.6,
+  "first_emblem": null,
+  "shops_per_100r": null
+ },
+ "draft": {
+  "3": [
+   6,
+   11,
+   4
+  ],
+  "4": [
+   6,
+   11,
+   4,
+   8
+  ],
+  "5": [
+   6,
+   11,
+   4,
+   8,
+   0
+  ]
+ },
+ "games": 10,
+ "opening": {},
+ "team": "Trzy Kwaterki",
+ "win_rate": 0.8
+}

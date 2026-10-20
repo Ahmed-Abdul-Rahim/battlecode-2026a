@@ -1,0 +1,284 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=2.2cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds}
+\usepackage[colorlinks=true,linkcolor=blue!50!black,urlcolor=blue!50!black]{hyperref}
+
+\definecolor{codebg}{gray}{0.96}
+\lstset{basicstyle=\ttfamily\small,backgroundcolor=\color{codebg},frame=single,rulecolor=\color{gray!40},
+  columns=fullflexible,keepspaces=true,breaklines=true,showstringspaces=false,aboveskip=6pt,belowskip=6pt,
+  commentstyle=\color{gray!70!black},morecomment=[l]{\#}}
+\newcommand{\f}[1]{\texttt{#1}}
+\setlist{nosep,leftmargin=1.4em}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+
+\title{The League: self-improvement against the live top 10\\[2pt]\large Architecture, commands and debugging guide}
+\author{Patient Wolves --- Battlecode 2026a, branch \f{league}}
+\date{October 2026}
+
+\begin{document}
+\maketitle
+
+\section{What it does, in one paragraph}
+A single daemon, \f{harness/league.py}, runs on every teammate's PC. It reads the platform ladder and keeps a
+\emph{mimic} of each top-10 team: our own engine (\f{bots/main}) driven by that team's macro (draft, emblem
+builds, opening routes, tribute and shop cadence), extracted from their recent ladder games. It also mimics
+teams we recently lost to. Our bot's trainable vector $\theta$ (102 floats, one copy per map) is improved
+by evolution strategies (ES) against these mimics, endlessly. When a candidate beats the champion, it is
+promoted, benchmarked against every mimic, committed and pushed to branch \f{league}, so every PC trains
+from the newest weights. One \emph{lead} PC also watches our ladder games. A loss queues its map for
+training, and with \f{-{}-auto-submit} a better champion is uploaded after a loss or a clear benchmark gain.
+Whatever ES cannot fix within $\theta$ is written up for humans in a review report, which separates
+\emph{the mimic is wrong} from \emph{the model is missing a feature}.
+
+\section{Architecture}
+\subsection{The cycle}
+\begin{center}
+\begin{tikzpicture}[
+  node distance=5mm and 7mm,
+  box/.style={draw,rounded corners=2pt,align=center,font=\small,minimum width=27mm,minimum height=9mm,fill=white},
+  lead/.style={box,fill=orange!12},
+  data/.style={draw,align=left,font=\scriptsize\ttfamily,fill=gray!8,inner sep=3pt},
+  arr/.style={-{Stealth[length=2mm]},thick},
+  darr/.style={-{Stealth[length=1.6mm]},densely dashed,gray!70!black}]
+  \node[box] (pull) {1. pull\\\scriptsize rebase on origin/league};
+  \node[lead,right=of pull] (sync) {2. sync (lead)\\\scriptsize top 10 $\to$ mimics};
+  \node[lead,right=of sync] (watch) {3. watch (lead)\\\scriptsize ladder games, losses};
+  \node[box,below=12mm of watch] (train) {4. train\\\scriptsize per-map ES vs mimics};
+  \node[box,left=12mm of train] (promote) {5. promote\\\scriptsize bench, commit, push};
+  \node[lead,left=of promote] (release) {6. release (lead)\\\scriptsize submit / revert};
+  \node[lead,below=8mm of promote] (review) {7. review (lead)\\\scriptsize league/review/*.md};
+  \draw[arr] (pull) -- (sync);
+  \draw[arr] (sync) -- (watch);
+  \draw[arr] (watch) -- (train);
+  \draw[arr] (train) -- node[above,font=\scriptsize]{accepted} (promote);
+  \draw[arr] (promote) -- (release);
+  \draw[arr] (release.north) to[bend left=20] node[left,font=\scriptsize]{next cycle} (pull.south);
+  \draw[arr] (promote) -- (review);
+  \node[data,above=6mm of sync] (git) {GitHub branch league:\\ league/champion.json, ledger.json,\\ league/review/, data/mimic/, pack.bin};
+  \node[data,above=6mm of watch,xshift=14mm] (plat) {Battlecode platform:\\ cambc ladder / matches /\\ submit (lead only)};
+  \draw[darr] (git) -- (pull);
+  \draw[darr] (plat) -- (sync);
+  \draw[darr] (plat) -- (watch);
+\end{tikzpicture}
+\end{center}
+Orange steps run only on the lead PC (\f{-{}-lead}). A worker PC runs steps 1, 4 and 5. Each cycle
+takes a few minutes: about 90 games on one map, plus about 340 benchmark games after a promotion.
+
+\begin{enumerate}
+\item \textbf{pull} (\f{integrate}): \f{git fetch} and \f{rebase} on \f{origin/league}. If the code or
+  the champion changed upstream, \f{bots/main/src/pack/pack.bin} is regenerated from
+  \f{league/champion.json} (\f{apply\_champion}). \f{params.check()} stops the daemon if
+  \f{learned.rs} and the registry disagree.
+\item \textbf{sync} (\f{sync}, every 3\,h): \f{cambc ladder} gives the top 10 (excluding us), plus up to three
+  teams we recently lost to. For each, \f{download\_games} fetches the 10 newest finished games, then
+  \f{mimic.extract} and \f{mimic.pack\_spec} write \f{data/mimic/<slug>.spec.json}. The ledger gets a
+  rank and rating snapshot and the new mimic \emph{pool}.
+\item \textbf{watch} (\f{watch}, every 10\,min): our new ladder games go into \f{ledger.ladder}, each
+  tagged with the version that was live at the time. Every loss joins \f{ledger.losses} with its death
+  summary (deaths by context: camp, champion, \dots).
+\item \textbf{train} (\f{train}): picks a map (the oldest open loss, otherwise the map we do worst on in
+  the latest benchmark, otherwise round-robin). It samples $\lambda=8$ antithetic candidates around
+  that map's $\theta$ and plays them, together with the champion, against 4 PFSP-chosen mimics and 1
+  anchor bot, on that map only, both sides, in one parallel batch.
+\item \textbf{promote}: the gate in \S\ref{sec:rules} decides. On acceptance: update \f{champion.json} and
+  \f{pack.bin}, run a release build check, benchmark against every mimic on every map, commit and push.
+\item \textbf{release} (\f{release\_decision}, \f{revert\_decision}): see \S\ref{sec:rules}.
+\item \textbf{review} (\f{write\_review}): after each sync or watch, see \S\ref{sec:review}.
+\end{enumerate}
+
+\subsection{Components}
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+\toprule
+\f{harness/league.py} & The loop and its subcommands. Pure, unit-tested parts: \f{merge\_champion},
+  \f{merge\_ledger}, \f{release\_decision}, \f{revert\_decision}, \f{splice\_notes} (\f{tests/test\_league.py}).\\
+\f{harness/mimic.py} & Team macro clone. \emph{Cloned:} draft per team size, emblem build order per
+  champion kind, first 4 camp groups per map and side, tribute bag size and shop cadence.
+  \emph{Not cloned:} micro (fighting, kiting, retreat timing). The mimic fights with our engine.
+  Group geometry comes from \f{data/map\_geometry.json}.\\
+\f{harness/params.py} & Registry of $\theta$: blocks W (18 log-scale multipliers), TARGET (10), FIGHT (9),
+  HOT (1, frozen), U (60, utility arbiter), X (4 extras). Bounds and the initial ES step $\sigma_0$ per
+  parameter. Search space $\leftrightarrow$ bot space (\f{to\_search}, \f{to\_bot}).\\
+\f{harness/pack.py} & Writes \f{pack.bin} (magic \f{BCPK}). Per map fingerprint (\f{data/fingerprints.json}):
+  $\theta$, hotspots, opening, draft, build sections. The bot reads it at runtime (\f{bots/main/src/pack}).\\
+\f{tools/bctools/runner.py} & \f{run\_pairs}: many (A,B) pairs over maps in one \f{cambc run-batch};
+  \f{run\_matches}: one pairing, both sides. Results carry winner, gems, deaths, replay path.\\
+\f{scripts/train.ps1}, \f{train.sh} & Start/stop the daemon in the background; pass-through subcommands.\\
+\bottomrule
+\end{tabularx}
+
+\subsection{Shared state and who writes it}
+Every file the PCs share travels through git. Each file has one writer, or a semantic merge, so
+teammates never resolve conflicts by hand.
+
+\begin{tabularx}{\linewidth}{@{}llX@{}}
+\toprule
+File & Writer & Content\\
+\midrule
+\f{league/champion.json} & any PC & \f{maps}: search-space $\theta$ per map; \f{history}: one entry per promotion
+  (version, host, time, map, gain, h2h, loss id); \f{bench}: benchmark per version (overall, per team, per map,
+  team$\times$map grid); \f{tries}: ES cycles per map per host.\\
+\f{bots/main/src/pack/pack.bin} & any PC & Always regenerated from \f{champion.json}; never merged.\\
+\f{league/ledger.json} & lead & \f{top}: rank/rating snapshots; \f{pool}: active mimics; \f{ladder}: our games;
+  \f{losses}: queue (open / fixed / needs-human); \f{submissions}: uploads and reverts.\\
+\f{data/mimic/*.json} & lead & Mimic clone (\f{<slug>.json}) and pack spec (\f{<slug>.spec.json}).\\
+\f{league/review/*.md} & lead + humans & Generated report; the \emph{Reviewer notes} section belongs to humans.\\
+\f{runs/league/} & local only & \f{local.json} (ES step $\sigma$ per map, PFSP win rates, try counts, timers),
+  \f{league.log}, \f{lock}, \f{cycles/NN/} (replays of the last 20 cycles).\\
+\bottomrule
+\end{tabularx}
+
+\paragraph{Push races.} \f{.gitattributes} marks \f{league/*.json} and \f{pack.bin} as \f{-merge}, so git
+always stops and \f{resolve\_conflicts} merges them. For \f{champion.json} it does a 3-way merge per map:
+if only one side changed a map's $\theta$, that side wins. If both promoted the same map, a head-to-head on
+that map decides (\f{h2h\_decider}). History is unioned and renumbered by time, so version numbers stay
+unique. Try counts take the per-host maximum. Ledger entries are unioned. Any other conflict (code) aborts
+the rebase; the commit stays local and the log says \emph{merge needs a human}.
+
+\paragraph{Mimic bots} \f{bots/mimic-<slug>} are built locally from \f{bots/main} plus the spec, and rebuilt
+only when the spec or the engine code changes (\f{.league-stamp}). Training \emph{never} modifies a mimic.
+That keeps ``win rate vs Nyx'' meaning ``vs our best model of Nyx''.
+
+\section{Decision rules}\label{sec:rules}
+\paragraph{Fitness} of bot $b$ over its games $G$ on the cycle's map:
+\[ F(b) = \overline{\mathrm{win}} + 0.25\,\overline{\frac{g_{\text{us}}-g_{\text{them}}}{g_{\text{us}}+g_{\text{them}}}} - 0.01\,\overline{\text{deaths}} \]
+Matches are deterministic, so the champion and the candidates are scored on identical games.
+
+\paragraph{ES.} $\theta' = \mathrm{clip}(\theta \pm \sigma\odot\varepsilon)$ with $\varepsilon\sim\mathcal N(0,I)$, 4 pairs.
+$\sigma$ per map grows by $\times1.15$ after a cycle that beat the champion and shrinks by $\times0.85$ otherwise,
+clamped to $[0.25\,\sigma_0, 2\,\sigma_0]$. Frozen parameters ($\sigma_0=0$) never move.
+
+\paragraph{PFSP opponents.} Mimic $o$ is drawn with weight $(1-p_o)^2+0.05$, where $p_o$ is an exponential
+average of the champion's score against it. Teams that beat us get most of the compute.
+
+\paragraph{Accept gate} (all must hold):
+$F(\text{best}) \ge F(\text{champion}) + 0.04$;
+a head-to-head against the champion on that map scores $\ge 0.5$;
+on 3 fresh opponents the candidate's fitness is $\ge$ the champion's;
+suspended (out-of-fuel) turns are $\le \max(2\times\text{champion}, 20)$;
+and the release build compiles.
+
+\paragraph{Release} (lead with \f{-{}-auto-submit}): submit the current champion $v$ if $v >$ the live version,
+at least 6\,h have passed since the last upload, \emph{and} either a ladder loss happened since that upload
+or the benchmark rose by $\ge 0.05$ (overall win rate against the mimics).
+The upload snapshots \f{bots/lg-v<N>}, bundles \f{submission/lg-v<N>.zip}, and runs \f{cambc submit}.
+
+\paragraph{Revert:} once both the live and the previous version have $\ge 10$ ranked games and the live
+one's win rate is $>0.10$ lower, the previous version is re-uploaded. This happens at most once per upload.
+
+\paragraph{Escalation:} a loss whose map gets 6 ES cycles (summed over all PCs) without a promotion becomes
+\f{needs-human}, and training stops chasing it.
+
+\section{Human review: epistemic errors}\label{sec:review}
+The mimics are models of other teams, and our $\theta$ is a model of good play. Both can be wrong in ways
+ES cannot see. The review report (\f{league/review/<date>.md}) shows where:
+
+\begin{itemize}
+\item \textbf{Top-10 table, column gap} $=$ (our local win rate vs the team's mimic) $-$ (our real ladder win
+  rate vs the team). A large positive gap ($\ge 0.3$ with $\ge 3$ ladder games) means the mimic is easier
+  than the real team. Its macro was cloned, but its micro was not. Training against it gives false
+  confidence. \emph{Action:} watch their replays, then improve \f{mimic.py} or write a hand exploiter that
+  copies the missing behaviour.
+\item \textbf{Low-data flag:} a mimic built from fewer than 5 games; its numbers are noise.
+\item \textbf{Losses ES could not fix}, each with a hint:
+  \begin{itemize}
+  \item \emph{mimic can't express it}: we beat their mimic on that map locally, but lost the real game.
+    The opponent does something the mimic does not (same action as a large gap).
+  \item \emph{model can't express it}: we still lose to the mimic after 6 cycles. No setting of
+    $\theta$ fixes it, so the engine needs a new feature or knob. That is feature engineering in
+    \f{crates/} on a \f{feat/*} branch: gate it, merge it into \f{league}, and the daemons adopt it.
+  \end{itemize}
+  Each row lists deaths (us/them), our death contexts, and the \f{cambc matches download} command for the replay.
+\item \textbf{Reviewer notes}: write findings there. The harness keeps that section when it
+  regenerates the file, and carries it over to the next day's file.
+\end{itemize}
+
+\section{Commands}
+\subsection{Set up a PC}
+\begin{lstlisting}
+git clone -b league https://github.com/Ahmed-Abdul-Rahim/battlecode-2026a.git
+cd battlecode-2026a
+powershell -ExecutionPolicy Bypass -File scripts\setup.ps1     # Linux/macOS: bash scripts/setup.sh
+.\.venv\Scripts\Activate.ps1
+cambc login                       # lead PC only (platform reads); workers don't need it
+python harness\params.py --check  # registry matches learned.rs
+pytest -q; cargo test --workspace
+\end{lstlisting}
+Run the daemon in a clone you don't edit by hand: it rebases and commits there. Develop in a second clone
+or a \f{git worktree}.
+
+\subsection{Run the league}
+\begin{lstlisting}
+scripts\train.ps1 start                          # worker
+scripts\train.ps1 start --lead                   # lead: + ladder sync, watch, review (no uploads)
+scripts\train.ps1 start --lead --auto-submit     # lead that also uploads (ONE PC in the team)
+scripts\train.ps1 status                         # champion, benchmark, top 10, losses
+scripts\train.ps1 logs                           # follow runs\league\league.log
+scripts\train.ps1 stop
+scripts\train.ps1 once --no-push                 # one cycle in the foreground, no git (smoke test)
+scripts\train.ps1 sync [--no-push]               # lead: ladder + mimics + review now
+scripts\train.ps1 bench                          # champion vs every mimic, all maps
+scripts\train.ps1 review                         # regenerate today's review file
+scripts\train.ps1 submit [--version N]           # manual upload (team decision)
+\end{lstlisting}
+On Linux and macOS use \f{scripts/train.sh} with the same subcommands. \f{python harness/league.py <cmd>} also works.
+Set \f{LEAGUE\_HOST} to name a PC in the history (default: its hostname).
+
+\subsection{Look at games}
+\begin{lstlisting}
+bctools run main mimic-nyx --maps lanes          # targeted local matches (both sides)
+bctools gate main                                # pass/fail vs bots/baseline, Wilson interval
+bctools summary runs\league\cycles\03\es\<match>.repl26a
+bctools timeline <match>.repl26a renders\t.png   # per-round timeline
+bctools render <match>.repl26a 300 renders\r.png # frame at round 300
+cambc view <match>.repl26a                       # official visualiser
+cambc matches download <matchId> -o runs\review\x.repl26a   # a ladder game from the review
+python harness\ladder_study.py runs\ladder_top   # per-team tempo/builds table
+\end{lstlisting}
+
+\subsection{Rebuild this document}
+\begin{lstlisting}
+cd docs; latexmk -pdf league.tex; latexmk -c     # MiKTeX or TeX Live
+\end{lstlisting}
+
+\section{Debugging}
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+\toprule
+Symptom & What to do\\
+\midrule
+\f{already running (pid N)} & Another daemon holds \f{runs/league/lock}. \f{train stop}; if the pid is dead the lock is ignored anyway.\\
+\f{cambc ... failed} / HTTP 429 & Retried with backoff up to 5 times. Persistent: \f{cambc login} expired, or the API is down. Training continues offline.\\
+\f{learned.rs and params.py disagree} & Someone changed the $\theta$ layout. Update \f{harness/params.py} (\f{-{}-check}) in the same commit.\\
+\f{build of ... failed} & A broken \f{bots/main} or \f{crates/} change was pulled. \f{bctools sync}; \f{cambc build bots/main -{}-release}; fix on a branch.\\
+\f{merge needs a human: [...]} & A code conflict between your local commits and \f{origin/league}. Resolve by hand, then restart.\\
+\f{push failed 3 times} & Offline or no permission. The commit stays local and goes out with the next push.\\
+\f{no mimics yet} & The lead hasn't synced, or \f{data/mimic/} isn't pulled. Training runs against the anchors meanwhile.\\
+\f{sync: no games for X} & The team has no downloadable finished games yet; no mimic is built.\\
+Loss on an unknown map & \f{cambc maps pull}, regenerate \f{data/fingerprints.json} and \f{data/map\_geometry.json} (\S\ref{sec:maps}).\\
+Wrong behaviour after a pull & \f{git log league -{}- league/champion.json} shows who promoted what. Reset a map by deleting its key in \f{maps} and pushing.\\
+\bottomrule
+\end{tabularx}
+
+\paragraph{Resetting local state} is always safe: delete \f{runs/league/} (local $\sigma$, PFSP rates, logs)
+and the scratch bots \f{bots/\_lg-*}, \f{bots/mimic-*}. Never hand-edit \f{league/*.json} while a daemon is running.
+
+\paragraph{New maps}\label{sec:maps} need two cached tables. \f{data/fingerprints.json} maps map name $\to$
+\f{world::fingerprint}; the bot prints it in its debug \f{M} dump. \f{data/map\_geometry.json} holds group
+centres and spawns. Delete it and run \f{mimic.map\_geometry()} with debug replays of every map in
+\f{runs/speedrun/} to rebuild it.
+
+\paragraph{Extending.} New trainable parameter: \f{params.py} + \f{learned.rs} (see \f{harness/README.md}).
+New sparring bot: add it under \f{bots/} and to \f{ANCHORS} in \f{league.py}. Tuning knobs (gain threshold,
+$\lambda$, sync interval, release gap) are constants at the top of \f{league.py}.
+
+\end{document}

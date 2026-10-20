@@ -1,0 +1,32 @@
+{
+ "build": {},
+ "cadence": {
+  "bag": 35.1,
+  "first_emblem": null,
+  "shops_per_100r": null
+ },
+ "draft": {
+  "3": [
+   11,
+   4,
+   9
+  ],
+  "4": [
+   11,
+   8,
+   4,
+   0
+  ],
+  "5": [
+   11,
+   8,
+   9,
+   0,
+   4
+  ]
+ },
+ "games": 10,
+ "opening": {},
+ "team": "Let's LARP again",
+ "win_rate": 0.5
+}

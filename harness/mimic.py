@@ -13,7 +13,8 @@ Their fight micro can't be cloned (no per-turn data); our engine plays it.
 
     python harness/mimic.py --team "Nyx" --out runs/mimic/nyx.json
     python harness/mimic.py --all-top        # every team in TOP
-Read-only on the platform (uses already downloaded summaries).
+Read-only on the platform (uses already downloaded summaries). harness/league.py calls
+extract() and pack_spec() for the live top 10 and writes data/mimic/.
 """
 
 from __future__ import annotations
@@ -21,7 +22,6 @@ from __future__ import annotations
 import argparse
 import glob
 import json
-import math
 import re
 import statistics as st
 import sys
@@ -34,11 +34,25 @@ sys.path.insert(0, str(ROOT / "harness"))
 
 from bctools import replay  # noqa: E402
 
-SUMMARY_DIRS = ["runs/ladder_v10", "runs/ladder_top", "runs/ladder_v8", "runs/ladder_live"]
+SUMMARY_DIRS = ["runs/ladder_top", "runs/ladder_v10", "runs/ladder_v8", "runs/ladder_live"]
 MAP_DUMPS = "runs/speedrun/*/main-v7/*__main-v7-vs-idle.repl26a"
+#: Committed cache of map_geometry(): the debug dumps it is built from are not in git.
+GEOMETRY = ROOT / "data" / "map_geometry.json"
 TOP = ["Intercontinental Fish", "Mite", "Nyx", "Univardisty of Shingtonwash", "Sneaky Bush Campers"]
-KIND = {"Ryth": 0, "Vesper Vale": 1, "Vendetta": 2, "Cassi": 3, "Issac": 4, "Stellar": 5, "Prism": 6,
-        "Marcella": 7, "Willow": 8, "Ren": 9, "Varg": 10, "Tavi": 11}
+KIND = {
+    "Ryth": 0,
+    "Vesper Vale": 1,
+    "Vendetta": 2,
+    "Cassi": 3,
+    "Issac": 4,
+    "Stellar": 5,
+    "Prism": 6,
+    "Marcella": 7,
+    "Willow": 8,
+    "Ren": 9,
+    "Varg": 10,
+    "Tavi": 11,
+}
 FAMILY = {"Monster": 0, "Power": 1, "Durability": 2, "Treasure": 3, "Jungle": 4, "Home": 5, "Bruiser": 6}
 STAT = {"Strength": 0, "Focus": 1, "Health": 2}
 OPENING_LEN = 4
@@ -51,7 +65,10 @@ def slug(team: str) -> str:
 
 
 def map_geometry() -> dict[str, dict]:
-    """Per map: group centres, team-A and team-B spawn tiles (from our debug dumps)."""
+    """Per map: group centres, team-A and team-B spawn tiles (from our debug dumps; cached in
+    data/map_geometry.json, so a fresh clone needs no dumps)."""
+    if GEOMETRY.exists():
+        return json.loads(GEOMETRY.read_text(encoding="utf-8"))
     from bctools.render import _bits
 
     geo = {}
@@ -63,9 +80,12 @@ def map_geometry() -> dict[str, dict]:
         if not m:
             continue
         w, h = m["w"], m["h"]
-        cells = lambda key: [(i % w, i // w) for i, v in enumerate(_bits(m[key], w, h)) if v]  # noqa: E731
-        geo[name] = {"centres": [g["c"] for g in m["groups"]], "spawn_a": cells("ally_spawn")[0],
-                     "spawn_b": cells("enemy_spawn")[0]}
+        cells = lambda key: [(i % w, i // w) for i, v in enumerate(_bits(m[key], w, h)) if v]  # noqa: E731, B023
+        geo[name] = {
+            "centres": [g["c"] for g in m["groups"]],
+            "spawn_a": cells("ally_spawn")[0],
+            "spawn_b": cells("enemy_spawn")[0],
+        }
     return geo
 
 
@@ -114,7 +134,7 @@ def extract(team: str, geo: dict) -> dict:
     openings: dict[tuple[str, str], dict[int, list]] = defaultdict(lambda: defaultdict(list))
     bags, shops, firsts, wins = [], [], [], []
     for m, d in games:
-        t = [x for x in m["teams"] if x["name"] == team][0]
+        t = next(x for x in m["teams"] if x["name"] == team)
         side = t["side"]
         tm = "team" + side.upper()
         wins.append(t["result"] == "win")
@@ -145,7 +165,9 @@ def extract(team: str, geo: dict) -> dict:
                 firsts.append(emb[0]["timestamp"]["round"])
             mp = m["map"].replace("_", "-")
             if mp in geo:
-                clears = sorted(ev[("campClear", c["id"], c["name"])], key=lambda en: en["timestamp"]["round"])
+                clears = sorted(
+                    ev[("campClear", c["id"], c["name"])], key=lambda en: en["timestamp"]["round"]
+                )
                 route = []
                 for en in clears:
                     g = nearest_group(geo[mp]["centres"], en["x"], en["y"])
@@ -157,19 +179,32 @@ def extract(team: str, geo: dict) -> dict:
                     openings[(mp, side)][kind].append(route)
             sess = {en["timestamp"]["round"] for en in ev[("buyItem", c["id"], c["name"])]}
             shops.append(100 * len(sess) / rounds)
-        bags += [F(en["value"]) for c in champs for en in ev[("gemSubmission", c["id"], c["name"])] if en.get("value")]
+        bags += [
+            F(en["value"])
+            for c in champs
+            for en in ev[("gemSubmission", c["id"], c["name"])]
+            if en.get("value")
+        ]
     draft = {n: list(c.most_common(1)[0][0]) for n, c in drafts.items() if n in (3, 4, 5)}
     build = {k: majority(v, BUILD_LEN) for k, v in builds.items()}
     opening = {}
     for (mp, side), kinds in openings.items():
         spawn = geo[mp]["spawn_a" if side == "a" else "spawn_b"]
-        opening.setdefault(mp, []).append({"spawn": list(spawn), "kinds": {k: majority(v, OPENING_LEN) for k, v in kinds.items()}})
+        opening.setdefault(mp, []).append(
+            {"spawn": list(spawn), "kinds": {k: majority(v, OPENING_LEN) for k, v in kinds.items()}}
+        )
     return {
-        "team": team, "games": len(games), "win_rate": round(sum(wins) / max(len(wins), 1), 3),
-        "draft": draft, "build": build, "opening": opening,
-        "cadence": {"bag": round(st.mean(bags), 1) if bags else None,
-                    "shops_per_100r": round(st.mean(shops), 2) if shops else None,
-                    "first_emblem": round(st.median(firsts)) if firsts else None},
+        "team": team,
+        "games": len(games),
+        "win_rate": round(sum(wins) / max(len(wins), 1), 3),
+        "draft": draft,
+        "build": build,
+        "opening": opening,
+        "cadence": {
+            "bag": round(st.mean(bags), 1) if bags else None,
+            "shops_per_100r": round(st.mean(shops), 2) if shops else None,
+            "first_emblem": round(st.median(firsts)) if firsts else None,
+        },
     }
 
 
@@ -223,8 +258,10 @@ def main(argv: list[str] | None = None) -> int:
         (a.outdir / f"{slug(team)}.json").write_text(json.dumps(clone, indent=1), encoding="utf-8")
         spec = pack_spec(clone, sorted(geo))
         (a.outdir / f"{slug(team)}.spec.json").write_text(json.dumps(spec), encoding="utf-8")
-        print(f"{team}: {clone['games']} games, win {clone['win_rate']}, draft {clone['draft']}, "
-              f"cadence {clone['cadence']}, builds for {len(clone['build'])} kinds, openings on {len(clone['opening'])} maps")
+        print(
+            f"{team}: {clone['games']} games, win {clone['win_rate']}, draft {clone['draft']}, "
+            f"cadence {clone['cadence']}, builds for {len(clone['build'])} kinds, openings on {len(clone['opening'])} maps"
+        )
     return 0
 
 

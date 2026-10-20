@@ -5,7 +5,7 @@ Three of us, no fixed ownership: **assigning yourself an issue is how you claim 
 ## Workflow
 
 1. Pick or open an issue (forms: *Feature*, *Bug / error*, *Experiment*). Add an `area:*` label and assign yourself.
-2. Branch from `main`: `feat/<topic>`, `fix/<topic>`, or `exp/<topic>` for experiments.
+2. Branch from `league`: `feat/<topic>`, `fix/<topic>`, or `exp/<topic>` for experiments.
 3. Commit with Conventional Commits: `feat(path): greedy danger tier`, `fix(bot): don't block respawn`, `exp(brain): …`.
 4. Before pushing (the pre-push hook runs most of this):
    ```powershell
@@ -36,6 +36,11 @@ Read [docs/fuel-budget.md](docs/fuel-budget.md). Rules of thumb: no full-map loo
 
 ## Hard rules
 
-- **No `cambc submit`, `match-groups`, `login` or `ladder` without the team agreeing in chat.**
+- **Platform access (agreed by the team for the league loop):** the lead PC may read the platform
+  (`cambc ladder`, `matches list/summary/download`). Uploads happen only through `harness/league.py`:
+  `--auto-submit` on the one lead PC (at most every 6 h, only after a ladder loss or a benchmark gain,
+  auto-revert if the ladder win rate drops), or `scripts/train.ps1 submit` by a human. Never run
+  `cambc submit` or `match-groups` by hand.
+- Don't hand-edit `league/*.json` or `bots/main/src/pack/pack.bin`: the daemons own them.
 - Don't tune parameters against `maps/heldout/`.
 - Cite a [papers.md](docs/papers.md) ID for any technique you introduce; add the paper (with venue rank and date checked) if it's new.

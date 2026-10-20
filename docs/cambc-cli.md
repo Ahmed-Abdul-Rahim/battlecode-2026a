@@ -2,7 +2,7 @@
 
 Install or update with `python -m pip install --upgrade cambc`. It lives in `.venv`; `scripts/setup.ps1` does this.
 
-> **Never run `cambc submit`, `cambc match-groups`, `cambc ladder` or `cambc login` without the whole team agreeing.** They touch the platform. The tooling in this repo only ever runs local matches.
+> **Platform commands:** only the league's lead PC reads the platform (`ladder`, `matches`), and uploads go only through `harness/league.py` (see CONTRIBUTING.md and docs/league.pdf). Never run `cambc submit` or `match-groups` by hand.
 
 ## Commands we use
 

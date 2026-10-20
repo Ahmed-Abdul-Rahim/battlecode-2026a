@@ -1,39 +1,38 @@
 #!/usr/bin/env bash
-# Start / stop / inspect the autonomous self-improvement harness.
-#   scripts/train.sh start | stop | status | benchmark | push | logs | run-once
+# The league daemon (harness/league.py) on Linux / macOS / Git Bash. Extra arguments pass through.
+#   scripts/train.sh start                          # worker: train and push to branch 'league'
+#   scripts/train.sh start --lead                   # the one PC that reads the ladder + writes reviews
+#   scripts/train.sh start --lead --auto-submit     # ... and uploads (team-agreed rules, one PC only)
+#   scripts/train.sh stop | status | logs | review | sync | bench | submit
+#   scripts/train.sh once [--no-push]               # one cycle in the foreground
 set -euo pipefail
 cd "$(dirname "$0")/.."
-PY=.venv/Scripts/python.exe
-[ -x "$PY" ] || PY=.venv/bin/python
+PY=.venv/bin/python
+[ -x "$PY" ] || PY=.venv/Scripts/python.exe
+cmd="${1:-status}"
+shift || true
 
-stop_trainers() {
-  pkill -f "harness/auto_train.py" 2>/dev/null || true
-  pkill -f "harness/league_train.py" 2>/dev/null || true
-  pkill -f "harness/coevo.py" 2>/dev/null || true
-  rm -f runs/auto_train/lock runs/league/lock runs/coevo/lock
+stop_league() {
+  pkill -f "harness/league.py run" 2>/dev/null || true
+  rm -f runs/league/lock
 }
 
-case "${1:-status}" in
+case "$cmd" in
   start)
-    stop_trainers
-    mkdir -p runs/auto_train
+    stop_league
+    mkdir -p runs/league
     "$PY" harness/params.py --check
-    nohup "$PY" harness/auto_train.py --forever --auto-submit >> runs/auto_train/train.log 2>&1 &
-    echo "Autonomous harness started in background (auto-submit on)."
-    echo "Logs: runs/auto_train/train.log" ;;
+    nohup "$PY" -u harness/league.py run --forever "$@" >> runs/league/league.log 2>&1 &
+    echo "league started ($*). Log: runs/league/league.log; status: scripts/train.sh status" ;;
   stop)
-    stop_trainers
-    echo "Trainers stopped and lock files cleaned." ;;
-  status)
-    "$PY" harness/auto_train.py --status ;;
-  benchmark)
-    "$PY" harness/auto_train.py --benchmark ;;
-  push)
-    "$PY" harness/auto_train.py --push ;;
-  run-once)
-    "$PY" harness/auto_train.py --cycles 1 --auto-submit ;;
+    stop_league
+    echo "league stopped." ;;
   logs)
-    tail -F runs/auto_train/train.log ;;
+    tail -F runs/league/league.log ;;
+  once)
+    "$PY" -u harness/league.py run --cycles 1 "$@" ;;
+  status|review|sync|bench|submit)
+    "$PY" harness/league.py "$cmd" "$@" ;;
   *)
-    echo "usage: $0 start|stop|status|benchmark|push|logs|run-once"; exit 2 ;;
+    echo "usage: $0 start|stop|status|logs|review|sync|bench|submit|once [args]"; exit 2 ;;
 esac

@@ -1,0 +1,32 @@
+{
+ "build": {},
+ "cadence": {
+  "bag": 38.1,
+  "first_emblem": null,
+  "shops_per_100r": null
+ },
+ "draft": {
+  "3": [
+   11,
+   8,
+   4
+  ],
+  "4": [
+   11,
+   8,
+   4,
+   0
+  ],
+  "5": [
+   11,
+   8,
+   4,
+   0,
+   9
+  ]
+ },
+ "games": 15,
+ "opening": {},
+ "team": "Sponge(Albert and Bob)",
+ "win_rate": 0.667
+}

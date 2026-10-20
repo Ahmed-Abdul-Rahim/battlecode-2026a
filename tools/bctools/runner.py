@@ -70,10 +70,7 @@ def needs_build(bot: str, release: bool = False) -> bool:
     if not src.exists():
         return False
     w_mtime = wasm.stat().st_mtime
-    for p in src.rglob("*"):
-        if p.is_file() and p.stat().st_mtime > w_mtime:
-            return True
-    return False
+    return any(p.is_file() and p.stat().st_mtime > w_mtime for p in src.rglob("*"))
 
 
 def build(bot: str, release: bool = False, force: bool = False) -> None:
@@ -125,19 +122,36 @@ def run_matches(
     log_limit: int = DEFAULT_LOG_LIMIT,
 ) -> list[MatchResult]:
     """Play `candidate` vs `opponent` on every map (both sides if `swap`)."""
+    pairs = [(candidate, opponent)] + ([(opponent, candidate)] if swap and candidate != opponent else [])
+    return run_pairs(pairs, maps, out_dir, jobs, rounds, release, log_limit)
+
+
+def run_pairs(
+    pairs: list[tuple[str, str]],
+    maps: list[Path] | None = None,
+    out_dir: Path | None = None,
+    jobs: int | None = None,
+    rounds: int | None = None,
+    release: bool = False,
+    log_limit: int = DEFAULT_LOG_LIMIT,
+) -> list[MatchResult]:
+    """Play every (team A, team B) pair on every map, all in one parallel batch."""
     maps = maps or list_maps()
     out_dir = (out_dir or ROOT / "runs" / time.strftime("%Y%m%d-%H%M%S")).resolve()
     out_dir.mkdir(parents=True, exist_ok=True)
-    for bot in {candidate, opponent}:
+    for bot in dict.fromkeys(b for pair in pairs for b in pair):
         build(bot, release)
-    pairs = [(candidate, opponent)] + ([(opponent, candidate)] if swap and candidate != opponent else [])
     rows, expected = [], []
     for m in maps:
-        for a, b in pairs:
+        for a, b in dict.fromkeys(pairs):
             tag = f"{m.stem}__{Path(a).name}-vs-{Path(b).name}"
             replay, stats = out_dir / f"{tag}.repl26a", out_dir / f"{tag}.json"
             rows.append(f"{bot_dir(a)} {bot_dir(b)} {m.resolve()} {replay} --statistics {stats}")
             expected.append((stats, m.stem, a, b, replay))
+    # Stale files from an earlier batch in the same directory would be read as results.
+    for stats, _, _, _, replay in expected:
+        Path(stats).unlink(missing_ok=True)
+        Path(replay).unlink(missing_ok=True)
     manifest = out_dir / "manifest.txt"
     manifest.write_text("\n".join(rows) + "\n", encoding="utf-8")
     args = [str(CAMBC), "run-batch", str(manifest), "--jobs", str(jobs or max(1, (os.cpu_count() or 2) - 2))]

@@ -9,3 +9,8 @@
 *.wasm binary
 *.npz binary
 *.parquet binary
+
+# League state: never line-merged by git; harness/league.py merges these semantically
+# (see merge_champion / merge_ledger), and pack.bin is regenerated from champion.json.
+league/*.json -merge
+bots/main/src/pack/pack.bin -merge

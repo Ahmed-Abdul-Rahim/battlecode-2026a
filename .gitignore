@@ -38,34 +38,15 @@ matches/
 bots/*/build/
 bots/*/target/
 
-# Knob-tuning candidates (harness/tune_knobs.py)
-bots/_tune-*/
+# League / training scratch: candidates (_*), mimics and upload snapshots are rebuilt locally
+bots/_*/
+bots/mimic-*/
+bots/lg-v*/
 bots/main-v*/
+bots/co?-v*/
+bots/lin-*/
 submission/
-bots/_var-*/
-# v6 trial variants and ladder mimics (harness/v6_trials.py)
-bots/_v6-*/
-bots/mimic-*/
-# speedrun variants (harness/speedrun.py)
-bots/_sr-*/
-bots/_auto_*/
-bots/_auto-*/
-bots/_cand_m_*/
-bots/_mt-*/
-bots/_oos-*/
-bots/_es-*/
-bots/_lg-*/
-bots/auto-v*/
-runs/league/lock
-bots/lin-b/
-bots/coA-v*/
-bots/coB-v*/
-bots/_coA-*/
-bots/_coB-*/
-bots/_hot-*/
-runs/coevo/lock
-bots/mimic-*/
-bots/lin-c/
-bots/coC-v*/
-bots/_coC-*/
+league/*.tmp
 handoff.zip
+best_bot_dump/
+/match-*.json

@@ -57,7 +57,7 @@ def rows_from_bundle(path: Path, side: str, won: bool) -> tuple[list, list, list
     for champ, turns in by_champ.items():
         turns.sort(key=lambda t: t["r"])
         rounds = [t["r"] for t in turns]
-        for i, t in enumerate(turns):
+        for t in turns:
             if "x" not in t or t.get("e") not in EXPERTS or t.get("m") == "override":
                 continue
             # State H rounds later (or the last logged turn).
@@ -75,7 +75,11 @@ def rows_from_bundle(path: Path, side: str, won: bool) -> tuple[list, list, list
 def load(dirs: list[Path], bot: str) -> dict[str, np.ndarray]:
     xs, ys, rs = [], [], []
     for d in dirs:
-        results = json.loads((d / "results.json").read_text(encoding="utf-8")) if (d / "results.json").exists() else []
+        results = (
+            json.loads((d / "results.json").read_text(encoding="utf-8"))
+            if (d / "results.json").exists()
+            else []
+        )
         for res in results:
             side = "a" if res["bot_a"] == bot else "b"
             x, y, r = rows_from_bundle(Path(res["replay"]), side, res["winner"] == bot)
@@ -109,9 +113,15 @@ def train(dirs: list[Path], bot: str, out: Path, hidden: int = 32, epochs: int =
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_bytes(blob)
     agree = float((predict(params, x) == data["y"]).mean())
-    report = {"rows": n, "beta": round(beta, 2), "mean_return": round(float(data["R"].mean()), 1),
-              "label_counts": {EXPERTS[k]: int((data["y"] == k).sum()) for k in np.unique(data["y"])},
-              "train_agreement": round(agree, 3), "blob_bytes": len(blob), "out": str(out)}
+    report = {
+        "rows": n,
+        "beta": round(beta, 2),
+        "mean_return": round(float(data["R"].mean()), 1),
+        "label_counts": {EXPERTS[k]: int((data["y"] == k).sum()) for k in np.unique(data["y"])},
+        "train_agreement": round(agree, 3),
+        "blob_bytes": len(blob),
+        "out": str(out),
+    }
     out.with_suffix(".json").write_text(json.dumps(report, indent=1), encoding="utf-8")
     return report
 

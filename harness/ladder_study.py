@@ -17,8 +17,19 @@ import sys
 from collections import Counter, defaultdict
 from pathlib import Path
 
-NAMES = {0: "Ryth", 1: "Vesper", 2: "Vendetta", 3: "C&I", 4: "Stellar", 5: "Prism", 6: "Marcella", 7: "Willow",
-         8: "Ren", 9: "Varg", 10: "Tavi"}
+NAMES = {
+    0: "Ryth",
+    1: "Vesper",
+    2: "Vendetta",
+    3: "C&I",
+    4: "Stellar",
+    5: "Prism",
+    6: "Marcella",
+    7: "Willow",
+    8: "Ren",
+    9: "Varg",
+    10: "Tavi",
+}
 F = lambda x: int(float(x))  # noqa: E731
 
 
@@ -55,8 +66,16 @@ def team_stats(d: dict, team: str) -> dict:
         if (e.get("owner") or {}).get("team") != team:
             continue
         for en in e["entries"]:
-            ev[e["kind"]].append((en["timestamp"]["round"], e["owner"].get("id"), en.get("value"), en.get("x"), en.get("y"),
-                                  (en.get("target") or {}) if isinstance(en.get("target"), dict) else {}))
+            ev[e["kind"]].append(
+                (
+                    en["timestamp"]["round"],
+                    e["owner"].get("id"),
+                    en.get("value"),
+                    en.get("x"),
+                    en.get("y"),
+                    (en.get("target") or {}) if isinstance(en.get("target"), dict) else {},
+                )
+            )
     emblems = sorted(ev["itemCombination"], key=lambda x: x[0])
     clears = sorted(r for r, *_ in ev["campClear"])
     subs = [F(v) for _, _, v, *_ in ev["gemSubmission"] if v is not None]
@@ -86,15 +105,34 @@ def team_stats(d: dict, team: str) -> dict:
     }
 
 
-KEYS = ["first_emblem", "clears@150", "clears/100r/ch", "gold/ch/r", "mon/ch/r", "groups/50r", "bag",
-        "shops/ch/100r", "kills", "deaths", "rounds"]
+KEYS = [
+    "first_emblem",
+    "clears@150",
+    "clears/100r/ch",
+    "gold/ch/r",
+    "mon/ch/r",
+    "groups/50r",
+    "bag",
+    "shops/ch/100r",
+    "kills",
+    "deaths",
+    "rounds",
+]
 
 
 def main(argv: list[str]) -> int:
     dirs = [Path(a) for a in argv] or [Path("runs/ladder_v8"), Path("runs/ladder_top")]
     games = load(dirs)
-    rows: dict[str, dict] = defaultdict(lambda: {"res": [], "vals": defaultdict(list), "comps": Counter(),
-                                                 "fam": Counter(), "stat": Counter(), "kind": defaultdict(list)})
+    rows: dict[str, dict] = defaultdict(
+        lambda: {
+            "res": [],
+            "vals": defaultdict(list),
+            "comps": Counter(),
+            "fam": Counter(),
+            "stat": Counter(),
+            "kind": defaultdict(list),
+        }
+    )
     for m, d in games:
         for t in m["teams"]:
             name = (t["name"] or "?").replace("​", "") or "blank-name"
@@ -109,24 +147,39 @@ def main(argv: list[str]) -> int:
             r["stat"] += s["stat_mix"]
             for c in s["champs"]:
                 mt = c["metrics"]
-                r["kind"][c["name"]].append((mt["monsterDamageDone"] / s["rounds"], F(mt["kills"]), F(mt["deaths"]),
-                                             F(mt["submittedGems"]), F(mt["earnedGold"]) / s["rounds"]))
-    order = sorted(rows.items(), key=lambda kv: (-len(kv[1]["res"]) >= -3, -sum(kv[1]["res"]) / len(kv[1]["res"])))
+                r["kind"][c["name"]].append(
+                    (
+                        mt["monsterDamageDone"] / s["rounds"],
+                        F(mt["kills"]),
+                        F(mt["deaths"]),
+                        F(mt["submittedGems"]),
+                        F(mt["earnedGold"]) / s["rounds"],
+                    )
+                )
+    order = sorted(
+        rows.items(), key=lambda kv: (-len(kv[1]["res"]) >= -3, -sum(kv[1]["res"]) / len(kv[1]["res"]))
+    )
     print(f"{'team':22s} {'n':>3s} {'win':>5s} " + " ".join(f"{k[:12]:>12s}" for k in KEYS))
     for name, r in order:
         if len(r["res"]) < 3:
             continue
-        print(f"{name[:22]:22s} {len(r['res']):3d} {sum(r['res'])/len(r['res']):5.2f} "
-              + " ".join(f"{st.mean(r['vals'][k]):12.2f}" for k in KEYS))
+        print(
+            f"{name[:22]:22s} {len(r['res']):3d} {sum(r['res']) / len(r['res']):5.2f} "
+            + " ".join(f"{st.mean(r['vals'][k]):12.2f}" for k in KEYS)
+        )
     print("\nComps, early emblem families (first 3 per champion), stat mix:")
     for name, r in order:
         if len(r["res"]) < 3:
             continue
         tot = sum(r["stat"].values()) or 1
         print(f"  {name[:22]:22s} comps {dict(r['comps'].most_common(3))}")
-        print(f"  {'':22s} early {dict(r['fam'].most_common(4))}  stats "
-              f"{ {k: round(v / tot, 2) for k, v in r['stat'].most_common()} }")
-    print("\nPer champion kind (top teams vs us): monster dmg/round, kills, deaths, gems tributed, gold/round")
+        print(
+            f"  {'':22s} early {dict(r['fam'].most_common(4))}  stats "
+            f"{ {k: round(v / tot, 2) for k, v in r['stat'].most_common()} }"
+        )
+    print(
+        "\nPer champion kind (top teams vs us): monster dmg/round, kills, deaths, gems tributed, gold/round"
+    )
     for name, r in order:
         if len(r["res"]) < 3:
             continue

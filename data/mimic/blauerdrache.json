@@ -1,0 +1,32 @@
+{
+ "build": {},
+ "cadence": {
+  "bag": 25.1,
+  "first_emblem": null,
+  "shops_per_100r": null
+ },
+ "draft": {
+  "3": [
+   4,
+   9,
+   3
+  ],
+  "4": [
+   9,
+   4,
+   3,
+   0
+  ],
+  "5": [
+   4,
+   9,
+   3,
+   0,
+   10
+  ]
+ },
+ "games": 10,
+ "opening": {},
+ "team": ":blauerdrache:",
+ "win_rate": 0.5
+}

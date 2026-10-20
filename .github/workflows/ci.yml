@@ -2,7 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, league]
+    # The league daemons commit only weights and state; those pushes need no CI run.
+    paths-ignore: ["league/**", "data/mimic/**", "bots/main/src/pack/pack.bin"]
   pull_request:
 
 concurrency:

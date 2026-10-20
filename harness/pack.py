@@ -5,7 +5,7 @@
 
 spec.json: {"global": {"theta": [P_N floats]}, "maps": {"<map>": {"theta": [...],
 "hotspots": [[x, y, w0..255], ...], "opening": [u8 * 6 * 4]}}}. Map names resolve to
-fingerprints through runs/variants/fingerprints.json (world::fingerprint values).
+fingerprints through data/fingerprints.json (world::fingerprint values).
 Hotspots: tiles where our champions died most (local league games of our engine and
 ladder summaries), 3x3-smoothed, non-maximum-suppressed, weights scaled to 0..255.
 """
@@ -20,7 +20,7 @@ from collections import defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-FINGERPRINTS = ROOT / "runs" / "variants" / "fingerprints.json"
+FINGERPRINTS = ROOT / "data" / "fingerprints.json"
 PACK = ROOT / "bots" / "main" / "src" / "pack" / "pack.bin"
 OUR_ENGINE = ("main", "_lg-", "auto-v", "_es-", "_v6-", "_sr-", "_mt-", "_oos-", "_var-", "_tune")
 TAG_THETA, TAG_HOTSPOTS, TAG_OPENING, TAG_DRAFT, TAG_BUILD = 1, 2, 3, 4, 5
@@ -52,6 +52,8 @@ def _build_bytes(build: dict) -> bytes:
         vals = [f * 3 + s for f, s in seq]
         out += bytes(vals + [255] * (BUILD_LEN - len(vals)))
     return bytes(out)
+
+
 K_HOTSPOTS = 24
 
 
