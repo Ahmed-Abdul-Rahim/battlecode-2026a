@@ -1354,10 +1354,17 @@ def cycle(a: argparse.Namespace, rng: random.Random) -> None:
         if a.lead and rep["missing"]:
             local["last_sync"] = 0  # register them now, not in up to 3 h
     seeded = seed_maps(ch, led)
+    apply_champion(ch)
     if seeded:
         log(f"new maps get default θ until trained: {', '.join(seeded)}")
-        local["last_heartbeat"] = 0  # publish the seeded champion.json this cycle
-    apply_champion(ch)
+        save_json(CHAMPION, ch)
+        if use_git:
+            publish(
+                [CHAMPION, PACK],
+                f"league: default θ for {len(seeded)} new maps",
+                h2h_decider(cyc, ch["maps"]),
+            )
+            ch = load_champion()
     if a.lead:
         msgs = []
         if now - local["last_watch"] >= WATCH_EVERY:
@@ -1379,7 +1386,11 @@ def cycle(a: argparse.Namespace, rng: random.Random) -> None:
             if use_git:
                 publish(LEAD_FILES, "league: " + "; ".join(msgs), h2h_decider(cyc, ch["maps"]))
     t0 = time.time()
-    if MIMIC_EVERY and local["cycle"] % MIMIC_EVERY == 0 and led["pool"]:
+    # New maps come first: no mimic rounds until every never-trained map had its bootstrap rounds.
+    bootstrap = any(
+        m not in trained_maps(ch) and tries_now(ch, local, m) < BOOTSTRAP_TRIES for m in trainable_maps(led)
+    )
+    if MIMIC_EVERY and local["cycle"] % MIMIC_EVERY == 0 and led["pool"] and not bootstrap:
         entry = evolve_mimic(ch, led, local, rng, cyc)
         log(f"cycle {local['cycle']} mimic ({round(time.time() - t0)}s): {json.dumps(entry)}")
         if "evolved" in entry and use_git:

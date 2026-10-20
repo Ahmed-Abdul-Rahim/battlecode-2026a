@@ -31,6 +31,11 @@ switch ($cmd) {
         New-Item -ItemType Directory -Force $scratch | Out-Null
         & $py (Join-Path $root "harness\params.py") --check
         if (-not $?) { Write-Error "harness/params.py does not match bots/main/src/learned.rs"; exit 1 }
+        # Keep the previous run's log (Start-Process overwrites its output files).
+        foreach ($f in "league.log", "league.err") {
+            $p = Join-Path $scratch $f
+            if (Test-Path $p) { Move-Item -Force $p ($p -replace '\.(log|err)$', '.prev.$1') }
+        }
         $procArgs = @("-u", $league, "run", "--forever") + $rest
         Start-Process -WindowStyle Hidden -FilePath $py -ArgumentList $procArgs -WorkingDirectory $root `
             -RedirectStandardOutput (Join-Path $scratch "league.log") -RedirectStandardError (Join-Path $scratch "league.err")
