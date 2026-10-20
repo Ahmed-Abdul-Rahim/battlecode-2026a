@@ -78,7 +78,7 @@ Every teammate's PC runs the same program (\f{harness/league.py}). They share th
   box/.style={draw,rounded corners=2pt,align=center,font=\small,minimum width=30mm,minimum height=9mm},
   arr/.style={-{Stealth[length=2mm]},thick}]
   \node[box] (a) {1. Get the newest\\weights from git};
-  \node[box,right=of a] (b) {2. Pick a map\\(a lost one first)};
+  \node[box,right=of a] (b) {2. Pick a map\\(new maps first)};
   \node[box,right=of b] (c) {3. Make 8 slightly\\changed copies};
   \node[box,below=of c] (d) {4. All play the\\mimics on that map};
   \node[box,left=of d] (e) {5. Best copy clearly\\better? Keep it};
@@ -89,6 +89,20 @@ Every teammate's PC runs the same program (\f{harness/league.py}). They share th
 \end{center}
 A round takes about 4 minutes. Every third round, we train one of the \emph{mimics} instead of our bot
 (see \S\ref{sec:opp}).
+
+\textbf{Which map gets trained.} In this order:
+\begin{enumerate}
+\item \textbf{Maps that were never trained} (new maps, or old ones still on default numbers). Each gets 4 rounds
+  first, and maps we lost on the ladder go first.
+\item \textbf{The oldest ladder loss}, unless its map already had 6 rounds since that loss. After that
+  it goes to the human review.
+\item \textbf{The map we do worst on} in the latest test, or simply the next map in turn.
+\end{enumerate}
+Every map in the platform's pool always has an entry: a new map starts with the default numbers
+until training improves them. \f{train status} checks that the counts agree
+(\emph{fingerprint 21/21, geometry 21/21, in pack 21/21, trained N/21}). It also lists each untrained
+map with its rounds so far, e.g. \emph{hooks 2/4}. A map without a fingerprint is never trained,
+because the bot couldn't load its numbers, and \f{status} reports it as OUT OF SYNC.
 
 \section{What the bot learns}\label{sec:learn}
 \subsection*{Code vs numbers}

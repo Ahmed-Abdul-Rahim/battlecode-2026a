@@ -8,6 +8,7 @@ One loop, run on every teammate's PC (architecture and commands: docs/league.pdf
   watch    lead only: our new ladder games -> ledger; every loss joins the queue
   maps     lead only, with sync: follow the platform's map pool (pull + register new maps)
   train    per-map antithetic ES on θ (harness/params.py) against the mimic pool (PFSP) + anchors
+           (map order: never-trained maps first, then ladder losses, then our worst map)
   evolve   every MIMIC_EVERY-th cycle: ES on an *evolved mimic* (league/mimics/<slug>.json) to
            beat our champion, so training goes on when the real teams stop updating
   promote  accepted θ -> champion.json + pack.bin, benchmark vs every mimic, commit, push
@@ -102,6 +103,7 @@ GAMES_PER_TEAM = 10  # newest finished games downloaded per team per sync
 SYNC_EVERY = 3 * 3600
 WATCH_EVERY = 600
 STUCK_TRIES = 6  # ES cycles on a lost map without a fix before a human is asked
+BOOTSTRAP_TRIES = 4  # rounds every never-trained (new) map gets before losses and top-10 work
 SUBMIT_GAP = 6 * 3600
 BENCH_JUMP = 0.05
 REVERT_GAMES, REVERT_DROP = 10, 0.10
@@ -945,7 +947,9 @@ def review_text(ch: dict, led: dict) -> str:
         f"**{'v' + str(subs[-1]['version']) if subs else 'none uploaded by the league'}** · "
         f"last sync {snaps[-1]['time'] if snaps else 'never'} · benchmark vs mimics {b.get('overall', '—')}",
         "",
-        f"Map pool: {len(led['maps'])} maps ({', '.join(led['maps']) or 'not synced: all local maps'}).",
+        f"Map pool: {len(led['maps'])} maps ({', '.join(led['maps']) or 'not synced: all local maps'}). "
+        f"Trained: {map_report(ch, led)['trained']}/{map_report(ch, led)['active']}; "
+        f"still on default numbers: {', '.join(map_report(ch, led)['untrained']) or 'none'}.",
         "",
         "## Top 10",
         "",
@@ -1056,6 +1060,7 @@ def load_local() -> dict:
         "tries": {},
         "rr": 0,
         "mrr": 0,
+        "mlast": {},
         "cycle": 0,
         "last_sync": 0,
         "last_watch": 0,
@@ -1069,10 +1074,68 @@ def fold_tries(ch: dict, local: dict) -> None:
         ch["tries"].setdefault(m, {})[HOST] = max(n, ch["tries"].get(m, {}).get(HOST, 0))
 
 
+def tries_now(ch: dict, local: dict, mp: str) -> int:
+    """ES rounds on a map by all PCs: the shared counts plus this PC's not yet pushed ones."""
+    per = dict(ch["tries"].get(mp) or {})
+    per[HOST] = max(per.get(HOST, 0), local["tries"].get(mp, 0))
+    return sum(per.values())
+
+
+def trained_maps(ch: dict) -> set[str]:
+    """Maps whose θ differs from the compiled defaults (a promotion or the old seed)."""
+    base = base_theta()
+    return {m for m, th in ch["maps"].items() if full_theta(th) != base}
+
+
+def trainable_maps(led: dict) -> dict[str, Path]:
+    """Active maps the bot can recognise: without a fingerprint a map's θ never reaches
+    pack.bin, so training it would compare identical bots."""
+    fps = load_json(FINGERPRINTS, {})
+    return {m: p for m, p in active_maps(led).items() if m in fps}
+
+
+def seed_maps(ch: dict, led: dict) -> list[str]:
+    """Give every trainable map an explicit θ (the defaults), so champion.json, pack.bin and
+    the map pool always have the same maps. Defaults play exactly like no entry."""
+    new = [m for m in trainable_maps(led) if m not in ch["maps"]]
+    for m in new:
+        ch["maps"][m] = base_theta()
+    return new
+
+
+def map_report(ch: dict, led: dict) -> dict:
+    """The per-map numbers that must agree: active pool vs fingerprints, geometry, pack, trained."""
+    active = set(active_maps(led))
+    fps, geo = set(load_json(FINGERPRINTS, {})), set(load_json(GEOMETRY, {}))
+    trained = trained_maps(ch) & active
+    return {
+        "active": len(active),
+        "fingerprint": len(active & fps),
+        "geometry": len(active & geo),
+        "pack": len(active & set(ch["maps"]) & fps),
+        "trained": len(trained),
+        "untrained": sorted(active - trained),
+        "missing": sorted(active - (fps & geo)),
+        "dropped": sorted(set(ch["maps"]) - fps),  # θ that pack.bin can't carry
+    }
+
+
 def pick_map(ch: dict, led: dict, local: dict) -> tuple[str, dict | None]:
-    maps = active_maps(led)
-    for x in sorted(led["losses"], key=lambda x: x["time"]):
-        if x["status"] == "open" and x["map"] in maps:
+    """1. maps never trained (new maps), until each had BOOTSTRAP_TRIES rounds; maps with
+    ladder losses first. 2. the oldest open ladder loss not stuck yet. 3. our worst
+    benchmark map / round-robin."""
+    maps = trainable_maps(led)
+    open_losses = sorted(
+        (x for x in led["losses"] if x["status"] == "open" and x["map"] in maps), key=lambda x: x["time"]
+    )
+    trained = trained_maps(ch)
+    fresh = [m for m in maps if m not in trained and tries_now(ch, local, m) < BOOTSTRAP_TRIES]
+    if fresh:
+        lost_on = {x["map"] for x in open_losses}
+        mp = min(fresh, key=lambda m: (m not in lost_on, tries_now(ch, local, m), m))
+        return mp, next((x for x in open_losses if x["map"] == mp), None)
+    for x in open_losses:
+        if tries_now(ch, local, x["map"]) - x.get("tries_at", 0) < STUCK_TRIES:
             return x["map"], x
     per_map = {
         m: v
@@ -1104,7 +1167,7 @@ def h2h_decider(cyc: Path, maps_now: dict):
 def train(ch: dict, led: dict, local: dict, rng: random.Random, cyc: Path) -> dict:
     mp, loss = pick_map(ch, led, local)
     local["rr"] += 1
-    mpath = active_maps(led)[mp]
+    mpath = trainable_maps(led)[mp]
     faithful, evolved = ensure_mimics(led)
     mimics = faithful + evolved  # PFSP over both: the evolved ones keep pressure on static teams
     anchors = [a for a in ANCHORS if (ROOT / "bots" / a).exists()]
@@ -1185,20 +1248,21 @@ def mimic_target(ch: dict, led: dict, local: dict) -> tuple[dict, str] | None:
     (the opponent we've 'solved'), on the map where we beat it most. Without a benchmark:
     round-robin over the pool."""
     pool = [p for p in led["pool"] if (MIMICS / f"{p['slug']}.spec.json").exists()]
-    maps = active_maps(led)
+    maps = trainable_maps(led)
     if not pool or not maps:
         return None
     static = [p for p in pool if p.get("static")] or pool
     b = ch["bench"].get(str(ch["version"])) or {}
     per_team = b.get("per_team") or {}
-    if per_team:
-        team = max(
-            static, key=lambda p: (per_team.get(p["slug"], 0.0), -load_evolved(p["slug"], None)["version"])
-        )
-    else:
-        team = static[local["mrr"] % len(static)]
+    last = local["mlast"]  # slug / "slug|map" -> cycle it was last evolved
+    # Among the 3 teams we beat most, the one evolved least recently (no single-team rut).
+    best = sorted(static, key=lambda p: -per_team.get(p["slug"], 0.0))[:3] if per_team else static
+    team = min(best, key=lambda p: (last.get(p["slug"], -1), p["slug"]))
     grid = {m: v for m, v in ((b.get("grid") or {}).get(team["slug"]) or {}).items() if m in maps}
-    mp = max(grid, key=grid.get) if grid else sorted(maps)[local["mrr"] % len(maps)]
+    # Among the 5 maps we beat them most on (all maps without a benchmark), least recent first.
+    cands = sorted(grid, key=lambda m: -grid[m])[:5] if grid else sorted(maps)
+    mp = min(cands, key=lambda m: (last.get(f"{team['slug']}|{m}", -1), m))
+    last[team["slug"]] = last[f"{team['slug']}|{mp}"] = local["cycle"]
     return team, mp
 
 
@@ -1211,7 +1275,7 @@ def evolve_mimic(ch: dict, led: dict, local: dict, rng: random.Random, cyc: Path
     if not tgt:
         return {"mimic": None, "skipped": "no mimic pool"}
     team, mp = tgt
-    slug, mpath = team["slug"], active_maps(led)[mp]
+    slug, mpath = team["slug"], trainable_maps(led)[mp]
     spec = json.loads((MIMICS / f"{slug}.spec.json").read_text(encoding="utf-8"))
     mx = load_evolved(slug, team.get("macro_hash"))
     _faithful, evolved = ensure_mimics(led)
@@ -1280,9 +1344,20 @@ def cycle(a: argparse.Namespace, rng: random.Random) -> None:
     errs = params.check()
     if errs:
         raise SystemExit(f"bots/main/src/learned.rs and harness/params.py disagree: {errs}")
-    apply_champion(ch)
     led = load_ledger()
     now = time.time()
+    rep = map_report(ch, led)
+    if rep["missing"] or rep["dropped"]:
+        log(
+            f"maps out of sync: no fingerprint/geometry for {rep['missing']}, θ not in pack for {rep['dropped']}"
+        )
+        if a.lead and rep["missing"]:
+            local["last_sync"] = 0  # register them now, not in up to 3 h
+    seeded = seed_maps(ch, led)
+    if seeded:
+        log(f"new maps get default θ until trained: {', '.join(seeded)}")
+        local["last_heartbeat"] = 0  # publish the seeded champion.json this cycle
+    apply_champion(ch)
     if a.lead:
         msgs = []
         if now - local["last_watch"] >= WATCH_EVERY:
@@ -1407,9 +1482,7 @@ def cmd_status(_: argparse.Namespace) -> int:
     print(
         f"daemon      {'running, pid ' + str(pid) if pid else 'stopped'} on {HOST} (cycle {local['cycle']})"
     )
-    print(
-        f"champion    v{ch['version']}, {len(ch['maps'])} maps tuned: {', '.join(sorted(ch['maps'])) or '-'}"
-    )
+    print(f"champion    v{ch['version']}, trained on {', '.join(sorted(trained_maps(ch))) or '-'}")
     b = ch["bench"].get(str(ch["version"]))
     if b:
         print(f"benchmark   {b['overall']:.3f} over {b['games']} games")
@@ -1423,6 +1496,19 @@ def cmd_status(_: argparse.Namespace) -> int:
     print(
         f"maps        {len(active_maps(led))} active ({'platform pool' if led['maps'] else 'all local, not synced'})"
     )
+    rep = map_report(ch, led)
+    ok = rep["fingerprint"] == rep["geometry"] == rep["active"] and not rep["dropped"]
+    print(
+        f"            fingerprint {rep['fingerprint']}/{rep['active']}, geometry {rep['geometry']}/{rep['active']}, "
+        f"in pack {rep['pack']}/{rep['active']}, trained {rep['trained']}/{rep['active']}"
+        + ("" if ok else f"  OUT OF SYNC: missing {rep['missing']}, dropped {rep['dropped']}")
+    )
+    if rep["untrained"]:
+        lc = load_local()
+        print(
+            "  new maps  "
+            + ", ".join(f"{m} {tries_now(ch, lc, m)}/{BOOTSTRAP_TRIES}" for m in rep["untrained"])
+        )
     print(f"pool        {', '.join(p['slug'] + ' (' + p['why'] + ')' for p in led['pool']) or '-'}")
     for p in led["pool"]:
         mx = load_evolved(p["slug"], p.get("macro_hash"))

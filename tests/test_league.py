@@ -191,3 +191,78 @@ def test_evolved_mimic_merge_keeps_base():
     m = league.merge_champion(base, up, me, lambda m, a, b: b)
     assert m["base"] == "h" and m["slug"] == "nyx" and m["version"] == 2
     assert sorted(m["maps"]) == ["eight", "lanes"]
+
+
+def _maps(monkeypatch, names, fps=None):
+    files = {n: Path(f"maps/00{n}.map26a") for n in names}
+    monkeypatch.setattr(league, "active_maps", lambda led: dict(files))
+    monkeypatch.setattr(
+        league, "load_json", lambda p, d: {n: 1 for n in (fps or names)} if p == league.FINGERPRINTS else d
+    )
+    return files
+
+
+def _local(**kw):
+    return {"tries": {}, "rr": 0, "mlast": {}, "cycle": 1, **kw}
+
+
+def test_new_maps_train_first_lost_ones_first(monkeypatch):
+    _maps(monkeypatch, ["lanes", "islands", "hooks"])
+    trained = league.full_theta(None)
+    trained[0] += 0.5
+    ch = champ({"lanes": trained})
+    old_loss = {"id": "a", "time": "2026-10-20T10:00:00Z", "map": "lanes", "status": "open"}
+    new_loss = {"id": "b", "time": "2026-10-20T11:00:00Z", "map": "hooks", "status": "open"}
+    led = ledger(losses=[old_loss, new_loss])
+    # lanes has the older loss, but hooks/islands were never trained: hooks (lost on) first.
+    assert league.pick_map(ch, led, _local()) == ("hooks", new_loss)
+    # once both new maps had their bootstrap rounds, the loss queue takes over
+    done = {m: league.BOOTSTRAP_TRIES for m in ("hooks", "islands")}
+    assert league.pick_map(ch, led, _local(tries=done)) == ("lanes", old_loss)
+
+
+def test_stuck_loss_is_skipped_using_local_tries(monkeypatch):
+    _maps(monkeypatch, ["lanes", "hooks"])
+    th = league.full_theta(None)
+    th[0] += 0.5
+    ch = champ({"lanes": th, "hooks": th})
+    loss = {"id": "a", "time": "t", "map": "lanes", "status": "open", "tries_at": 0}
+    _mp, x = league.pick_map(ch, ledger(losses=[loss]), _local(tries={"lanes": league.STUCK_TRIES}))
+    assert x is None  # 6 local rounds already: don't keep hammering it before the lead escalates
+
+
+def test_maps_without_fingerprint_are_not_trained_and_reported(monkeypatch):
+    _maps(monkeypatch, ["lanes", "islands"], fps=["lanes"])
+    ch = champ({"gone": [0.0]})
+    assert list(league.trainable_maps(ledger())) == ["lanes"]
+    rep = league.map_report(ch, ledger())
+    assert rep["active"] == 2 and rep["fingerprint"] == 1 and rep["dropped"] == ["gone"]
+
+
+def test_seed_maps_makes_pack_match_pool(monkeypatch):
+    _maps(monkeypatch, ["lanes", "islands"])
+    ch = champ({})
+    assert sorted(league.seed_maps(ch, ledger())) == ["islands", "lanes"]
+    assert league.trained_maps(ch) == set()  # defaults are not "trained"
+    assert league.seed_maps(ch, ledger()) == []
+
+
+def test_mimic_target_rotates_teams_and_maps(monkeypatch):
+    _maps(monkeypatch, ["lanes", "hooks"])
+    monkeypatch.setattr(
+        league,
+        "MIMICS",
+        type("P", (), {"__truediv__": lambda s, n: type("E", (), {"exists": lambda s: True})()})(),
+    )
+    pool = [{"slug": s, "static": True} for s in ("a", "b", "c", "d")]
+    ch = champ({})
+    ch["bench"] = {"0": {"per_team": {"a": 0.9, "b": 0.8, "c": 0.7, "d": 0.1}}}
+    led = {**ledger(), "pool": pool}
+    local = _local()
+    picks = []
+    for c in range(6):
+        local["cycle"] = c
+        team, mp = league.mimic_target(ch, led, local)
+        picks.append((team["slug"], mp))
+    assert {t for t, _ in picks[:3]} == {"a", "b", "c"}  # the 3 we beat most, in turn; never d
+    assert picks[0][0] == picks[3][0] and picks[0][1] != picks[3][1]  # next visit: another map
