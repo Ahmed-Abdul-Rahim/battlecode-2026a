@@ -1,32 +1,32 @@
 {
  "build": {},
  "cadence": {
-  "bag": 17.0,
+  "bag": 21.9,
   "first_emblem": null,
   "shops_per_100r": null
  },
  "draft": {
   "3": [
    3,
-   8,
-   4
+   0,
+   7
   ],
   "4": [
    3,
-   8,
-   4,
+   0,
+   7,
    9
   ],
   "5": [
    3,
-   8,
-   4,
+   0,
+   7,
    9,
-   10
+   4
   ]
  },
- "games": 10,
+ "games": 25,
  "opening": {},
- "team": "Hidden Lock Pickers",
- "win_rate": 0.7
+ "team": "eclipsed Sunlight",
+ "win_rate": 0.16
 }

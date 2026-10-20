@@ -1,32 +1,32 @@
 {
  "build": {},
  "cadence": {
-  "bag": 33.6,
+  "bag": 22.2,
   "first_emblem": null,
   "shops_per_100r": null
  },
  "draft": {
   "3": [
-   3,
+   11,
    4,
-   1
+   8
   ],
   "4": [
-   3,
+   11,
    4,
-   1,
-   9
+   8,
+   3
   ],
   "5": [
-   3,
+   11,
    4,
-   1,
-   9,
+   8,
+   3,
    0
   ]
  },
- "games": 10,
+ "games": 35,
  "opening": {},
- "team": "Lone Oski",
- "win_rate": 0.4
+ "team": "Kvantai",
+ "win_rate": 0.543
 }
