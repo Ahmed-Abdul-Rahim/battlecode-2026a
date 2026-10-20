@@ -123,8 +123,11 @@ pub mod knob {
     /// into channel bytes 1-2 (team params are computed locally instead), so allies stop
     /// walking to camps a teammate already cleared.
     pub const TEAM_RESPAWN: usize = 30;
-    /// 1 = combat state machine with 2-bit history counters and help calls with intent and
-    /// time left in the team channel (bc_core::combat; alert / engage / disengage / assist).
+    /// Combat state machine bits (bc_core::combat): 1 on (full state machine with help calls:
+    /// measured worse, see git log), 2/4/8/16/32 ablations of it, 64 = only hysteresis on the
+    /// fight-or-flee decision (2-bit counter), 128 = only answer help calls on our way.
+    /// Default 193 = 1 + 64 + 128: hysteresis + help on the way (vs 13 mimics, 21 maps:
+    /// win 0.504 -> 0.526, head-to-head 0.62).
     pub const COMBAT_FSM: usize = 31;
 
     pub const DEFAULTS: [(usize, u8); 32] = [
@@ -159,7 +162,7 @@ pub mod knob {
         (SHOP_FIRST, 0),
         (EN_ROUTE, 1),
         (TEAM_RESPAWN, 1),
-        (COMBAT_FSM, 0),
+        (COMBAT_FSM, 193),
     ];
 }
 

@@ -110,6 +110,10 @@ const TEAM_GHOST_RANGE: i32 = 3;
 const TEAM_GHOST_DPS: f32 = 40.0;
 /// Only champions above this health fraction answer a call for help.
 const ASSIST_MIN_HP: f32 = 0.7;
+/// COMBAT_FSM bit 128: answer a help call only within this detour (tiles) on our way, and
+/// from at most this far.
+const HELP_DETOUR: i32 = 4;
+const HELP_ON_WAY_MAX: i32 = 10;
 /// FIGHT_V6: join fights from this health fraction.
 const ASSIST_MIN_HP_V6: f32 = 0.5;
 /// TAVI_META: Tavi's field build (shop.rs profile) and when it starts hunting.
@@ -430,7 +434,11 @@ impl Bot {
                 && ctx.gems < router::BIG_BAG_GEMS
             {
                 if let Some((p, age)) = shared {
-                    if age <= 1 && (2..=radius).contains(&p.cheb(my_pos)) {
+                    // COMBAT_FSM bit 128: only help when the fight is on the way to where we're
+                    // already going (small detour), so helping costs no farming time.
+                    let on_way =
+                        hunting || fsm_bits & 128 == 0 || self.on_the_way(my_pos, p, intent);
+                    if on_way && age <= 1 && (2..=radius).contains(&p.cheb(my_pos)) {
                         intent = Intent::Engage(p);
                         assist = Some(p);
                         telemetry::event(round, champ_name(self.kind), "assist", 1);
@@ -937,6 +945,22 @@ impl Bot {
             self.fsm_fighting = Some(false);
         }
         kept
+    }
+
+    /// Is `p` on the way to where `intent` takes us (camp, altar or home)? At most
+    /// HELP_DETOUR extra tiles and HELP_ON_WAY_MAX tiles from here.
+    fn on_the_way(&self, me: Pos, p: Pos, intent: Intent) -> bool {
+        let goal = match intent {
+            Intent::ClearCamp(g) | Intent::Capture(g) | Intent::Approach(g) => {
+                self.world.groups.get(usize::from(g)).map(|gr| gr.center)
+            }
+            Intent::Tribute => self.world.altars.iter().copied().min_by_key(|a| a.cheb(me)),
+            Intent::Retreat | Intent::WalkHome | Intent::Shop => Some(self.world.spawn_hint),
+            _ => None,
+        };
+        goal.is_some_and(|g| {
+            me.cheb(p) <= HELP_ON_WAY_MAX && me.cheb(p) + p.cheb(g) - me.cheb(g) <= HELP_DETOUR
+        })
     }
 
     /// Charge fuel spent since `mark` to `stage`; returns the new mark.
