@@ -99,6 +99,15 @@
    "time": "2026-10-20T15:40:12.934Z",
    "win": false
   },
+  "1ea7b85b-29eb-4860-ab27-7ffe1a2bf236": {
+   "kind": "ranked",
+   "live": null,
+   "map": "corners",
+   "opp": "MicroStella",
+   "oppId": "f0415fa5-b2aa-4958-a47a-4422f74d9ede",
+   "time": "2026-10-20T17:30:07.063Z",
+   "win": false
+  },
   "23a318f0-b34f-48e3-a3bd-220f03523f28": {
    "kind": "ranked",
    "live": null,
@@ -405,6 +414,24 @@
    "time": "2026-10-20T15:20:09.962Z",
    "win": true
   },
+  "9f9f807a-4769-4651-86ed-7547e5e5b51e": {
+   "kind": "ranked",
+   "live": null,
+   "map": "concentrated-wealth",
+   "opp": "MicroStella",
+   "oppId": "f0415fa5-b2aa-4958-a47a-4422f74d9ede",
+   "time": "2026-10-20T17:30:07.063Z",
+   "win": false
+  },
+  "a6292051-d12d-4066-8718-fad21da0fb6b": {
+   "kind": "ranked",
+   "live": null,
+   "map": "shortcut",
+   "opp": "MicroStella",
+   "oppId": "f0415fa5-b2aa-4958-a47a-4422f74d9ede",
+   "time": "2026-10-20T17:30:07.064Z",
+   "win": true
+  },
   "a634c31f-6b63-4c95-9ca2-c2ef338686c6": {
    "kind": "ranked",
    "live": null,
@@ -567,6 +594,15 @@
    "time": "2026-10-20T16:10:05.812Z",
    "win": true
   },
+  "dc5260af-1d8f-48c7-896b-38b0b26de15d": {
+   "kind": "ranked",
+   "live": null,
+   "map": "eight",
+   "opp": "MicroStella",
+   "oppId": "f0415fa5-b2aa-4958-a47a-4422f74d9ede",
+   "time": "2026-10-20T17:30:07.064Z",
+   "win": false
+  },
   "ddc4e992-d884-45ea-a59e-07739bc3be96": {
    "kind": "ranked",
    "live": null,
@@ -646,6 +682,15 @@
    "opp": "Slough Reps",
    "oppId": "fd3a404c-954b-4628-a418-7a8e57fb3783",
    "time": "2026-10-20T15:10:13.186Z",
+   "win": true
+  },
+  "f1043ea0-411a-4af9-81d3-44aa6013a4b6": {
+   "kind": "ranked",
+   "live": null,
+   "map": "starfish",
+   "opp": "MicroStella",
+   "oppId": "f0415fa5-b2aa-4958-a47a-4422f74d9ede",
+   "time": "2026-10-20T17:30:07.064Z",
    "win": true
   },
   "f3fa1011-999d-4ec5-b282-5cc020291c16": {
@@ -1330,6 +1375,56 @@
    "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
    "status": "open",
    "time": "2026-10-20T17:10:06.134Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "camp": 3,
+    "champion": 26
+   },
+   "deaths_them": 56,
+   "deaths_us": 29,
+   "gems_them": "1010",
+   "gems_us": "924",
+   "id": "dc5260af-1d8f-48c7-896b-38b0b26de15d",
+   "map": "eight",
+   "opp": "MicroStella",
+   "oppId": "f0415fa5-b2aa-4958-a47a-4422f74d9ede",
+   "status": "open",
+   "time": "2026-10-20T17:30:07.064Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "camp": 12,
+    "champion": 10
+   },
+   "deaths_them": 3,
+   "deaths_us": 22,
+   "gems_them": "1014",
+   "gems_us": "545",
+   "id": "1ea7b85b-29eb-4860-ab27-7ffe1a2bf236",
+   "map": "corners",
+   "opp": "MicroStella",
+   "oppId": "f0415fa5-b2aa-4958-a47a-4422f74d9ede",
+   "status": "open",
+   "time": "2026-10-20T17:30:07.063Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "champion": 2
+   },
+   "deaths_them": 3,
+   "deaths_us": 2,
+   "gems_them": "844",
+   "gems_us": "435",
+   "id": "9f9f807a-4769-4651-86ed-7547e5e5b51e",
+   "map": "concentrated-wealth",
+   "opp": "MicroStella",
+   "oppId": "f0415fa5-b2aa-4958-a47a-4422f74d9ede",
+   "status": "open",
+   "time": "2026-10-20T17:30:07.063Z",
    "tries_at": 0
   }
  ],
