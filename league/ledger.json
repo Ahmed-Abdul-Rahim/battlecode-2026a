@@ -9,6 +9,15 @@
    "time": "2026-10-20T15:40:12.933Z",
    "win": true
   },
+  "03ea9a96-e109-4418-9614-617e51d0e37d": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "rows",
+   "opp": "Argon enjoyers",
+   "oppId": "5d6858ca-2352-4585-af55-3d79b614f824",
+   "time": "2026-10-20T18:20:10.477Z",
+   "win": true
+  },
   "03ef19b7-a548-41f4-a625-a50f060f01b5": {
    "kind": "ranked",
    "live": null,
@@ -16,6 +25,24 @@
    "opp": "Mousa",
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
    "time": "2026-10-20T16:00:07.664Z",
+   "win": false
+  },
+  "06182bbf-364d-4be0-acc4-96215042f247": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "islands",
+   "opp": "Argon enjoyers",
+   "oppId": "5d6858ca-2352-4585-af55-3d79b614f824",
+   "time": "2026-10-20T18:20:10.476Z",
+   "win": true
+  },
+  "06fbf774-86be-47ef-89fc-c81c37441471": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "lanes",
+   "opp": "dominos",
+   "oppId": "f437e066-15f3-4a27-8ec3-9687cb68696b",
+   "time": "2026-10-20T18:40:10.897Z",
    "win": false
   },
   "077f8383-b95f-4834-b982-3305b6b04e85": {
@@ -26,6 +53,15 @@
    "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
    "time": "2026-10-20T15:00:17.844Z",
    "win": true
+  },
+  "07b2056f-8f9b-46ac-af3b-27fec64ffe6b": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "fracture",
+   "opp": "WhatIsQuantTrading??????",
+   "oppId": "d88df6e3-53c7-44ed-874f-67f3caa0578c",
+   "time": "2026-10-20T18:50:08.433Z",
+   "win": false
   },
   "09783ac3-b8c9-48b5-b0b8-e1da7b650d8f": {
    "kind": "ranked",
@@ -144,6 +180,33 @@
    "time": "2026-10-20T16:50:05.756Z",
    "win": false
   },
+  "23bb8c8b-5ea7-4b5d-aba7-2ec4e7da066a": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "corners",
+   "opp": "Rataturing",
+   "oppId": "0a7f58a2-84f8-4c83-abdc-82d7fe4d4558",
+   "time": "2026-10-20T19:20:09.080Z",
+   "win": false
+  },
+  "24a10b64-aa0e-4579-9731-78e3d251cb75": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "rows",
+   "opp": "tvojtatko",
+   "oppId": "0263b3aa-28cf-469f-abd3-e07327c6e757",
+   "time": "2026-10-20T19:10:09.463Z",
+   "win": true
+  },
+  "24db83af-12cc-41ac-9203-3795aeb53716": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "yellow-brick-road",
+   "opp": "tvojtatko",
+   "oppId": "0263b3aa-28cf-469f-abd3-e07327c6e757",
+   "time": "2026-10-20T19:10:09.463Z",
+   "win": false
+  },
   "274b84ee-1784-4176-9be9-a11b7a944612": {
    "kind": "ranked",
    "live": null,
@@ -207,6 +270,24 @@
    "time": "2026-10-20T17:40:07.590Z",
    "win": true
   },
+  "38fce8a0-c8bc-4475-b20a-c33f06c977c4": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "corridors",
+   "opp": "Stubborn Altar Keepers",
+   "oppId": "625bb51a-8d9e-4035-a16e-ce4eea8eb739",
+   "time": "2026-10-20T19:00:08.517Z",
+   "win": true
+  },
+  "39fd6983-9ef2-4902-ba77-68ee0141f2b7": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "quadrants",
+   "opp": "WhatIsQuantTrading??????",
+   "oppId": "d88df6e3-53c7-44ed-874f-67f3caa0578c",
+   "time": "2026-10-20T18:50:08.433Z",
+   "win": true
+  },
   "3a320f21-2229-4517-906d-0464a173e2f9": {
    "kind": "ranked",
    "live": null,
@@ -252,6 +333,15 @@
    "time": "2026-10-20T16:20:07.816Z",
    "win": false
   },
+  "481909ab-1a45-4898-95b3-c3dbee65e3e4": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "reverse-spiral",
+   "opp": "range rover",
+   "oppId": "184a3866-fec8-4f0a-8221-6691e1abfdc2",
+   "time": "2026-10-20T18:30:06.484Z",
+   "win": false
+  },
   "48fbdbe6-0a17-44ee-8e25-9118c5e8a09a": {
    "kind": "ranked",
    "live": null,
@@ -288,6 +378,15 @@
    "time": "2026-10-20T16:30:26.059Z",
    "win": true
   },
+  "50a9d760-9ae5-4fd9-8b00-658d5be3fe46": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "gold-rush",
+   "opp": "WhatIsQuantTrading??????",
+   "oppId": "d88df6e3-53c7-44ed-874f-67f3caa0578c",
+   "time": "2026-10-20T18:50:08.433Z",
+   "win": false
+  },
   "52a40ce8-1dad-4a51-9ee1-24751155cf5e": {
    "kind": "ranked",
    "live": 1,
@@ -305,6 +404,15 @@
    "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
    "time": "2026-10-20T17:10:06.134Z",
    "win": false
+  },
+  "551e942f-71c6-4d0c-8988-bf56a41e83ec": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "shortcut",
+   "opp": "Argon enjoyers",
+   "oppId": "5d6858ca-2352-4585-af55-3d79b614f824",
+   "time": "2026-10-20T18:20:10.476Z",
+   "win": true
   },
   "56467df2-ee7a-4b36-87ac-3223083b8280": {
    "kind": "ranked",
@@ -342,6 +450,15 @@
    "time": "2026-10-20T15:10:13.185Z",
    "win": false
   },
+  "5e7c2860-45d1-4196-8641-42a13638f9bf": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "packs",
+   "opp": "Rataturing",
+   "oppId": "0a7f58a2-84f8-4c83-abdc-82d7fe4d4558",
+   "time": "2026-10-20T19:20:09.080Z",
+   "win": false
+  },
   "611c0dcc-9e06-4263-9e92-43e8be530b1e": {
    "kind": "ranked",
    "live": null,
@@ -360,6 +477,15 @@
    "time": "2026-10-20T17:51:26.764Z",
    "win": false
   },
+  "62312663-94c9-4fc2-a42d-cb9c5b3cc671": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "contest",
+   "opp": "Stubborn Altar Keepers",
+   "oppId": "625bb51a-8d9e-4035-a16e-ce4eea8eb739",
+   "time": "2026-10-20T19:00:08.517Z",
+   "win": false
+  },
   "67af3823-022b-46b9-a319-ea3e9e8eed46": {
    "kind": "ranked",
    "live": null,
@@ -368,6 +494,24 @@
    "oppId": "56492446-eca6-4557-9a40-559bd4c318dc",
    "time": "2026-10-20T16:30:26.059Z",
    "win": false
+  },
+  "68af59f5-f6dc-447f-a7e4-e42328ecb7a1": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "contest",
+   "opp": "range rover",
+   "oppId": "184a3866-fec8-4f0a-8221-6691e1abfdc2",
+   "time": "2026-10-20T18:30:06.486Z",
+   "win": false
+  },
+  "6a1a8e73-3efd-4f6b-a6c2-915283213694": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "collision",
+   "opp": "dominos",
+   "oppId": "f437e066-15f3-4a27-8ec3-9687cb68696b",
+   "time": "2026-10-20T18:40:10.898Z",
+   "win": true
   },
   "6a605f93-fb00-4a39-88a4-92f2e935a134": {
    "kind": "unranked",
@@ -423,6 +567,15 @@
    "time": "2026-10-20T16:30:26.059Z",
    "win": false
   },
+  "745b5ef9-57e1-4d36-ad4f-5da7b6d0ccae": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "hooks",
+   "opp": "dominos",
+   "oppId": "f437e066-15f3-4a27-8ec3-9687cb68696b",
+   "time": "2026-10-20T18:40:10.897Z",
+   "win": false
+  },
   "7529169e-4f10-44b9-86de-ee5af2296dbf": {
    "kind": "ranked",
    "live": null,
@@ -431,6 +584,15 @@
    "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
    "time": "2026-10-20T17:00:08.371Z",
    "win": false
+  },
+  "7aa60547-bd36-48cd-abd9-bee76fa40d36": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "stampede",
+   "opp": "Rataturing",
+   "oppId": "0a7f58a2-84f8-4c83-abdc-82d7fe4d4558",
+   "time": "2026-10-20T19:20:09.080Z",
+   "win": true
   },
   "7afa105d-5901-46f0-aa68-4021501d0df8": {
    "kind": "ranked",
@@ -484,6 +646,15 @@
    "opp": "Mousa",
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
    "time": "2026-10-20T16:00:07.664Z",
+   "win": false
+  },
+  "894d51d7-c35a-432b-8759-4fbd06581025": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "fracture",
+   "opp": "range rover",
+   "oppId": "184a3866-fec8-4f0a-8221-6691e1abfdc2",
+   "time": "2026-10-20T18:30:06.487Z",
    "win": false
   },
   "8d902203-eb97-42b3-8fc0-e00eadf36319": {
@@ -558,6 +729,15 @@
    "time": "2026-10-20T17:10:06.134Z",
    "win": false
   },
+  "9b13c5fa-8744-4070-b1b5-e8ec9312f973": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "big-world",
+   "opp": "Argon enjoyers",
+   "oppId": "5d6858ca-2352-4585-af55-3d79b614f824",
+   "time": "2026-10-20T18:20:10.477Z",
+   "win": true
+  },
   "9cb1a85a-1985-4abd-bc26-746061c244c7": {
    "kind": "ranked",
    "live": null,
@@ -565,6 +745,24 @@
    "opp": "Patient Stunners",
    "oppId": "3edd1441-9f24-4e2c-9645-d8f1e489a2c0",
    "time": "2026-10-20T15:20:09.962Z",
+   "win": true
+  },
+  "9d7af95d-4bd3-43b5-9eb8-414e3f6366f3": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "starfish",
+   "opp": "Rataturing",
+   "oppId": "0a7f58a2-84f8-4c83-abdc-82d7fe4d4558",
+   "time": "2026-10-20T19:20:09.080Z",
+   "win": false
+  },
+  "9d8ca6fa-c8e5-40d6-9283-ab6dee2069c4": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "big-world",
+   "opp": "Stubborn Altar Keepers",
+   "oppId": "625bb51a-8d9e-4035-a16e-ce4eea8eb739",
+   "time": "2026-10-20T19:00:08.517Z",
    "win": true
   },
   "9f9f807a-4769-4651-86ed-7547e5e5b51e": {
@@ -657,6 +855,33 @@
    "time": "2026-10-20T15:00:17.843Z",
    "win": false
   },
+  "ae521971-996c-46cd-b9e8-b897370844da": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "eight",
+   "opp": "tvojtatko",
+   "oppId": "0263b3aa-28cf-469f-abd3-e07327c6e757",
+   "time": "2026-10-20T19:10:09.463Z",
+   "win": false
+  },
+  "b20d372d-fd85-41ac-a265-a561f5b136b6": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "quadrants",
+   "opp": "dominos",
+   "oppId": "f437e066-15f3-4a27-8ec3-9687cb68696b",
+   "time": "2026-10-20T18:40:10.898Z",
+   "win": true
+  },
+  "b4539a7b-de75-41a2-a5d9-7aca0320a0aa": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "hooks",
+   "opp": "Stubborn Altar Keepers",
+   "oppId": "625bb51a-8d9e-4035-a16e-ce4eea8eb739",
+   "time": "2026-10-20T19:00:08.517Z",
+   "win": true
+  },
   "b7d44330-f4f0-4423-a1d5-5b4cdaff8fca": {
    "kind": "ranked",
    "live": null,
@@ -682,6 +907,15 @@
    "opp": "Sigma Coder",
    "oppId": "db94d858-5170-41ef-ad90-b2faf85dd5e8",
    "time": "2026-10-20T15:40:12.934Z",
+   "win": true
+  },
+  "c34b7546-1a3a-4c11-b480-224bccfca6fe": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "islands",
+   "opp": "tvojtatko",
+   "oppId": "0263b3aa-28cf-469f-abd3-e07327c6e757",
+   "time": "2026-10-20T19:10:09.463Z",
    "win": true
   },
   "c39784f6-74fb-4a21-bd95-c532fc3bd0b1": {
@@ -729,6 +963,15 @@
    "time": "2026-10-20T15:50:11.039Z",
    "win": true
   },
+  "d04818cf-3763-4b8a-975f-a48e307b0b46": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "corridors",
+   "opp": "Rataturing",
+   "oppId": "0a7f58a2-84f8-4c83-abdc-82d7fe4d4558",
+   "time": "2026-10-20T19:20:09.080Z",
+   "win": true
+  },
   "d33ff9a7-e1ea-4fc2-9f45-31dd8d2fd56a": {
    "kind": "ranked",
    "live": null,
@@ -737,6 +980,24 @@
    "oppId": "8d8f5160-f68e-4660-916f-6729a42537e3",
    "time": "2026-10-20T15:32:13.243Z",
    "win": false
+  },
+  "d654ad51-499e-4c3c-b696-1b48076ef464": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "islands",
+   "opp": "WhatIsQuantTrading??????",
+   "oppId": "d88df6e3-53c7-44ed-874f-67f3caa0578c",
+   "time": "2026-10-20T18:50:08.433Z",
+   "win": true
+  },
+  "d8c9d920-7db9-4533-a673-d35849695e2d": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "expanse",
+   "opp": "Stubborn Altar Keepers",
+   "oppId": "625bb51a-8d9e-4035-a16e-ce4eea8eb739",
+   "time": "2026-10-20T19:00:08.517Z",
+   "win": true
   },
   "db7eee6d-913e-4387-b3f5-7d2204f52aef": {
    "kind": "ranked",
@@ -781,6 +1042,15 @@
    "opp": "Crimson Bush Campers",
    "oppId": "2451bf9d-9782-4060-b8b4-fc2e7a69ef9a",
    "time": "2026-10-20T16:50:05.756Z",
+   "win": true
+  },
+  "deb8eb4b-0322-4047-88e6-0d5d52307d0a": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "ambush",
+   "opp": "WhatIsQuantTrading??????",
+   "oppId": "d88df6e3-53c7-44ed-874f-67f3caa0578c",
+   "time": "2026-10-20T18:50:08.433Z",
    "win": true
   },
   "decc64aa-4891-439c-91fc-497d990698c6": {
@@ -846,6 +1116,15 @@
    "time": "2026-10-20T18:00:13.679Z",
    "win": false
   },
+  "e85ebfe5-18db-4d0f-bea0-aaf27a418570": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "hooks",
+   "opp": "range rover",
+   "oppId": "184a3866-fec8-4f0a-8221-6691e1abfdc2",
+   "time": "2026-10-20T18:30:06.486Z",
+   "win": false
+  },
   "ea7a33e5-aad2-4bef-bd49-33ac3e87e1e5": {
    "kind": "ranked",
    "live": null,
@@ -853,6 +1132,15 @@
    "opp": "test_2580",
    "oppId": "e89db5d4-c0a7-43eb-9d6d-23732bae07a5",
    "time": "2026-10-20T16:40:04.457Z",
+   "win": true
+  },
+  "edcf9156-ed24-42b4-b0fd-3ddcac3988bf": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "rows",
+   "opp": "dominos",
+   "oppId": "f437e066-15f3-4a27-8ec3-9687cb68696b",
+   "time": "2026-10-20T18:40:10.898Z",
    "win": true
   },
   "edea21af-c49f-40f5-9d0a-1f0fa92f110d": {
@@ -873,6 +1161,15 @@
    "time": "2026-10-20T15:10:13.186Z",
    "win": true
   },
+  "ef9fdda2-e670-4e74-9158-07c4d3fbb6d1": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "elkring",
+   "opp": "tvojtatko",
+   "oppId": "0263b3aa-28cf-469f-abd3-e07327c6e757",
+   "time": "2026-10-20T19:10:09.463Z",
+   "win": false
+  },
   "f02347a5-5757-42c7-91ef-e74db4b06984": {
    "kind": "ranked",
    "live": 1,
@@ -881,6 +1178,15 @@
    "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
    "time": "2026-10-20T18:10:10.515Z",
    "win": true
+  },
+  "f079d0bf-bfbc-450f-ba02-1c585afc76cf": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "concentrated-wealth",
+   "opp": "range rover",
+   "oppId": "184a3866-fec8-4f0a-8221-6691e1abfdc2",
+   "time": "2026-10-20T18:30:06.484Z",
+   "win": false
   },
   "f07abe10-a225-469b-837b-c1ba0ecbd755": {
    "kind": "unranked",
@@ -908,6 +1214,15 @@
    "oppId": "70dc8c4e-5d63-4f8d-8915-1b9c7fe7fee7",
    "time": "2026-10-20T17:20:08.638Z",
    "win": true
+  },
+  "f4386295-0a8a-4275-9ab4-87b1ff1cb1ba": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "elkring",
+   "opp": "Argon enjoyers",
+   "oppId": "5d6858ca-2352-4585-af55-3d79b614f824",
+   "time": "2026-10-20T18:20:10.477Z",
+   "win": false
   },
   "f5837cb3-68fa-414d-b459-6439bd37fcec": {
    "kind": "ranked",
@@ -1089,13 +1404,14 @@
    },
    "deaths_them": 27,
    "deaths_us": 41,
+   "fixed_in": 4,
    "gems_them": "1100",
    "gems_us": "748",
    "id": "decc64aa-4891-439c-91fc-497d990698c6",
    "map": "elkring",
    "opp": "Hungry Hungry Hungry",
    "oppId": "88c01e3a-ac73-431d-8fb8-5dd482a5418b",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-20T16:10:05.811Z",
    "tries_at": 0
   },
@@ -1172,13 +1488,14 @@
    },
    "deaths_them": 55,
    "deaths_us": 64,
+   "fixed_in": 4,
    "gems_them": "1023",
    "gems_us": "682",
    "id": "09cc995d-51bd-4d64-9526-b9cbdd07744f",
    "map": "elkring",
    "opp": "Aviators",
    "oppId": "0948671e-bedc-4ca1-8dde-2526adff3d0e",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-20T15:50:11.039Z",
    "tries_at": 0
   },
@@ -1189,13 +1506,14 @@
    },
    "deaths_them": 26,
    "deaths_us": 38,
+   "fixed_in": 4,
    "gems_them": "1015",
    "gems_us": "902",
    "id": "1c926c84-84da-4fb9-ae58-6ad7a1666c66",
    "map": "elkring",
    "opp": "Sigma Coder",
    "oppId": "db94d858-5170-41ef-ad90-b2faf85dd5e8",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-20T15:40:12.934Z",
    "tries_at": 0
   },
@@ -1274,13 +1592,14 @@
    },
    "deaths_them": 14,
    "deaths_us": 49,
+   "fixed_in": 4,
    "gems_them": "1001",
    "gems_us": "297",
    "id": "29f2fe43-7348-4022-97c0-32fdfe7baf0c",
    "map": "elkring",
    "opp": "Patient Stunners",
    "oppId": "3edd1441-9f24-4e2c-9645-d8f1e489a2c0",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-20T15:20:09.962Z",
    "tries_at": 0
   },
@@ -1325,13 +1644,14 @@
    },
    "deaths_them": 20,
    "deaths_us": 47,
+   "fixed_in": 5,
    "gems_them": "891",
    "gems_us": "44",
    "id": "7257ddf1-318c-4dd9-bdde-a205602ad9dd",
    "map": "gold-rush",
    "opp": "Slough Reps",
    "oppId": "fd3a404c-954b-4628-a418-7a8e57fb3783",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-20T15:10:13.185Z",
    "tries_at": 0
   },
@@ -1512,13 +1832,14 @@
    },
    "deaths_them": 52,
    "deaths_us": 44,
+   "fixed_in": 5,
    "gems_them": "475",
    "gems_us": "376",
    "id": "09783ac3-b8c9-48b5-b0b8-e1da7b650d8f",
    "map": "gold-rush",
    "opp": "test_2580",
    "oppId": "e89db5d4-c0a7-43eb-9d6d-23732bae07a5",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-20T16:40:04.457Z",
    "tries_at": 0
   },
@@ -1529,13 +1850,14 @@
    },
    "deaths_them": 56,
    "deaths_us": 58,
+   "fixed_in": 3,
    "gems_them": "992",
    "gems_us": "180",
    "id": "a634c31f-6b63-4c95-9ca2-c2ef338686c6",
    "map": "corridors",
    "opp": "haha",
    "oppId": "70dc8c4e-5d63-4f8d-8915-1b9c7fe7fee7",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-20T17:20:08.637Z",
    "tries_at": 0
   },
@@ -1581,13 +1903,14 @@
    },
    "deaths_them": 11,
    "deaths_us": 25,
+   "fixed_in": 4,
    "gems_them": "1009",
    "gems_us": "436",
    "id": "52a5a323-111c-4813-84b0-7d4e859d790b",
    "map": "elkring",
    "opp": "ggez",
    "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-20T17:10:06.134Z",
    "tries_at": 0
   },
@@ -1798,13 +2121,14 @@
    },
    "deaths_them": 9,
    "deaths_us": 23,
+   "fixed_in": 5,
    "gems_them": "810",
    "gems_us": "453",
    "id": "126a63e9-e3c3-4786-9afd-d566d0ab3afa",
    "map": "gold-rush",
    "opp": "Mousa",
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-20T18:00:13.680Z",
    "tries_at": 0
   },
@@ -1891,6 +2215,300 @@
    "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
    "status": "open",
    "time": "2026-10-20T18:10:10.514Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (2)": 29
+   },
+   "deaths_them": 40,
+   "deaths_us": 29,
+   "gems_them": "855",
+   "gems_us": "252",
+   "id": "894d51d7-c35a-432b-8759-4fbd06581025",
+   "map": "fracture",
+   "opp": "range rover",
+   "oppId": "184a3866-fec8-4f0a-8221-6691e1abfdc2",
+   "status": "open",
+   "time": "2026-10-20T18:30:06.487Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 46,
+    "Unknown entity kind (2)": 16
+   },
+   "deaths_them": 49,
+   "deaths_us": 62,
+   "gems_them": "858",
+   "gems_us": "198",
+   "id": "e85ebfe5-18db-4d0f-bea0-aaf27a418570",
+   "map": "hooks",
+   "opp": "range rover",
+   "oppId": "184a3866-fec8-4f0a-8221-6691e1abfdc2",
+   "status": "open",
+   "time": "2026-10-20T18:30:06.486Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 38,
+    "Unknown entity kind (2)": 27
+   },
+   "deaths_them": 78,
+   "deaths_us": 65,
+   "gems_them": "600",
+   "gems_us": "0",
+   "id": "68af59f5-f6dc-447f-a7e4-e42328ecb7a1",
+   "map": "contest",
+   "opp": "range rover",
+   "oppId": "184a3866-fec8-4f0a-8221-6691e1abfdc2",
+   "status": "open",
+   "time": "2026-10-20T18:30:06.486Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 6,
+    "Unknown entity kind (2)": 52
+   },
+   "deaths_them": 42,
+   "deaths_us": 58,
+   "gems_them": "771",
+   "gems_us": "281",
+   "hint": "map not in maps/ yet: the next map sync registers it",
+   "id": "481909ab-1a45-4898-95b3-c3dbee65e3e4",
+   "map": "reverse-spiral",
+   "opp": "range rover",
+   "oppId": "184a3866-fec8-4f0a-8221-6691e1abfdc2",
+   "status": "needs-human",
+   "time": "2026-10-20T18:30:06.484Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 7,
+    "Unknown entity kind (2)": 4
+   },
+   "deaths_them": 26,
+   "deaths_us": 11,
+   "gems_them": "980",
+   "gems_us": "823",
+   "id": "f079d0bf-bfbc-450f-ba02-1c585afc76cf",
+   "map": "concentrated-wealth",
+   "opp": "range rover",
+   "oppId": "184a3866-fec8-4f0a-8221-6691e1abfdc2",
+   "status": "open",
+   "time": "2026-10-20T18:30:06.484Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 8,
+    "champion": 19
+   },
+   "deaths_them": 1,
+   "deaths_us": 27,
+   "fixed_in": 4,
+   "gems_them": "1034",
+   "gems_us": "352",
+   "id": "f4386295-0a8a-4275-9ab4-87b1ff1cb1ba",
+   "map": "elkring",
+   "opp": "Argon enjoyers",
+   "oppId": "5d6858ca-2352-4585-af55-3d79b614f824",
+   "status": "fixed",
+   "time": "2026-10-20T18:20:10.477Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 3,
+    "Unknown entity kind (2)": 5
+   },
+   "deaths_them": 8,
+   "deaths_us": 8,
+   "gems_them": "1005",
+   "gems_us": "928",
+   "id": "06fbf774-86be-47ef-89fc-c81c37441471",
+   "map": "lanes",
+   "opp": "dominos",
+   "oppId": "f437e066-15f3-4a27-8ec3-9687cb68696b",
+   "status": "open",
+   "time": "2026-10-20T18:40:10.897Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 59,
+    "Unknown entity kind (2)": 11
+   },
+   "deaths_them": 39,
+   "deaths_us": 70,
+   "gems_them": "638",
+   "gems_us": "165",
+   "id": "745b5ef9-57e1-4d36-ad4f-5da7b6d0ccae",
+   "map": "hooks",
+   "opp": "dominos",
+   "oppId": "f437e066-15f3-4a27-8ec3-9687cb68696b",
+   "status": "open",
+   "time": "2026-10-20T18:40:10.897Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 17,
+    "Unknown entity kind (2)": 31
+   },
+   "deaths_them": 32,
+   "deaths_us": 48,
+   "fixed_in": 5,
+   "gems_them": "739",
+   "gems_us": "543",
+   "id": "50a9d760-9ae5-4fd9-8b00-658d5be3fe46",
+   "map": "gold-rush",
+   "opp": "WhatIsQuantTrading??????",
+   "oppId": "d88df6e3-53c7-44ed-874f-67f3caa0578c",
+   "status": "fixed",
+   "time": "2026-10-20T18:50:08.433Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 2,
+    "Unknown entity kind (2)": 40
+   },
+   "deaths_them": 24,
+   "deaths_us": 42,
+   "gems_them": "865",
+   "gems_us": "270",
+   "id": "07b2056f-8f9b-46ac-af3b-27fec64ffe6b",
+   "map": "fracture",
+   "opp": "WhatIsQuantTrading??????",
+   "oppId": "d88df6e3-53c7-44ed-874f-67f3caa0578c",
+   "status": "open",
+   "time": "2026-10-20T18:50:08.433Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 101,
+    "Unknown entity kind (2)": 8
+   },
+   "deaths_them": 53,
+   "deaths_us": 109,
+   "gems_them": "0",
+   "gems_us": "0",
+   "id": "62312663-94c9-4fc2-a42d-cb9c5b3cc671",
+   "map": "contest",
+   "opp": "Stubborn Altar Keepers",
+   "oppId": "625bb51a-8d9e-4035-a16e-ce4eea8eb739",
+   "status": "open",
+   "time": "2026-10-20T19:00:08.517Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 54,
+    "Unknown entity kind (2)": 2
+   },
+   "deaths_them": 15,
+   "deaths_us": 56,
+   "gems_them": "1002",
+   "gems_us": "81",
+   "id": "ae521971-996c-46cd-b9e8-b897370844da",
+   "map": "eight",
+   "opp": "tvojtatko",
+   "oppId": "0263b3aa-28cf-469f-abd3-e07327c6e757",
+   "status": "open",
+   "time": "2026-10-20T19:10:09.463Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 4,
+    "Unknown entity kind (2)": 1
+   },
+   "deaths_them": 0,
+   "deaths_us": 5,
+   "gems_them": "0",
+   "gems_us": "0",
+   "hint": "map not in maps/ yet: the next map sync registers it",
+   "id": "24db83af-12cc-41ac-9203-3795aeb53716",
+   "map": "yellow-brick-road",
+   "opp": "tvojtatko",
+   "oppId": "0263b3aa-28cf-469f-abd3-e07327c6e757",
+   "status": "needs-human",
+   "time": "2026-10-20T19:10:09.463Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 28,
+    "Unknown entity kind (2)": 10
+   },
+   "deaths_them": 15,
+   "deaths_us": 38,
+   "gems_them": "1002",
+   "gems_us": "847",
+   "id": "ef9fdda2-e670-4e74-9158-07c4d3fbb6d1",
+   "map": "elkring",
+   "opp": "tvojtatko",
+   "oppId": "0263b3aa-28cf-469f-abd3-e07327c6e757",
+   "status": "open",
+   "time": "2026-10-20T19:10:09.463Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 4,
+    "Unknown entity kind (2)": 6
+   },
+   "deaths_them": 18,
+   "deaths_us": 10,
+   "gems_them": "1000",
+   "gems_us": "708",
+   "id": "23bb8c8b-5ea7-4b5d-aba7-2ec4e7da066a",
+   "map": "corners",
+   "opp": "Rataturing",
+   "oppId": "0a7f58a2-84f8-4c83-abdc-82d7fe4d4558",
+   "status": "open",
+   "time": "2026-10-20T19:20:09.080Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 42,
+    "Unknown entity kind (2)": 50
+   },
+   "deaths_them": 39,
+   "deaths_us": 92,
+   "gems_them": "913",
+   "gems_us": "292",
+   "hint": "map not in maps/ yet: the next map sync registers it",
+   "id": "9d7af95d-4bd3-43b5-9eb8-414e3f6366f3",
+   "map": "starfish",
+   "opp": "Rataturing",
+   "oppId": "0a7f58a2-84f8-4c83-abdc-82d7fe4d4558",
+   "status": "needs-human",
+   "time": "2026-10-20T19:20:09.080Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 14,
+    "Unknown entity kind (2)": 2
+   },
+   "deaths_them": 16,
+   "deaths_us": 16,
+   "gems_them": "1004",
+   "gems_us": "752",
+   "hint": "map not in maps/ yet: the next map sync registers it",
+   "id": "5e7c2860-45d1-4196-8641-42a13638f9bf",
+   "map": "packs",
+   "opp": "Rataturing",
+   "oppId": "0a7f58a2-84f8-4c83-abdc-82d7fe4d4558",
+   "status": "needs-human",
+   "time": "2026-10-20T19:20:09.080Z",
    "tries_at": 0
   }
  ],
