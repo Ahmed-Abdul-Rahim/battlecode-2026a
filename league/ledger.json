@@ -18,6 +18,15 @@
    "time": "2026-10-20T15:40:12.933Z",
    "win": true
   },
+  "02e642d4-79bb-4b6a-96ee-ea27790fc16e": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "corners",
+   "opp": "Turbo Bush Campers",
+   "oppId": "b2981f3c-2006-4307-b745-45086626336b",
+   "time": "2026-10-20T22:20:11.555Z",
+   "win": false
+  },
   "03ea9a96-e109-4418-9614-617e51d0e37d": {
    "kind": "ranked",
    "live": 1,
@@ -117,6 +126,24 @@
    "time": "2026-10-20T21:10:08.566Z",
    "win": false
   },
+  "0efd9c50-4d26-493a-a99a-282fac0eba6c": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "split",
+   "opp": "What Are We Doing",
+   "oppId": "1a73e547-36f0-42df-aba5-698de2d22685",
+   "time": "2026-10-20T22:10:10.068Z",
+   "win": true
+  },
+  "1133fd03-7974-4468-9408-1a601df6a0f9": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "lanes",
+   "opp": "SilverBullet",
+   "oppId": "58e98a11-6404-4f00-83f2-3943c3b72e94",
+   "time": "2026-10-20T21:30:09.967Z",
+   "win": false
+  },
   "1219fff9-e90b-41be-b152-24ac41087fd1": {
    "kind": "ranked",
    "live": null,
@@ -133,6 +160,15 @@
    "opp": "Mousa",
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
    "time": "2026-10-20T18:00:13.680Z",
+   "win": false
+  },
+  "126cb21d-3120-42be-a2a4-f3689bec92ed": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "contest",
+   "opp": "vc?",
+   "oppId": "910ccbab-531b-4efa-a223-0335a686ad83",
+   "time": "2026-10-20T21:50:14.541Z",
    "win": false
   },
   "16259795-a167-46e8-976b-fda7458a70b2": {
@@ -180,6 +216,15 @@
    "time": "2026-10-20T15:40:12.934Z",
    "win": false
   },
+  "1e1c34ae-fefe-472d-92d8-f93a7e5910b9": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "islands",
+   "opp": "vc?",
+   "oppId": "910ccbab-531b-4efa-a223-0335a686ad83",
+   "time": "2026-10-20T21:50:14.541Z",
+   "win": true
+  },
   "1e4591f8-a787-4186-bf23-98dcd8f0c220": {
    "kind": "ranked",
    "live": 1,
@@ -207,6 +252,15 @@
    "time": "2026-10-20T19:40:10.999Z",
    "win": true
   },
+  "217acaf2-759b-42be-9991-fcc2ebcf94c8": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "packs",
+   "opp": "What Are We Doing",
+   "oppId": "1a73e547-36f0-42df-aba5-698de2d22685",
+   "time": "2026-10-20T22:10:10.068Z",
+   "win": true
+  },
   "2239da77-2fe5-4e4f-8ff8-58b2b31c9a21": {
    "kind": "ranked",
    "live": 1,
@@ -224,6 +278,15 @@
    "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
    "time": "2026-10-20T18:10:10.514Z",
    "win": false
+  },
+  "2352a73c-1986-429d-969e-216225aaddd3": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "boss-battle",
+   "opp": "B-Team",
+   "oppId": "e39c3d57-1813-4a18-a7e7-2b1df6bb3594",
+   "time": "2026-10-20T22:00:11.532Z",
+   "win": true
   },
   "23a318f0-b34f-48e3-a3bd-220f03523f28": {
    "kind": "ranked",
@@ -333,6 +396,15 @@
    "time": "2026-10-20T20:20:12.929Z",
    "win": false
   },
+  "2d2668f0-940b-4838-8a6b-f829100e6fee": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "expanse",
+   "opp": "vc?",
+   "oppId": "910ccbab-531b-4efa-a223-0335a686ad83",
+   "time": "2026-10-20T21:50:14.541Z",
+   "win": true
+  },
   "2ee21475-09aa-4428-85d7-d3c76a33a247": {
    "kind": "ranked",
    "live": 1,
@@ -396,6 +468,15 @@
    "time": "2026-10-20T17:40:07.590Z",
    "win": true
   },
+  "35fc7014-ee3b-4d22-adb3-1595794d7499": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "corners",
+   "opp": "B-Team",
+   "oppId": "e39c3d57-1813-4a18-a7e7-2b1df6bb3594",
+   "time": "2026-10-20T22:00:11.533Z",
+   "win": true
+  },
   "366cbc7b-ca53-4aa2-bc38-f649a9b3afad": {
    "kind": "ranked",
    "live": null,
@@ -403,6 +484,15 @@
    "opp": "Stubborn Altar Keepers",
    "oppId": "625bb51a-8d9e-4035-a16e-ce4eea8eb739",
    "time": "2026-10-20T17:40:07.590Z",
+   "win": true
+  },
+  "3699a292-8f4f-4b05-8f92-0f9c5b3d4e84": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "islands",
+   "opp": "Turbo Bush Campers",
+   "oppId": "b2981f3c-2006-4307-b745-45086626336b",
+   "time": "2026-10-20T22:20:11.556Z",
    "win": true
   },
   "38fce8a0-c8bc-4475-b20a-c33f06c977c4": {
@@ -467,6 +557,15 @@
    "oppId": "dba8d35f-fd1d-432d-8ba5-9f076cb3dcac",
    "time": "2026-10-20T20:40:10.182Z",
    "win": true
+  },
+  "3df226d5-aae1-4dff-8a70-4281425260dd": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "starfish",
+   "opp": "SilverBullet",
+   "oppId": "58e98a11-6404-4f00-83f2-3943c3b72e94",
+   "time": "2026-10-20T21:30:09.967Z",
+   "win": false
   },
   "3e73e89f-7896-42fe-8bc3-8f86a4afe51f": {
    "kind": "ranked",
@@ -547,6 +646,15 @@
    "opp": "DeepSleep",
    "oppId": "c14b952b-899c-4f25-a4f8-d3a4b06cbf9a",
    "time": "2026-10-20T20:10:09.725Z",
+   "win": false
+  },
+  "4e0718f5-690b-4790-8d6d-a44c05cad10a": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "fracture",
+   "opp": "B-Team",
+   "oppId": "e39c3d57-1813-4a18-a7e7-2b1df6bb3594",
+   "time": "2026-10-20T22:00:11.532Z",
    "win": false
   },
   "4e5ace8e-7ae7-478b-8a06-6c0ca7da99b0": {
@@ -637,6 +745,15 @@
    "opp": "DeepSleep",
    "oppId": "c14b952b-899c-4f25-a4f8-d3a4b06cbf9a",
    "time": "2026-10-20T20:10:09.725Z",
+   "win": true
+  },
+  "57d0a5f7-26b3-4b65-8900-5c3e37b1e19c": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "rows",
+   "opp": "Rogue Lock Pickers",
+   "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
+   "time": "2026-10-20T22:30:11.149Z",
    "win": true
   },
   "58e2915f-a159-4571-ba54-fb4d6702bc31": {
@@ -738,6 +855,15 @@
    "time": "2026-10-20T20:20:12.928Z",
    "win": false
   },
+  "6624bfda-b0e1-44c2-a11b-82d724e37231": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "ambush",
+   "opp": "Rogue Lock Pickers",
+   "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
+   "time": "2026-10-20T22:30:11.149Z",
+   "win": true
+  },
   "67af3823-022b-46b9-a319-ea3e9e8eed46": {
    "kind": "ranked",
    "live": null,
@@ -810,6 +936,24 @@
    "time": "2026-10-20T17:10:06.134Z",
    "win": false
   },
+  "6e93c353-39db-4597-bdac-7018eec5a482": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "ambush",
+   "opp": "SilverBullet",
+   "oppId": "58e98a11-6404-4f00-83f2-3943c3b72e94",
+   "time": "2026-10-20T21:30:09.967Z",
+   "win": false
+  },
+  "6edf30b8-41f6-46b1-931e-94b50827b06e": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "expanse",
+   "opp": "What Are We Doing",
+   "oppId": "1a73e547-36f0-42df-aba5-698de2d22685",
+   "time": "2026-10-20T22:10:10.068Z",
+   "win": true
+  },
   "6ffde8ba-8893-4d9c-9ce4-6a83589ea844": {
    "kind": "ranked",
    "live": 1,
@@ -864,6 +1008,15 @@
    "time": "2026-10-20T16:30:26.059Z",
    "win": false
   },
+  "740dfee0-a0e2-4040-98f6-3b40d11c4f71": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "concentrated-wealth",
+   "opp": "B-Team",
+   "oppId": "e39c3d57-1813-4a18-a7e7-2b1df6bb3594",
+   "time": "2026-10-20T22:00:11.532Z",
+   "win": false
+  },
   "745b5ef9-57e1-4d36-ad4f-5da7b6d0ccae": {
    "kind": "ranked",
    "live": 1,
@@ -891,6 +1044,15 @@
    "time": "2026-10-20T20:00:10.344Z",
    "win": false
   },
+  "7a5c7bb4-a560-4d41-a204-400e9338a377": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "eight",
+   "opp": "Turbo Bush Campers",
+   "oppId": "b2981f3c-2006-4307-b745-45086626336b",
+   "time": "2026-10-20T22:20:11.555Z",
+   "win": true
+  },
   "7aa60547-bd36-48cd-abd9-bee76fa40d36": {
    "kind": "ranked",
    "live": 1,
@@ -900,6 +1062,15 @@
    "time": "2026-10-20T19:20:09.080Z",
    "win": true
   },
+  "7af2b4a9-0ffe-4d40-889d-a03b4a845b4d": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "gold-rush",
+   "opp": "Turbo Bush Campers",
+   "oppId": "b2981f3c-2006-4307-b745-45086626336b",
+   "time": "2026-10-20T22:20:11.555Z",
+   "win": false
+  },
   "7afa105d-5901-46f0-aa68-4021501d0df8": {
    "kind": "ranked",
    "live": null,
@@ -907,6 +1078,15 @@
    "opp": "Mousa",
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
    "time": "2026-10-20T16:00:07.664Z",
+   "win": false
+  },
+  "7b7243d3-64bd-4c3c-81cb-c7ea9f861d45": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "packs",
+   "opp": "vc?",
+   "oppId": "910ccbab-531b-4efa-a223-0335a686ad83",
+   "time": "2026-10-20T21:50:14.541Z",
    "win": false
   },
   "7cb76357-8c00-461c-8e41-bef6791229c3": {
@@ -926,6 +1106,15 @@
    "oppId": "e89db5d4-c0a7-43eb-9d6d-23732bae07a5",
    "time": "2026-10-20T16:40:04.457Z",
    "win": true
+  },
+  "7ed0c68a-6bda-4e38-9508-fd3557413ecb": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "contest",
+   "opp": "SilverBullet",
+   "oppId": "58e98a11-6404-4f00-83f2-3943c3b72e94",
+   "time": "2026-10-20T21:30:09.967Z",
+   "win": false
   },
   "80ae5361-dfd6-4144-92ad-a71268b3588c": {
    "kind": "ranked",
@@ -1071,6 +1260,15 @@
    "time": "2026-10-20T17:00:08.371Z",
    "win": false
   },
+  "98370cfa-e25f-40a6-8afc-ce928a452fe0": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "rows",
+   "opp": "Turbo Bush Campers",
+   "oppId": "b2981f3c-2006-4307-b745-45086626336b",
+   "time": "2026-10-20T22:20:11.555Z",
+   "win": false
+  },
   "9872a596-2d12-4e55-a208-a246e060ad63": {
    "kind": "ranked",
    "live": null,
@@ -1079,6 +1277,15 @@
    "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
    "time": "2026-10-20T17:10:06.134Z",
    "win": false
+  },
+  "9968c19b-1275-44d5-8b3b-cb7c246e601f": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "ambush",
+   "opp": "vc?",
+   "oppId": "910ccbab-531b-4efa-a223-0335a686ad83",
+   "time": "2026-10-20T21:50:14.541Z",
+   "win": true
   },
   "9b13c5fa-8744-4070-b1b5-e8ec9312f973": {
    "kind": "ranked",
@@ -1269,6 +1476,15 @@
    "time": "2026-10-20T19:10:09.463Z",
    "win": false
   },
+  "b19320ce-cb61-45d6-9f85-e5806c8871c5": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "split",
+   "opp": "B-Team",
+   "oppId": "e39c3d57-1813-4a18-a7e7-2b1df6bb3594",
+   "time": "2026-10-20T22:00:11.532Z",
+   "win": true
+  },
   "b20d372d-fd85-41ac-a265-a561f5b136b6": {
    "kind": "ranked",
    "live": 1,
@@ -1305,6 +1521,15 @@
    "time": "2026-10-20T20:30:13.466Z",
    "win": false
   },
+  "b52309db-2a94-4e41-839b-43f4ecfbec5c": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "split",
+   "opp": "SilverBullet",
+   "oppId": "58e98a11-6404-4f00-83f2-3943c3b72e94",
+   "time": "2026-10-20T21:30:09.966Z",
+   "win": false
+  },
   "b65eddd7-d9a0-4522-8af9-dcd65ac98a52": {
    "kind": "ranked",
    "live": 1,
@@ -1313,6 +1538,15 @@
    "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
    "time": "2026-10-20T19:40:10.999Z",
    "win": true
+  },
+  "b7be61b6-cdf0-49b5-b0e4-efc49e72011b": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "gold-rush",
+   "opp": "Rogue Lock Pickers",
+   "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
+   "time": "2026-10-20T22:30:11.149Z",
+   "win": false
   },
   "b7d44330-f4f0-4423-a1d5-5b4cdaff8fca": {
    "kind": "ranked",
@@ -1404,6 +1638,15 @@
    "time": "2026-10-20T17:40:07.589Z",
    "win": true
   },
+  "c9e3da89-b930-4ce9-8682-468924707653": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "concentrated-wealth",
+   "opp": "Rogue Lock Pickers",
+   "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
+   "time": "2026-10-20T22:30:11.149Z",
+   "win": true
+  },
   "cb4dbf23-7bcf-48e2-b01f-5ec56cf7654b": {
    "kind": "ranked",
    "live": null,
@@ -1412,6 +1655,15 @@
    "oppId": "0e2abba9-e657-4025-a4e6-a1eed7c5dea0",
    "time": "2026-10-20T16:20:07.815Z",
    "win": true
+  },
+  "ce9ca75f-ffc9-4866-a95d-1d60a7f2123b": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "fracture",
+   "opp": "What Are We Doing",
+   "oppId": "1a73e547-36f0-42df-aba5-698de2d22685",
+   "time": "2026-10-20T22:10:10.068Z",
+   "win": false
   },
   "cf48ace7-8c5e-4eb8-b40c-a934120ac0a9": {
    "kind": "ranked",
@@ -1465,6 +1717,15 @@
    "opp": "WhatIsQuantTrading??????",
    "oppId": "d88df6e3-53c7-44ed-874f-67f3caa0578c",
    "time": "2026-10-20T18:50:08.433Z",
+   "win": true
+  },
+  "d696c36c-2439-45ea-809a-8127b5e1983b": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "shortcut",
+   "opp": "Rogue Lock Pickers",
+   "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
+   "time": "2026-10-20T22:30:11.149Z",
    "win": true
   },
   "d8c9d920-7db9-4533-a673-d35849695e2d": {
@@ -1726,6 +1987,15 @@
    "opp": "MicroStella",
    "oppId": "f0415fa5-b2aa-4958-a47a-4422f74d9ede",
    "time": "2026-10-20T17:30:07.064Z",
+   "win": true
+  },
+  "f1482175-30a6-4209-b915-0dd35201689e": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "starvation",
+   "opp": "What Are We Doing",
+   "oppId": "1a73e547-36f0-42df-aba5-698de2d22685",
+   "time": "2026-10-20T22:10:10.067Z",
    "win": true
   },
   "f3fa1011-999d-4ec5-b282-5cc020291c16": {
@@ -3556,6 +3826,239 @@
    "oppId": "dc24ee25-0f21-4353-8ebf-1ce5a82e22bb",
    "status": "open",
    "time": "2026-10-20T21:10:08.566Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 2,
+    "Unknown entity kind (2)": 24
+   },
+   "deaths_them": 14,
+   "deaths_us": 26,
+   "gems_them": "660",
+   "gems_us": "431",
+   "id": "b7be61b6-cdf0-49b5-b0e4-efc49e72011b",
+   "map": "gold-rush",
+   "opp": "Rogue Lock Pickers",
+   "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
+   "status": "open",
+   "time": "2026-10-20T22:30:11.149Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 6
+   },
+   "deaths_them": 2,
+   "deaths_us": 6,
+   "gems_them": "1003",
+   "gems_us": "808",
+   "id": "98370cfa-e25f-40a6-8afc-ce928a452fe0",
+   "map": "rows",
+   "opp": "Turbo Bush Campers",
+   "oppId": "b2981f3c-2006-4307-b745-45086626336b",
+   "status": "open",
+   "time": "2026-10-20T22:20:11.555Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 3,
+    "Unknown entity kind (2)": 26
+   },
+   "deaths_them": 36,
+   "deaths_us": 29,
+   "gems_them": "726",
+   "gems_us": "332",
+   "id": "7af2b4a9-0ffe-4d40-889d-a03b4a845b4d",
+   "map": "gold-rush",
+   "opp": "Turbo Bush Campers",
+   "oppId": "b2981f3c-2006-4307-b745-45086626336b",
+   "status": "open",
+   "time": "2026-10-20T22:20:11.555Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 1,
+    "Unknown entity kind (2)": 4
+   },
+   "deaths_them": 37,
+   "deaths_us": 5,
+   "gems_them": "1010",
+   "gems_us": "907",
+   "id": "02e642d4-79bb-4b6a-96ee-ea27790fc16e",
+   "map": "corners",
+   "opp": "Turbo Bush Campers",
+   "oppId": "b2981f3c-2006-4307-b745-45086626336b",
+   "status": "open",
+   "time": "2026-10-20T22:20:11.555Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (2)": 35
+   },
+   "deaths_them": 26,
+   "deaths_us": 35,
+   "gems_them": "781",
+   "gems_us": "109",
+   "id": "ce9ca75f-ffc9-4866-a95d-1d60a7f2123b",
+   "map": "fracture",
+   "opp": "What Are We Doing",
+   "oppId": "1a73e547-36f0-42df-aba5-698de2d22685",
+   "status": "open",
+   "time": "2026-10-20T22:10:10.068Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 10
+   },
+   "deaths_them": 10,
+   "deaths_us": 10,
+   "gems_them": "954",
+   "gems_us": "784",
+   "id": "740dfee0-a0e2-4040-98f6-3b40d11c4f71",
+   "map": "concentrated-wealth",
+   "opp": "B-Team",
+   "oppId": "e39c3d57-1813-4a18-a7e7-2b1df6bb3594",
+   "status": "open",
+   "time": "2026-10-20T22:00:11.532Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (2)": 43
+   },
+   "deaths_them": 8,
+   "deaths_us": 43,
+   "gems_them": "575",
+   "gems_us": "154",
+   "id": "4e0718f5-690b-4790-8d6d-a44c05cad10a",
+   "map": "fracture",
+   "opp": "B-Team",
+   "oppId": "e39c3d57-1813-4a18-a7e7-2b1df6bb3594",
+   "status": "open",
+   "time": "2026-10-20T22:00:11.532Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 30,
+    "Unknown entity kind (2)": 2
+   },
+   "deaths_them": 16,
+   "deaths_us": 32,
+   "gems_them": "1004",
+   "gems_us": "640",
+   "id": "7b7243d3-64bd-4c3c-81cb-c7ea9f861d45",
+   "map": "packs",
+   "opp": "vc?",
+   "oppId": "910ccbab-531b-4efa-a223-0335a686ad83",
+   "status": "open",
+   "time": "2026-10-20T21:50:14.541Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 43,
+    "Unknown entity kind (2)": 18
+   },
+   "deaths_them": 23,
+   "deaths_us": 61,
+   "gems_them": "0",
+   "gems_us": "0",
+   "id": "126cb21d-3120-42be-a2a4-f3689bec92ed",
+   "map": "contest",
+   "opp": "vc?",
+   "oppId": "910ccbab-531b-4efa-a223-0335a686ad83",
+   "status": "open",
+   "time": "2026-10-20T21:50:14.541Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (2)": 9
+   },
+   "deaths_them": 13,
+   "deaths_us": 9,
+   "gems_them": "1036",
+   "gems_us": "986",
+   "id": "6e93c353-39db-4597-bdac-7018eec5a482",
+   "map": "ambush",
+   "opp": "SilverBullet",
+   "oppId": "58e98a11-6404-4f00-83f2-3943c3b72e94",
+   "status": "open",
+   "time": "2026-10-20T21:30:09.967Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 5,
+    "Unknown entity kind (2)": 9
+   },
+   "deaths_them": 9,
+   "deaths_us": 14,
+   "gems_them": "1006",
+   "gems_us": "489",
+   "id": "1133fd03-7974-4468-9408-1a601df6a0f9",
+   "map": "lanes",
+   "opp": "SilverBullet",
+   "oppId": "58e98a11-6404-4f00-83f2-3943c3b72e94",
+   "status": "open",
+   "time": "2026-10-20T21:30:09.967Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 24,
+    "Unknown entity kind (2)": 45
+   },
+   "deaths_them": 39,
+   "deaths_us": 69,
+   "gems_them": "1049",
+   "gems_us": "288",
+   "id": "3df226d5-aae1-4dff-8a70-4281425260dd",
+   "map": "starfish",
+   "opp": "SilverBullet",
+   "oppId": "58e98a11-6404-4f00-83f2-3943c3b72e94",
+   "status": "open",
+   "time": "2026-10-20T21:30:09.967Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 49,
+    "Unknown entity kind (2)": 21
+   },
+   "deaths_them": 40,
+   "deaths_us": 70,
+   "gems_them": "0",
+   "gems_us": "0",
+   "id": "7ed0c68a-6bda-4e38-9508-fd3557413ecb",
+   "map": "contest",
+   "opp": "SilverBullet",
+   "oppId": "58e98a11-6404-4f00-83f2-3943c3b72e94",
+   "status": "open",
+   "time": "2026-10-20T21:30:09.967Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 13,
+    "Unknown entity kind (2)": 18
+   },
+   "deaths_them": 24,
+   "deaths_us": 31,
+   "gems_them": "1033",
+   "gems_us": "506",
+   "id": "b52309db-2a94-4e41-839b-43f4ecfbec5c",
+   "map": "split",
+   "opp": "SilverBullet",
+   "oppId": "58e98a11-6404-4f00-83f2-3943c3b72e94",
+   "status": "open",
+   "time": "2026-10-20T21:30:09.966Z",
    "tries_at": 0
   }
  ],
