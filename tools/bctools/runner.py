@@ -61,7 +61,24 @@ def _env() -> dict:
     return env
 
 
-def build(bot: str, release: bool = False) -> None:
+def needs_build(bot: str, release: bool = False) -> bool:
+    mode = "release" if release else "debug"
+    wasm = bot_dir(bot) / ".cambc" / f"build-{mode}" / "wasm32-wasip1" / mode / "bot-injected.wasm"
+    if not wasm.exists():
+        return True
+    src = bot_dir(bot) / "src"
+    if not src.exists():
+        return False
+    w_mtime = wasm.stat().st_mtime
+    for p in src.rglob("*"):
+        if p.is_file() and p.stat().st_mtime > w_mtime:
+            return True
+    return False
+
+
+def build(bot: str, release: bool = False, force: bool = False) -> None:
+    if not force and not needs_build(bot, release):
+        return
     args = [str(CAMBC), "build", str(bot_dir(bot))]
     if release:
         args.append("--release")
