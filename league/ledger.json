@@ -234,6 +234,15 @@
    "time": "2026-10-20T15:32:13.244Z",
    "win": true
   },
+  "28605a72-2d90-4b10-ba3b-3b8a5b43566b": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "broken-curve",
+   "opp": "Lone Oski",
+   "oppId": "554677ee-3b56-4fb8-a5df-28b476bfa8c1",
+   "time": "2026-10-20T20:20:12.928Z",
+   "win": true
+  },
   "286a8e3e-12d6-446d-a91a-c085b52cd8d4": {
    "kind": "ranked",
    "live": null,
@@ -259,6 +268,24 @@
    "opp": "Patient Stunners",
    "oppId": "3edd1441-9f24-4e2c-9645-d8f1e489a2c0",
    "time": "2026-10-20T15:20:09.962Z",
+   "win": false
+  },
+  "2a655d6d-2a85-4270-b23d-722d3279786f": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "gold-rush",
+   "opp": "Lone Oski",
+   "oppId": "554677ee-3b56-4fb8-a5df-28b476bfa8c1",
+   "time": "2026-10-20T20:20:12.929Z",
+   "win": false
+  },
+  "2f2601d3-f379-4598-9433-f28c5214d521": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "gold-rush",
+   "opp": "DeepSleep",
+   "oppId": "c14b952b-899c-4f25-a4f8-d3a4b06cbf9a",
+   "time": "2026-10-20T20:10:09.725Z",
    "win": false
   },
   "31140d2c-0f7f-431b-947e-b3a25bb67545": {
@@ -432,6 +459,15 @@
    "time": "2026-10-20T16:10:05.812Z",
    "win": true
   },
+  "4adde4ad-bad9-4536-acc0-e4da3207a7fd": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "lanes",
+   "opp": "DeepSleep",
+   "oppId": "c14b952b-899c-4f25-a4f8-d3a4b06cbf9a",
+   "time": "2026-10-20T20:10:09.725Z",
+   "win": false
+  },
   "4e5ace8e-7ae7-478b-8a06-6c0ca7da99b0": {
    "kind": "ranked",
    "live": null,
@@ -504,6 +540,15 @@
    "time": "2026-10-20T17:50:06.264Z",
    "win": false
   },
+  "5717e6c6-2895-4512-86b5-65a2e894c9f3": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "boss-battle",
+   "opp": "DeepSleep",
+   "oppId": "c14b952b-899c-4f25-a4f8-d3a4b06cbf9a",
+   "time": "2026-10-20T20:10:09.725Z",
+   "win": true
+  },
   "58e2915f-a159-4571-ba54-fb4d6702bc31": {
    "kind": "ranked",
    "live": null,
@@ -574,6 +619,15 @@
    "opp": "Stubborn Altar Keepers",
    "oppId": "625bb51a-8d9e-4035-a16e-ce4eea8eb739",
    "time": "2026-10-20T19:00:08.517Z",
+   "win": false
+  },
+  "652ed4c7-b412-46a5-b134-3cb80a193b91": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "starfish",
+   "opp": "Lone Oski",
+   "oppId": "554677ee-3b56-4fb8-a5df-28b476bfa8c1",
+   "time": "2026-10-20T20:20:12.928Z",
    "win": false
   },
   "67af3823-022b-46b9-a319-ea3e9e8eed46": {
@@ -747,6 +801,15 @@
    "time": "2026-10-20T18:00:13.679Z",
    "win": false
   },
+  "81bcf8c9-4e66-4e33-aaec-d93b001d31ce": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "corners",
+   "opp": "DeepSleep",
+   "oppId": "c14b952b-899c-4f25-a4f8-d3a4b06cbf9a",
+   "time": "2026-10-20T20:10:09.725Z",
+   "win": false
+  },
   "81ea0031-d591-423b-9829-38f91aa57c56": {
    "kind": "ranked",
    "live": 1,
@@ -791,6 +854,15 @@
    "oppId": "184a3866-fec8-4f0a-8221-6691e1abfdc2",
    "time": "2026-10-20T18:30:06.487Z",
    "win": false
+  },
+  "8b7bee2b-ed48-41ed-bc7e-72f8a6b81bca": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "rows",
+   "opp": "DeepSleep",
+   "oppId": "c14b952b-899c-4f25-a4f8-d3a4b06cbf9a",
+   "time": "2026-10-20T20:10:09.725Z",
+   "win": true
   },
   "8d902203-eb97-42b3-8fc0-e00eadf36319": {
    "kind": "ranked",
@@ -907,6 +979,15 @@
    "opp": "MicroStella",
    "oppId": "f0415fa5-b2aa-4958-a47a-4422f74d9ede",
    "time": "2026-10-20T17:30:07.063Z",
+   "win": false
+  },
+  "a4fc810c-facd-4296-998d-0d0133a45623": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "quadrants",
+   "opp": "Lone Oski",
+   "oppId": "554677ee-3b56-4fb8-a5df-28b476bfa8c1",
+   "time": "2026-10-20T20:20:12.929Z",
    "win": false
   },
   "a6292051-d12d-4066-8718-fad21da0fb6b": {
@@ -1303,6 +1384,15 @@
    "opp": "test_2580",
    "oppId": "e89db5d4-c0a7-43eb-9d6d-23732bae07a5",
    "time": "2026-10-20T16:40:04.457Z",
+   "win": true
+  },
+  "ebd29af3-1093-488f-8b33-f8215513f5fd": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "monolith",
+   "opp": "Lone Oski",
+   "oppId": "554677ee-3b56-4fb8-a5df-28b476bfa8c1",
+   "time": "2026-10-20T20:20:12.928Z",
    "win": true
   },
   "edcf9156-ed24-42b4-b0fd-3ddcac3988bf": {
@@ -2903,6 +2993,108 @@
    "status": "open",
    "time": "2026-10-20T20:00:10.344Z",
    "tries_at": 2
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 23,
+    "Unknown entity kind (2)": 30
+   },
+   "deaths_them": 52,
+   "deaths_us": 53,
+   "gems_them": "632",
+   "gems_us": "433",
+   "id": "2a655d6d-2a85-4270-b23d-722d3279786f",
+   "map": "gold-rush",
+   "opp": "Lone Oski",
+   "oppId": "554677ee-3b56-4fb8-a5df-28b476bfa8c1",
+   "status": "open",
+   "time": "2026-10-20T20:20:12.929Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 13,
+    "Unknown entity kind (2)": 6
+   },
+   "deaths_them": 21,
+   "deaths_us": 19,
+   "gems_them": "1018",
+   "gems_us": "780",
+   "hint": "map not in maps/ yet: the next map sync registers it",
+   "id": "a4fc810c-facd-4296-998d-0d0133a45623",
+   "map": "quadrants",
+   "opp": "Lone Oski",
+   "oppId": "554677ee-3b56-4fb8-a5df-28b476bfa8c1",
+   "status": "needs-human",
+   "time": "2026-10-20T20:20:12.929Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 51,
+    "Unknown entity kind (2)": 35
+   },
+   "deaths_them": 62,
+   "deaths_us": 86,
+   "gems_them": "935",
+   "gems_us": "299",
+   "hint": "map not in maps/ yet: the next map sync registers it",
+   "id": "652ed4c7-b412-46a5-b134-3cb80a193b91",
+   "map": "starfish",
+   "opp": "Lone Oski",
+   "oppId": "554677ee-3b56-4fb8-a5df-28b476bfa8c1",
+   "status": "needs-human",
+   "time": "2026-10-20T20:20:12.928Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (2)": 7
+   },
+   "deaths_them": 33,
+   "deaths_us": 7,
+   "gems_them": "1021",
+   "gems_us": "781",
+   "id": "81bcf8c9-4e66-4e33-aaec-d93b001d31ce",
+   "map": "corners",
+   "opp": "DeepSleep",
+   "oppId": "c14b952b-899c-4f25-a4f8-d3a4b06cbf9a",
+   "status": "open",
+   "time": "2026-10-20T20:10:09.725Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (2)": 7
+   },
+   "deaths_them": 21,
+   "deaths_us": 7,
+   "gems_them": "1019",
+   "gems_us": "752",
+   "id": "4adde4ad-bad9-4536-acc0-e4da3207a7fd",
+   "map": "lanes",
+   "opp": "DeepSleep",
+   "oppId": "c14b952b-899c-4f25-a4f8-d3a4b06cbf9a",
+   "status": "open",
+   "time": "2026-10-20T20:10:09.725Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 40,
+    "Unknown entity kind (2)": 18
+   },
+   "deaths_them": 17,
+   "deaths_us": 58,
+   "gems_them": "957",
+   "gems_us": "77",
+   "id": "2f2601d3-f379-4598-9433-f28c5214d521",
+   "map": "gold-rush",
+   "opp": "DeepSleep",
+   "oppId": "c14b952b-899c-4f25-a4f8-d3a4b06cbf9a",
+   "status": "open",
+   "time": "2026-10-20T20:10:09.725Z",
+   "tries_at": 1
   }
  ],
  "map_files": {
