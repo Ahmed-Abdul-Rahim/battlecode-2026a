@@ -3929,22 +3929,22 @@
  "seed": "coA-v2 (coevo lineage A, exp/v6-features)",
  "tries": {
   "ambush": {
-   "DESKTOP-QVEMEEE": 1
+   "DESKTOP-QVEMEEE": 2
   },
   "big-world": {
-   "DESKTOP-QVEMEEE": 1
+   "DESKTOP-QVEMEEE": 2
   },
   "boss-battle": {
-   "DESKTOP-QVEMEEE": 1
+   "DESKTOP-QVEMEEE": 2
   },
   "broken-curve": {
-   "DESKTOP-QVEMEEE": 1
+   "DESKTOP-QVEMEEE": 2
   },
   "collision": {
    "DESKTOP-QVEMEEE": 6
   },
   "concentrated-wealth": {
-   "DESKTOP-QVEMEEE": 1
+   "DESKTOP-QVEMEEE": 2
   },
   "corners": {
    "DESKTOP-QVEMEEE": 1
@@ -3970,8 +3970,20 @@
   "gold-rush": {
    "DESKTOP-QVEMEEE": 1
   },
+  "hooks": {
+   "DESKTOP-QVEMEEE": 1
+  },
+  "interlock": {
+   "DESKTOP-QVEMEEE": 1
+  },
   "islands": {
    "DESKTOP-QVEMEEE": 5
+  },
+  "lanes": {
+   "DESKTOP-QVEMEEE": 1
+  },
+  "monolith": {
+   "DESKTOP-QVEMEEE": 1
   }
  },
  "version": 5
