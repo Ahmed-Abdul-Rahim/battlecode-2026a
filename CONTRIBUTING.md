@@ -38,7 +38,7 @@ Read [docs/fuel-budget.md](docs/fuel-budget.md). Rules of thumb: no full-map loo
 
 - **Platform access (agreed by the team for the league loop):** the lead PC may read the platform
   (`cambc ladder`, `matches list/summary/download`). Uploads happen only through `harness/league.py`:
-  `--auto-submit` on the one lead PC (at most every 6 h, only after a ladder loss or a benchmark gain,
+  `--auto-submit` on the one lead PC (at most every 3 h, only after a ladder loss or a benchmark gain,
   auto-revert if the ladder win rate drops), or `scripts/train.ps1 submit` by a human. Never run
   `cambc submit` or `match-groups` by hand.
 - Don't hand-edit `league/*.json` or `bots/main/src/pack/pack.bin`: the daemons own them.
