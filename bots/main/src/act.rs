@@ -18,7 +18,9 @@ use crate::bc_path::{choose_step, DistanceOracle, Goal, Tier};
 use crate::sdk::vec2;
 use crate::telemetry;
 use crate::world::World;
-use cambc::{AbilityKind, AbilityTargetMask, Camp, Champion, ConsumableType, ItemType, Result};
+use cambc::{
+    AbilityKind, AbilityTargetMask, Camp, Champion, ChampionState, ConsumableType, ItemType, Result,
+};
 
 /// Fuel that must remain before the deep (A*) pathing tier may run.
 const DEEP_SEARCH_MIN_FUEL: u64 = 75_000;
@@ -139,6 +141,10 @@ pub struct Exec<'a> {
     pub deny_ground: bool,
     /// ALTAR_LOCK: keep a lock in the pocket and leave it on altars we tribute at.
     pub altar_lock: bool,
+    /// COMBAT_FSM 64|8: combo cast order against champions (Exec::combo_cast).
+    pub combo: bool,
+    /// COMBAT_FSM 64|16: melee champions dash into attack range.
+    pub dash_in: bool,
     /// TAVI_META: Tavi buys shards anywhere on the map (its passive).
     pub field_shop: bool,
     /// RECALL_SAFE: only start a recall nothing can reach before it completes.
@@ -540,6 +546,11 @@ impl Exec<'_> {
         if self.out.cast || !me.can_cast()? {
             return Ok(false);
         }
+        if let (true, Some(e)) = (self.combo, enemy) {
+            if let Some(done) = self.combo_cast(target_pos, e, will_move)? {
+                return Ok(done);
+            }
+        }
         let dist = self.my_pos.cheb(target_pos);
         for ability in me.abilities() {
             let Some(info) = ability.info()? else { continue };
@@ -581,6 +592,86 @@ impl Exec<'_> {
                 }
                 Ok(false) => {}
                 Err(e) => telemetry::error("cast", &e),
+            }
+        }
+        Ok(false)
+    }
+
+    /// Combo order against a champion: stun one that isn't stunned (the opener), burst one that
+    /// is (our stun or a teammate's), and never spend a stun on a stunned target (keep it to
+    /// chain when the first ends). `Some(cast)` when it decided, `None` = use the plain order.
+    fn combo_cast(
+        &mut self,
+        target_pos: Pos,
+        enemy: &Champion,
+        will_move: bool,
+    ) -> Result<Option<bool>> {
+        let me = self.me;
+        let dist = self.my_pos.cheb(target_pos);
+        let st = enemy.state().unwrap_or_default();
+        let channel =
+            ChampionState::RECALLING | ChampionState::SUBMITTING_GEMS | ChampionState::TELEPORTING;
+        let stunned = st.contains(ChampionState::ALIVE)
+            && !st.intersects(ChampionState::CAN_MOVE | ChampionState::CAN_ATTACK)
+            && !st.intersects(channel);
+        let (mut stun, mut burst) = (None, None);
+        for ability in me.abilities() {
+            let Some(info) = ability.info()? else { continue };
+            let meta = info.as_dyn();
+            let Ok(range) = meta.range() else { continue };
+            let blocked = meta.is_exclusive_with_movement() && (will_move || self.out.moved);
+            if dist as f32 > range || blocked || !ability.is_ready()? {
+                continue;
+            }
+            let foes = meta.valid_targets().contains(AbilityTargetMask::ENEMIES);
+            match meta.kind() {
+                AbilityKind::Cc if foes && stun.is_none() => stun = Some(ability),
+                AbilityKind::Damage if foes && burst.is_none() => burst = Some((ability, false)),
+                AbilityKind::AoeDamage if burst.is_none() => burst = Some((ability, true)),
+                _ => {}
+            }
+        }
+        let cast = match (stunned, stun, burst) {
+            (true, _, Some((b, aoe))) => {
+                if aoe {
+                    b.cast_at(vec2(target_pos))
+                } else {
+                    b.cast_on(enemy)
+                }
+            }
+            // Stunned and only the stun is ready: hold it for the chain.
+            (true, Some(_), None) => return Ok(Some(false)),
+            (false, Some(s), _) => s.cast_on(enemy),
+            _ => return Ok(None),
+        };
+        match cast {
+            Ok(true) => {
+                self.out.cast = true;
+                telemetry::event(0, "", if stunned { "combo_burst" } else { "combo_stun" }, 1);
+                Ok(Some(true))
+            }
+            Ok(false) => Ok(None),
+            Err(e) => {
+                telemetry::error("combo", &e);
+                Ok(None)
+            }
+        }
+    }
+
+    /// Dash onto the tile next to `target` (melee: close a 2-3 tile gap and still attack).
+    fn dash_to(&mut self, dest: Pos) -> Result<bool> {
+        if self.out.cast || self.out.moved || !self.me.can_cast()? {
+            return Ok(false);
+        }
+        for ability in self.me.abilities() {
+            if ability.is_dash() && ability.is_ready()? {
+                if let Ok(true) = ability.cast_at(vec2(dest)) {
+                    self.out.cast = true;
+                    self.out.moved = true;
+                    self.my_pos = dest;
+                    telemetry::event(0, "", "dash_in", 1);
+                    return Ok(true);
+                }
             }
         }
         Ok(false)
@@ -779,6 +870,15 @@ impl Exec<'_> {
             return Ok(());
         }
         self.cast_support()?;
+        // Melee dash-in: a 2-3 tile gap closes in one cast and we still attack this turn.
+        let gap = self.my_pos.cheb(enemy.pos);
+        if self.dash_in && !self.ranged() && (2..=3).contains(&gap) {
+            let dest = enemy.pos.step_towards(self.my_pos);
+            if self.dash_to(dest)? && self.in_attack_range(enemy.pos) {
+                self.attack_champion(&enemy.handle);
+                return Ok(());
+            }
+        }
         let will_move = !self.in_attack_range(enemy.pos);
         self.cast_offensive(enemy.pos, None, Some(&enemy.handle), will_move)?;
         if self.in_attack_range(enemy.pos) {

@@ -10,7 +10,7 @@ use crate::bc_brain::int8::Mlp;
 use crate::bc_brain::{gate, policy, router, shop, Expert, Intent, Mode};
 use crate::bc_core::belief::{Belief, GroupObs, GroupState, Sighting};
 use crate::bc_core::champion::{AttackType, ChampionKind, KitInfo};
-use crate::bc_core::combat::{CallIn, CallIntent, Directive, EnemyIn, Fsm, Inputs, Tuning};
+use crate::bc_core::combat::{CallIn, Directive, EnemyIn, Fsm, Inputs, Tuning};
 use crate::bc_core::fuel::{FuelGovernor, Stage};
 use crate::bc_core::ledger::{Family, Ledger, SelfObs, Stat, ITEM_TYPES};
 use crate::bc_core::memory::{knob, TeamChannel, ThetaMatch, TEAM_CHANNEL_BYTES};
@@ -114,6 +114,9 @@ const ASSIST_MIN_HP: f32 = 0.7;
 /// from at most this far.
 const HELP_DETOUR: i32 = 4;
 const HELP_ON_WAY_MAX: i32 = 10;
+/// COMBAT_FSM 64|2: finish an enemy at <= 50% a teammate reports within this many tiles.
+const KILL_ASSIST_RADIUS: i32 = 4;
+const KILL_ASSIST_MIN_HP: f32 = 0.4;
 /// FIGHT_V6: join fights from this health fraction.
 const ASSIST_MIN_HP_V6: f32 = 0.5;
 /// TAVI_META: Tavi's field build (shop.rs profile) and when it starts hunting.
@@ -295,7 +298,8 @@ impl Bot {
         let fsm_on = fsm_bits > 0;
         // Bit 64: hysteresis only (no states, calls or channel rules): the old mechanisms stay.
         let fsm_full = fsm_on && fsm_bits & 64 == 0;
-        chan.keep_calls = fsm_full;
+        // With hysteresis (64): 2 = finish hurt enemies teammates report nearby.
+        let kill_assist = fsm_bits & (64 | 2) == 64 | 2;
         let leader = chan.begin_turn(round, self.slot);
         let team_respawn = self.theta.knob(knob::TEAM_RESPAWN) > 0;
         if leader && !team_respawn {
@@ -317,24 +321,10 @@ impl Bot {
             // Dead champions still get a turn: shop.
             chan.set_claim(self.slot as usize, None);
             if fsm_full {
-                // Died mid-fight: tell anyone on the way not to come.
-                let dead = Inputs {
-                    round,
-                    alive: false,
-                    me: my_pos,
-                    hp_frac: 0.0,
-                    big_bag: false,
-                    enemy: None,
-                    threat_eta: None,
-                    hurt: false,
-                    survive_turns: 0.0,
-                    fight_threshold: 1.0,
-                    call: None,
-                    recall_ticks: 5,
-                };
-                if let (_, Some(call)) = self.fsm.step(&dead, &Tuning::default()) {
-                    chan.post_call(call, round, 1.0);
-                }
+                // Dead: back to ECONOMY, keep the fight history.
+                let hist = self.fsm.hist;
+                self.fsm = Fsm::default();
+                self.fsm.hist = hist;
                 self.fsm_seen = None;
             }
             let vis = Visible::default();
@@ -351,11 +341,7 @@ impl Bot {
             mark = self.charge(Stage::Observe, mark);
             // A teammate's sighting (vision isn't shared): treat it as a threat we can't see.
             let shared = chan.sighting(round);
-            // An escape or abort call marks an ally, not an enemy: no ghost there.
-            let ally_call = chan
-                .call(round)
-                .is_some_and(|(c, _)| matches!(c.intent, CallIntent::Escape | CallIntent::Abort));
-            if let Some((p, age)) = shared.filter(|_| !(fsm_full && ally_call)) {
+            if let Some((p, age)) = shared {
                 let unseen = vis.enemies.iter().all(|e| e.pos.cheb(p) > 2);
                 if unseen && vis.ghosts.len() < MAX_GHOSTS && p.cheb(my_pos) <= TEAM_SIGHTING_RADIUS
                 {
@@ -401,6 +387,12 @@ impl Bot {
             mark = self.charge(Stage::Precompute, mark);
 
             let mut ctx = self.context(round, my_pos, hp, max_hp, &vis, &chan, state, me)?;
+            // COMBAT_FSM 64|32: Marcella earns 2 gold per gem delivered, so small bags pay
+            // too and carry less risk: halve her delivery thresholds.
+            if fsm_bits & (64 | 32) == 64 | 32 && self.kind == ChampionKind::Marcella {
+                ctx.knobs.tribute_min /= 2;
+                ctx.knobs.tribute_max = (ctx.knobs.tribute_max / 2).max(ctx.knobs.tribute_min + 1);
+            }
             let hunting = self.hunting(&ctx);
             if hunting {
                 // All-in: no fight margin (the router then fights at advantage >= 1).
@@ -603,6 +595,20 @@ impl Bot {
                     };
                 }
             }
+            // Finish a hurt enemy (<= 50%) a teammate reports within KILL_ASSIST_RADIUS.
+            let calm = !matches!(mode, Mode::Override(_))
+                && vis.enemies.iter().all(|e| e.on_spawn || e.dist > 4)
+                && ctx.gems < router::BIG_BAG_GEMS;
+            if kill_assist && calm && ctx.hp_frac() > KILL_ASSIST_MIN_HP && !chan.enemy_tributing {
+                if let Some((p, age)) = chan.sighting(round) {
+                    let near = (1..=KILL_ASSIST_RADIUS).contains(&p.cheb(my_pos));
+                    if age <= 1 && near && chan.sighting_hp() <= 0.5 {
+                        intent = Intent::Engage(p);
+                        assist = Some(p);
+                        telemetry::event(round, champ_name(self.kind), "kill_assist", 1);
+                    }
+                }
+            }
             // Combat state machine: memory between turns (alert / engage / disengage / help).
             if fsm_on {
                 let (fixed, helping) = self.fsm_turn(
@@ -677,6 +683,8 @@ impl Bot {
                 exec.deny_tribute = deny;
                 exec.deny_ground = deny_ground;
                 exec.altar_lock = altar_lock;
+                exec.combo = fsm_bits & (64 | 8) == 64 | 8;
+                exec.dash_in = fsm_bits & (64 | 16) == 64 | 16;
                 exec.execute(intent)?;
                 exec_out = exec.out;
                 let total = before.saturating_sub(fuel());
@@ -806,22 +814,8 @@ impl Bot {
             if ctx.team.version > 0 { ctx.team.aggression } else { ctx.knobs.aggression };
         let margin =
             f32::from(ctx.knobs.fight_margin_pct) / 100.0 * (255.0 - f32::from(aggression)) / 127.0;
-        let spawn = self.world.spawn_hint;
-        let call = chan.call(round).map(|(c, age)| {
-            // Cover an escaping ally a few tiles along its way home.
-            let mut escort = c.pos;
-            for _ in 0..3 {
-                escort = escort.step_towards(spawn);
-            }
-            CallIn {
-                pos: c.pos,
-                intent: c.intent,
-                time_left: c.time_left,
-                age,
-                my_eta: c.pos.cheb(my_pos),
-                escort_point: escort,
-            }
-        });
+        // Team channel v3 carries no help calls: the full machine runs without them.
+        let call: Option<CallIn> = None;
         let inp = Inputs {
             round,
             alive: true,
@@ -841,9 +835,7 @@ impl Bot {
         if self.fsm.state != before {
             telemetry::event(round, champ_name(self.kind), self.fsm.state.name(), 1);
         }
-        if let Some(c) = out_call {
-            chan.post_call(c, round, enemy.map_or(1.0, |e| e.hp_frac));
-        }
+        let _ = (out_call, chan);
         // A channel (capture 5 turns, tribute 1 per 10 gems) must finish before anything arrives.
         let channel_turns = match intent {
             Intent::Capture(_) => 5,
@@ -991,6 +983,8 @@ impl Bot {
             deny_tribute: false,
             deny_ground: false,
             altar_lock: false,
+            combo: false,
+            dash_in: false,
             field_shop: false,
             recall_safe: false,
             recall_ticks: 5,
