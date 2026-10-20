@@ -243,6 +243,15 @@
    "time": "2026-10-20T17:40:07.590Z",
    "win": true
   },
+  "38fce8a0-c8bc-4475-b20a-c33f06c977c4": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "corridors",
+   "opp": "Stubborn Altar Keepers",
+   "oppId": "625bb51a-8d9e-4035-a16e-ce4eea8eb739",
+   "time": "2026-10-20T19:00:08.517Z",
+   "win": true
+  },
   "39fd6983-9ef2-4902-ba77-68ee0141f2b7": {
    "kind": "ranked",
    "live": 1,
@@ -430,6 +439,15 @@
    "opp": "Intercontinental Fish",
    "oppId": "1890540d-1ffc-4847-adbf-d0d08772f268",
    "time": "2026-10-20T17:51:26.764Z",
+   "win": false
+  },
+  "62312663-94c9-4fc2-a42d-cb9c5b3cc671": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "contest",
+   "opp": "Stubborn Altar Keepers",
+   "oppId": "625bb51a-8d9e-4035-a16e-ce4eea8eb739",
+   "time": "2026-10-20T19:00:08.517Z",
    "win": false
   },
   "67af3823-022b-46b9-a319-ea3e9e8eed46": {
@@ -684,6 +702,15 @@
    "time": "2026-10-20T15:20:09.962Z",
    "win": true
   },
+  "9d8ca6fa-c8e5-40d6-9283-ab6dee2069c4": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "big-world",
+   "opp": "Stubborn Altar Keepers",
+   "oppId": "625bb51a-8d9e-4035-a16e-ce4eea8eb739",
+   "time": "2026-10-20T19:00:08.517Z",
+   "win": true
+  },
   "9f9f807a-4769-4651-86ed-7547e5e5b51e": {
    "kind": "ranked",
    "live": null,
@@ -783,6 +810,15 @@
    "time": "2026-10-20T18:40:10.898Z",
    "win": true
   },
+  "b4539a7b-de75-41a2-a5d9-7aca0320a0aa": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "hooks",
+   "opp": "Stubborn Altar Keepers",
+   "oppId": "625bb51a-8d9e-4035-a16e-ce4eea8eb739",
+   "time": "2026-10-20T19:00:08.517Z",
+   "win": true
+  },
   "b7d44330-f4f0-4423-a1d5-5b4cdaff8fca": {
    "kind": "ranked",
    "live": null,
@@ -871,6 +907,15 @@
    "opp": "WhatIsQuantTrading??????",
    "oppId": "d88df6e3-53c7-44ed-874f-67f3caa0578c",
    "time": "2026-10-20T18:50:08.433Z",
+   "win": true
+  },
+  "d8c9d920-7db9-4533-a673-d35849695e2d": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "expanse",
+   "opp": "Stubborn Altar Keepers",
+   "oppId": "625bb51a-8d9e-4035-a16e-ce4eea8eb739",
+   "time": "2026-10-20T19:00:08.517Z",
    "win": true
   },
   "db7eee6d-913e-4387-b3f5-7d2204f52aef": {
@@ -2253,6 +2298,23 @@
    "status": "open",
    "time": "2026-10-20T18:50:08.433Z",
    "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 101,
+    "Unknown entity kind (2)": 8
+   },
+   "deaths_them": 53,
+   "deaths_us": 109,
+   "gems_them": "0",
+   "gems_us": "0",
+   "id": "62312663-94c9-4fc2-a42d-cb9c5b3cc671",
+   "map": "contest",
+   "opp": "Stubborn Altar Keepers",
+   "oppId": "625bb51a-8d9e-4035-a16e-ce4eea8eb739",
+   "status": "open",
+   "time": "2026-10-20T19:00:08.517Z",
+   "tries_at": 0
   }
  ],
  "map_files": {
