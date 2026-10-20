@@ -29,6 +29,7 @@ Per-PC scratch (sigma, PFSP win rates, try counts, logs, lock): runs/league/.
     python harness/league.py run --forever --lead --auto-submit    # ... and uploads (one PC only)
     python harness/league.py run --cycles 1 --no-push              # smoke test, no git
     python harness/league.py status | sync | maps | bench | review | submit
+    python harness/league.py replay [nyx] [lanes] [--evolved]     # watch the champion play
 """
 
 from __future__ import annotations
@@ -1490,6 +1491,46 @@ def cmd_bench(a: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_replay(a: argparse.Namespace) -> int:
+    """Watch the current champion play: vs a mimic (default: the team we do worst against) on a
+    map (default: our worst map vs that team), both sides, then open the replays in cambc view."""
+    ch, led = load_champion(), load_ledger()
+    apply_champion(ch)
+    faithful, evolved = ensure_mimics(led)
+    b = ch["bench"].get(str(ch["version"])) or {}
+    per_team = {t: v for t, v in (b.get("per_team") or {}).items() if f"mimic-{t}" in faithful}
+    slug = (a.opponent or "").removeprefix("mimic-").removeprefix("mimx-") or (
+        min(per_team, key=per_team.get)
+        if per_team
+        else (faithful[0].removeprefix("mimic-") if faithful else "")
+    )
+    opp = f"mimx-{slug}" if a.evolved or (a.opponent or "").startswith("mimx-") else f"mimic-{slug}"
+    if opp not in faithful + evolved:
+        print(f"no bot {opp}; have: {', '.join(faithful + evolved) or 'none (run sync on the lead first)'}")
+        return 1
+    maps = active_maps(led)
+    grid = {m: v for m, v in ((b.get("grid") or {}).get(slug) or {}).items() if m in maps}
+    mp = map_name(a.map) if a.map else (min(grid, key=grid.get) if grid else sorted(maps)[0])
+    if mp not in maps:
+        print(f"unknown map {mp}; active: {', '.join(sorted(maps))}")
+        return 1
+    out = SCRATCH / "replay" / f"{time.strftime('%Y%m%d-%H%M%S')}-{opp}-{mp}"
+    print(f"champion v{ch['version']} vs {opp} on {mp} (both sides)...")
+    replays = []
+    for r in runner.run_matches("main", opp, maps=[maps[mp]], out_dir=out, release=True):
+        res = "WIN " if r.winner == "main" else "LOSS" if r.winner else "DRAW"
+        side = "A" if r.bot_a == "main" else "B"
+        ours, theirs = (r.gems_a, r.gems_b) if side == "A" else (r.gems_b, r.gems_a)
+        print(f"  {res} as team {side}: gems {ours}-{theirs}, rounds {r.rounds}")
+        replays.append(r.replay)
+    for rp in replays[1:]:
+        print(f"  other side: cambc view {rp}")
+    if replays and not a.no_view:
+        print(f"opening the viewer: cambc view {replays[0]}  (stop it with Ctrl+C)")
+        subprocess.Popen([str(CAMBC), "view", replays[0]], cwd=ROOT)
+    return 0
+
+
 def cmd_review(_: argparse.Namespace) -> int:
     print(write_review(load_champion(), load_ledger()).relative_to(ROOT))
     return 0
@@ -1522,6 +1563,11 @@ def main(argv: list[str] | None = None) -> int:
         sp.add_argument("--no-push", dest="git", action="store_false", help="no git pull/commit/push")
     sub.choices["submit"].add_argument("--version", type=int, help="default: the current champion")
     sub.add_parser("status")
+    rp = sub.add_parser("replay", help="watch the champion vs a mimic in cambc view")
+    rp.add_argument("opponent", nargs="?", help="team slug, e.g. nyx (default: the one we do worst against)")
+    rp.add_argument("map", nargs="?", help="map, e.g. lanes (default: our worst map vs that team)")
+    rp.add_argument("--evolved", action="store_true", help="vs the evolved mimic (mimx-) instead")
+    rp.add_argument("--no-view", action="store_true", help="only print the results")
     sub.add_parser("review")
     a = p.parse_args(argv)
     return {
@@ -1531,6 +1577,7 @@ def main(argv: list[str] | None = None) -> int:
         "maps": cmd_maps,
         "bench": cmd_bench,
         "review": cmd_review,
+        "replay": cmd_replay,
         "submit": cmd_submit,
     }[a.cmd](a)
 

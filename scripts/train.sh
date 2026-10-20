@@ -31,8 +31,8 @@ case "$cmd" in
     tail -F runs/league/league.log ;;
   once)
     "$PY" -u harness/league.py run --cycles 1 "$@" ;;
-  status|review|sync|maps|bench|submit)
+  status|review|sync|maps|bench|submit|replay)
     "$PY" harness/league.py "$cmd" "$@" ;;
   *)
-    echo "usage: $0 start|stop|status|logs|review|sync|maps|bench|submit|once [args]"; exit 2 ;;
+    echo "usage: $0 start|stop|status|logs|review|sync|maps|bench|submit|replay|once [args]"; exit 2 ;;
 esac

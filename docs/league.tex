@@ -28,6 +28,40 @@
 \begin{document}
 \maketitle
 
+\section*{Quick start}
+Open PowerShell in the repo folder and activate the environment once per window:
+\begin{lstlisting}
+.\.venv\Scripts\Activate.ps1
+\end{lstlisting}
+
+\textbf{1. Start training} (runs in the background until you stop it):
+\begin{lstlisting}
+scripts\train.ps1 start                          # a normal PC
+scripts\train.ps1 start --lead                   # the ONE lead PC, no uploads
+scripts\train.ps1 start --lead --auto-submit     # the ONE lead PC, may upload
+scripts\train.ps1 stop                           # stop it
+\end{lstlisting}
+Only one PC in the team may use \f{-{}-lead}. \f{-{}-auto-submit} needs \f{-{}-lead} and a logged-in cambc
+(\f{cambc login}). The upload rules are in \S\ref{sec:release}.
+
+\textbf{2. See how the latest model is doing:}
+\begin{lstlisting}
+scripts\train.ps1 status        # version, win rate per top team, losses
+scripts\train.ps1 logs          # live log (Ctrl+C to leave)
+scripts\train.ps1 bench         # new test vs every mimic, every map
+scripts\train.ps1 review        # full report: league\review\<date>.md
+\end{lstlisting}
+
+\textbf{3. Watch it play} (opens the official viewer in your browser):
+\begin{lstlisting}
+scripts\train.ps1 replay                    # our worst team + map
+scripts\train.ps1 replay nyx lanes          # vs Nyx's mimic on lanes
+scripts\train.ps1 replay nyx lanes --evolved   # vs the harder Nyx
+\end{lstlisting}
+It plays two games (one from each side) and prints win/loss and gems. The viewer opens the first game, and the
+command for the second is printed. Stop the viewer with Ctrl+C. Real ladder games:
+\f{cambc matches download <matchId> -o x.repl26a}, then \f{cambc view x.repl26a}.
+
 \section{The idea in five sentences}
 \begin{enumerate}
 \item We copy the 10 best teams on the ladder into practice bots, called \textbf{mimics}.
@@ -57,46 +91,123 @@ A round takes about 4 minutes. Every third round, we train one of the \emph{mimi
 (see \S\ref{sec:opp}).
 
 \section{What the bot learns}\label{sec:learn}
-Most of the bot is hand-written Rust code: walking, fighting moves, shopping and so on. Training does
-\textbf{not} change that code. It only changes a list of \textbf{102 numbers} that the code reads when it
-makes decisions. Each map has its own copy of the 102 numbers, because a good choice on one map can
-be bad on another.
+\subsection*{Code vs numbers}
+Our bot is hand-written Rust code. The code decides \emph{how} to do things: find a path, attack,
+buy an item, deliver gems. Many of its decisions compare options with a formula, and those formulas
+contain numbers. Training never touches the code. It only changes these \textbf{102 numbers}.
 
-\begin{tabularx}{\linewidth}{@{}lrX@{}}
+Each map has its own set of 102 numbers. On a small map with camps close together, walking distance
+matters less than on a big map. On a map where fights happen early, retreating sooner may be better.
+A map we never trained on uses the default numbers in \f{bots/main/src/learned.rs}.
+
+The numbers come in five groups.
+
+\subsection*{1. W --- 18 dials on our own settings}
+While writing the bot we picked many settings by hand, such as ``retreat at 35\% HP''. Each W number
+\emph{multiplies} one such setting. 1.0 means ``as we wrote it'', 1.2 means 20\% more, and 0.8 means
+20\% less. For example, if the written retreat point is 35\% HP, a \f{retreat\_hp} of 1.2 makes the
+bot retreat at 42\%. Allowed range: 0.2 to 5.
+
+\begin{tabularx}{\linewidth}{@{}lX@{}}
 \toprule
-Group & How many & What the numbers control (in plain words)\\
+Dial & What turning it up does\\
 \midrule
-\textbf{W} -- multipliers & 18 & Turn hand-picked settings up or down (1.0 = as written by us):
-  how much we value gems vs gold in a camp; how much walking distance and clearing time count; how
-  strong a camp may be before we avoid it; whether to clear camps on the way somewhere; how big an
-  advantage we want before fighting; at what HP we retreat; how aggressive we are; how much gold
-  before going home to shop; how many gems we carry before delivering them (tribute min/max); at
-  what HP we go help a teammate.\\
-\textbf{TARGET} -- camp choice & 10 & Which camp to go for next. Looks at: gems and gold in the camp,
-  distance, time to clear it, time until it respawns, how many others want it, damage we would take,
-  how full our bag is, how many emblems we have, and the game round.\\
-\textbf{FIGHT} -- fight or not & 9 & Whether a fight looks good. Looks at: our HP, enemy HP, allies
-  near, enemies near, whether we or they are ranged, how full our bag is, distance to our spawn.\\
-\textbf{U} -- what to do now & 60 & A small scorer that chooses between 6 actions each turn: keep
-  going, step back, support an ally, fight, walk home, recall. It looks at 10 facts: our HP, damage
-  from camps, damage from enemies, enemies near, allies near, an ally in trouble, bag size,
-  distance to spawn, ranged enemy, plus a constant. $6\times10 = 60$ numbers.\\
-\textbf{X} -- extras & 4 & Whether Tavi re-buys stats, and how much fuel to keep spare before using
-  the scorer above (two slots are unused).\\
-\textbf{HOT} & 1 & Avoid places where we died before. Switched off (it made us worse).\\
+\f{gem}, \f{gold} & Camps with more gems / gold look more attractive.\\
+\f{dist}, \f{opening\_dist} & Walking distance counts more, so near camps win (\f{opening\_} only at game start).\\
+\f{clear} & Time needed to kill a camp counts more, so quick camps win.\\
+\f{strength\_discount} & Strong (dangerous) camps look less attractive.\\
+\f{reward}, \f{shared\_small} & Bonus for camps that drop items; how much a small camp shared with allies is worth.\\
+\f{hysteresis} & Stick with the current target instead of switching back and forth.\\
+\f{en\_detour}, \f{en\_clear} & Allow longer detours and harder camps when clearing ``on the way''.\\
+\f{fight\_margin} & Need a bigger advantage before starting a fight (more careful).\\
+\f{retreat\_hp} & Retreat earlier (at higher HP).\\
+\f{aggression} & Chase and attack enemies more.\\
+\f{recall\_gold} & Carry more gold before going home to shop.\\
+\f{tribute\_min}, \f{tribute\_max} & Carry more gems before walking to the altar to deliver them.\\
+\f{assist\_hp} & Need more HP before running to help a teammate.\\
 \bottomrule
 \end{tabularx}
 
-\textbf{Not learned (hand-written or fixed per map):} pathfinding, the draft (which champions we pick),
-emblem build order, the shopping list, and spell use. Changing these means a human edits the code
-in \f{crates/}. The list of 102 is in \f{harness/params.py}; their defaults are in \f{bots/main/src/learned.rs}.
+\subsection*{2. TARGET --- 10 weights for ``which camp next?''}
+Every time a champion picks its next camp, it gives each camp a score from the dials above. The TARGET
+weights then adjust that score with 10 facts about the camp:
+\begin{center}
+gems in it \textbullet{} gold in it \textbullet{} distance \textbullet{} time to clear \textbullet{} time until it respawns
+\textbullet{} how many others are going for it \textbullet{} damage we would take \textbullet{} how full our bag is
+\textbullet{} our emblem count \textbullet{} the game round
+\end{center}
+Each weight is a number from $-3$ to $+3$, and 0 means ``ignore this fact''. A positive weight on
+\emph{round} makes far camps more attractive late in the game. A negative weight on \emph{damage}
+avoids camps that hurt. The camp's score is multiplied by $e^{\,\text{sum of weight}\times\text{fact}}$.
 
-\textbf{How a change is judged.} A bot's score on a map is
-\[ \text{score} = \text{win rate} + 0.25\times\text{gem lead} - 0.01\times\text{deaths}. \]
-A changed copy is kept only if (a) its score is at least 0.04 higher than the current bot on the same
-games, (b) it beats the current bot head-to-head, (c) it also wins against 3 other opponents it
-wasn't trained on, and (d) it doesn't run out of fuel more often. Games are deterministic, so both
-bots are compared on exactly the same games.
+\subsection*{3. FIGHT --- 9 weights for ``is this fight good?''}
+Before fighting, the bot estimates its advantage. The FIGHT weights adjust that estimate with:
+our HP, enemy HP, allies nearby, enemies nearby, whether we are ranged, whether they are ranged, how
+full our bag is (a full bag means more to lose), and how far we are from our spawn, plus a constant.
+Range $-3$ to $+3$, and 0 = off. A negative weight on \emph{bag} makes a champion carrying many gems avoid fights.
+
+\subsection*{4. U --- 60 weights for ``what do I do right now?''}
+Every turn, a small decision maker scores 6 possible actions:
+\begin{center}
+keep going \textbullet{} step back \textbullet{} support an ally \textbullet{} fight \textbullet{} walk home \textbullet{} recall (teleport home)
+\end{center}
+using 10 facts: a constant, our HP, damage per turn from camps, damage per turn from enemies, enemies
+nearby, allies nearby, an ally in trouble, bag size, distance to spawn, and enemy ranged. Each action
+has one weight per fact, so $6 \times 10 = 60$ numbers. The highest score wins. All zeros means ``do
+what the hand-written rule says''. Range $-4$ to $+4$.
+
+\subsection*{5. X --- 4 extras, and HOT}
+\f{tavi\_respec} ($>0.5$ = Tavi re-buys its stats mid-game). \f{arbiter\_fuel\_floor}: the U decision
+maker only runs when at least this much CPU fuel (25k--60k) is left in the turn, so we never freeze.
+Two slots are unused. \textbf{HOT} (1 number) avoids places we died before; it is fixed at 0
+because it made us worse.
+
+\subsection*{Not learned}
+These are fixed code or fixed per-map plans, and only a human can change them:
+\begin{itemize}
+\item pathfinding, and how attacks and spells are aimed;
+\item the draft (which champions we pick);
+\item emblem build order, and the shopping list;
+\item which map features the bot can ``see''. If an important fact is missing from the lists above,
+  no amount of training can use it. That is the ``model can't express it'' case in \S6.
+\end{itemize}
+See all 102 names and their current defaults: \f{python harness\textbackslash params.py -{}-list}.
+
+\subsection*{How training changes the numbers}
+One round works on one map:
+\begin{enumerate}
+\item Take the current best 102 numbers for that map.
+\item Make 8 copies, each nudged by a small random amount. They come in 4 mirrored pairs: one copy
+  goes $+$ and its partner goes $-$, which makes the comparison fairer.
+\item Every copy and the current best play the same opponents (4 mimics + 1 anchor bot) on that map,
+  from both sides. That is about 90 games, run in parallel.
+\item If the best copy clearly wins (see below), it becomes the new best for that map.
+\item The nudge size adapts: after a success it grows by 15\% (explore further), after a failure it
+  shrinks by 15\% (fine-tune).
+\end{enumerate}
+
+\subsection*{How a copy is judged}
+Each bot gets a score over its games on that map:
+\[ \text{score} = \text{win rate} + 0.25 \times \text{gem lead} - 0.01 \times \text{average deaths} \]
+\emph{Gem lead} is $(\text{our gems} - \text{their gems}) / (\text{our gems} + \text{their gems})$, from $-1$ to $+1$. So a close
+loss still scores better than a crushing loss, and dying a lot costs a little.
+
+\textbf{Example.} The current bot wins 6 of 10 games (0.6), has an average gem lead of $+0.1$, and dies 5 times a game:
+$0.6 + 0.025 - 0.05 = 0.575$. A copy that wins 7 of 10 with lead $+0.2$ and 4 deaths scores
+$0.7 + 0.05 - 0.04 = 0.71$. That is 0.135 better, so it passes the first test.
+
+A copy replaces the current best only if \textbf{all four} hold:
+\begin{enumerate}
+\item[(a)] its score is at least \textbf{0.04} higher on the same games (small differences are luck);
+\item[(b)] it beats the current best \textbf{head-to-head} on that map (at least 50\%);
+\item[(c)] it also scores at least as well against \textbf{3 other opponents} that it wasn't trained against
+  (so it didn't just learn one opponent's habits);
+\item[(d)] it runs out of CPU fuel no more than twice as often (a frozen champion loses games).
+\end{enumerate}
+Then the new numbers are saved, a full test against every mimic on every map is run, and the result
+is pushed so all PCs use it. Games are deterministic: the same bots on the same map always play the
+same game. Any difference between two copies therefore comes from their numbers, not from luck in the
+game itself.
 
 \section{Who we train against}\label{sec:opp}
 \begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{3.6cm}X@{}}
@@ -115,7 +226,7 @@ bots are compared on exactly the same games.
 \end{tabularx}
 We pick opponents that beat us more often than ones we already beat.
 
-\section{When a new version goes on the ladder}
+\section{When a new version goes on the ladder}\label{sec:release}
 Only one PC, the \textbf{lead}, talks to the platform. If it runs with \f{-{}-auto-submit}, it uploads the
 newest trained version when \textbf{all} of these are true:
 \begin{itemize}
@@ -181,6 +292,7 @@ scripts\train.ps1 logs                          live log
 scripts\train.ps1 stop
 scripts\train.ps1 once --no-push                one round, no git (for testing)
 scripts\train.ps1 sync | maps | bench | review  run one lead step now
+scripts\train.ps1 replay [team] [map] [--evolved]   watch the latest model play
 scripts\train.ps1 submit                        upload by hand (agree with the team first)
 \end{lstlisting}
 \textbf{Look at games:}
