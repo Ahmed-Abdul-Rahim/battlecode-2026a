@@ -1,7 +1,7 @@
 {
  "build": {},
  "cadence": {
-  "bag": 43.6,
+  "bag": 44.8,
   "first_emblem": null,
   "shops_per_100r": null
  },
@@ -25,8 +25,8 @@
    6
   ]
  },
- "games": 50,
+ "games": 60,
  "opening": {},
  "team": "F\u00fcrFortnite",
- "win_rate": 0.82
+ "win_rate": 0.817
 }

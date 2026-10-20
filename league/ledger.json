@@ -1,5 +1,14 @@
 {
  "ladder": {
+  "00d6a4d3-a826-43b6-9b84-1b48cf2b3b46": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "lanes",
+   "opp": "777",
+   "oppId": "1158c8e5-3ab7-47da-9a7a-344e175243d0",
+   "time": "2026-10-20T21:00:10.928Z",
+   "win": true
+  },
   "01df3c09-ad4e-4a41-844c-fa0af33536e4": {
    "kind": "ranked",
    "live": null,
@@ -630,6 +639,15 @@
    "time": "2026-10-20T15:10:13.185Z",
    "win": false
   },
+  "5c975363-667f-4592-bd2c-8f0ac30276ee": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "pilgrimage",
+   "opp": "777",
+   "oppId": "1158c8e5-3ab7-47da-9a7a-344e175243d0",
+   "time": "2026-10-20T21:00:10.929Z",
+   "win": false
+  },
   "5e7c2860-45d1-4196-8641-42a13638f9bf": {
    "kind": "ranked",
    "live": 1,
@@ -782,6 +800,15 @@
    "oppId": "fd3a404c-954b-4628-a418-7a8e57fb3783",
    "time": "2026-10-20T15:10:13.185Z",
    "win": false
+  },
+  "72b0e9ba-e618-4ce4-b5c1-449f5f2383ef": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "big-world",
+   "opp": "777",
+   "oppId": "1158c8e5-3ab7-47da-9a7a-344e175243d0",
+   "time": "2026-10-20T21:00:10.929Z",
+   "win": true
   },
   "73919c99-adaf-4cb7-97b6-9f111c0d2582": {
    "kind": "ranked",
@@ -1260,6 +1287,15 @@
    "time": "2026-10-20T15:40:12.934Z",
    "win": true
   },
+  "c140b99c-5f35-4476-a685-937936d7627e": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "islands",
+   "opp": "777",
+   "oppId": "1158c8e5-3ab7-47da-9a7a-344e175243d0",
+   "time": "2026-10-20T21:00:10.929Z",
+   "win": true
+  },
   "c34b7546-1a3a-4c11-b480-224bccfca6fe": {
    "kind": "ranked",
    "live": 1,
@@ -1654,6 +1690,15 @@
    "opp": "Slough Reps",
    "oppId": "fd3a404c-954b-4628-a418-7a8e57fb3783",
    "time": "2026-10-20T17:50:06.264Z",
+   "win": true
+  },
+  "fd8f8c8c-2f52-4143-81f4-2db66cf002b0": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "split",
+   "opp": "777",
+   "oppId": "1158c8e5-3ab7-47da-9a7a-344e175243d0",
+   "time": "2026-10-20T21:00:10.929Z",
    "win": true
   },
   "feba7732-093a-4b12-b498-eb46741c5948": {
@@ -3304,6 +3349,22 @@
    "status": "open",
    "time": "2026-10-20T20:50:10.904Z",
    "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 39
+   },
+   "deaths_them": 21,
+   "deaths_us": 39,
+   "gems_them": "602",
+   "gems_us": "195",
+   "id": "5c975363-667f-4592-bd2c-8f0ac30276ee",
+   "map": "pilgrimage",
+   "opp": "777",
+   "oppId": "1158c8e5-3ab7-47da-9a7a-344e175243d0",
+   "status": "open",
+   "time": "2026-10-20T21:00:10.929Z",
+   "tries_at": 1
   }
  ],
  "map_files": {
@@ -3379,133 +3440,133 @@
  ],
  "pool": [
   {
-   "games": 90,
-   "macro_hash": "caead78c101b",
+   "games": 95,
+   "macro_hash": "2314f3321d3e",
    "name": "Intercontinental Fish",
-   "since": "2026-10-20T21:04:18Z",
+   "since": "2026-10-20T21:10:46Z",
    "slug": "intercontinental-fish",
    "static": false,
    "teamId": "1890540d-1ffc-4847-adbf-d0d08772f268",
    "why": "top1"
   },
   {
-   "games": 85,
-   "macro_hash": "69bb8add7bde",
+   "games": 95,
+   "macro_hash": "28e43bf1293c",
    "name": "Sponge(Albert and Bob)",
-   "since": "2026-10-20T20:56:49Z",
+   "since": "2026-10-20T21:11:05Z",
    "slug": "sponge-albert-and-bob",
-   "static": true,
+   "static": false,
    "teamId": "26824601-d225-427f-bd2d-ce8aa9faa392",
    "why": "top2"
   },
   {
-   "games": 85,
+   "games": 66,
+   "macro_hash": "ca509a906d73",
+   "name": ":3",
+   "since": "2026-10-20T21:11:16Z",
+   "slug": "3",
+   "static": false,
+   "teamId": "bbe481a7-4575-4826-9a3e-f81c28205de8",
+   "why": "top3"
+  },
+  {
+   "games": 90,
    "macro_hash": "a5b3bc344f0f",
    "name": "Nyx",
    "since": "2026-10-20T21:04:51Z",
    "slug": "nyx",
-   "static": false,
+   "static": true,
    "teamId": "6f7fd199-4115-4fe0-8752-525bd8ccad8d",
-   "why": "top3"
-  },
-  {
-   "games": 56,
-   "macro_hash": "a99cbbf931c9",
-   "name": ":3",
-   "since": "2026-10-20T21:05:08Z",
-   "slug": "3",
-   "static": false,
-   "teamId": "bbe481a7-4575-4826-9a3e-f81c28205de8",
    "why": "top4"
   },
   {
-   "games": 90,
-   "macro_hash": "47ed7a0f2d84",
+   "games": 95,
+   "macro_hash": "a3decf444670",
    "name": "Sneaky Bush Campers",
-   "since": "2026-10-20T21:05:26Z",
+   "since": "2026-10-20T21:11:40Z",
    "slug": "sneaky-bush-campers",
    "static": false,
    "teamId": "4d0fe2ae-015f-4365-9705-463ff71e4291",
    "why": "top5"
   },
   {
-   "games": 50,
-   "macro_hash": "ba1688397a49",
-   "name": "F\u00fcrFortnite",
-   "since": "2026-10-20T21:05:42Z",
-   "slug": "f-rfortnite",
-   "static": false,
-   "teamId": "fa706d6e-9f66-44b0-bd81-1ed3dad69a99",
-   "why": "top6"
-  },
-  {
-   "games": 55,
-   "macro_hash": "00bf05c1db77",
+   "games": 65,
+   "macro_hash": "c8595a44c811",
    "name": "EMPEROR Tung",
-   "since": "2026-10-20T21:05:59Z",
+   "since": "2026-10-20T21:11:58Z",
    "slug": "emperor-tung",
    "static": false,
    "teamId": "a1e82708-dfd3-4609-8b9a-69f652d12185",
+   "why": "top6"
+  },
+  {
+   "games": 60,
+   "macro_hash": "f3315ec080e6",
+   "name": "F\u00fcrFortnite",
+   "since": "2026-10-20T21:12:15Z",
+   "slug": "f-rfortnite",
+   "static": false,
+   "teamId": "fa706d6e-9f66-44b0-bd81-1ed3dad69a99",
    "why": "top7"
   },
   {
-   "games": 115,
-   "macro_hash": "5113f85e8303",
+   "games": 120,
+   "macro_hash": "9c789a89cceb",
    "name": "Trzy Kwaterki",
-   "since": "2026-10-20T21:06:16Z",
+   "since": "2026-10-20T21:12:21Z",
    "slug": "trzy-kwaterki",
    "static": false,
    "teamId": "36258abf-3fd0-4827-8fa5-2a217438cf6f",
    "why": "top8"
   },
   {
-   "games": 50,
-   "macro_hash": "5f0b9d703bbb",
+   "games": 55,
+   "macro_hash": "5c4d45817d2d",
    "name": "Tartarus",
-   "since": "2026-10-20T20:58:28Z",
+   "since": "2026-10-20T21:12:26Z",
    "slug": "tartarus",
-   "static": true,
+   "static": false,
    "teamId": "59f5706f-16db-4ae0-bb3f-deadb41cdc50",
    "why": "top9"
   },
   {
-   "games": 30,
-   "macro_hash": "7f8451b2bded",
-   "name": "Let's LARP again",
-   "since": "2026-10-20T21:06:33Z",
-   "slug": "let-s-larp-again",
+   "games": 80,
+   "macro_hash": "aa041c330ad1",
+   "name": "procless",
+   "since": "2026-10-20T21:12:32Z",
+   "slug": "procless",
    "static": false,
-   "teamId": "d2ef7d2c-be90-44e8-be4e-807bc580cc7c",
+   "teamId": "8df7e1cd-0d60-413b-9331-f5427ce9ca88",
    "why": "top10"
   },
   {
-   "games": 25,
-   "macro_hash": "053253834155",
+   "games": 12,
+   "macro_hash": "3e87e71608b6",
+   "name": "777",
+   "since": "2026-10-20T21:12:50Z",
+   "slug": "777",
+   "static": false,
+   "teamId": "1158c8e5-3ab7-47da-9a7a-344e175243d0",
+   "why": "loss"
+  },
+  {
+   "games": 35,
+   "macro_hash": "9dc61d644498",
    "name": "Kvantai",
-   "since": "2026-10-20T21:06:50Z",
+   "since": "2026-10-20T21:13:08Z",
    "slug": "kvantai",
    "static": false,
    "teamId": "0580c098-a7c9-46d7-b414-bf39c02c3dcc",
    "why": "loss"
   },
   {
-   "games": 20,
-   "macro_hash": "05f042788a9f",
+   "games": 25,
+   "macro_hash": "fb6508437981",
    "name": "eclipsed Sunlight",
-   "since": "2026-10-20T21:07:02Z",
+   "since": "2026-10-20T21:13:20Z",
    "slug": "eclipsed-sunlight",
    "static": false,
    "teamId": "dba8d35f-fd1d-432d-8ba5-9f076cb3dcac",
-   "why": "loss"
-  },
-  {
-   "games": 20,
-   "macro_hash": "d22e83b3bea8",
-   "name": "Patient Gem Thieves",
-   "since": "2026-10-20T21:07:13Z",
-   "slug": "patient-gem-thieves",
-   "static": false,
-   "teamId": "cfd44d0a-4d7b-42db-a1e6-e04ff397f391",
    "why": "loss"
   }
  ],
@@ -4120,6 +4181,81 @@
     }
    ],
    "time": "2026-10-20T21:03:55Z"
+  },
+  {
+   "teams": [
+    {
+     "name": "Intercontinental Fish",
+     "rank": 1,
+     "rating": 2289.1,
+     "slug": "intercontinental-fish",
+     "teamId": "1890540d-1ffc-4847-adbf-d0d08772f268"
+    },
+    {
+     "name": "Sponge(Albert and Bob)",
+     "rank": 2,
+     "rating": 2090.4,
+     "slug": "sponge-albert-and-bob",
+     "teamId": "26824601-d225-427f-bd2d-ce8aa9faa392"
+    },
+    {
+     "name": ":3",
+     "rank": 3,
+     "rating": 2076.5,
+     "slug": "3",
+     "teamId": "bbe481a7-4575-4826-9a3e-f81c28205de8"
+    },
+    {
+     "name": "Nyx",
+     "rank": 4,
+     "rating": 2071.5,
+     "slug": "nyx",
+     "teamId": "6f7fd199-4115-4fe0-8752-525bd8ccad8d"
+    },
+    {
+     "name": "Sneaky Bush Campers",
+     "rank": 5,
+     "rating": 2053.8,
+     "slug": "sneaky-bush-campers",
+     "teamId": "4d0fe2ae-015f-4365-9705-463ff71e4291"
+    },
+    {
+     "name": "EMPEROR Tung",
+     "rank": 6,
+     "rating": 2050.6,
+     "slug": "emperor-tung",
+     "teamId": "a1e82708-dfd3-4609-8b9a-69f652d12185"
+    },
+    {
+     "name": "F\u00fcrFortnite",
+     "rank": 7,
+     "rating": 2047.7,
+     "slug": "f-rfortnite",
+     "teamId": "fa706d6e-9f66-44b0-bd81-1ed3dad69a99"
+    },
+    {
+     "name": "Trzy Kwaterki",
+     "rank": 8,
+     "rating": 2018.1,
+     "slug": "trzy-kwaterki",
+     "teamId": "36258abf-3fd0-4827-8fa5-2a217438cf6f"
+    },
+    {
+     "name": "Tartarus",
+     "rank": 9,
+     "rating": 2009.4,
+     "slug": "tartarus",
+     "teamId": "59f5706f-16db-4ae0-bb3f-deadb41cdc50"
+    },
+    {
+     "name": "procless",
+     "rank": 10,
+     "rating": 1977.5,
+     "slug": "procless",
+     "teamId": "8df7e1cd-0d60-413b-9331-f5427ce9ca88"
+    }
+   ],
+   "time": "2026-10-20T21:10:33Z"
   }
  ]
 }

@@ -414,7 +414,7 @@
   ]
  },
  "cadence": {
-  "bag": 30.8,
+  "bag": 31.6,
   "first_emblem": 270,
   "shops_per_100r": 0.67
  },
@@ -438,7 +438,7 @@
    3
   ]
  },
- "games": 50,
+ "games": 55,
  "opening": {
   "broken-curve": [
    {
@@ -795,5 +795,5 @@
   ]
  },
  "team": "Tartarus",
- "win_rate": 0.56
+ "win_rate": 0.545
 }

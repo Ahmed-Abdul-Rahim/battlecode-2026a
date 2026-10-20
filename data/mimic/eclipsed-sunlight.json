@@ -1,7 +1,7 @@
 {
  "build": {},
  "cadence": {
-  "bag": 20.6,
+  "bag": 21.9,
   "first_emblem": null,
   "shops_per_100r": null
  },
@@ -25,8 +25,8 @@
    4
   ]
  },
- "games": 20,
+ "games": 25,
  "opening": {},
  "team": "eclipsed Sunlight",
- "win_rate": 0.15
+ "win_rate": 0.16
 }

@@ -1,32 +1,32 @@
 {
  "build": {},
  "cadence": {
-  "bag": 22.9,
+  "bag": 22.2,
   "first_emblem": null,
   "shops_per_100r": null
  },
  "draft": {
   "3": [
-   9,
-   10,
-   0
+   11,
+   4,
+   8
   ],
   "4": [
-   9,
-   10,
-   0,
-   1
+   11,
+   4,
+   8,
+   3
   ],
   "5": [
-   9,
-   10,
-   0,
-   1,
-   8
+   11,
+   4,
+   8,
+   3,
+   0
   ]
  },
- "games": 25,
+ "games": 35,
  "opening": {},
  "team": "Kvantai",
- "win_rate": 0.44
+ "win_rate": 0.543
 }
