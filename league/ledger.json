@@ -162,6 +162,15 @@
    "time": "2026-10-20T17:30:07.063Z",
    "win": false
   },
+  "20f9db92-3cd3-4fd9-b9a0-dd2e7eef7f56": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "expanse",
+   "opp": "Rogue Lock Pickers",
+   "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
+   "time": "2026-10-20T19:40:10.999Z",
+   "win": true
+  },
   "229095ae-e09b-4b26-9930-311a9aeb27a7": {
    "kind": "ranked",
    "live": 1,
@@ -405,6 +414,15 @@
    "time": "2026-10-20T16:30:26.059Z",
    "win": true
   },
+  "4f69f7c1-d901-45dd-87d9-a6937aed4617": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "islands",
+   "opp": "Rogue Lock Pickers",
+   "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
+   "time": "2026-10-20T19:40:10.999Z",
+   "win": false
+  },
   "50a9d760-9ae5-4fd9-8b00-658d5be3fe46": {
    "kind": "ranked",
    "live": 1,
@@ -439,6 +457,15 @@
    "opp": "Argon enjoyers",
    "oppId": "5d6858ca-2352-4585-af55-3d79b614f824",
    "time": "2026-10-20T18:20:10.476Z",
+   "win": true
+  },
+  "5565cbc5-4cc6-4483-8c80-df64713f02f1": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "big-world",
+   "opp": "Rogue Lock Pickers",
+   "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
+   "time": "2026-10-20T19:40:10.999Z",
    "win": true
   },
   "56467df2-ee7a-4b36-87ac-3223083b8280": {
@@ -918,6 +945,15 @@
    "time": "2026-10-20T19:00:08.517Z",
    "win": true
   },
+  "b65eddd7-d9a0-4522-8af9-dcd65ac98a52": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "rushbait-v2",
+   "opp": "Rogue Lock Pickers",
+   "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
+   "time": "2026-10-20T19:40:10.999Z",
+   "win": true
+  },
   "b7d44330-f4f0-4423-a1d5-5b4cdaff8fca": {
    "kind": "ranked",
    "live": null,
@@ -1170,6 +1206,15 @@
    "time": "2026-10-20T18:30:06.486Z",
    "win": false
   },
+  "e93c6319-750a-428a-894f-723faf5ccb4c": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "the-farm",
+   "opp": "Rogue Lock Pickers",
+   "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
+   "time": "2026-10-20T19:40:10.999Z",
+   "win": true
+  },
   "ea7a33e5-aad2-4bef-bd49-33ac3e87e1e5": {
    "kind": "ranked",
    "live": null,
@@ -1330,13 +1375,14 @@
    },
    "deaths_them": 43,
    "deaths_us": 62,
+   "fixed_in": 6,
    "gems_them": "1012",
    "gems_us": "374",
    "id": "73919c99-adaf-4cb7-97b6-9f111c0d2582",
    "map": "hooks",
    "opp": ":blauerdrache:",
    "oppId": "56492446-eca6-4557-9a40-559bd4c318dc",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-20T16:30:26.059Z",
    "tries_at": 0
   },
@@ -1843,13 +1889,14 @@
    },
    "deaths_them": 67,
    "deaths_us": 75,
+   "fixed_in": 6,
    "gems_them": "847",
    "gems_us": "253",
    "id": "23a318f0-b34f-48e3-a3bd-220f03523f28",
    "map": "hooks",
    "opp": "Crimson Bush Campers",
    "oppId": "2451bf9d-9782-4060-b8b4-fc2e7a69ef9a",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-20T16:50:05.756Z",
    "tries_at": 0
   },
@@ -2098,13 +2145,14 @@
    },
    "deaths_them": 8,
    "deaths_us": 57,
+   "fixed_in": 6,
    "gems_them": "1001",
    "gems_us": "0",
    "id": "feba7732-093a-4b12-b498-eb46741c5948",
    "map": "hooks",
    "opp": "Intercontinental Fish",
    "oppId": "1890540d-1ffc-4847-adbf-d0d08772f268",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-20T17:51:26.747Z",
    "tries_at": 0
   },
@@ -2285,13 +2333,14 @@
    },
    "deaths_them": 49,
    "deaths_us": 62,
+   "fixed_in": 6,
    "gems_them": "858",
    "gems_us": "198",
    "id": "e85ebfe5-18db-4d0f-bea0-aaf27a418570",
    "map": "hooks",
    "opp": "range rover",
    "oppId": "184a3866-fec8-4f0a-8221-6691e1abfdc2",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-20T18:30:06.486Z",
    "tries_at": 0
   },
@@ -2389,13 +2438,14 @@
    },
    "deaths_them": 39,
    "deaths_us": 70,
+   "fixed_in": 6,
    "gems_them": "638",
    "gems_us": "165",
    "id": "745b5ef9-57e1-4d36-ad4f-5da7b6d0ccae",
    "map": "hooks",
    "opp": "dominos",
    "oppId": "f437e066-15f3-4a27-8ec3-9687cb68696b",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-20T18:40:10.897Z",
    "tries_at": 0
   },
@@ -2605,6 +2655,23 @@
    "status": "open",
    "time": "2026-10-20T19:30:09.721Z",
    "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 29,
+    "Unknown entity kind (2)": 7
+   },
+   "deaths_them": 37,
+   "deaths_us": 36,
+   "gems_them": "1008",
+   "gems_us": "902",
+   "id": "4f69f7c1-d901-45dd-87d9-a6937aed4617",
+   "map": "islands",
+   "opp": "Rogue Lock Pickers",
+   "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
+   "status": "open",
+   "time": "2026-10-20T19:40:10.999Z",
+   "tries_at": 5
   }
  ],
  "map_files": {
