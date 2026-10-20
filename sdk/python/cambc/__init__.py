@@ -100,6 +100,7 @@ if TYPE_CHECKING:
         GEM_CLUSTER = 2
         GOLD_CLUSTER = 3
         MONOLITH = 4
+        GOLEM = 5
 
     class CampState(IntEnum):
         """Individual camp lifecycle; ALIVE means awake, ASLEEP means living but dormant."""
@@ -139,6 +140,7 @@ if TYPE_CHECKING:
         RESET_COOLDOWNS_ON_KILL = 6
         RETALIATION = 7
         STUN_IMMUNITY = 8
+        MISSING_HEALTH_DAMAGE = 10
 
     class ChampionType(IntEnum):
         """Playable champion type."""
@@ -158,6 +160,7 @@ if TYPE_CHECKING:
         REN = 9
         VARG = 10
         TAVI = 11
+        HEART_OF_RUIN = 12
 
     class ChampionDraft(IntEnum):
         """Draft pick."""
@@ -176,6 +179,7 @@ if TYPE_CHECKING:
         REN = 8
         VARG = 9
         TAVI = 10
+        HEART_OF_RUIN = 11
 
     class AbilityKind(IntEnum):
         """Ability property kind."""
@@ -287,6 +291,7 @@ else:
         GEM_CLUSTER = 2
         GOLD_CLUSTER = 3
         MONOLITH = 4
+        GOLEM = 5
 
     class CampState(int):
         """An individual camp's captured lifecycle; states are mutually exclusive, not flags."""
@@ -329,6 +334,7 @@ else:
         RESET_COOLDOWNS_ON_KILL = 6
         RETALIATION = 7
         STUN_IMMUNITY = 8
+        MISSING_HEALTH_DAMAGE = 10
 
     class ChampionType:
         __slots__ = ()
@@ -345,6 +351,7 @@ else:
         REN = 9
         VARG = 10
         TAVI = 11
+        HEART_OF_RUIN = 12
 
     class ChampionDraft:
         __slots__ = ()
@@ -360,6 +367,7 @@ else:
         REN = 8
         VARG = 9
         TAVI = 10
+        HEART_OF_RUIN = 11
 
     class AbilityKind:
         __slots__ = ()
@@ -1149,6 +1157,10 @@ class Camp(Unit):
         """Check whether this camp is a monolith."""
         return self.kind() == CampType.MONOLITH
 
+    def is_golem(self) -> bool:
+        """Check whether this camp is a golem."""
+        return self.kind() == CampType.GOLEM
+
     def spawn_position(self) -> Vec2:
         """Return the camp's spawn tile, not its live position."""
         return self._spawn_position
@@ -1253,6 +1265,13 @@ class Ward(_bc.Ward):
     """Immutable snapshot of a visible ward."""
 
     __slots__ = ()
+
+    def owner(self) -> Champion:
+        """Return the owning champion captured when this ward was visible, even if the owner is hidden.
+
+        Live champion state still requires the champion to be in vision.
+        """
+        return Champion._new(self._owner)
 
     def position(self) -> Vec2:
         """Return the ward's tile."""
@@ -1576,7 +1595,11 @@ class Ability:
             raise Error(ErrorCode.API_NOT_IN_VISION, "design ability has no live owner")
 
     def damage_amount(self, target: Optional[Champion] = None) -> float:
-        """Return the damage the ability would deal, after mitigation and shields if a target is given.
+        """Return Focus-scaled damage, including dash landing damage and caster outgoing bonuses such as Heart of Ruin's passive.
+
+        Without a target, excludes target-dependent modifiers, shields and health limits.
+        With a target, predict health lost after outgoing bonuses, mitigation and
+        shields, capped at current health. Does not check range or landing area.
 
         Args:
             target: Optional visible champion that would be hit.
@@ -2078,9 +2101,10 @@ class Champion(Unit):
         return _bc.move_to(destination.x, destination.y)
 
     def move_towards(self, target: Vec2) -> bool:
-        """Move to the reachable tile on a shortest path to target, avoiding walls, holes, altars, the enemy
-        spawn and visible units. Return False without moving when already there, unable to move, or target is
-        blocked or unreachable, and for a newly revealed obstruction.
+        """Move to the reachable tile on a shortest path to target. Always treat the target as free for pathfinding,
+        while avoiding other walls, holes, altars, enemy spawn tiles, visible units and teleport reservations.
+        Return False when already there, unable to move, no route exists, or a hidden obstruction is revealed.
+        The engine still validates the chosen landing tile: trying to enter a known blocked target raises Error.
 
         Args:
             target: Map tile to approach.
@@ -2092,8 +2116,7 @@ class Champion(Unit):
         blocked = (game_map.walls() | game_map.holes() | game_map.altars() | game_map.spawn_region(Team.ENEMY)
                    | vision.champion_tiles() | vision.camp_tiles() | vision.teleport_tiles())
         blocked.set(origin, False)
-        if blocked.is_set(target):
-            return False
+        blocked.set(target, False)
         roots = Bitboard()
         roots.set(target)
         destinations = Bitboard()
@@ -2257,7 +2280,10 @@ def is_draft() -> bool:
 
 
 def champions(team: Optional[Team] = None) -> list[Champion]:
-    """Visible champions of a team, or of both teams (allies first).
+    """Return champion handles for a team, including champions outside vision.
+
+    With no team specified, return both teams (allies first).
+    Use vision.champions(team) to get only visible champions.
 
     Args:
         team: Team to include, or None for both teams.
@@ -2330,7 +2356,7 @@ def __getattr__(name: str) -> object:
     if name == "draft_memory":
         value: object = DraftMemoryBuffer()
     elif name == "champion_designs":
-        value = tuple(_builtins.map(Champion.design, range(12)))  # type: ignore[arg-type]
+        value = tuple(_builtins.map(Champion.design, range(13)))  # type: ignore[arg-type]
     else:
         raise AttributeError(f"module 'cambc' has no attribute {name!r}")
     globals()[name] = value

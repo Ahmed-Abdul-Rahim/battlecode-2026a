@@ -1,2 +1,2 @@
-sdk_version = "2.2.5"
+sdk_version = "3.0.1"
 languages = ["rust","python"]

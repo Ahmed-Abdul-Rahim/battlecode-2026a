@@ -133,3 +133,61 @@ def test_map_name():
 def test_review_renders_from_empty_state():
     text = league.review_text(league.empty_champion(), league.empty_ledger())
     assert "## Top 10" in text and league.NOTES in text
+
+
+def test_map_name_new_pool():
+    assert league.map_name("01big_world") == "big-world"
+    assert league.map_name("01elk_arena") == "elk-arena"
+
+
+def test_parse_fingerprint():
+    lines = ["T {}", 'F {"fingerprint":716959943,"plan":"-"}', 'F {"fingerprint":1}']
+    assert league.parse_fingerprint(lines) == 716959943
+    assert league.parse_fingerprint(["F {broken", "X {}"]) is None
+
+
+def test_active_maps_follow_the_pool(monkeypatch):
+    files = [Path(f"maps/{n}.map26a") for n in ("contest", "01big_world", "swirl")]
+    monkeypatch.setattr(league.runner, "list_maps", lambda directory=None: files)
+    led = league.empty_ledger()
+    assert sorted(league.active_maps(led)) == ["big-world", "contest", "swirl"]  # not synced: all
+    led["maps"] = ["big-world", "contest", "islands"]  # swirl retired, islands not pulled yet
+    assert sorted(league.active_maps(led)) == ["big-world", "contest"]
+
+
+def test_locked_entries_are_the_team_cadence():
+    names = league.params.names()
+    assert {names[i] for i in league.LOCKED} == {"W.recall_gold", "W.tribute_min", "W.tribute_max"}
+
+
+def test_static_state_tracks_unchanged_macro():
+    first = league.static_state(None, "h1", "t1")
+    assert first == {"macro_hash": "h1", "since": "t1", "static": False}
+    same = league.static_state({"macro_hash": "h1", "since": "t1"}, "h1", "t2")
+    assert same == {"macro_hash": "h1", "since": "t1", "static": True}
+    moved = league.static_state({"macro_hash": "h1", "since": "t1"}, "h2", "t3")
+    assert moved == {"macro_hash": "h2", "since": "t3", "static": False}
+
+
+def test_macro_hash_ignores_openings_and_game_count():
+    a = {"draft": {"5": [1, 2]}, "build": {}, "cadence": {"bag": 40}, "games": 10, "opening": {"x": 1}}
+    b = {**a, "games": 30, "opening": {}}
+    assert league.macro_hash(a) == league.macro_hash(b)
+    assert league.macro_hash(a) != league.macro_hash({**a, "draft": {"5": [2, 1]}})
+
+
+def test_evolved_mimic_merge_keeps_base():
+    base = {**champ({}), "base": "h", "slug": "nyx"}
+    up = {
+        **champ({"lanes": [1.0]}, [promo("2026-10-20T10:00:00Z", "pc1", "lanes")]),
+        "base": "h",
+        "slug": "nyx",
+    }
+    me = {
+        **champ({"eight": [2.0]}, [promo("2026-10-20T10:01:00Z", "pc2", "eight")]),
+        "base": "h",
+        "slug": "nyx",
+    }
+    m = league.merge_champion(base, up, me, lambda m, a, b: b)
+    assert m["base"] == "h" and m["slug"] == "nyx" and m["version"] == 2
+    assert sorted(m["maps"]) == ["eight", "lanes"]

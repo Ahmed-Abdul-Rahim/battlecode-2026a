@@ -82,13 +82,17 @@ pub(crate) fn read_constants() -> Result<Constants> {
 /// Passive-ability constants mirrored from SDK balance values.
 impl Constants {
     /// Prism focus gained per carried gem; no Game API getter exists.
-    pub const PRISM_FOCUS_PER_GEM: f32 = 0.2;
+    pub const PRISM_FOCUS_PER_GEM: f32 = 1.0;
     /// Varg passive splash radius; no Game API getter exists.
     pub const VARG_SPLASH_RADIUS: f32 = 1.0;
     /// Vesper Vale passive bonus-gold percentage; no Game API getter exists.
-    pub const VESPER_VALE_BONUS_GOLD_PERCENT: u32 = 20;
+    pub const VESPER_VALE_BONUS_GOLD_PERCENT: u32 = 33;
+    /// Marcella: gold gained per gem tributed.
+    pub const MARCELLA_TRIBUTE_GOLD_PER_GEM: u32 = 2;
     /// Ryth passive health/strength ratio; no Game API getter exists.
     pub const RYTH_HEALTH_STRENGTH_RATIO: f32 = 0.01;
     /// Ren retaliation focus ratio; no Game API getter exists.
     pub const REN_RETALIATION_FOCUS_RATIO: f32 = 0.2;
+    /// Heart of Ruin: maximum bonus to all damage at 100% missing health.
+    pub const HEART_OF_RUIN_MISSING_HEALTH_DAMAGE_MAX_BONUS: f32 = 0.5;
 }

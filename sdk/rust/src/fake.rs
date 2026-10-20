@@ -98,7 +98,7 @@ pub fn call(name: &str, a: &[usize]) -> i64 {
                             submit_gems_range: 1,
                             max_rounds: 2000,
                             winning_gems: 1000,
-                            kill_gold: 50,
+                            kill_gold: 100,
                             assist_gold: 10,
                             passive_gold: 0,
                             spawn_healing: 1.0,
@@ -357,6 +357,7 @@ pub fn call(name: &str, a: &[usize]) -> i64 {
                             y: 2,
                             timer: -1,
                             disabled: 1,
+                            owner: 0,
                         },
                     );
                     0
@@ -533,6 +534,11 @@ pub fn call(name: &str, a: &[usize]) -> i64 {
                 | "board_ward_vision_mask" => {
                     put(*a.last().unwrap(), u64::MAX);
                     put(*a.last().unwrap() + 8, 0u64);
+                    0
+                }
+                "board_awake_camp_occupancy" | "board_asleep_camp_occupancy" => {
+                    put(a[0], if name == "board_awake_camp_occupancy" { 1u64 << 9 } else { 1u64 << 18 });
+                    put(a[0] + 8, 0u64);
                     0
                 }
                 "board_ally_occupancy"

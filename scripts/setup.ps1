@@ -35,7 +35,7 @@ rustup show | Out-Null
 
 if (-not (Test-Path .venv)) { python -m venv .venv }
 .\.venv\Scripts\python.exe -m pip install --upgrade pip --quiet
-.\.venv\Scripts\python.exe -m pip install --upgrade cambc
+.\.venv\Scripts\python.exe -m pip install --upgrade "cambc>=3.0.1"
 .\.venv\Scripts\python.exe -m pip install -e ".[dev]" --quiet
 .\.venv\Scripts\pre-commit.exe install --hook-type pre-commit --hook-type pre-push
 

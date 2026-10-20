@@ -74,8 +74,11 @@ class passive_abilities:
     """Fixed passive-ability tuning values."""
 
     __slots__ = ()
-    PRISM_FOCUS_PER_GEM = 0.2
+    PRISM_FOCUS_PER_GEM = 1.0
     VARG_SPLASH_RADIUS = 1.0
-    VESPER_VALE_BONUS_GOLD_PERCENT = 20
+    VESPER_VALE_BONUS_GOLD_PERCENT = 33
+    MARCELLA_TRIBUTE_GOLD_PER_GEM = 2
     RYTH_HEALTH_STRENGTH_RATIO = 0.01
     REN_RETALIATION_FOCUS_RATIO = 0.2
+    # Heart of Ruin: maximum bonus to all damage at 100% missing health.
+    HEART_OF_RUIN_MISSING_HEALTH_DAMAGE_MAX_BONUS = 0.5

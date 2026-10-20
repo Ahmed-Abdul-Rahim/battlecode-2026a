@@ -124,7 +124,11 @@ union ability_payload
 		std::int32_t duration;
 	} cc, shield;
 
-	float dash_range;
+	struct
+	{
+		float range, radius, modifier;
+		std::int32_t duration;
+	} dash;
 };
 
 /// Ability properties with a tagged payload.
@@ -193,6 +197,7 @@ struct ward_info
 	std::uint32_t team;
 	std::int32_t x, y, timer;
 	std::uint8_t disabled;
+	std::uint32_t owner;
 };
 
 /// Engine ward observation extension with the exact ABI layout.
@@ -311,6 +316,8 @@ extern "C"
 	BC_IMPORT("board_ally_occupancy") std::int32_t sdk_ally_occupancy(std::uint64_t*);
 	BC_IMPORT("board_enemy_occupancy") std::int32_t sdk_enemy_occupancy(std::uint64_t*);
 	BC_IMPORT("board_camp_occupancy") std::int32_t sdk_camp_occupancy(std::uint64_t*);
+	BC_IMPORT("board_awake_camp_occupancy") std::int32_t sdk_awake_camp_occupancy(std::uint64_t*);
+	BC_IMPORT("board_asleep_camp_occupancy") std::int32_t sdk_asleep_camp_occupancy(std::uint64_t*);
 	BC_IMPORT("board_ally_ward_occupancy") std::int32_t sdk_ally_ward_occupancy(std::uint64_t*);
 	BC_IMPORT("board_enemy_ward_occupancy") std::int32_t sdk_enemy_ward_occupancy(std::uint64_t*);
 	BC_IMPORT("ward_at") std::int32_t sdk_ward_at(std::int32_t, std::int32_t, std::uint32_t*);
@@ -397,6 +404,7 @@ extern "C"
 	BC_IMPORT("camp_design") std::int32_t sdk_camp_design(std::int32_t, camp_design*);
 	BC_IMPORT("camp_at") std::int32_t sdk_camp_at(std::int32_t, std::int32_t, std::uint32_t*);
 	BC_IMPORT("champion_at") std::int32_t sdk_champion_at(std::int32_t, std::int32_t, std::uint32_t*);
+	BC_IMPORT("is_visible") std::int32_t sdk_is_visible(std::int32_t, std::int32_t, std::int32_t*);
 	BC_IMPORT("has_camp") std::int32_t sdk_has_camp(std::int32_t, std::int32_t, std::int32_t*);
 	BC_IMPORT("has_champion") std::int32_t sdk_has_champion(std::int32_t, std::int32_t, std::int32_t*);
 	BC_IMPORT("board_vision") std::int32_t sdk_vision(std::uint64_t*);

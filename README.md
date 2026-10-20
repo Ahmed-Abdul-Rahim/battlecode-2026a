@@ -4,6 +4,12 @@ Our entry for Cambridge Battlecode **cambc2026a** (season ends ~18 Nov 2026). Ru
 
 This is the **`league` branch**. It holds the bot and one self-improvement loop: track the live top 10, clone each team into a *mimic*, train our bot against the mimics, and ship a new version when we lose on the ladder. Teammates run the same loop on their own PCs and share the weights through this branch.
 
+Two mechanisms keep training useful over time:
+- **Evolved mimics.** Every third cycle trains an *opponent* instead of us. It keeps a team's draft, builds and openings, but its micro evolves to beat our champion, so training continues when the real teams stop updating.
+- **Map pool.** The lead follows the platform's current pool and adds new maps automatically.
+
+Local games run the ladder's engine: **cambc ≥ 3.0.1** (engine 1.0.0).
+
 **Start here:** [docs/league.pdf](docs/league.pdf) covers the architecture, every command, and debugging. The LaTeX source is `docs/league.tex`.
 
 ## Quick start (any PC)
@@ -33,12 +39,13 @@ scripts\train.ps1 start --lead --auto-submit   # also uploads, under the team-ag
 | `league/champion.json` | Champion θ per map, promotion history, benchmarks (written by every PC, merged on push) |
 | `league/ledger.json` | Top-10 snapshots, our ladder games, loss queue, uploads (written by the lead) |
 | `league/review/<date>.md` | Human review: epistemic gaps and losses the trainer can't fix. Write in "Reviewer notes" |
-| `data/mimic/` | Mimic specs of the current top 10 (and teams we recently lost to) |
+| `data/mimic/` | Mimic specs of the current top 10 (and teams we recently lost to). Built as `bots/mimic-<slug>` (faithful, never trained) |
+| `league/mimics/<slug>.json` | Evolved mimics: the team's θ trained to beat our champion, built as `bots/mimx-<slug>` |
+| `maps/`, `data/fingerprints.json`, `data/map_geometry.json` | The platform's current map pool (`00…`/`01…` files) and each map's pack key and geometry. Retired maps are in `maps/retired/` |
 | `harness/league.py` | The loop. `mimic.py` clones a team, `params.py` is the θ registry, `pack.py` writes `pack.bin` |
 | `crates/` | Decision logic, pathing, brain, draft (SDK-free, host-tested). `bctools sync` vendors it into the bot |
 | `tools/bctools/` | `bctools` CLI: run, gate, summary, render, timeline, dataset, sync. `tools/mcp_server/` exposes it over MCP |
 | `bots/baseline`, `bots/claude-*`, `bots/exploit-*` | Fixed sparring bots (anchors) so old fixes stay fixed |
-| `maps/`, `maps/heldout/` | Platform map pool; held-out copies for the generalisation check |
 | `docs/` | Game rules, SDK reference, architecture, fuel budget, memory layout, papers, cambc notes |
 
 ## Everyday commands
@@ -48,7 +55,8 @@ scripts\train.ps1 status | logs | review | stop
 scripts\train.ps1 once --no-push                  # one training cycle in the foreground, no git
 python harness\league.py bench                    # champion vs every mimic, all maps
 bctools gate main                                 # pass/fail vs bots/baseline
-bctools run main mimic-nyx --maps ambush lanes    # targeted matches
+scripts\train.ps1 maps                            # lead: follow the platform map pool now
+bctools run main mimx-nyx --maps 00lanes          # vs an evolved mimic (mimic-nyx = faithful)
 bctools summary runs\<dir>\<match>.repl26a        # experts, tiers, fuel, errors
 cambc view runs\<dir>\<match>.repl26a             # official visualiser
 cargo test --workspace; pytest -q                 # tests

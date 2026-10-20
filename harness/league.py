@@ -6,7 +6,10 @@ One loop, run on every teammate's PC (architecture and commands: docs/league.pdf
   sync     lead only, every SYNC_EVERY: ladder top 10 (+ teams we just lost to) -> download
            their games -> mimic.extract -> data/mimic/<slug>.spec.json
   watch    lead only: our new ladder games -> ledger; every loss joins the queue
+  maps     lead only, with sync: follow the platform's map pool (pull + register new maps)
   train    per-map antithetic ES on θ (harness/params.py) against the mimic pool (PFSP) + anchors
+  evolve   every MIMIC_EVERY-th cycle: ES on an *evolved mimic* (league/mimics/<slug>.json) to
+           beat our champion, so training goes on when the real teams stop updating
   promote  accepted θ -> champion.json + pack.bin, benchmark vs every mimic, commit, push
   release  lead with --auto-submit only: `cambc submit` after a ladder loss or a benchmark jump,
            at most once per SUBMIT_GAP, reverted if the ladder says the new version is worse
@@ -25,7 +28,7 @@ Per-PC scratch (sigma, PFSP win rates, try counts, logs, lock): runs/league/.
     python harness/league.py run --forever --lead                  # the PC that reads the platform
     python harness/league.py run --forever --lead --auto-submit    # ... and uploads (one PC only)
     python harness/league.py run --cycles 1 --no-push              # smoke test, no git
-    python harness/league.py status | sync | bench | review | submit
+    python harness/league.py status | sync | maps | bench | review | submit
 """
 
 from __future__ import annotations
@@ -37,7 +40,6 @@ import hashlib
 import json
 import os
 import random
-import re
 import shutil
 import socket
 import subprocess
@@ -62,6 +64,9 @@ CHAMPION = LEAGUE / "champion.json"
 LEDGER = LEAGUE / "ledger.json"
 REVIEW = LEAGUE / "review"
 MIMICS = ROOT / "data" / "mimic"
+EVOLVED = LEAGUE / "mimics"  # evolved mimics: per-team θ trained to beat our champion
+FINGERPRINTS = ROOT / "data" / "fingerprints.json"
+GEOMETRY = ROOT / "data" / "map_geometry.json"
 PACK = ROOT / "bots" / "main" / "src" / "pack" / "pack.bin"
 SCRATCH = ROOT / "runs" / "league"
 LOCAL = SCRATCH / "local.json"
@@ -70,6 +75,8 @@ GAMES = ROOT / "runs" / "ladder_top"  # downloaded summaries + match lists (mimi
 OURS = ROOT / "runs" / "ladder_live"  # summaries of our own ladder games
 HOST = os.environ.get("LEAGUE_HOST") or socket.gethostname()
 NOTES = "## Reviewer notes"
+#: What the lead commits after a sync: platform data, mimic specs, evolved-mimic resets, maps.
+LEAD_FILES = [LEDGER, REVIEW, MIMICS, EVOLVED, ROOT / "maps", FINGERPRINTS, GEOMETRY]
 
 # Training
 LAMBDA = 8  # ES candidates per cycle (antithetic pairs)
@@ -98,6 +105,11 @@ SUBMIT_GAP = 6 * 3600
 BENCH_JUMP = 0.05
 REVERT_GAMES, REVERT_DROP = 10, 0.10
 HEARTBEAT = 1800  # push try counts at least this often, so the lead sees stuck maps
+# Evolved mimics: every MIMIC_EVERY-th cycle trains an opponent instead of the champion.
+MIMIC_EVERY = int(os.environ.get("LEAGUE_MIMIC_EVERY", "3"))
+#: θ entries an evolved mimic may not change: the team's observed cadence (W recall_gold,
+#: tribute_min, tribute_max), so it keeps the real team's macro while its micro evolves.
+LOCKED = frozenset(params.W_NAMES.index(n) for n in ("recall_gold", "tribute_min", "tribute_max"))
 
 
 def log(msg: str) -> None:
@@ -146,24 +158,33 @@ def git(*args: str, env: dict | None = None) -> subprocess.CompletedProcess:
     return sh(["git", *args], env=env)
 
 
-def map_name(platform: str) -> str:
-    """'00contest' / 'rushbait_v2' -> our map stem ('contest', 'rushbait-v2')."""
-    return re.sub(r"^\d+", "", platform).replace("_", "-").lower()
+map_name = mimic.map_name
 
 
 def local_maps() -> dict[str, Path]:
-    return {p.stem: p for p in runner.list_maps()}
+    """Every map file in maps/, keyed by normalized name ('01big-world' -> 'big-world'); a
+    platform-pulled (digit-prefixed) file wins over an older unprefixed copy."""
+    files = sorted(runner.list_maps(), key=lambda p: p.stem[:1].isdigit())
+    return {map_name(p.stem): p for p in files}
+
+
+def active_maps(led: dict) -> dict[str, Path]:
+    """The platform's current pool (ledger 'maps') that we have locally; all local maps until
+    the lead's first map sync. Retired maps stay in maps/ but are not trained on."""
+    local = local_maps()
+    pool = led.get("maps") or []
+    return {m: local[m] for m in pool if m in local} or local
 
 
 # ----------------------------------------------------------------- shared state
 
 
 def empty_champion() -> dict:
-    return {"version": 0, "maps": {}, "history": [], "bench": {}, "tries": {}}
+    return {"version": 0, "maps": {}, "history": [], "bench": {}, "bench_hard": {}, "tries": {}}
 
 
 def empty_ledger() -> dict:
-    return {"top": [], "pool": [], "ladder": {}, "losses": [], "submissions": []}
+    return {"top": [], "pool": [], "maps": [], "map_files": {}, "ladder": {}, "losses": [], "submissions": []}
 
 
 def load_champion() -> dict:
@@ -209,13 +230,16 @@ def merge_champion(base: dict, ours: dict, theirs: dict, decide) -> dict:
         for m, per in side.items():
             for host, n in per.items():
                 tries.setdefault(m, {})[host] = max(n, tries.get(m, {}).get(host, 0))
+    known = ("version", "maps", "history", "bench", "bench_hard", "tries")
+    extras = {k: v for k, v in {**ours, **theirs}.items() if k not in known}  # seed, base, slug
     return {
+        **extras,
         "version": len(hist),
         "maps": maps,
         "history": hist,
         "bench": {**ours["bench"], **theirs["bench"]},
+        "bench_hard": {**ours["bench_hard"], **theirs["bench_hard"]},
         "tries": tries,
-        **({"seed": ours["seed"]} if "seed" in ours else {}),
     }
 
 
@@ -236,6 +260,8 @@ def merge_ledger(ours: dict, theirs: dict) -> dict:
     return {
         "top": [top[k] for k in sorted(top)][-500:],
         "pool": newer["pool"],
+        "maps": newer["maps"],
+        "map_files": {**ours["map_files"], **theirs["map_files"]},
         "ladder": {**ours["ladder"], **theirs["ladder"]},
         "losses": sorted(losses.values(), key=lambda x: x["time"]),
         "submissions": [subs[k] for k in sorted(subs, key=lambda k: k[1])],
@@ -316,25 +342,57 @@ def make_bot(name: str, pack_data: bytes) -> str:
     return name
 
 
-def ensure_mimics(led: dict) -> list[str]:
-    """Build bots/mimic-<slug> for the ledger's pool from data/mimic (never mutated by training)."""
-    eh, bots = engine_hash(), []
+def macro_hash(clone: dict) -> str:
+    """What the real team does at the macro level (draft, builds, cadence). Unchanged between
+    syncs = the team hasn't updated its bot, so evolving our mimic of it is the only way on."""
+    keep = {k: clone.get(k) for k in ("draft", "build", "cadence")}
+    return hashlib.sha1(json.dumps(keep, sort_keys=True).encode()).hexdigest()[:12]
+
+
+def load_evolved(slug: str, base: str | None) -> dict:
+    """league/mimics/<slug>.json (champion.json schema); reset when the team's macro changed."""
+    mx = {**empty_champion(), **load_json(EVOLVED / f"{slug}.json", {})}
+    if base and mx.get("base") != base:
+        mx = {**empty_champion(), "base": base, "slug": slug}
+    return mx
+
+
+def spec_theta(spec: dict, mp: str) -> list[float]:
+    """The faithful mimic's θ on a map, in search space (spec θ is bot space, maybe shorter)."""
+    th = ((spec.get("maps") or {}).get(mp) or {}).get("theta")
+    if not th:
+        return base_theta()
+    dflt = params.defaults(ROOT / "bots" / "main" / "src" / "learned.rs")
+    return params.to_search(list(th) + dflt[len(th) :])
+
+
+def build_stamped(name: str, key: bytes, data) -> None:
+    """make_bot only when the inputs (key) changed since the last build (.league-stamp)."""
+    stamp = hashlib.sha1(key + engine_hash().encode()).hexdigest()
+    stamp_p = ROOT / "bots" / name / ".league-stamp"
+    if not stamp_p.exists() or stamp_p.read_text() != stamp:
+        make_bot(name, data())
+        stamp_p.write_text(stamp)
+
+
+def ensure_mimics(led: dict) -> tuple[list[str], list[str]]:
+    """Build the pool's opponents: faithful bots/mimic-<slug> (the team's spec from its games,
+    never trained) and evolved bots/mimx-<slug> (same macro, θ evolved against our champion)."""
+    faithful, evolved = [], []
     for p in led["pool"]:
         spec_p = MIMICS / f"{p['slug']}.spec.json"
         if not spec_p.exists():
             continue
-        name = f"mimic-{p['slug']}"
-        stamp = hashlib.sha1(spec_p.read_bytes() + eh.encode()).hexdigest()
-        stamp_p = ROOT / "bots" / name / ".league-stamp"
-        if not stamp_p.exists() or stamp_p.read_text() != stamp:
-            tmp = SCRATCH / f"mimic-{os.getpid()}.bin"
-            SCRATCH.mkdir(parents=True, exist_ok=True)
-            packlib.write(json.loads(spec_p.read_text(encoding="utf-8")), tmp)
-            make_bot(name, tmp.read_bytes())
-            tmp.unlink()
-            stamp_p.write_text(stamp)
-        bots.append(name)
-    return bots
+        raw = spec_p.read_bytes()
+        spec = json.loads(raw)
+        build_stamped(f"mimic-{p['slug']}", raw, lambda spec=spec: pack_bytes_for({}, spec))
+        faithful.append(f"mimic-{p['slug']}")
+        mx = load_evolved(p["slug"], p.get("macro_hash"))
+        if mx["version"] >= 1:
+            key = raw + json.dumps(mx["maps"], sort_keys=True).encode()
+            build_stamped(f"mimx-{p['slug']}", key, lambda spec=spec, mx=mx: pack_bytes_for(mx["maps"], spec))
+            evolved.append(f"mimx-{p['slug']}")
+    return faithful, evolved
 
 
 # ----------------------------------------------------------------- matches and fitness
@@ -388,13 +446,13 @@ def pfsp(local: dict, cands: list[str], k: int, rng: random.Random) -> list[str]
     return out
 
 
-def benchmark(bot: str, mimics: list[str], out: Path) -> dict:
-    """`bot` against every mimic on every map, both sides."""
-    res = play([bot], mimics, runner.list_maps(), out)
+def benchmark(bot: str, mimics: list[str], maps: list[Path], out: Path) -> dict:
+    """`bot` against every mimic on every active map, both sides; keyed by team slug."""
+    res = play([bot], mimics, maps, out)
     grid: dict[str, dict[str, list[float]]] = {}
     for r in res:
-        opp = r.bot_b if r.bot_a == bot else r.bot_a
-        grid.setdefault(opp.removeprefix("mimic-"), {}).setdefault(r.map, []).append(r.score_for(bot))
+        opp = (r.bot_b if r.bot_a == bot else r.bot_a).split("-", 1)[1]  # mimic-/mimx-<slug>
+        grid.setdefault(opp, {}).setdefault(map_name(r.map), []).append(r.score_for(bot))
     per_team = {
         t: round(sum(sum(v) for v in g.values()) / max(sum(len(v) for v in g.values()), 1), 3)
         for t, g in grid.items()
@@ -444,6 +502,11 @@ def resolve_conflicts(decide) -> bool:
             # In a rebase ':2' is upstream, ':3' is our commit being replayed.
             merged = merge_champion(show(":1", f), show(":2", f), show(":3", f), decide)
             save_json(CHAMPION, merged)
+        elif f.startswith("league/mimics/"):
+            # Evolved mimic raced on the same map: keep ours (both are fine sparring partners).
+            save_json(
+                ROOT / f, merge_champion(show(":1", f), show(":2", f), show(":3", f), lambda m, a, b: b)
+            )
         elif f == "league/ledger.json":
             save_json(LEDGER, merge_ledger(show(":2", f), show(":3", f)))
         elif f.startswith("league/review/"):
@@ -581,7 +644,8 @@ def sync(led: dict) -> str:
     wanted = [(t["name"], t["teamId"], f"top{t['rank']}") for t in snap]
     wanted += [(name, tid, "loss") for tid, name in recent.items()]
     geo = mimic.map_geometry()
-    pool, new = [], 0
+    prev = {p["slug"]: p for p in led["pool"]}
+    pool, new, changed = [], 0, []
     MIMICS.mkdir(parents=True, exist_ok=True)
     for name, tid, why in wanted:
         slug = mimic.slug(name) or tid[:8]
@@ -592,13 +656,109 @@ def sync(led: dict) -> str:
             continue
         save_json(MIMICS / f"{slug}.json", clone)
         save_json(MIMICS / f"{slug}.spec.json", mimic.pack_spec(clone, sorted(geo)))
-        pool.append({"slug": slug, "name": name, "teamId": tid, "why": why, "games": clone["games"]})
+        entry = {"slug": slug, "name": name, "teamId": tid, "why": why, "games": clone["games"]}
+        pool.append({**entry, **static_state(prev.get(slug), macro_hash(clone), now_iso())})
+        if prev.get(slug, {}).get("macro_hash") not in (None, pool[-1]["macro_hash"]):
+            changed.append(slug)
+            (EVOLVED / f"{slug}.json").unlink(missing_ok=True)  # the real team moved: restart
     keep = {p["slug"] for p in pool}
     for f in MIMICS.glob("*.json"):
         if f.name.split(".")[0] not in keep:
             f.unlink()
     led["pool"] = pool
-    return f"sync: {len(pool)} mimics ({new} new games)"
+    return f"sync: {len(pool)} mimics ({new} new games{', changed code: ' + ', '.join(changed) if changed else ''})"
+
+
+def static_state(prev: dict | None, h: str, now: str) -> dict:
+    """macro_hash, since (when this macro was first seen) and static (unchanged since the last
+    sync: the team has not updated its bot, so our evolved mimic of it carries the training)."""
+    if prev and prev.get("macro_hash") == h:
+        return {"macro_hash": h, "since": prev.get("since") or now, "static": True}
+    return {"macro_hash": h, "since": now, "static": False}
+
+
+# ----------------------------------------------------------------- map pool
+
+
+def parse_fingerprint(lines: list[str]) -> int | None:
+    """The bot's debug line `F {"fingerprint": <u32>, ...}` (draft.rs) -> the fingerprint."""
+    for line in lines:
+        if line.startswith("F "):
+            with contextlib.suppress(json.JSONDecodeError, KeyError, TypeError):
+                return int(json.loads(line[2:])["fingerprint"])
+    return None
+
+
+def register_map(name: str, path: Path) -> bool:
+    """Fingerprint (pack lookup key) and geometry (mimic openings) of a new map, from one debug
+    match of our bot: it prints `F` (fingerprint) and `M` (terrain/group dump) lines."""
+    res = runner.run_matches("main", "baseline", maps=[path], out_dir=SCRATCH / "register" / name, swap=False)
+    try:
+        log_a = replay.load(res[0].replay).team("a")
+    except (OSError, KeyError, ValueError, IndexError) as ex:
+        log(f"maps: {name}: no replay ({ex!r})")
+        return False
+    fp = parse_fingerprint(log_a.other)
+    if fp is None or not log_a.map:
+        log(f"maps: {name}: no F/M debug lines in the replay")
+        return False
+    fps, geo = load_json(FINGERPRINTS, {}), load_json(GEOMETRY, {})
+    fps[name] = fp
+    geo[name] = mimic.geometry_from_dump(log_a.map)
+    save_json(FINGERPRINTS, fps)
+    save_json(GEOMETRY, geo)
+    return True
+
+
+def tidy_maps(pool: set[str]) -> None:
+    """maps/ holds exactly the platform pool: cambc names pulled files '00contest', so an older
+    unprefixed copy of a pool map is stale and goes; maps that left the pool move to
+    maps/retired/ (kept for reference, not trained or gated on)."""
+    files = runner.list_maps()
+    prefixed = {map_name(p.stem) for p in files if p.stem[:1].isdigit()}
+    for p in files:
+        n = map_name(p.stem)
+        if not p.stem[:1].isdigit() and n in prefixed:
+            p.unlink()
+        elif n not in pool:
+            (ROOT / "maps" / "retired").mkdir(exist_ok=True)
+            p.replace(ROOT / "maps" / "retired" / p.name)
+
+
+def refresh_maps(led: dict, ch: dict) -> str:
+    """Lead: follow the platform's current map pool: pull new maps, register them, reopen the
+    losses that were waiting for them."""
+    names, page = [], 1
+    while page:
+        got = cambc_json(["maps", "list", "--limit", "100", "--page", str(page)])
+        if not got:
+            return "maps: list unavailable"
+        names += [map_name(m["name"]) for m in got.get("maps", [])]
+        page = got.get("nextPage")
+    p = sh([str(CAMBC), "maps", "pull"], timeout=300)  # keeps local files; needs cambc >= 3.0.1
+    if p.returncode != 0:
+        log(f"maps pull failed (cambc >= 3.0.1 needed): {p.stderr.strip()[:200]}")
+    tidy_maps(set(names))
+    local = local_maps()
+    fps, geo = load_json(FINGERPRINTS, {}), load_json(GEOMETRY, {})
+    hashes = led.setdefault("map_files", {})
+    added = []
+    for n in names:
+        if n not in local:
+            continue
+        h = hashlib.sha1(local[n].read_bytes()).hexdigest()[:12]
+        if (n not in fps or n not in geo or hashes.get(n) != h) and register_map(n, local[n]):
+            hashes[n] = h
+            added.append(n)
+    led["maps"] = sorted(n for n in names if n in local)
+    missing = sorted(set(names) - set(local))
+    for x in led["losses"]:
+        if x["status"] == "needs-human" and x.get("hint", "").startswith("map not in") and x["map"] in local:
+            x.update(status="open", tries_at=total_tries(ch, x["map"]))
+            x.pop("hint", None)
+    return f"maps: pool {len(names)}, registered {len(added)} new" + (
+        f", missing {missing}" if missing else ""
+    )
 
 
 def live_version(led: dict, at: float) -> int | None:
@@ -633,7 +793,7 @@ def watch(led: dict, ch: dict) -> str:
     got = cambc_json(["matches", "list", "--team", OUR_TEAM, "--limit", "50"])
     if not got:
         return "watch: unavailable"
-    maps, new, lost = local_maps(), 0, 0
+    maps, new, lost = active_maps(led), 0, 0
     for m in got.get("matches", []):
         mid = m["matchId"]
         if m.get("status") != "finished" or mid in led["ladder"]:
@@ -670,7 +830,7 @@ def watch(led: dict, ch: dict) -> str:
         if f.exists() or cambc_json(["matches", "summary", mid], out=f):
             loss.update(death_summary(f, "team" + us["side"].upper()))
         if mp not in maps:
-            loss.update(status="needs-human", hint="map not in maps/: run `cambc maps pull`")
+            loss.update(status="needs-human", hint="map not in maps/ yet: the next map sync registers it")
         led["losses"].append(loss)
     return f"watch: {new} new games, {lost} losses"
 
@@ -784,15 +944,21 @@ def review_text(ch: dict, led: dict) -> str:
         f"**{'v' + str(subs[-1]['version']) if subs else 'none uploaded by the league'}** · "
         f"last sync {snaps[-1]['time'] if snaps else 'never'} · benchmark vs mimics {b.get('overall', '—')}",
         "",
+        f"Map pool: {len(led['maps'])} maps ({', '.join(led['maps']) or 'not synced: all local maps'}).",
+        "",
         "## Top 10",
         "",
         "`gap` = local win rate vs the team's mimic − real ladder win rate vs the team. A large positive gap "
         "means the mimic is easier than the real team: its macro was cloned, its micro was not. "
-        "Fix the mimic before trusting training against it.",
+        "Fix the mimic before trusting training against it. `vs evolved` = our win rate vs the evolved "
+        "mimic (same macro, micro trained to beat us); `code` = whether the team's macro changed since "
+        "the last sync (static teams are carried on by their evolved mimic).",
         "",
-        "| # | team | rating (24h Δ) | ladder W-L vs us | local WR vs mimic | gap | mimic games |",
-        "|---|---|---|---|---|---|---|",
+        "| # | team | rating (24h Δ) | ladder W-L vs us | local WR vs mimic | gap | vs evolved (gen) "
+        "| code | mimic games |",
+        "|---|---|---|---|---|---|---|---|---|",
     ]
+    hard = ch["bench_hard"].get(str(ch["version"])) or {}
     flags = []
     for t in top:
         games = [x["win"] for x in led["ladder"].values() if x["oppId"] == t["teamId"]]
@@ -801,11 +967,16 @@ def review_text(ch: dict, led: dict) -> str:
         local = (b.get("per_team") or {}).get(t["slug"])
         gap = local - lw if local is not None and lw is not None and len(games) >= 3 else None
         d = t["rating"] - old[t["teamId"]]["rating"] if t["teamId"] in old else None
-        mg = pool.get(t["teamId"], {}).get("games")
+        pe = pool.get(t["teamId"], {})
+        mg = pe.get("games")
+        gen = load_evolved(t["slug"], pe.get("macro_hash"))["version"]
+        hw = (hard.get("per_team") or {}).get(t["slug"])
+        code = "—" if not pe else f"static since {pe['since'][:10]}" if pe.get("static") else "changed"
         L.append(
             f"| {t['rank']} | {t['name']} | {t['rating']:.0f} ({'—' if d is None else f'{d:+.0f}'}) | "
             f"{w}-{len(games) - w} | {'—' if local is None else f'{local:.2f}'} | "
-            f"{'—' if gap is None else f'{gap:+.2f}'} | {mg if mg is not None else '—'} |"
+            f"{'—' if gap is None else f'{gap:+.2f}'} | {'—' if hw is None else f'{hw:.2f}'} (g{gen}) | "
+            f"{code} | {mg if mg is not None else '—'} |"
         )
         if gap is not None and gap >= 0.3:
             flags.append(
@@ -879,9 +1050,11 @@ def write_review(ch: dict, led: dict) -> Path:
 def load_local() -> dict:
     return {
         "sigma": {},
+        "msigma": {},  # evolved-mimic ES steps, per "slug|map"
         "pwin": {},
         "tries": {},
         "rr": 0,
+        "mrr": 0,
         "cycle": 0,
         "last_sync": 0,
         "last_watch": 0,
@@ -896,13 +1069,17 @@ def fold_tries(ch: dict, local: dict) -> None:
 
 
 def pick_map(ch: dict, led: dict, local: dict) -> tuple[str, dict | None]:
-    maps = local_maps()
+    maps = active_maps(led)
     for x in sorted(led["losses"], key=lambda x: x["time"]):
         if x["status"] == "open" and x["map"] in maps:
             return x["map"], x
-    b = ch["bench"].get(str(ch["version"])) or {}
-    if b.get("per_map") and local["rr"] % 2 == 0:
-        return min(b["per_map"], key=b["per_map"].get), None
+    per_map = {
+        m: v
+        for m, v in ((ch["bench"].get(str(ch["version"])) or {}).get("per_map") or {}).items()
+        if m in maps
+    }
+    if per_map and local["rr"] % 2 == 0:
+        return min(per_map, key=per_map.get), None
     names = sorted(maps)
     return names[local["rr"] % len(names)], None
 
@@ -926,8 +1103,9 @@ def h2h_decider(cyc: Path, maps_now: dict):
 def train(ch: dict, led: dict, local: dict, rng: random.Random, cyc: Path) -> dict:
     mp, loss = pick_map(ch, led, local)
     local["rr"] += 1
-    mpath = local_maps()[mp]
-    mimics = [b for b in ensure_mimics(led) if (ROOT / "bots" / b).exists()]
+    mpath = active_maps(led)[mp]
+    faithful, evolved = ensure_mimics(led)
+    mimics = faithful + evolved  # PFSP over both: the evolved ones keep pressure on static teams
     anchors = [a for a in ANCHORS if (ROOT / "bots" / a).exists()]
     opps = pfsp(local, mimics, N_OPPS, rng) + rng.sample(anchors, min(N_ANCHORS, len(anchors)))
     if not mimics:
@@ -992,9 +1170,99 @@ def train(ch: dict, led: dict, local: dict, rng: random.Random, cyc: Path) -> di
     ch["version"] = len(ch["history"])
     apply_champion(ch)
     runner.build("main", release=True, force=True)  # raises if the champion doesn't build
-    if mimics:
-        ch["bench"][str(ch["version"])] = benchmark("main", mimics, cyc / "bench")
+    maps = list(active_maps(led).values())
+    if faithful:  # honest tracking: the faithful mimics only
+        ch["bench"][str(ch["version"])] = benchmark("main", faithful, maps, cyc / "bench")
+    if evolved:
+        ch["bench_hard"][str(ch["version"])] = benchmark("main", evolved, maps, cyc / "bench-hard")
     entry["promoted"] = ch["version"]
+    return entry
+
+
+def mimic_target(ch: dict, led: dict, local: dict) -> tuple[dict, str] | None:
+    """(pool entry, map) for an evolved-mimic cycle: the static team our champion beats most
+    (the opponent we've 'solved'), on the map where we beat it most. Without a benchmark:
+    round-robin over the pool."""
+    pool = [p for p in led["pool"] if (MIMICS / f"{p['slug']}.spec.json").exists()]
+    maps = active_maps(led)
+    if not pool or not maps:
+        return None
+    static = [p for p in pool if p.get("static")] or pool
+    b = ch["bench"].get(str(ch["version"])) or {}
+    per_team = b.get("per_team") or {}
+    if per_team:
+        team = max(
+            static, key=lambda p: (per_team.get(p["slug"], 0.0), -load_evolved(p["slug"], None)["version"])
+        )
+    else:
+        team = static[local["mrr"] % len(static)]
+    grid = {m: v for m, v in ((b.get("grid") or {}).get(team["slug"]) or {}).items() if m in maps}
+    mp = max(grid, key=grid.get) if grid else sorted(maps)[local["mrr"] % len(maps)]
+    return team, mp
+
+
+def evolve_mimic(ch: dict, led: dict, local: dict, rng: random.Random, cyc: Path) -> dict:
+    """Train an opponent instead of ourselves: ES on one team's evolved-mimic θ for one map, so
+    that it beats our champion. Draft, builds, openings and cadence stay the team's (LOCKED);
+    only micro/targeting weights move. Faithful mimics are never touched."""
+    tgt = mimic_target(ch, led, local)
+    local["mrr"] += 1
+    if not tgt:
+        return {"mimic": None, "skipped": "no mimic pool"}
+    team, mp = tgt
+    slug, mpath = team["slug"], active_maps(led)[mp]
+    spec = json.loads((MIMICS / f"{slug}.spec.json").read_text(encoding="utf-8"))
+    mx = load_evolved(slug, team.get("macro_hash"))
+    _faithful, evolved = ensure_mimics(led)
+    cur = f"mimx-{slug}" if f"mimx-{slug}" in evolved else f"mimic-{slug}"
+    theta = full_theta(mx["maps"].get(mp) or spec_theta(spec, mp))
+    key = f"{slug}|{mp}"
+    s0 = [0.0 if i in LOCKED else s for i, s in enumerate(params.sigma0())]
+    sigma = list(local["msigma"].get(key, s0))
+    cands = []
+    for k in range(LAMBDA // 2):
+        eps = [rng.gauss(0, 1) for _ in theta]
+        for sgn in (1, -1):
+            th = clip_search([t + sgn * s * e for t, s, e in zip(theta, sigma, eps, strict=False)])
+            name = f"_lg-m{k}{'p' if sgn > 0 else 'n'}"
+            cands.append((make_bot(name, pack_bytes_for({**mx["maps"], mp: th}, spec)), th))
+    res = play(["main"], [cur] + [b for b, _ in cands], [mpath], cyc / "mimic")
+    cur_f = fitness(res, cur)[0]
+    scored = sorted(((fitness(res, b)[0], b, th) for b, th in cands), key=lambda x: -x[0])
+    best_f, best, best_th = scored[0]
+    local["msigma"][key] = [
+        min(max(s * (1.15 if best_f > cur_f else 0.85), 0.25 * z), 2.0 * z)
+        for s, z in zip(sigma, s0, strict=False)
+    ]
+    entry = {
+        "mimic": slug,
+        "map": mp,
+        "cur": round(cur_f, 3),
+        "best": round(best_f, 3),
+        "gain": round(best_f - cur_f, 3),
+    }
+    if best_f < cur_f + ACCEPT_GAIN:
+        return entry
+    h2h = runner.run_matches(best, cur, maps=[mpath], out_dir=cyc / "mimic-h2h", release=True)
+    hw = sum(r.score_for(best) for r in h2h) / max(len(h2h), 1)
+    susp_b, susp_c = suspended(res, best), suspended(res, cur)
+    entry.update(h2h=round(hw, 2), susp=[susp_b, susp_c])
+    if hw < 0.5 or susp_b > max(2 * susp_c, 20):
+        return entry
+    mx["maps"][mp] = [round(x, 5) for x in best_th]
+    mx["history"].append(
+        {
+            "version": len(mx["history"]) + 1,
+            "host": HOST,
+            "time": now_iso(),
+            "map": mp,
+            "gain": round(best_f - cur_f, 3),
+            "h2h": round(hw, 2),
+        }
+    )
+    mx.update(version=len(mx["history"]), base=team.get("macro_hash"), slug=slug)
+    save_json(EVOLVED / f"{slug}.json", mx)
+    entry["evolved"] = mx["version"]
     return entry
 
 
@@ -1020,6 +1288,7 @@ def cycle(a: argparse.Namespace, rng: random.Random) -> None:
             msgs.append(watch(led, ch))
             local["last_watch"] = now
         if now - local["last_sync"] >= SYNC_EVERY:
+            msgs.append(refresh_maps(led, ch))
             msgs.append(sync(led))
             local["last_sync"] = now
         if msgs:
@@ -1032,8 +1301,16 @@ def cycle(a: argparse.Namespace, rng: random.Random) -> None:
             save_json(LEDGER, led)
             log("; ".join(msgs))
             if use_git:
-                publish([LEDGER, REVIEW, MIMICS], "league: " + "; ".join(msgs), h2h_decider(cyc, ch["maps"]))
+                publish(LEAD_FILES, "league: " + "; ".join(msgs), h2h_decider(cyc, ch["maps"]))
     t0 = time.time()
+    if MIMIC_EVERY and local["cycle"] % MIMIC_EVERY == 0 and led["pool"]:
+        entry = evolve_mimic(ch, led, local, rng, cyc)
+        log(f"cycle {local['cycle']} mimic ({round(time.time() - t0)}s): {json.dumps(entry)}")
+        if "evolved" in entry and use_git:
+            msg = f"league: mimx-{entry['mimic']} g{entry['evolved']} {entry['map']} {entry['gain']:+.3f}"
+            publish([EVOLVED], msg, h2h_decider(cyc, ch["maps"]))
+        save_json(LOCAL, local)
+        return
     entry = train(ch, led, local, rng, cyc)
     log(f"cycle {local['cycle']} ({round(time.time() - t0)}s): {json.dumps(entry)}")
     promoted = "promoted" in entry
@@ -1142,7 +1419,14 @@ def cmd_status(_: argparse.Namespace) -> int:
         f"top 10      {'as of ' + top['time'] if top else 'never synced'}: "
         + ", ".join(f"{t['rank']}. {t['name']}" for t in (top or {}).get("teams", []))
     )
+    print(
+        f"maps        {len(active_maps(led))} active ({'platform pool' if led['maps'] else 'all local, not synced'})"
+    )
     print(f"pool        {', '.join(p['slug'] + ' (' + p['why'] + ')' for p in led['pool']) or '-'}")
+    for p in led["pool"]:
+        mx = load_evolved(p["slug"], p.get("macro_hash"))
+        if mx["version"]:
+            print(f"  evolved   mimx-{p['slug']}: g{mx['version']} on {', '.join(sorted(mx['maps']))}")
     c = Counter(x["status"] for x in led["losses"])
     print(f"losses      open {c['open']}, fixed {c['fixed']}, needs-human {c['needs-human']}")
     for x in [x for x in led["losses"] if x["status"] == "open"][:5]:
@@ -1163,26 +1447,42 @@ def cmd_status(_: argparse.Namespace) -> int:
 def cmd_sync(a: argparse.Namespace) -> int:
     ch, led = load_champion(), load_ledger()
     print(watch(led, ch))
+    print(refresh_maps(led, ch))
     print(sync(led))
     reconcile(led, ch)
     save_json(LEDGER, led)
     print(f"review: {write_review(ch, led).relative_to(ROOT)}")
     if a.git and git_ready():
-        publish([LEDGER, REVIEW, MIMICS], "league: manual sync", h2h_decider(SCRATCH / "manual", ch["maps"]))
+        publish(LEAD_FILES, "league: manual sync", h2h_decider(SCRATCH / "manual", ch["maps"]))
+    return 0
+
+
+def cmd_maps(a: argparse.Namespace) -> int:
+    ch, led = load_champion(), load_ledger()
+    print(refresh_maps(led, ch))
+    save_json(LEDGER, led)
+    print(f"active: {', '.join(sorted(active_maps(led)))}")
+    if a.git and git_ready():
+        publish(LEAD_FILES, "league: map pool", h2h_decider(SCRATCH / "manual", ch["maps"]))
     return 0
 
 
 def cmd_bench(a: argparse.Namespace) -> int:
     ch, led = load_champion(), load_ledger()
     apply_champion(ch)
-    mimics = ensure_mimics(led)
-    if not mimics:
+    faithful, evolved = ensure_mimics(led)
+    if not faithful:
         print("no mimics: run `league.py sync` on the lead (or pull data/mimic) first")
         return 1
-    b = benchmark("main", mimics, SCRATCH / "bench")
+    maps = list(active_maps(led).values())
+    b = benchmark("main", faithful, maps, SCRATCH / "bench")
     ch["bench"][str(ch["version"])] = b
+    if evolved:
+        ch["bench_hard"][str(ch["version"])] = benchmark("main", evolved, maps, SCRATCH / "bench-hard")
     save_json(CHAMPION, ch)
     print(json.dumps({k: b[k] for k in ("overall", "games", "per_team", "per_map")}, indent=1))
+    if evolved:
+        print("vs evolved:", json.dumps(ch["bench_hard"][str(ch["version"])]["per_team"]))
     if a.git and git_ready():
         publish(
             [CHAMPION], f"league: benchmark v{ch['version']}", h2h_decider(SCRATCH / "manual", ch["maps"])
@@ -1217,7 +1517,7 @@ def main(argv: list[str] | None = None) -> int:
     r.add_argument(
         "--auto-submit", action="store_true", help="lead only: upload new champions (team-agreed rules)"
     )
-    for name in ("run", "sync", "bench", "submit"):
+    for name in ("run", "sync", "maps", "bench", "submit"):
         sp = r if name == "run" else sub.add_parser(name)
         sp.add_argument("--no-push", dest="git", action="store_false", help="no git pull/commit/push")
     sub.choices["submit"].add_argument("--version", type=int, help="default: the current champion")
@@ -1228,6 +1528,7 @@ def main(argv: list[str] | None = None) -> int:
         "run": cmd_run,
         "status": cmd_status,
         "sync": cmd_sync,
+        "maps": cmd_maps,
         "bench": cmd_bench,
         "review": cmd_review,
         "submit": cmd_submit,

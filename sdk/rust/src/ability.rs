@@ -144,13 +144,23 @@ impl AbilityMetadata for AbilityHeal {
         Ok(self.range)
     }
 }
-/// Metadata for a movement ability and its range.
+/// Dash metadata. Landing effects apply to enemies and camps only after a successful dash.
+/// range: Maximum dash travel distance in tiles. Diagonal steps count as one; the destination must be a different tile reachable by a legal dash path.
+/// radius: Chebyshev radius in tiles around the landing tile for damage and stun; 1 includes all eight neighbouring tiles.
+/// modifier: Landing damage multiplier: base damage = caster Focus * modifier, before damage bonuses and mitigation. 0 disables landing damage.
+/// duration: Stun duration applied on landing, in turns; 0 disables stun. This is not the dash travel time.
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct AbilityDash {
     /// Common immutable ability properties.
     pub properties: AbilityProperties,
-    /// Ability range in map-coordinate units.
+    /// Maximum travel distance in tiles; diagonals count as one. Requires a legal dash path to a different tile.
     pub range: f32,
+    /// Damage and stun radius around the landing tile, in Chebyshev tiles; 1 includes all eight neighbours.
+    pub radius: f32,
+    /// Base landing damage is caster Focus * modifier, before damage bonuses and mitigation; 0 disables damage.
+    pub modifier: f32,
+    /// Stun duration applied on landing, in turns, not dash travel time; 0 disables stun.
+    pub duration: i32,
 }
 impl AbilityMetadata for AbilityDash {
     fn kind(&self) -> AbilityKind {
@@ -259,7 +269,13 @@ impl AbilityInfo {
                 range,
                 modifier,
             }),
-            AbilityKind::Dash => Self::Dash(AbilityDash { properties, range }),
+            AbilityKind::Dash => Self::Dash(AbilityDash {
+                properties,
+                range,
+                radius: f32::from_bits(raw.payload[1]),
+                modifier: f32::from_bits(raw.payload[2]),
+                duration: raw.payload[3] as i32,
+            }),
             AbilityKind::Shield => Self::Shield(AbilityShield {
                 properties,
                 range,
@@ -474,7 +490,8 @@ impl Ability {
     pub fn can_target_ground(&self) -> Result<bool> {
         Ok(self.valid_targets()?.contains(AbilityTargetMask::GROUND))
     }
-    /// Query this live ability's damage; unsupported kinds propagate the engine error.
+    /// Query Focus-scaled damage, including dash landing damage and caster outgoing bonuses such as Heart of Ruin's passive.
+    /// Excludes target-dependent modifiers, shields and health limits.
     pub fn damage_amount(&self) -> Result<f32> {
         let owner = self.owner()?;
         query(|p| unsafe { sys::champion_ability_damage(owner.0, self.slot, p) })

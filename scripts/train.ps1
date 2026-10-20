@@ -6,7 +6,7 @@
 #   scripts\train.ps1 once [--no-push]               # one cycle in the foreground
 param(
     [Parameter(Position = 0)]
-    [ValidateSet("start", "stop", "status", "logs", "review", "sync", "bench", "submit", "once")]
+    [ValidateSet("start", "stop", "status", "logs", "review", "sync", "maps", "bench", "submit", "once")]
     [string]$cmd = "status",
     [Parameter(ValueFromRemainingArguments = $true)]
     [string[]]$rest = @()

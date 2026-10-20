@@ -1,4 +1,4 @@
-"""Queries about what this bot's team can currently see."""
+"""Queries about this bot's champion vision, including owned wards."""
 
 from __future__ import annotations
 
@@ -57,6 +57,34 @@ def camp_tiles_into(out: Bitboard) -> None:
         out: Destination Bitboard; its previous contents are overwritten.
     """
     _bc.camp_occupancy_into(out)
+
+
+def awake_camp_tiles() -> Bitboard:
+    """Return the tiles of visible awake camps. Dead camps are excluded."""
+    return _bc.awake_camp_occupancy()
+
+
+def awake_camp_tiles_into(out: Bitboard) -> None:
+    """Like awake_camp_tiles, but writes into out.
+
+    Args:
+        out: Destination Bitboard; its previous contents are overwritten.
+    """
+    _bc.awake_camp_occupancy_into(out)
+
+
+def asleep_camp_tiles() -> Bitboard:
+    """Return the tiles of visible asleep camps. Dead camps are excluded."""
+    return _bc.asleep_camp_occupancy()
+
+
+def asleep_camp_tiles_into(out: Bitboard) -> None:
+    """Like asleep_camp_tiles, but writes into out.
+
+    Args:
+        out: Destination Bitboard; its previous contents are overwritten.
+    """
+    _bc.asleep_camp_occupancy_into(out)
 
 
 def ward_tiles(team: Optional[Team] = None) -> Bitboard:
@@ -150,6 +178,17 @@ def visible_tiles_into(out: Bitboard) -> None:
         out: Destination Bitboard; its previous contents are overwritten.
     """
     _bc.vision_into(out)
+
+
+def in_vision(position: Vec2) -> bool:
+    """Check current self vision, including owned ward vision, even on empty tiles.
+
+    Hidden tiles return False; out-of-bounds positions raise Error with API_BAD_POSITION.
+
+    Args:
+        position: Tile to query.
+    """
+    return _bc.is_visible(position.x, position.y)
 
 
 def has_teleport(position: Vec2) -> bool:

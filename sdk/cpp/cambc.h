@@ -157,19 +157,25 @@ namespace constants
 	namespace passive_abilities
 	{
 		/// Prism: focus gained per carried gem.
-		inline constexpr float prism_focus_per_gem = 0.2f;
+		inline constexpr float prism_focus_per_gem = 1.0f;
 
 		/// Varg: attack splash radius in tiles.
 		inline constexpr float varg_splash_radius = 1.0f;
 
 		/// Vesper Vale: additional gold as a percentage of base gold.
-		inline constexpr std::uint32_t vesper_vale_bonus_gold_percent = 20;
+		inline constexpr std::uint32_t vesper_vale_bonus_gold_percent = 33;
+
+		/// Marcella: gold gained per gem tributed.
+		inline constexpr std::uint32_t marcella_tribute_gold_per_gem = 2;
 
 		/// Ryth: strength gained per point of bonus health.
 		inline constexpr float ryth_health_strength_ratio = 0.01f;
 
 		/// Ren: retaliation damage as a fraction of focus.
 		inline constexpr float ren_retaliation_focus_ratio = 0.2f;
+
+		/// Heart of Ruin: maximum bonus damage at 100% missing health.
+		inline constexpr float heart_of_ruin_missing_health_damage_max_bonus = 0.5f;
 	} // namespace passive_abilities
 } // namespace constants
 
@@ -226,12 +232,14 @@ enum class camp_type : std::int32_t
 	wolf,
 	/// Elk camp: 2,400 health, 60 strength; drops more gold and gems than a wolf.
 	elk,
-	/// Gem cluster: 500 health, does not attack; drops gems only.
+	/// Gem cluster: 120 health, does not attack; drops gems only.
 	gem_cluster,
-	/// Gold cluster: 500 health, does not attack; drops gold only.
+	/// Gold cluster: 120 health, does not attack; drops gold only.
 	gold_cluster,
-	/// Monolith: 20,000 health, 200 strength and attack range 3; the largest gold and gem reward.
-	monolith
+	/// Monolith: 20,000 health, 200 strength and attack range 5; the largest gold and gem reward.
+	monolith,
+	/// Golem: 5,000 health, 120 strength and attack range 4; drops gold and gems.
+	golem
 };
 
 /// Champion passive effect tags from the engine definition.
@@ -253,8 +261,10 @@ enum class passive_type : std::uint8_t
 	reset_cooldowns_on_kill,
 	/// Damages an attacker whenever this champion takes damage (Ren).
 	retaliation,
-	/// Cannot be stunned (Marcella).
+	/// Cannot be stunned, and gains gold per gem tributed (Marcella).
 	stun_immunity,
+	/// Up to 50% bonus to all damage, scaling linearly with missing health (Heart of Ruin).
+	missing_health_damage = 10,
 };
 
 /// Draft choices; Cassi and Issac share one pick.
@@ -272,7 +282,7 @@ enum class champion_draft : std::int32_t
 	stellar,
 	/// Ranged spellcaster that gains focus from carried gems.
 	prism,
-	/// Melee champion immune to stuns, with a stunning enhanced attack and a ranged damage spell.
+	/// Melee champion immune to stuns who gains gold per gem tributed, with a stunning enhanced attack and a ranged damage spell.
 	marcella,
 	/// Ranged champion that heals another ally or resets its basic attack.
 	willow,
@@ -282,6 +292,8 @@ enum class champion_draft : std::int32_t
 	varg,
 	/// Ranged champion that shops in the field and has a strong stunning spell.
 	tavi,
+	/// Melee champion whose missing health increases all damage, with a self-shield and a stunning area dash.
+	heart_of_ruin,
 };
 
 /// Engine error codes; numeric values mirror EngineC/Errors.h.
@@ -1405,7 +1417,7 @@ enum class champion_type : std::int32_t
 	stellar,
 	/// Ranged spellcaster that gains focus from carried gems.
 	prism,
-	/// Melee champion immune to stuns, with a stunning enhanced attack and a ranged damage spell.
+	/// Melee champion immune to stuns who gains gold per gem tributed, with a stunning enhanced attack and a ranged damage spell.
 	marcella,
 	/// Ranged champion that heals another ally or resets its basic attack.
 	willow,
@@ -1415,6 +1427,8 @@ enum class champion_type : std::int32_t
 	varg,
 	/// Ranged champion that shops in the field and has a strong stunning spell.
 	tavi,
+	/// Melee champion whose missing health increases all damage, with a self-shield and a stunning area dash.
+	heart_of_ruin,
 };
 
 /// Ability payload types reported by the engine.
@@ -1869,6 +1883,7 @@ enum class item_passive : std::uint32_t { monster = 1, durability, treasure, jun
 	case camp_type::gem_cluster: return "gem_cluster";
 	case camp_type::gold_cluster: return "gold_cluster";
 	case camp_type::monolith: return "monolith";
+	case camp_type::golem: return "golem";
 	default: break;
 	}
 	return "camp_type(" + std::to_string(static_cast<std::int32_t>(value)) + ")";
@@ -1889,6 +1904,7 @@ enum class item_passive : std::uint32_t { monster = 1, durability, treasure, jun
 	case passive_type::reset_cooldowns_on_kill: return "reset_cooldowns_on_kill";
 	case passive_type::retaliation: return "retaliation";
 	case passive_type::stun_immunity: return "stun_immunity";
+	case passive_type::missing_health_damage: return "missing_health_damage";
 	default: break;
 	}
 	return "passive_type(" + std::to_string(static_cast<int>(value)) + ")";
@@ -1911,6 +1927,7 @@ enum class item_passive : std::uint32_t { monster = 1, durability, treasure, jun
 	case champion_draft::ren: return "ren";
 	case champion_draft::varg: return "varg";
 	case champion_draft::tavi: return "tavi";
+	case champion_draft::heart_of_ruin: return "heart_of_ruin";
 	default: break;
 	}
 	return "champion_draft(" + std::to_string(static_cast<std::int32_t>(value)) + ")";
@@ -2079,6 +2096,7 @@ enum class item_passive : std::uint32_t { monster = 1, durability, treasure, jun
 	case champion_type::ren: return "ren";
 	case champion_type::varg: return "varg";
 	case champion_type::tavi: return "tavi";
+	case champion_type::heart_of_ruin: return "heart_of_ruin";
 	default: break;
 	}
 	return "champion_type(" + std::to_string(static_cast<std::int32_t>(value)) + ")";
@@ -2581,13 +2599,23 @@ struct ability_heal : ability_properties
 	[[nodiscard]] friend bool operator==(const ability_heal&, const ability_heal&) = default;
 };
 
-/// Cached dash ability metadata.
+/// Dash metadata. Landing effects apply to enemies and camps only after a successful dash.
+/// range: Maximum dash travel distance in tiles. Diagonal steps count as one; the destination must be a different tile reachable by a legal dash path.
+/// radius: Chebyshev radius in tiles around the landing tile for damage and stun; 1 includes all eight neighbouring tiles.
+/// modifier: Landing damage multiplier: base damage = caster Focus * modifier, before damage bonuses and mitigation. 0 disables landing damage.
+/// duration: Stun duration applied on landing, in turns; 0 disables stun. This is not the dash travel time.
 struct ability_dash : ability_properties
 {
 	/// Payload kind tag.
 	static constexpr ability_kind kind = ability_kind::dash;
-	/// Maximum dash distance in tiles.
-	float						  range{};
+	/// Maximum travel distance in tiles; diagonals count as one. Requires a legal dash path to a different tile.
+	float range{};
+	/// Damage and stun radius around the landing tile, in Chebyshev tiles; 1 includes all eight neighbours.
+	float radius{};
+	/// Base landing damage is caster Focus * modifier, before damage bonuses and mitigation; 0 disables damage.
+	float modifier{};
+	/// Stun duration applied on landing, in turns, not dash travel time; 0 disables stun.
+	std::int32_t duration{};
 	/// Compare every field.
 	[[nodiscard]] friend bool operator==(const ability_dash&, const ability_dash&) = default;
 };
@@ -3046,6 +3074,8 @@ public:
 	[[nodiscard]] bool is_gold_cluster() const noexcept { return kind() == camp_type::gold_cluster; }
 	/// Check whether this camp is a monolith.
 	[[nodiscard]] bool is_monolith() const noexcept { return kind() == camp_type::monolith; }
+	/// Check whether this camp is a golem.
+	[[nodiscard]] bool is_golem() const noexcept { return kind() == camp_type::golem; }
 	/// Get the camp's original spawn tile, not its current live position.
 	[[nodiscard]] vec2 spawn_position() const noexcept { return spawn_position_; }
 	/// Query this camp's group from the engine on every call; invalid identities throw.
@@ -3202,7 +3232,7 @@ private:
 			info_.emplace(ability_heal{ common, props.payload.heal.range, props.payload.heal.modifier });
 			break;
 		case ability_kind::dash:
-			info_.emplace(ability_dash{ common, props.payload.dash_range });
+			info_.emplace(ability_dash{ common, props.payload.dash.range, props.payload.dash.radius, props.payload.dash.modifier, props.payload.dash.duration });
 			break;
 		case ability_kind::shield:
 			info_.emplace(ability_shield{ common, props.payload.shield.range, props.payload.shield.modifier, props.payload.shield.duration });
@@ -3333,7 +3363,8 @@ public:
 		return info_ && std::holds_alternative<T>(*info_);
 	}
 
-	/// Query damage before absorption/health limits; includes caster items and passives.
+	/// Query Focus-scaled damage, including dash landing damage and caster outgoing bonuses such as Heart of Ruin's passive.
+	/// Excludes target-dependent modifiers, shields and health limits.
 	[[nodiscard]] float damage_amount() const
 	{
 		require_runtime();
@@ -3793,9 +3824,10 @@ public:
 		return successful != 0;
 	}
 
-	/// Move to the reachable tile on a shortest path to `target`, avoiding walls, holes, altars, the enemy spawn and
-	/// visible units. Returns false without moving when already there, unable to move, or `target` is blocked or
-	/// unreachable, and false for a newly revealed hidden obstruction.
+	/// Move to the reachable tile on a shortest path to `target`. Always treat the target as free for pathfinding,
+	/// while avoiding other walls, holes, altars, enemy spawn tiles, visible units and teleport reservations.
+	/// Returns false when already there, unable to move, no route exists, or a hidden obstruction is revealed.
+	/// The engine still validates the chosen landing tile: trying to enter a known blocked target throws.
 	/// @param target Map tile to approach.
 	bool move_towards(vec2 target) const;
 
@@ -3947,9 +3979,9 @@ inline bool ability::is_ready() const
 
 
 /// Immutable physical champion designs; abilities and base stats are available during draft, not live state.
-inline const std::array<champion, 12> champion_designs = []<std::size_t... I>(std::index_sequence<I...>) {
+inline const std::array<champion, 13> champion_designs = []<std::size_t... I>(std::index_sequence<I...>) {
 	return std::array{ champion{ static_cast<champion_type>(I) }... };
-}(std::make_index_sequence<12>{});
+}(std::make_index_sequence<13>{});
 
 /// Whether this guest has a draft perspective, without querying the host.
 [[nodiscard]] bool is_draft() noexcept;
@@ -4075,6 +4107,9 @@ struct ward_access;
 class ward
 {
 public:
+	/// Return the owning champion captured when this ward was visible, even if the owner is hidden.
+	/// Live champion state still requires the champion to be in vision.
+	[[nodiscard]] cambc::champion owner() const { return detail::handle_access::make_champion(static_cast<handle_champion_t>(owner_)); }
 	/// Get the ward's tile.
 	[[nodiscard]] vec2 position() const noexcept { return position_; }
 	/// Get the owning team relative to the authenticated bot.
@@ -4113,11 +4148,12 @@ private:
 	friend struct detail::ward_access;
 
 	explicit ward(const detail::ward_info& raw)
-		: position_{ raw.x, raw.y },
+		: owner_{ raw.owner }, position_{ raw.x, raw.y },
 		  team_{ raw.team == static_cast<std::uint32_t>(detail::sdk_my_team()) ? team::ally : team::enemy },
 		  remaining_time_{ raw.timer < 0 ? std::nullopt : std::optional{ raw.timer } }
 	{
 	}
+	std::uint32_t owner_;
 	vec2 position_;
 	cambc::team team_;
 	std::optional<std::int32_t> remaining_time_;
@@ -4225,6 +4261,36 @@ inline void camp_tiles_into(bitboard& out)
 {
 	bitboard result{ uninitialized };
 	camp_tiles_into(result);
+	return result;
+}
+
+/// Like `awake_camp_tiles`, but writes into `out`.
+/// @param out Destination; its previous contents are overwritten.
+inline void awake_camp_tiles_into(bitboard& out)
+{
+	detail::check(detail::sdk_awake_camp_occupancy(out.ptr()));
+}
+
+/// Get the tiles of visible awake camps. Dead camps are excluded.
+[[nodiscard]] inline bitboard awake_camp_tiles()
+{
+	bitboard result{ uninitialized };
+	awake_camp_tiles_into(result);
+	return result;
+}
+
+/// Like `asleep_camp_tiles`, but writes into `out`.
+/// @param out Destination; its previous contents are overwritten.
+inline void asleep_camp_tiles_into(bitboard& out)
+{
+	detail::check(detail::sdk_asleep_camp_occupancy(out.ptr()));
+}
+
+/// Get the tiles of visible asleep camps. Dead camps are excluded.
+[[nodiscard]] inline bitboard asleep_camp_tiles()
+{
+	bitboard result{ uninitialized };
+	asleep_camp_tiles_into(result);
 	return result;
 }
 } // namespace vision
@@ -4708,6 +4774,16 @@ inline void visible_tiles_into(bitboard& out)
 	return result;
 }
 
+/// Check current self vision, including owned ward vision, whether or not the tile is occupied.
+/// Hidden tiles return false; out-of-bounds positions throw api_bad_position.
+/// @param position Tile to query.
+[[nodiscard]] inline bool in_vision(vec2 position)
+{
+	std::int32_t result{};
+	detail::check(detail::sdk_is_visible(position.x, position.y, &result));
+	return result != 0;
+}
+
 /// Check whether a tile is occupied by a visible teleport reservation.
 /// @param position Tile to query.
 [[nodiscard]] inline bool has_teleport(vec2 position)
@@ -5123,7 +5199,7 @@ inline bool champion::move_towards(vec2 target) const
 	bitboard blocked{ map::walls() | map::holes() | map::altars() | map::spawn_region(team::enemy) | vision::champion_tiles()
 		| vision::camp_tiles() | vision::teleport_tiles() };
 	blocked.set(origin, false);
-	if (blocked.is_set(target)) return false;
+	blocked.set(target, false);
 	bitboard roots;
 	roots.set(target, true);
 	bitboard destinations;

@@ -50,3 +50,4 @@ league/*.tmp
 handoff.zip
 best_bot_dump/
 /match-*.json
+cmake/

@@ -64,28 +64,40 @@ def slug(team: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", team.lower()).strip("-")
 
 
-def map_geometry() -> dict[str, dict]:
-    """Per map: group centres, team-A and team-B spawn tiles (from our debug dumps; cached in
-    data/map_geometry.json, so a fresh clone needs no dumps)."""
-    if GEOMETRY.exists():
-        return json.loads(GEOMETRY.read_text(encoding="utf-8"))
+def map_name(platform: str) -> str:
+    """Platform map name -> our map stem: '00contest' -> 'contest', '01big_world' -> 'big-world'."""
+    return re.sub(r"^\d+", "", platform).replace("_", "-").lower()
+
+
+def geometry_from_dump(m: dict) -> dict:
+    """Group centres and both spawn tiles from our bot's debug `M ` dump (written as team A)."""
     from bctools.render import _bits
 
+    w, h = m["w"], m["h"]
+
+    def cells(key: str) -> list[tuple[int, int]]:
+        return [(i % w, i // w) for i, v in enumerate(_bits(m[key], w, h)) if v]
+
+    return {
+        "centres": [g["c"] for g in m["groups"]],
+        "spawn_a": cells("ally_spawn")[0],
+        "spawn_b": cells("enemy_spawn")[0],
+    }
+
+
+def map_geometry() -> dict[str, dict]:
+    """Per map: group centres, team-A and team-B spawn tiles (from our debug dumps; cached in
+    data/map_geometry.json, so a fresh clone needs no dumps; harness/league.py adds new maps)."""
+    if GEOMETRY.exists():
+        return json.loads(GEOMETRY.read_text(encoding="utf-8"))
     geo = {}
     for f in glob.glob(str(ROOT / MAP_DUMPS)):
         name = Path(f).name.split("__")[0]
         if name in geo or "main-v7-vs-idle" not in Path(f).name:
             continue
         m = replay.load(f).team("a").map
-        if not m:
-            continue
-        w, h = m["w"], m["h"]
-        cells = lambda key: [(i % w, i // w) for i, v in enumerate(_bits(m[key], w, h)) if v]  # noqa: E731, B023
-        geo[name] = {
-            "centres": [g["c"] for g in m["groups"]],
-            "spawn_a": cells("ally_spawn")[0],
-            "spawn_b": cells("enemy_spawn")[0],
-        }
+        if m:
+            geo[name] = geometry_from_dump(m)
     return geo
 
 
@@ -163,7 +175,7 @@ def extract(team: str, geo: dict) -> dict:
             if seq:
                 builds[kind].append(seq)
                 firsts.append(emb[0]["timestamp"]["round"])
-            mp = m["map"].replace("_", "-")
+            mp = map_name(m["map"])
             if mp in geo:
                 clears = sorted(
                     ev[("campClear", c["id"], c["name"])], key=lambda en: en["timestamp"]["round"]

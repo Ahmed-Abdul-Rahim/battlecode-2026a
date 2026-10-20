@@ -31,7 +31,7 @@ fn abi_layouts_match_cpp() {
     assert_eq!(std::mem::size_of::<sys::ChampionInfo>(), 44);
     assert_eq!(std::mem::size_of::<sys::BuffData>(), 12);
     assert_eq!(std::mem::size_of::<sys::CampBuffData>(), 12);
-    assert_eq!(std::mem::size_of::<sys::WardInfo>(), 20);
+    assert_eq!(std::mem::size_of::<sys::WardInfo>(), 24);
     assert_eq!(std::mem::size_of::<sys::ControlWardInfo>(), 16);
     assert_eq!(std::mem::size_of::<sys::AltarLockInfo>(), 24);
     assert_eq!(std::mem::size_of::<sys::TeleportInfo>(), 28);
@@ -39,6 +39,96 @@ fn abi_layouts_match_cpp() {
     assert_eq!(std::mem::offset_of!(sys::UnitDefinition, abilities), 12);
     assert_eq!(std::mem::offset_of!(sys::UnitDefinition, attack_type), 84);
     assert_eq!(std::mem::offset_of!(sys::BuffData, value), 8);
+}
+
+#[test]
+fn in_vision_queries_current_tiles_and_preserves_errors() {
+    setup();
+    let calls = std::rc::Rc::new(std::cell::Cell::new(0));
+    let counter = calls.clone();
+    fake::hook(move |name, args| {
+        if name == "bc_get_last_error" { return Some(0); }
+        assert_eq!(name, "is_visible"); // No full bitboard or entity queries.
+        counter.set(counter.get() + 1);
+        let (x, y) = (args[0] as i32, args[1] as i32);
+        if !(0..8).contains(&x) || !(0..8).contains(&y) {
+            return Some(ErrorCode::ApiBadPosition as i64);
+        }
+        unsafe { (args[2] as *mut i32).write(i32::from((x, y) == (3, 2) && counter.get() == 1)); }
+        Some(0)
+    });
+    assert!(vision::in_vision(Vec2::new(3, 2)).unwrap());
+    assert!(!vision::in_vision(Vec2::new(2, 3)).unwrap());
+    assert!(!vision::in_vision(Vec2::new(3, 2)).unwrap());
+    for p in [Vec2::new(-1, 0), Vec2::new(0, -1), Vec2::new(8, 0), Vec2::new(0, 8)] {
+        assert_eq!(vision::in_vision(p).unwrap_err().code(), Some(ErrorCode::ApiBadPosition));
+    }
+    assert_eq!(calls.get(), 7);
+    fake::hook(|name, _| {
+        if name == "bc_get_last_error" { return Some(0); }
+        assert_eq!(name, "is_visible");
+        Some(ErrorCode::ApiNotInitialized as i64)
+    });
+    assert_eq!(vision::in_vision(Vec2::new(3, 2)).unwrap_err().code(), Some(ErrorCode::ApiNotInitialized));
+}
+
+#[test]
+fn move_towards_plans_to_blocked_targets_and_preserves_move_results() {
+    for (target, reachable, action_code, successful) in [
+        (Vec2::new(5, 2), true, 0, 1),
+        (Vec2::new(5, 2), true, 0, 0),
+        (Vec2::new(3, 2), true, 22, 0),
+        (Vec2::new(5, 2), false, 0, 1),
+    ] {
+        setup();
+        let target_bit = 1u64 << (target.y * 8 + target.x);
+        let obstacle_bit = 1u64 << 27; // (3,3) must remain blocked.
+        let moved = std::rc::Rc::new(std::cell::Cell::new(false));
+        let recorded = moved.clone();
+        fake::hook(move |name, a| unsafe {
+            match name {
+                "bc_map_mask" | "board_camp_occupancy" | "board_teleport_occupancy" => {
+                    let out = *a.last().unwrap() as *mut u64;
+                    out.write(target_bit | obstacle_bit);
+                    out.add(1).write(0);
+                }
+                "bc_DistanceField_ComputeToWithExpansionCount" => {
+                    let walls = *(a[0] as *const u64);
+                    assert_eq!(walls & target_bit, 0);
+                    assert_ne!(walls & obstacle_bit, 0);
+                    assert_eq!(*(a[1] as *const u64), target_bit);
+                    let field = std::slice::from_raw_parts_mut(a[4] as *mut u16, 64);
+                    field.fill(u16::MAX);
+                    if reachable { field[18] = 3; field[19] = 1; }
+                    (a[3] as *mut u64).write(0);
+                    (a[6] as *mut u16).write(3);
+                }
+                "bc_Bitboard_ReachableMask" => {
+                    assert_eq!(*(a[0] as *const u64) & target_bit, 0);
+                    (a[3] as *mut u64).write((1u64 << 18) | (1u64 << 19));
+                    (a[3] as *mut u64).add(1).write(0);
+                }
+                "move_to" => {
+                    assert_eq!(&a[..2], &[3, 2]);
+                    recorded.set(true);
+                    (a[2] as *mut i32).write(successful);
+                    return Some(action_code);
+                }
+                _ => return None,
+            }
+            Some(0)
+        });
+        crate::init().unwrap();
+        let result = self_champion().unwrap().unwrap().move_towards(target);
+        if action_code != 0 {
+            assert_eq!(result.unwrap_err().code(), Some(ErrorCode::InvalidActionMoveBadDestination));
+        } else {
+            assert_eq!(result.unwrap(), reachable && successful != 0);
+        }
+        assert_eq!(moved.get(), reachable);
+        // Clearing the pathfinding copy must not mutate the cached map terrain.
+        assert!(map::walls().unwrap().is_set(target).unwrap());
+    }
 }
 
 #[test]
@@ -264,7 +354,8 @@ fn integer_vectors_and_validated_enums() {
     assert!(AbilityKind::try_from(0).is_err());
     assert!(BuffKind::try_from(3).is_err());
     assert_eq!(PassiveType::try_from(0).unwrap(), PassiveType::None);
-    assert!(ChampionType::try_from(12).is_err());
+    assert_eq!(ChampionType::try_from(12).unwrap(), ChampionType::HeartOfRuin);
+    assert!(ChampionType::try_from(13).is_err());
 }
 #[test]
 fn local_validation_uses_engine_codes_and_preserves_diagnostics() {
@@ -468,7 +559,10 @@ fn design_champions_are_draft_safe_but_not_live() {
             .any(|name| name.starts_with("map_camp")));
     });
     let designs = crate::champion_designs().unwrap();
-    assert_eq!(designs.len(), 12);
+    assert_eq!(designs.len(), 13);
+    assert_eq!(designs[12].champion_name().unwrap(), ChampionType::HeartOfRuin);
+    assert_eq!(PassiveType::try_from(10).unwrap(), PassiveType::MissingHealthDamage);
+    assert_eq!(ChampionDraft::HeartOfRuin as i32, 11);
     for (i, c) in designs.iter().enumerate() {
         assert_eq!(c.champion_name().unwrap() as usize, i);
         assert_eq!(c.base_stats().unwrap().base_attack_range, 1);
@@ -798,6 +892,7 @@ fn overlapping_wards_remain_distinct_observations() {
                 y: 2,
                 timer: -1,
                 disabled: 0,
+                owner: 0,
             },
             sys::WardInfo {
                 team: 1,
@@ -805,6 +900,7 @@ fn overlapping_wards_remain_distinct_observations() {
                 y: 2,
                 timer: 3,
                 disabled: 1,
+                owner: 2,
             },
         ];
     });
@@ -820,6 +916,11 @@ fn overlapping_wards_remain_distinct_observations() {
     fake::edit(|s| s.wards.clear());
     assert_eq!(wards.len(), 2);
     assert_eq!(crate::vision::wards(None).unwrap().len(), 0);
+    fake::edit(|s| s.hidden = true);
+    let owner = wards[1].owner().unwrap();
+    assert_eq!(owner.team().unwrap(), Team::Enemy);
+    assert_eq!(owner.health().unwrap_err().code(), Some(ErrorCode::ApiNotInVision));
+    assert_eq!(owner.position().unwrap_err().code(), Some(ErrorCode::ApiNotInVision));
 }
 #[test]
 fn position_lookups_distinguish_absence_and_invalid_positions() {
@@ -1052,6 +1153,7 @@ fn camp_identity_is_handle_only_and_private_type_drives_live_queries() {
         assert_eq!(camp.is_gem_cluster(), *kind == CampType::GemCluster);
         assert_eq!(camp.is_gold_cluster(), *kind == CampType::GoldCluster);
         assert_eq!(camp.is_monolith(), *kind == CampType::Monolith);
+        assert_eq!(camp.is_golem(), *kind == CampType::Golem);
     }
     fake::hook(|name, args| {
         match name {
@@ -1507,7 +1609,7 @@ fn init_populates_all_caches_and_accessors_never_query_or_initialize() {
             ("bc_metadata", 1),
             ("game_settings", 1),
             ("shared_memory_size", 1),
-            ("champion_design", 12),
+            ("champion_design", 13),
             ("bc_map_mask", 4),
         ] {
             assert_eq!(
@@ -1536,7 +1638,7 @@ fn init_populates_all_caches_and_accessors_never_query_or_initialize() {
     assert_eq!(crate::draft_memory().len(), 4);
     assert_eq!(crate::draft_memory().get(0).unwrap(), b'r');
     assert!(crate::draft_memory().get(4).is_err());
-    assert_eq!(crate::champion_designs().unwrap().len(), 12);
+    assert_eq!(crate::champion_designs().unwrap().len(), 13);
     crate::init().unwrap();
     fake::HOST.with(|host| assert!(host.borrow().calls.is_empty()));
     assert_eq!(crate::map::camp_groups().unwrap().len(), 1);
@@ -1545,6 +1647,30 @@ fn init_populates_all_caches_and_accessors_never_query_or_initialize() {
         crate::self_champion().unwrap().unwrap().health().unwrap(),
         27.
     );
+}
+
+#[test]
+fn camp_state_tile_queries_overwrite_outputs_and_propagate_errors() {
+    setup();
+    let awake = vision::awake_camp_tiles().unwrap();
+    let asleep = vision::asleep_camp_tiles().unwrap();
+    assert_eq!(awake.count().unwrap(), 1);
+    assert_eq!(asleep.count().unwrap(), 1);
+    assert_ne!(awake.export_raw_buffer().unwrap(), asleep.export_raw_buffer().unwrap());
+    let mut reused = vision::awake_camp_tiles().unwrap();
+    vision::asleep_camp_tiles_into(&mut reused).unwrap();
+    assert_eq!(reused.export_raw_buffer().unwrap(), asleep.export_raw_buffer().unwrap());
+    vision::awake_camp_tiles_into(&mut reused).unwrap();
+    assert_eq!(reused.export_raw_buffer().unwrap(), awake.export_raw_buffer().unwrap());
+    fake::hook(|name, _| match name {
+        "board_awake_camp_occupancy" | "board_asleep_camp_occupancy" => Some(ErrorCode::ApiNotInitialized as i64),
+        _ => None,
+    });
+    assert_eq!(vision::awake_camp_tiles().unwrap_err().raw_code(), Some(ErrorCode::ApiNotInitialized as i32));
+    assert_eq!(vision::asleep_camp_tiles().unwrap_err().raw_code(), Some(ErrorCode::ApiNotInitialized as i32));
+    assert!(vision::awake_camp_tiles_into(&mut reused).is_err());
+    assert!(vision::asleep_camp_tiles_into(&mut reused).is_err());
+    assert_eq!(reused.export_raw_buffer().unwrap(), awake.export_raw_buffer().unwrap());
 }
 
 #[test]
@@ -1737,6 +1863,7 @@ fn typed_position_and_ward_queries_preserve_host_arguments_and_errors() {
     assert_eq!(mask.raw_buffer_size(), 16);
     assert!(mask.is_set(Vec2::new(0, 0)).unwrap());
     let ward = Ward {
+        owner: ChampionHandle(0),
         position,
         team: Team::Ally,
         remaining_time: None,
@@ -2190,4 +2317,36 @@ fn debug_block_runs_only_in_debug_mode() {
     assert!(ran);
     #[cfg(not(cambc_debug))]
     assert!(!ran);
+}
+
+#[test]
+fn damaging_dash_metadata_and_both_damage_queries() {
+    setup();
+    crate::init().unwrap();
+    fake::hook(|name, args| match name {
+        "champion_ability_props" => {
+            let mut props = fake::props(AbilityKind::Dash as u32);
+            props.payload = [2.0f32.to_bits(), 1.0f32.to_bits(), 1.75f32.to_bits(), 1];
+            unsafe { (args[2] as *mut sys::AbilityProps).write(props) };
+            Some(0)
+        }
+        "champion_ability_damage" => {
+            assert_eq!(&args[..2], &[0, 1]);
+            unsafe { (args[2] as *mut f32).write(218.75) };
+            Some(0)
+        }
+        "champion_ability_damage_against" => {
+            assert_eq!(&args[..3], &[0, 1, 7]);
+            unsafe { (args[3] as *mut f32).write(218.75) };
+            Some(0)
+        }
+        _ => None,
+    });
+    let owner = Champion::new(ChampionHandle(0)).unwrap();
+    let enemy = Champion::new(ChampionHandle(7)).unwrap();
+    let ability = &owner.abilities()[1];
+    let AbilityInfo::Dash(props) = ability.info().unwrap().unwrap() else { panic!("expected Dash") };
+    assert_eq!((props.range, props.radius, props.modifier, props.duration), (2.0, 1.0, 1.75, 1));
+    assert_eq!(ability.damage_amount().unwrap(), 218.75);
+    assert_eq!(ability.damage_amount_against(&enemy).unwrap(), 218.75);
 }

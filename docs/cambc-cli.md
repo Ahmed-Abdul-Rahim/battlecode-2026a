@@ -1,4 +1,4 @@
-# cambc CLI notes (2.2.5)
+# cambc CLI notes (3.0.1, engine 1.0.0)
 
 Install or update with `python -m pip install --upgrade cambc`. It lives in `.venv`; `scripts/setup.ps1` does this.
 
@@ -19,6 +19,8 @@ Install or update with `python -m pip install --upgrade cambc`. It lives in `.ve
 Day to day, use `bctools run` / `bctools gate` instead. They build once, write the manifest, play both sides and summarise.
 
 ## Quirks we hit
+
+- **3.0.1 (2026-10-20):** the ladder runs engine 1.0.0; cambc 2.2.5 ran engine 0.0.3 and can't `maps pull` (HTTP 303). After upgrading, run `cambc init --yes .` (refreshes `sdk/`, `cambc.toml`, maps). `--statistics` is **binary** unless `--json` is given (bctools passes `--json`). Pulled maps are named `00contest`, `01islands`; `harness/league.py maps` tidies `maps/`.
 
 - **Bot `Cargo.toml` must match the template exactly**, or the build fails with "managed by cambc". So the bot can't depend on our crates by path. `bctools sync` vendors `crates/*` into `bots/main/src/bc_*/` instead, and CI checks the copy is current.
 - **Statistics are only written for finished matches.** With `--rounds` you get no `--statistics` file.

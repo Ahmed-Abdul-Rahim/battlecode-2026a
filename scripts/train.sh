@@ -3,7 +3,7 @@
 #   scripts/train.sh start                          # worker: train and push to branch 'league'
 #   scripts/train.sh start --lead                   # the one PC that reads the ladder + writes reviews
 #   scripts/train.sh start --lead --auto-submit     # ... and uploads (team-agreed rules, one PC only)
-#   scripts/train.sh stop | status | logs | review | sync | bench | submit
+#   scripts/train.sh stop | status | logs | review | sync | maps | bench | submit
 #   scripts/train.sh once [--no-push]               # one cycle in the foreground
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -31,8 +31,8 @@ case "$cmd" in
     tail -F runs/league/league.log ;;
   once)
     "$PY" -u harness/league.py run --cycles 1 "$@" ;;
-  status|review|sync|bench|submit)
+  status|review|sync|maps|bench|submit)
     "$PY" harness/league.py "$cmd" "$@" ;;
   *)
-    echo "usage: $0 start|stop|status|logs|review|sync|bench|submit|once [args]"; exit 2 ;;
+    echo "usage: $0 start|stop|status|logs|review|sync|maps|bench|submit|once [args]"; exit 2 ;;
 esac

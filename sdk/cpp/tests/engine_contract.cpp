@@ -77,10 +77,12 @@ BC_LAYOUT(cambc::detail::consumable_info, Game_ConsumableInfo);
 BC_FIELD(cambc::detail::consumable_info, cost, Game_ConsumableInfo, m_cost);
 BC_FIELD(cambc::detail::consumable_info, carry_limit, Game_ConsumableInfo, m_carryLimit);
 BC_VALUE(cambc::constants::passive_abilities::prism_focus_per_gem, Engine::ChampionPassiveBalance::k_focusPerGem);
+BC_VALUE(cambc::constants::passive_abilities::marcella_tribute_gold_per_gem, Engine::ChampionPassiveBalance::k_tributeGoldPerGem);
 BC_VALUE(cambc::constants::passive_abilities::varg_splash_radius, Engine::ChampionPassiveBalance::k_splashRadius);
 BC_VALUE(cambc::constants::passive_abilities::vesper_vale_bonus_gold_percent, Engine::ChampionPassiveBalance::k_bonusGoldPercent);
 BC_VALUE(cambc::constants::passive_abilities::ryth_health_strength_ratio, Engine::ChampionPassiveBalance::k_healthStrengthRatio);
 BC_VALUE(cambc::constants::passive_abilities::ren_retaliation_focus_ratio, Engine::ChampionPassiveBalance::k_retaliationFocusRatio);
+BC_VALUE(cambc::constants::passive_abilities::heart_of_ruin_missing_health_damage_max_bonus, Engine::ChampionPassiveBalance::k_missingHealthDamageMaxBonus);
 
 BC_ENUM(cambc::passive_type::none, e_Game_Passive_Type_none);
 BC_LAYOUT(cambc::passive_type, Game_Passive_Type);
@@ -92,9 +94,10 @@ BC_ENUM(cambc::passive_type::health_strength, e_Game_Passive_Type_healthStrength
 BC_ENUM(cambc::passive_type::reset_cooldowns_on_kill, e_Game_Passive_Type_resetCooldownsOnKill);
 BC_ENUM(cambc::passive_type::retaliation, e_Game_Passive_Type_retaliation);
 BC_ENUM(cambc::passive_type::stun_immunity, e_Game_Passive_Type_stunImmunity);
-// Omnivamp and Heart of Ruin are unreleased and hidden from the SDK; they must stay the last engine values.
+// The legacy omnivamp ID stays reserved; Heart of Ruin now uses missing-health damage.
 BC_VALUE(static_cast<int>(cambc::passive_type::stun_immunity) + 1, e_Game_Passive_Type_omnivamp);
-BC_VALUE(e_Game_Passive_Type_omnivamp + 1, e_Game_Passive_Type_numTypes);
+BC_VALUE(static_cast<int>(cambc::passive_type::missing_health_damage), e_Game_Passive_Type_missingHealthDamage);
+BC_VALUE(e_Game_Passive_Type_missingHealthDamage + 1, e_Game_Passive_Type_numTypes);
 BC_VALUE(cambc::buff_restrictions::empty().bits(), e_BuffRestriction_none);
 BC_LAYOUT(cambc::buff_restrictions, BuffRestriction);
 BC_VALUE(cambc::buff_restrictions::move.bits(), e_BuffRestriction_move);
@@ -115,6 +118,7 @@ BC_ENUM(cambc::camp_type::elk, e_Camp_elk);
 BC_ENUM(cambc::camp_type::gem_cluster, e_Camp_gemCluster);
 BC_ENUM(cambc::camp_type::gold_cluster, e_Camp_goldCluster);
 BC_ENUM(cambc::camp_type::monolith, e_Camp_monolith);
+BC_ENUM(cambc::camp_type::golem, e_Camp_golem);
 
 // champion_draft
 BC_ENUM(cambc::champion_draft::ryth, e_ChampionDraft_ryth);
@@ -433,6 +437,8 @@ BC_FIELD(cambc::detail::ward_info, team, Game_Ward, m_team);
 BC_FIELD(cambc::detail::ward_info, x, Game_Ward, m_x);
 BC_FIELD(cambc::detail::ward_info, y, Game_Ward, m_y);
 BC_FIELD(cambc::detail::ward_info, timer, Game_Ward, m_timer);
+BC_FIELD(cambc::detail::ward_info, disabled, Game_Ward, m_disabled);
+BC_FIELD(cambc::detail::ward_info, owner, Game_Ward, m_owner);
 BC_LAYOUT(cambc::detail::control_ward_info, Game_ControlWard);
 BC_FIELD(cambc::detail::control_ward_info, team, Game_ControlWard, m_team);
 BC_FIELD(cambc::detail::control_ward_info, x, Game_ControlWard, m_x);
@@ -507,7 +513,10 @@ BC_FIELD(cambc::detail::ability_props, max_charges, Game_AbilityProps, m_maxChar
 BC_FIELD(cambc::detail::ability_props, targets, Game_AbilityProps, m_target);
 BC_FIELD(cambc::detail::ability_props, attributes, Game_AbilityProps, m_attributes);
 BC_FIELD(cambc::detail::ability_props, payload.enhanced_attack, Game_AbilityProps, m_attackReset.m_enhancedAuto);
-BC_FIELD(cambc::detail::ability_props, payload.dash_range, Game_AbilityProps, m_dash.m_range);
+BC_FIELD(cambc::detail::ability_props, payload.dash.range, Game_AbilityProps, m_dash.m_range);
+BC_FIELD(cambc::detail::ability_props, payload.dash.radius, Game_AbilityProps, m_dash.m_radius);
+BC_FIELD(cambc::detail::ability_props, payload.dash.modifier, Game_AbilityProps, m_dash.m_modifier);
+BC_FIELD(cambc::detail::ability_props, payload.dash.duration, Game_AbilityProps, m_dash.m_stunDuration);
 BC_FIELD(cambc::detail::ability_props, payload.damage.range, Game_AbilityProps, m_damage.m_range);
 BC_FIELD(cambc::detail::ability_props, payload.damage.modifier, Game_AbilityProps, m_damage.m_modifier);
 BC_FIELD(cambc::detail::ability_props, payload.heal.range, Game_AbilityProps, m_heal.m_range);
@@ -530,10 +539,10 @@ BC_LAYOUT(cambc::handle_champion_t, Handle_Champion);
 
 // End markers also catch appended engine values missing from the SDK.
 BC_VALUE(static_cast<int>(cambc::symmetry::rotational180) + 1, e_Symmetry_numSymmetryTypes);
-BC_VALUE(static_cast<int>(cambc::camp_type::monolith) + 1, e_Camp_mapSize);
-BC_VALUE(static_cast<int>(cambc::champion_draft::tavi) + 1, e_ChampionDraft_heart_of_ruin);
+BC_VALUE(static_cast<int>(cambc::camp_type::golem) + 1, e_Camp_mapSize);
+BC_VALUE(static_cast<int>(cambc::champion_draft::heart_of_ruin), e_ChampionDraft_heart_of_ruin);
 BC_VALUE(e_ChampionDraft_heart_of_ruin + 1, e_ChampionDraft_numChampions);
-BC_VALUE(static_cast<int>(cambc::champion_type::tavi) + 1, e_Champion_heart_of_ruin);
+BC_VALUE(static_cast<int>(cambc::champion_type::heart_of_ruin), e_Champion_heart_of_ruin);
 BC_VALUE(e_Champion_heart_of_ruin + 1, e_Champion_numChampions);
 BC_VALUE(std::variant_size_v<cambc::ability_info> + 1, e_Game_Ability_Type_numTypes);
 BC_VALUE(std::variant_size_v<cambc::buff_t>, e_Buff_numTypes);

@@ -14,3 +14,4 @@
 # (see merge_champion / merge_ledger), and pack.bin is regenerated from champion.json.
 league/*.json -merge
 bots/main/src/pack/pack.bin -merge
+league/mimics/*.json -merge

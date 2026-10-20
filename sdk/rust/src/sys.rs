@@ -307,6 +307,8 @@ pub(crate) struct WardInfo {
     pub timer: i32,
     /// Whether this ward is disabled.
     pub disabled: u8,
+    /// Owning champion handle captured while the ward is visible.
+    pub owner: u32,
 }
 /// Engine control-ward observation record; does not imply an action-target handle.
 #[repr(C)]
@@ -425,6 +427,10 @@ unsafe extern "C" {
     pub(crate) fn enemy_occupancy(out_board: *mut u64) -> i32;
     #[link_name = "board_camp_occupancy"]
     pub(crate) fn camp_occupancy(out_board: *mut u64) -> i32;
+    #[link_name = "board_awake_camp_occupancy"]
+    pub(crate) fn awake_camp_occupancy(out_board: *mut u64) -> i32;
+    #[link_name = "board_asleep_camp_occupancy"]
+    pub(crate) fn asleep_camp_occupancy(out_board: *mut u64) -> i32;
     #[link_name = "board_ally_ward_occupancy"]
     pub(crate) fn ally_ward_occupancy(out_board: *mut u64) -> i32;
     #[link_name = "board_enemy_ward_occupancy"]
@@ -626,6 +632,9 @@ unsafe extern "C" {
     /// Exact C-ABI `champion_at` host operation; pointer buffers obey the module safety contract.
     #[link_name = "champion_at"]
     pub(crate) fn champion_at(x: i32, y: i32, out_handle: *mut u32) -> i32;
+    /// Query one tile in the authenticated champion's effective vision.
+    #[link_name = "is_visible"]
+    pub(crate) fn is_visible(x: i32, y: i32, out_visible: *mut i32) -> i32;
     /// Exact C-ABI `has_camp` host operation; pointer buffers obey the module safety contract.
     #[link_name = "has_camp"]
     pub(crate) fn has_camp(x: i32, y: i32, out_present: *mut i32) -> i32;
@@ -1066,6 +1075,16 @@ pub(crate) unsafe fn enemy_occupancy(out_board: *mut u64) -> i32 {
 #[cfg(test)]
 pub(crate) unsafe fn camp_occupancy(out_board: *mut u64) -> i32 {
     crate::fake::call("board_camp_occupancy", &[out_board as usize]) as i32
+}
+/// Exact C-ABI `awake_camp_occupancy` host operation; pointer buffers obey the module safety contract.
+#[cfg(test)]
+pub(crate) unsafe fn awake_camp_occupancy(out_board: *mut u64) -> i32 {
+    crate::fake::call("board_awake_camp_occupancy", &[out_board as usize]) as i32
+}
+/// Exact C-ABI `asleep_camp_occupancy` host operation; pointer buffers obey the module safety contract.
+#[cfg(test)]
+pub(crate) unsafe fn asleep_camp_occupancy(out_board: *mut u64) -> i32 {
+    crate::fake::call("board_asleep_camp_occupancy", &[out_board as usize]) as i32
 }
 /// Exact C-ABI `ally_ward_occupancy` host operation; pointer buffers obey the module safety contract.
 #[cfg(test)]
@@ -1595,6 +1614,11 @@ pub(crate) unsafe fn champion_at(x: i32, y: i32, out_handle: *mut u32) -> i32 {
         "champion_at",
         &[x as usize, y as usize, out_handle as usize],
     ) as i32
+}
+/// Test host equivalent of the scalar visibility query.
+#[cfg(test)]
+pub(crate) unsafe fn is_visible(x: i32, y: i32, out_visible: *mut i32) -> i32 {
+    crate::fake::call("is_visible", &[x as usize, y as usize, out_visible as usize]) as i32
 }
 /// Exact C-ABI `has_camp` host operation; pointer buffers obey the module safety contract.
 #[cfg(test)]

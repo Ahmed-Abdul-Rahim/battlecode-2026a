@@ -13,7 +13,7 @@ rustup show >/dev/null   # installs the toolchain pinned in rust-toolchain.toml
 python3 -m venv .venv
 . .venv/bin/activate
 pip install --upgrade pip
-pip install --upgrade cambc
+pip install --upgrade "cambc>=3.0.1"
 pip install -e ".[dev]"
 pre-commit install --hook-type pre-commit --hook-type pre-push
 

@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Match running, replay parsing, rendering, gating, feature selection and MCP tools for our Cambridge Battlecode 2026a bot"
 requires-python = ">=3.11"
 dependencies = [
-    "cambc>=2.2.5",
+    "cambc>=3.0.1",
     "mcp>=1.2",
     "numpy>=1.26",
     "pillow>=10.0",

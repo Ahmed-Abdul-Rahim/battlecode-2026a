@@ -32,9 +32,10 @@ pub mod map {
 /// Live visibility, occupancy and visible-entity queries.
 pub mod vision {
     pub use crate::world::{
-        altar_lock_at, altar_lock_tiles, altar_lock_tiles_into, altar_locks, camp_at, camp_tiles,
+        altar_lock_at, altar_lock_tiles, altar_lock_tiles_into, altar_locks,
+        asleep_camp_tiles, asleep_camp_tiles_into, awake_camp_tiles, awake_camp_tiles_into, camp_at, camp_tiles,
         camp_tiles_into, champion_at, champion_tiles, champion_tiles_into, has_altar_lock, has_camp,
-        has_champion, has_teleport, has_ward, teleport_at, teleport_tiles, teleport_tiles_into,
+        has_champion, has_teleport, has_ward, in_vision, teleport_at, teleport_tiles, teleport_tiles_into,
         teleports, vision_camp_groups as camp_groups, vision_camps as camps,
         vision_champions as champions, visible_tiles, visible_tiles_into, ward_at, ward_tiles,
         ward_tiles_into, wards,

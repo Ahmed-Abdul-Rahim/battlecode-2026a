@@ -29,6 +29,8 @@ module Sys = struct
   external board_ally_occupancy : int -> int = "cambc_board_ally_occupancy"
   external board_enemy_occupancy : int -> int = "cambc_board_enemy_occupancy"
   external camp_occupancy : int -> int = "cambc_camp_occupancy"
+  external awake_camp_occupancy : int -> int = "cambc_awake_camp_occupancy"
+  external asleep_camp_occupancy : int -> int = "cambc_asleep_camp_occupancy"
   external board_ally_ward_occupancy : int -> int = "cambc_board_ally_ward_occupancy"
   external board_enemy_ward_occupancy : int -> int = "cambc_board_enemy_ward_occupancy"
   external ward_at : int -> int -> int -> int = "cambc_ward_at"
@@ -103,6 +105,7 @@ module Sys = struct
   external camp_design : int -> int -> int = "cambc_camp_design"
   external camp_at : int -> int -> int -> int = "cambc_camp_at"
   external champion_at : int -> int -> int -> int = "cambc_champion_at"
+  external is_visible : int -> int -> int -> int = "cambc_is_visible"
   external has_camp : int -> int -> int -> int = "cambc_has_camp"
   external has_champion : int -> int -> int -> int = "cambc_has_champion"
   external board_vision : int -> int = "cambc_board_vision"
@@ -250,20 +253,23 @@ module Camp_type = struct
     | Gem_cluster
     | Gold_cluster
     | Monolith
+    | Golem
 
-  let all = [ Wolf; Elk; Gem_cluster; Gold_cluster; Monolith ]
+  let all = [ Wolf; Elk; Gem_cluster; Gold_cluster; Monolith; Golem ]
   let to_int = function
     | Wolf -> 0
     | Elk -> 1
     | Gem_cluster -> 2
     | Gold_cluster -> 3
     | Monolith -> 4
+    | Golem -> 5
   let of_int = function
     | 0 -> Wolf
     | 1 -> Elk
     | 2 -> Gem_cluster
     | 3 -> Gold_cluster
     | 4 -> Monolith
+    | 5 -> Golem
     | n -> raise (Invalid_tag ("Camp_type", n))
   let to_string = function
     | Wolf -> "Wolf"
@@ -271,6 +277,7 @@ module Camp_type = struct
     | Gem_cluster -> "GemCluster"
     | Gold_cluster -> "GoldCluster"
     | Monolith -> "Monolith"
+    | Golem -> "Golem"
 end
 
 module Passive = struct
@@ -284,8 +291,9 @@ module Passive = struct
     | Reset_cooldowns_on_kill
     | Retaliation
     | Stun_immunity
+    | Missing_health_damage
 
-  let all = [ None; Bonus_gold; Remote_shop; Gem_focus; Splash_attack; Health_strength; Reset_cooldowns_on_kill; Retaliation; Stun_immunity ]
+  let all = [ None; Bonus_gold; Remote_shop; Gem_focus; Splash_attack; Health_strength; Reset_cooldowns_on_kill; Retaliation; Stun_immunity; Missing_health_damage ]
   let of_int = function
     | 0 -> None
     | 1 -> Bonus_gold
@@ -296,6 +304,7 @@ module Passive = struct
     | 6 -> Reset_cooldowns_on_kill
     | 7 -> Retaliation
     | 8 -> Stun_immunity
+    | 10 -> Missing_health_damage
     | n -> raise (Invalid_tag ("Passive", n))
   let to_string = function
     | None -> "None"
@@ -307,6 +316,7 @@ module Passive = struct
     | Reset_cooldowns_on_kill -> "Reset_cooldowns_on_kill"
     | Retaliation -> "Retaliation"
     | Stun_immunity -> "Stun_immunity"
+    | Missing_health_damage -> "Missing_health_damage"
 end
 
 module Champion_draft = struct
@@ -322,8 +332,9 @@ module Champion_draft = struct
     | Ren
     | Varg
     | Tavi
+    | Heart_of_ruin
 
-  let all = [ Ryth; Vesper_vale; Vendetta; Cassi_and_issac; Stellar; Prism; Marcella; Willow; Ren; Varg; Tavi ]
+  let all = [ Ryth; Vesper_vale; Vendetta; Cassi_and_issac; Stellar; Prism; Marcella; Willow; Ren; Varg; Tavi; Heart_of_ruin ]
   let to_int = function
     | Ryth -> 0
     | Vesper_vale -> 1
@@ -336,6 +347,7 @@ module Champion_draft = struct
     | Ren -> 8
     | Varg -> 9
     | Tavi -> 10
+    | Heart_of_ruin -> 11
   let of_int = function
     | 0 -> Ryth
     | 1 -> Vesper_vale
@@ -348,6 +360,7 @@ module Champion_draft = struct
     | 8 -> Ren
     | 9 -> Varg
     | 10 -> Tavi
+    | 11 -> Heart_of_ruin
     | n -> raise (Invalid_tag ("Champion_draft", n))
   let to_string = function
     | Ryth -> "Ryth"
@@ -361,6 +374,7 @@ module Champion_draft = struct
     | Ren -> "Ren"
     | Varg -> "Varg"
     | Tavi -> "Tavi"
+    | Heart_of_ruin -> "Heart_of_ruin"
 end
 
 module Champion_type = struct
@@ -377,8 +391,9 @@ module Champion_type = struct
     | Ren
     | Varg
     | Tavi
+    | Heart_of_ruin
 
-  let all = [ Ryth; Vesper_vale; Vendetta; Cassi; Issac; Stellar; Prism; Marcella; Willow; Ren; Varg; Tavi ]
+  let all = [ Ryth; Vesper_vale; Vendetta; Cassi; Issac; Stellar; Prism; Marcella; Willow; Ren; Varg; Tavi; Heart_of_ruin ]
   let to_int = function
     | Ryth -> 0
     | Vesper_vale -> 1
@@ -392,6 +407,7 @@ module Champion_type = struct
     | Ren -> 9
     | Varg -> 10
     | Tavi -> 11
+    | Heart_of_ruin -> 12
   let of_int = function
     | 0 -> Ryth
     | 1 -> Vesper_vale
@@ -405,6 +421,7 @@ module Champion_type = struct
     | 9 -> Ren
     | 10 -> Varg
     | 11 -> Tavi
+    | 12 -> Heart_of_ruin
     | n -> raise (Invalid_tag ("Champion_type", n))
   let to_string = function
     | Ryth -> "Ryth"
@@ -419,6 +436,7 @@ module Champion_type = struct
     | Ren -> "Ren"
     | Varg -> "Varg"
     | Tavi -> "Tavi"
+    | Heart_of_ruin -> "Heart_of_ruin"
 end
 
 module Ability_kind = struct
@@ -1285,11 +1303,13 @@ module Constants = struct
   let get () = Lazy.force cached
 
   module Passive_abilities = struct
-    let prism_focus_per_gem = 0.2
+    let prism_focus_per_gem = 1.0
     let varg_splash_radius = 1.0
-    let vesper_vale_bonus_gold_percent = 20
+    let vesper_vale_bonus_gold_percent = 33
+    let marcella_tribute_gold_per_gem = 2
     let ryth_health_strength_ratio = 0.01
     let ren_retaliation_focus_ratio = 0.2
+    let heart_of_ruin_missing_health_damage_max_bonus = 0.5
   end
 end
 
@@ -1628,7 +1648,7 @@ module Ability_info = struct
       }
     | Cc of { properties : properties; range : float; modifier : float; duration : int }
     | Heal of { properties : properties; range : float; modifier : float }
-    | Dash of { properties : properties; range : float }
+    | Dash of { properties : properties; range : float; radius : float; modifier : float; duration : int }
     | Shield of { properties : properties; range : float; modifier : float; duration : int }
 
   let decode o =
@@ -1649,7 +1669,7 @@ module Ability_info = struct
                Aoe_damage { properties; range; radius = f32 (p 1); modifier = f32 (p 2); duration = i32 (p 3) }
            | Ability_kind.Cc -> Cc { properties; range; modifier; duration = i32 (p 2) }
            | Ability_kind.Heal -> Heal { properties; range; modifier }
-           | Ability_kind.Dash -> Dash { properties; range }
+           | Ability_kind.Dash -> Dash { properties; range; radius = f32 (p 1); modifier = f32 (p 2); duration = i32 (p 3) }
            | Ability_kind.Shield -> Shield { properties; range; modifier; duration = i32 (p 2) })
 end
 
@@ -1796,14 +1816,17 @@ module Ability = struct
 end
 
 module Ward = struct
-  type t = { position : Vec2.t; team : Team.t; remaining_time : int option }
+  type t = { position : Vec2.t; team : Team.t; remaining_time : int option; owner : champion }
+  let owner (w : t) = w.owner
   let is_ally w = w.team = Team.Ally
   let is_enemy w = w.team = Team.Enemy
 
   let decode o =
     let timer = i32 (o + 12) in
-    { position = Vec2.make (i32 (o + 4)) (i32 (o + 8)); team = team_of_abs (i32 o);
-      remaining_time = (if timer < 0 then None else Some timer) }
+    let position = Vec2.make (i32 (o + 4)) (i32 (o + 8)) in
+    let team = team_of_abs (i32 o) in
+    let owner = make_champion (u32 (o + 20)) in
+    { position; team; remaining_time = (if timer < 0 then None else Some timer); owner }
 
   let visible_tiles_from_into (p : Vec2.t) out =
     Bitboard.query_into (Sys.board_ward_vision_mask p.x p.y) out
@@ -2188,21 +2211,19 @@ module Champion = struct
         (fun query -> Bitboard.query_into query temp; Bitboard.union_assign blocked temp)
         [ Sys.board_ally_occupancy; Sys.board_enemy_occupancy; Sys.camp_occupancy; Sys.board_teleport_occupancy ];
       Bitboard.set blocked origin false;
-      if Bitboard.is_set blocked target then false
-      else begin
-        let roots = Bitboard.create () in
-        Bitboard.set roots target true;
-        let destinations = Bitboard.create () in
-        Bitboard.set destinations origin true;
-        let distances = Distance_field.create () in
-        Distance_field.compute distances ~walls:blocked ~roots ~destinations ~visited:(Bitboard.create ())
-          ~max_distance:Distance_field.unreachable;
-        let closer best tile =
-          if Distance_field.get distances tile < Distance_field.get distances best then tile else best in
-        let reachable = Bitboard.reachable_tiles blocked origin ~distance:(base_stats c).base_move_speed in
-        let best = List.fold_left closer origin (Bitboard.positions reachable) in
-        (not (Vec2.equal best origin)) && move_absolute c best
-      end
+      Bitboard.set blocked target false;
+      let roots = Bitboard.create () in
+      Bitboard.set roots target true;
+      let destinations = Bitboard.create () in
+      Bitboard.set destinations origin true;
+      let distances = Distance_field.create () in
+      Distance_field.compute distances ~walls:blocked ~roots ~destinations ~visited:(Bitboard.create ())
+        ~max_distance:Distance_field.unreachable;
+      let closer best tile =
+        if Distance_field.get distances tile < Distance_field.get distances best then tile else best in
+      let reachable = Bitboard.reachable_tiles blocked origin ~distance:(base_stats c).base_move_speed in
+      let best = List.fold_left closer origin (Bitboard.positions reachable) in
+      (not (Vec2.equal best origin)) && move_absolute c best
     end
   let recall c = ignore (h c); check (Sys.recall 0)
 
@@ -2287,6 +2308,7 @@ module Camp = struct
   let is_gem_cluster c = kind c = Camp_type.Gem_cluster
   let is_gold_cluster c = kind c = Camp_type.Gold_cluster
   let is_monolith c = kind c = Camp_type.Monolith
+  let is_golem c = kind c = Camp_type.Golem
   let spawn_position c = c.spawn
 
   let camp_group c =
@@ -2340,11 +2362,16 @@ module Game_map = struct
 end
 
 module Vision = struct
+  let in_vision (p : Vec2.t) = query_bool (Sys.is_visible p.x p.y)
   let visible_tiles_into out = Bitboard.query_into Sys.board_vision out
   let visible_tiles () = let out = Bitboard.create () in visible_tiles_into out; out
 
   let camp_tiles_into out = Bitboard.query_into Sys.camp_occupancy out
   let camp_tiles () = let out = Bitboard.create () in camp_tiles_into out; out
+  let awake_camp_tiles_into out = Bitboard.query_into Sys.awake_camp_occupancy out
+  let awake_camp_tiles () = let out = Bitboard.create () in awake_camp_tiles_into out; out
+  let asleep_camp_tiles_into out = Bitboard.query_into Sys.asleep_camp_occupancy out
+  let asleep_camp_tiles () = let out = Bitboard.create () in asleep_camp_tiles_into out; out
 
   let teleport_tiles_into out = Bitboard.query_into Sys.board_teleport_occupancy out
   let teleport_tiles () = let out = Bitboard.create () in teleport_tiles_into out; out
@@ -2406,7 +2433,7 @@ module Vision = struct
   let wards ?team () =
     List.filter
       (fun (w : Ward.t) -> match team with None -> true | Some t -> w.team = t)
-      (List.map Ward.decode (host_list 20 Sys.wards))
+      (List.map Ward.decode (host_list 24 Sys.wards))
 
   let ward_handle ?team (p : Vec2.t) =
     let f = match team with None -> Sys.ward_at | Some Team.Ally -> Sys.ally_ward_at | Some Team.Enemy -> Sys.enemy_ward_at in
