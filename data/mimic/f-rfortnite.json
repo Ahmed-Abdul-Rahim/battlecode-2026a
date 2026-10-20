@@ -1,0 +1,32 @@
+{
+ "build": {},
+ "cadence": {
+  "bag": 66.0,
+  "first_emblem": null,
+  "shops_per_100r": null
+ },
+ "draft": {
+  "3": [
+   4,
+   11,
+   8
+  ],
+  "4": [
+   4,
+   11,
+   8,
+   0
+  ],
+  "5": [
+   4,
+   11,
+   8,
+   0,
+   6
+  ]
+ },
+ "games": 5,
+ "opening": {},
+ "team": "F\u00fcrFortnite",
+ "win_rate": 1.0
+}

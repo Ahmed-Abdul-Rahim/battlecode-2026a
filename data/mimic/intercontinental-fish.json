@@ -280,7 +280,7 @@
   ]
  },
  "cadence": {
-  "bag": 44.0,
+  "bag": 42.7,
   "first_emblem": 157,
   "shops_per_100r": 0.73
  },
@@ -304,7 +304,7 @@
    0
   ]
  },
- "games": 50,
+ "games": 55,
  "opening": {
   "ambush": [
    {
@@ -1109,5 +1109,5 @@
   ]
  },
  "team": "Intercontinental Fish",
- "win_rate": 0.94
+ "win_rate": 0.945
 }
