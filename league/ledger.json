@@ -54,6 +54,15 @@
    "time": "2026-10-20T15:00:17.844Z",
    "win": true
   },
+  "07b2056f-8f9b-46ac-af3b-27fec64ffe6b": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "fracture",
+   "opp": "WhatIsQuantTrading??????",
+   "oppId": "d88df6e3-53c7-44ed-874f-67f3caa0578c",
+   "time": "2026-10-20T18:50:08.433Z",
+   "win": false
+  },
   "09783ac3-b8c9-48b5-b0b8-e1da7b650d8f": {
    "kind": "ranked",
    "live": null,
@@ -234,6 +243,15 @@
    "time": "2026-10-20T17:40:07.590Z",
    "win": true
   },
+  "39fd6983-9ef2-4902-ba77-68ee0141f2b7": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "quadrants",
+   "opp": "WhatIsQuantTrading??????",
+   "oppId": "d88df6e3-53c7-44ed-874f-67f3caa0578c",
+   "time": "2026-10-20T18:50:08.433Z",
+   "win": true
+  },
   "3a320f21-2229-4517-906d-0464a173e2f9": {
    "kind": "ranked",
    "live": null,
@@ -323,6 +341,15 @@
    "oppId": "56492446-eca6-4557-9a40-559bd4c318dc",
    "time": "2026-10-20T16:30:26.059Z",
    "win": true
+  },
+  "50a9d760-9ae5-4fd9-8b00-658d5be3fe46": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "gold-rush",
+   "opp": "WhatIsQuantTrading??????",
+   "oppId": "d88df6e3-53c7-44ed-874f-67f3caa0578c",
+   "time": "2026-10-20T18:50:08.433Z",
+   "win": false
   },
   "52a40ce8-1dad-4a51-9ee1-24751155cf5e": {
    "kind": "ranked",
@@ -837,6 +864,15 @@
    "time": "2026-10-20T15:32:13.243Z",
    "win": false
   },
+  "d654ad51-499e-4c3c-b696-1b48076ef464": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "islands",
+   "opp": "WhatIsQuantTrading??????",
+   "oppId": "d88df6e3-53c7-44ed-874f-67f3caa0578c",
+   "time": "2026-10-20T18:50:08.433Z",
+   "win": true
+  },
   "db7eee6d-913e-4387-b3f5-7d2204f52aef": {
    "kind": "ranked",
    "live": null,
@@ -880,6 +916,15 @@
    "opp": "Crimson Bush Campers",
    "oppId": "2451bf9d-9782-4060-b8b4-fc2e7a69ef9a",
    "time": "2026-10-20T16:50:05.756Z",
+   "win": true
+  },
+  "deb8eb4b-0322-4047-88e6-0d5d52307d0a": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "ambush",
+   "opp": "WhatIsQuantTrading??????",
+   "oppId": "d88df6e3-53c7-44ed-874f-67f3caa0578c",
+   "time": "2026-10-20T18:50:08.433Z",
    "win": true
   },
   "decc64aa-4891-439c-91fc-497d990698c6": {
@@ -1464,13 +1509,14 @@
    },
    "deaths_them": 20,
    "deaths_us": 47,
+   "fixed_in": 5,
    "gems_them": "891",
    "gems_us": "44",
    "id": "7257ddf1-318c-4dd9-bdde-a205602ad9dd",
    "map": "gold-rush",
    "opp": "Slough Reps",
    "oppId": "fd3a404c-954b-4628-a418-7a8e57fb3783",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-20T15:10:13.185Z",
    "tries_at": 0
   },
@@ -1651,13 +1697,14 @@
    },
    "deaths_them": 52,
    "deaths_us": 44,
+   "fixed_in": 5,
    "gems_them": "475",
    "gems_us": "376",
    "id": "09783ac3-b8c9-48b5-b0b8-e1da7b650d8f",
    "map": "gold-rush",
    "opp": "test_2580",
    "oppId": "e89db5d4-c0a7-43eb-9d6d-23732bae07a5",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-20T16:40:04.457Z",
    "tries_at": 0
   },
@@ -1939,13 +1986,14 @@
    },
    "deaths_them": 9,
    "deaths_us": 23,
+   "fixed_in": 5,
    "gems_them": "810",
    "gems_us": "453",
    "id": "126a63e9-e3c3-4786-9afd-d566d0ab3afa",
    "map": "gold-rush",
    "opp": "Mousa",
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-20T18:00:13.680Z",
    "tries_at": 0
   },
@@ -2170,6 +2218,41 @@
    "status": "open",
    "time": "2026-10-20T18:40:10.897Z",
    "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 17,
+    "Unknown entity kind (2)": 31
+   },
+   "deaths_them": 32,
+   "deaths_us": 48,
+   "fixed_in": 5,
+   "gems_them": "739",
+   "gems_us": "543",
+   "id": "50a9d760-9ae5-4fd9-8b00-658d5be3fe46",
+   "map": "gold-rush",
+   "opp": "WhatIsQuantTrading??????",
+   "oppId": "d88df6e3-53c7-44ed-874f-67f3caa0578c",
+   "status": "fixed",
+   "time": "2026-10-20T18:50:08.433Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 2,
+    "Unknown entity kind (2)": 40
+   },
+   "deaths_them": 24,
+   "deaths_us": 42,
+   "gems_them": "865",
+   "gems_us": "270",
+   "id": "07b2056f-8f9b-46ac-af3b-27fec64ffe6b",
+   "map": "fracture",
+   "opp": "WhatIsQuantTrading??????",
+   "oppId": "d88df6e3-53c7-44ed-874f-67f3caa0578c",
+   "status": "open",
+   "time": "2026-10-20T18:50:08.433Z",
+   "tries_at": 1
   }
  ],
  "map_files": {
