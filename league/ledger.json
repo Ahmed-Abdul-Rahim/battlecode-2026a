@@ -63,6 +63,15 @@
    "time": "2026-10-20T15:00:17.844Z",
    "win": false
   },
+  "126a63e9-e3c3-4786-9afd-d566d0ab3afa": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "gold-rush",
+   "opp": "Mousa",
+   "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
+   "time": "2026-10-20T18:00:13.680Z",
+   "win": false
+  },
   "16259795-a167-46e8-976b-fda7458a70b2": {
    "kind": "ranked",
    "live": null,
@@ -215,6 +224,15 @@
    "oppId": "fd3a404c-954b-4628-a418-7a8e57fb3783",
    "time": "2026-10-20T15:10:13.186Z",
    "win": true
+  },
+  "3c2b594c-6cdd-4aef-9d0a-f308a7279988": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "swirl",
+   "opp": "Mousa",
+   "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
+   "time": "2026-10-20T18:00:13.679Z",
+   "win": false
   },
   "40771b5a-a8ed-47df-ad03-8f403bd07e14": {
    "kind": "ranked",
@@ -432,6 +450,15 @@
    "time": "2026-10-20T16:40:04.457Z",
    "win": true
   },
+  "80ae5361-dfd6-4144-92ad-a71268b3588c": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "fracture",
+   "opp": "Mousa",
+   "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
+   "time": "2026-10-20T18:00:13.679Z",
+   "win": false
+  },
   "83195c85-9f88-4e0b-91d9-e306c667d003": {
    "kind": "unranked",
    "live": 1,
@@ -476,6 +503,15 @@
    "oppId": "0948671e-bedc-4ca1-8dde-2526adff3d0e",
    "time": "2026-10-20T15:50:11.039Z",
    "win": false
+  },
+  "8f87e0e9-2035-4f03-883f-8323ce938021": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "expanse",
+   "opp": "Mousa",
+   "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
+   "time": "2026-10-20T18:00:13.679Z",
+   "win": true
   },
   "915df6ef-9017-48df-bf0f-b76b814279d8": {
    "kind": "ranked",
@@ -765,6 +801,15 @@
    "time": "2026-10-20T15:50:11.039Z",
    "win": true
   },
+  "e6474b1b-ca70-4bda-8601-be5dfbf7df5c": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "fragment",
+   "opp": "Mousa",
+   "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
+   "time": "2026-10-20T18:00:13.679Z",
+   "win": false
+  },
   "ea7a33e5-aad2-4bef-bd49-33ac3e87e1e5": {
    "kind": "ranked",
    "live": null,
@@ -981,13 +1026,14 @@
    },
    "deaths_them": 39,
    "deaths_us": 25,
+   "fixed_in": 2,
    "gems_them": "1032",
    "gems_us": "238",
    "id": "0c41b204-1e4e-42a3-a88b-61479ac2ecc4",
    "map": "islands",
    "opp": "Hungry Hungry Hungry",
    "oppId": "88c01e3a-ac73-431d-8fb8-5dd482a5418b",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-20T16:10:05.811Z",
    "tries_at": 0
   },
@@ -1285,13 +1331,14 @@
    },
    "deaths_them": 29,
    "deaths_us": 26,
+   "fixed_in": 2,
    "gems_them": "1002",
    "gems_us": "864",
    "id": "32f9b532-0243-4348-9af9-7559a623041d",
    "map": "islands",
    "opp": "knownasjason",
    "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-20T15:00:17.843Z",
    "tries_at": 0
   },
@@ -1697,6 +1744,74 @@
    "oppId": "fd3a404c-954b-4628-a418-7a8e57fb3783",
    "status": "needs-human",
    "time": "2026-10-20T17:50:06.264Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "camp": 14,
+    "champion": 9
+   },
+   "deaths_them": 9,
+   "deaths_us": 23,
+   "gems_them": "810",
+   "gems_us": "453",
+   "id": "126a63e9-e3c3-4786-9afd-d566d0ab3afa",
+   "map": "gold-rush",
+   "opp": "Mousa",
+   "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
+   "status": "open",
+   "time": "2026-10-20T18:00:13.680Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 30
+   },
+   "deaths_them": 0,
+   "deaths_us": 32,
+   "gems_them": "1006",
+   "gems_us": "102",
+   "id": "e6474b1b-ca70-4bda-8601-be5dfbf7df5c",
+   "map": "fragment",
+   "opp": "Mousa",
+   "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
+   "status": "open",
+   "time": "2026-10-20T18:00:13.679Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "camp": 31
+   },
+   "deaths_them": 13,
+   "deaths_us": 31,
+   "gems_them": "408",
+   "gems_us": "295",
+   "id": "80ae5361-dfd6-4144-92ad-a71268b3588c",
+   "map": "fracture",
+   "opp": "Mousa",
+   "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
+   "status": "open",
+   "time": "2026-10-20T18:00:13.679Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "camp": 5,
+    "champion": 56
+   },
+   "deaths_them": 24,
+   "deaths_us": 61,
+   "gems_them": "1112",
+   "gems_us": "862",
+   "hint": "map not in maps/ yet: the next map sync registers it",
+   "id": "3c2b594c-6cdd-4aef-9d0a-f308a7279988",
+   "map": "swirl",
+   "opp": "Mousa",
+   "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
+   "status": "needs-human",
+   "time": "2026-10-20T18:00:13.679Z",
    "tries_at": 0
   }
  ],
