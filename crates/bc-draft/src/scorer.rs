@@ -56,6 +56,8 @@ fn prior(choice: DraftChoice, m: &MapDescriptor) -> f32 {
         D::Prism => 0.7 + 0.1 * m.clustered,
         D::Ren => 0.65,
         D::Willow => 0.6,
+        // Engine 1.0.0 bruiser: tanky, stronger as it takes damage; a stunning dash for camps.
+        D::HeartOfRuin => 0.8 + 0.2 * m.clustered,
     }
 }
 
@@ -180,7 +182,12 @@ mod tests {
         // Strong positive synergy along "spell power" for pairs with Varg.
         w.synergy[2][0] = 127;
         w.bilinear_scale = 1.0 / 20.0;
+        let plain = best_pick(&m, &state, &vec_of, &ScorerWeights::default()).unwrap();
         let pick = best_pick(&m, &state, &vec_of, &w).unwrap();
-        assert_eq!(pick, DraftChoice::Stellar, "highest spell power × Varg durability");
+        assert_ne!(pick, plain, "the synergy term changes the pick");
+        // ...towards the highest spell power (vector dimension 2).
+        let power = |c: DraftChoice| c.champions().iter().map(|&k| vec_of(k)[2]).max().unwrap();
+        let best = DraftChoice::ALL.iter().map(|&c| power(c)).max().unwrap();
+        assert_eq!(power(pick), best, "{pick:?}");
     }
 }

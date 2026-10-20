@@ -2,7 +2,7 @@
 
 Event: cambc2026a. Read alongside GameRules.md. Signatures and descriptions come from the same SDK documentation shown on the Bot API page.
 
-Examples are fragments for an initialised bot. Check visibility and action preconditions. Use ? inside a function returning cambc::Result.
+Examples are fragments for an initialised bot. Check visibility and action preconditions. Use ? inside a function returning cambc::Result. 
 
 ```rust
 use cambc as bc;
@@ -83,15 +83,15 @@ pub struct AbilityDamage { pub properties: AbilityProperties, pub range: f32, pu
 ### AbilityDash
 
 ```rust
-pub struct AbilityDash { pub properties: AbilityProperties, pub range: f32, }
+pub struct AbilityDash { pub properties: AbilityProperties, pub range: f32, pub radius: f32, pub modifier: f32, pub duration: i32, }
 ```
 
-Metadata for a movement ability and its range.
+Dash metadata. Landing effects apply to enemies and camps only after a successful dash. range: Maximum dash travel distance in tiles. Diagonal steps count as one; the destination must be a different tile reachable by a legal dash path. radius: Chebyshev radius in tiles around the landing tile for damage and stun; 1 includes all eight neighbouring tiles. modifier: Landing damage multiplier: base damage = caster Focus * modifier, before damage bonuses and mitigation. 0 disables landing damage. duration: Stun duration applied on landing, in turns; 0 disables stun. This is not the dash travel time.
 
 Public SDK type declaration.
 
 ```rust
-pub struct AbilityDash { pub properties: AbilityProperties, pub range: f32, }
+pub struct AbilityDash { pub properties: AbilityProperties, pub range: f32, pub radius: f32, pub modifier: f32, pub duration: i32, }
 ```
 
 ### AbilityHeal
@@ -387,7 +387,7 @@ pub struct CampStats { pub vision_radius: f32, pub base_move_speed: i32, pub bas
 ### CampType
 
 ```rust
-pub enum CampType { Wolf = 0,Elk = 1,GemCluster = 2,GoldCluster = 3,Monolith = 4 }
+pub enum CampType { Wolf = 0,Elk = 1,GemCluster = 2,GoldCluster = 3,Monolith = 4,Golem = 5 }
 ```
 
 Checked engine values. Implements TryFrom<i32> and Display; ALL lists the recognised values.
@@ -395,7 +395,7 @@ Checked engine values. Implements TryFrom<i32> and Display; ALL lists the recogn
 Public SDK type declaration.
 
 ```rust
-pub enum CampType { Wolf = 0,Elk = 1,GemCluster = 2,GoldCluster = 3,Monolith = 4 }
+pub enum CampType { Wolf = 0,Elk = 1,GemCluster = 2,GoldCluster = 3,Monolith = 4,Golem = 5 }
 ```
 
 ### CastTarget
@@ -429,7 +429,7 @@ pub struct Champion { /* private fields */ }
 ### champion_designs
 
 ```rust
-pub fn champion_designs() -> Result<&'static [Champion; 12]>
+pub fn champion_designs() -> Result<&'static [Champion; 13]>
 ```
 
 Borrow all initialised champion designs, with no live cooldown/visibility queries.
@@ -443,7 +443,7 @@ let result = bc::champion_designs()?;
 ### ChampionDraft
 
 ```rust
-pub enum ChampionDraft { Ryth = 0,VesperVale = 1,Vendetta = 2,CassiAndIssac = 3,Stellar = 4,Prism = 5,Marcella = 6,Willow = 7,Ren = 8,Varg = 9,Tavi = 10 }
+pub enum ChampionDraft { Ryth = 0,VesperVale = 1,Vendetta = 2,CassiAndIssac = 3,Stellar = 4,Prism = 5,Marcella = 6,Willow = 7,Ren = 8,Varg = 9,Tavi = 10,HeartOfRuin = 11 }
 ```
 
 Checked engine values. Implements TryFrom<i32> and Display; ALL lists the recognised values.
@@ -451,7 +451,7 @@ Checked engine values. Implements TryFrom<i32> and Display; ALL lists the recogn
 Public SDK type declaration.
 
 ```rust
-pub enum ChampionDraft { Ryth = 0,VesperVale = 1,Vendetta = 2,CassiAndIssac = 3,Stellar = 4,Prism = 5,Marcella = 6,Willow = 7,Ren = 8,Varg = 9,Tavi = 10 }
+pub enum ChampionDraft { Ryth = 0,VesperVale = 1,Vendetta = 2,CassiAndIssac = 3,Stellar = 4,Prism = 5,Marcella = 6,Willow = 7,Ren = 8,Varg = 9,Tavi = 10,HeartOfRuin = 11 }
 ```
 
 ### champions
@@ -504,7 +504,7 @@ pub struct ChampionStats { pub vision_radius: i32, pub base_move_speed: i32, pub
 ### ChampionType
 
 ```rust
-pub enum ChampionType { Ryth = 0,VesperVale = 1,Vendetta = 2,Cassi = 3,Issac = 4,Stellar = 5,Prism = 6,Marcella = 7,Willow = 8,Ren = 9,Varg = 10,Tavi = 11 }
+pub enum ChampionType { Ryth = 0,VesperVale = 1,Vendetta = 2,Cassi = 3,Issac = 4,Stellar = 5,Prism = 6,Marcella = 7,Willow = 8,Ren = 9,Varg = 10,Tavi = 11,HeartOfRuin = 12 }
 ```
 
 Checked engine values. Implements TryFrom<i32> and Display; ALL lists the recognised values.
@@ -512,7 +512,7 @@ Checked engine values. Implements TryFrom<i32> and Display; ALL lists the recogn
 Public SDK type declaration.
 
 ```rust
-pub enum ChampionType { Ryth = 0,VesperVale = 1,Vendetta = 2,Cassi = 3,Issac = 4,Stellar = 5,Prism = 6,Marcella = 7,Willow = 8,Ren = 9,Varg = 10,Tavi = 11 }
+pub enum ChampionType { Ryth = 0,VesperVale = 1,Vendetta = 2,Cassi = 3,Issac = 4,Stellar = 5,Prism = 6,Marcella = 7,Willow = 8,Ren = 9,Varg = 10,Tavi = 11,HeartOfRuin = 12 }
 ```
 
 ### constants
@@ -824,7 +824,7 @@ pub enum ItemType { MonsterShardOfStrength = 0,MonsterEmblemOfStrength = 1,Monst
 ### PassiveType
 
 ```rust
-pub enum PassiveType { None = 0,BonusGold = 1,RemoteShop = 2,GemFocus = 3,SplashAttack = 4,HealthStrength = 5,ResetCooldownsOnKill = 6,Retaliation = 7,StunImmunity = 8 }
+pub enum PassiveType { None = 0,BonusGold = 1,RemoteShop = 2,GemFocus = 3,SplashAttack = 4,HealthStrength = 5,ResetCooldownsOnKill = 6,Retaliation = 7,StunImmunity = 8,MissingHealthDamage = 10 }
 ```
 
 Checked engine values. Implements TryFrom<u8> and Display; ALL lists the recognised values.
@@ -832,7 +832,7 @@ Checked engine values. Implements TryFrom<u8> and Display; ALL lists the recogni
 Public SDK type declaration.
 
 ```rust
-pub enum PassiveType { None = 0,BonusGold = 1,RemoteShop = 2,GemFocus = 3,SplashAttack = 4,HealthStrength = 5,ResetCooldownsOnKill = 6,Retaliation = 7,StunImmunity = 8 }
+pub enum PassiveType { None = 0,BonusGold = 1,RemoteShop = 2,GemFocus = 3,SplashAttack = 4,HealthStrength = 5,ResetCooldownsOnKill = 6,Retaliation = 7,StunImmunity = 8,MissingHealthDamage = 10 }
 ```
 
 ### resign
@@ -1120,6 +1120,8 @@ Cast on a champion, camp or unit; requires the current champion. Unit casts land
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
 
+**vision**: This function requires you to have the subject in vision.
+
 Evaluate an ability before choosing a spell.
 
 Inputs:
@@ -1159,6 +1161,8 @@ Query the current cooldown; requires a live owner and propagates host errors.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
 
+**vision**: This function requires you to have the subject in vision.
+
 Evaluate an ability before choosing a spell.
 
 Inputs:
@@ -1174,9 +1178,11 @@ let result = subject.cooldown()?;
 pub fn damage_amount(&self) -> Result<f32>
 ```
 
-Query this live ability's damage; unsupported kinds propagate the engine error.
+Query Focus-scaled damage, including dash landing damage and caster outgoing bonuses such as Heart of Ruin's passive. Excludes target-dependent modifiers, shields and health limits.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
+
+**vision**: This function requires you to have the subject in vision.
 
 Evaluate an ability before choosing a spell.
 
@@ -1196,6 +1202,8 @@ pub fn damage_amount_against(&self, target: &crate::Champion) -> Result<f32>
 Predict health lost after mitigation and shields, capped at current health. The target must be visible. # Arguments * `target` - Visible champion that would be hit.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
+
+**vision**: This function requires you to have the subject in vision.
 
 Evaluate an ability before choosing a spell.
 
@@ -1217,6 +1225,8 @@ Query this live ability's healing; unsupported kinds propagate the engine error.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
 
+**vision**: This function requires you to have the subject in vision.
+
 Evaluate an ability before choosing a spell.
 
 Inputs:
@@ -1235,6 +1245,8 @@ pub fn heal_amount_against(&self, target: &crate::Champion) -> Result<f32>
 Cap healing at the visible target's missing health. This does not cast or consume resources. # Arguments * `target` - Visible champion that would be healed.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
+
+**vision**: This function requires you to have the subject in vision.
 
 Evaluate an ability before choosing a spell.
 
@@ -1393,6 +1405,8 @@ Query whether the current cooldown is positive.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
 
+**vision**: This function requires you to have the subject in vision.
+
 Evaluate an ability before choosing a spell.
 
 Inputs:
@@ -1411,6 +1425,8 @@ pub fn is_ready(&self) -> Result<bool>
 Check whether this ability has metadata, is off cooldown, and its owner can cast.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
+
+**vision**: This function requires you to have the subject in vision.
 
 Evaluate an ability before choosing a spell.
 
@@ -1448,6 +1464,8 @@ Like [`Self::valid_tiles`], but writes into `out`. # Arguments * `out` - Destina
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
 
+**vision**: This function requires you to have the subject in vision.
+
 Evaluate an ability before choosing a spell.
 
 Inputs:
@@ -1468,6 +1486,8 @@ Query this live ability's shielding; unsupported kinds propagate the engine erro
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
 
+**vision**: This function requires you to have the subject in vision.
+
 Evaluate an ability before choosing a spell.
 
 Inputs:
@@ -1486,6 +1506,8 @@ pub fn shield_amount_against(&self, target: &crate::Champion) -> Result<f32>
 Query shielding against a particular champion, including engine target modifiers. # Arguments * `target` - Visible champion that would be shielded.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
+
+**vision**: This function requires you to have the subject in vision.
 
 Evaluate an ability before choosing a spell.
 
@@ -1540,6 +1562,8 @@ pub fn valid_tiles(&self) -> Result<Bitboard>
 Build a fresh Chebyshev targeting-range mask around the live owner. Unused/unavailable slots and attack resets return errors; this is not a legality mask.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
+
+**vision**: This function requires you to have the subject in vision.
 
 Evaluate an ability before choosing a spell.
 
@@ -1656,7 +1680,7 @@ pub use cambc::AbilityDamage as Damage;
 pub use cambc::AbilityDash as Dash;
 ```
 
-Metadata for a movement ability and its range.
+Dash metadata. Landing effects apply to enemies and camps only after a successful dash. range: Maximum dash travel distance in tiles. Diagonal steps count as one; the destination must be a different tile reachable by a legal dash path. radius: Chebyshev radius in tiles around the landing tile for damage and stun; 1 includes all eight neighbouring tiles. modifier: Landing damage multiplier: base damage = caster Focus * modifier, before damage bonuses and mitigation. 0 disables landing damage. duration: Stun duration applied on landing, in turns; 0 disables stun. This is not the dash travel time.
 
 Public SDK type declaration.
 
@@ -3631,6 +3655,8 @@ Query whether this camp is living (awake or asleep); uses the same visibility ch
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
 
+**vision**: This function requires you to have the subject in vision.
+
 Evaluate a visible camp before choosing where to farm.
 
 Inputs:
@@ -3649,6 +3675,8 @@ pub fn is_asleep(&self) -> Result<bool>
 Query whether this camp is living but dormant; uses the same visibility checks as `state()`.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
+
+**vision**: This function requires you to have the subject in vision.
 
 Evaluate a visible camp before choosing where to farm.
 
@@ -3669,6 +3697,8 @@ Query whether this camp is awake; uses the same visibility checks as `state()`.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
 
+**vision**: This function requires you to have the subject in vision.
+
 Evaluate a visible camp before choosing where to farm.
 
 Inputs:
@@ -3687,6 +3717,8 @@ pub fn is_dead(&self) -> Result<bool>
 Query whether this camp is dead; uses the same visibility checks as `state()`.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
+
+**vision**: This function requires you to have the subject in vision.
 
 Evaluate a visible camp before choosing where to farm.
 
@@ -3746,6 +3778,23 @@ Inputs:
 
 ```rust
 let is_gold_cluster = subject.is_gold_cluster();
+```
+
+### is_golem
+
+```rust
+pub fn is_golem(&self) -> bool
+```
+
+
+
+Evaluate a visible camp before choosing where to farm.
+
+Inputs:
+- subject: bc::Camp
+
+```rust
+let is_golem = subject.is_golem();
 ```
 
 ### is_monolith
@@ -3825,6 +3874,8 @@ pub fn state(&self) -> Result<CampState>
 Query `CampState::Dead`, `Alive` (awake), or `Asleep` (living but dormant). The current tile, or last occupied tile when dead, must be in vision; hidden camps return `ApiNotInVision`. This is separate from the camp-group state.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
+
+**vision**: This function requires you to have the subject in vision.
 
 Evaluate a visible camp before choosing where to farm.
 
@@ -4076,6 +4127,8 @@ Attack a champion, camp, unit or altar lock; requires self and engine-valid targ
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
 
+**vision**: This function requires you to have the subject in vision.
+
 Evaluate your champion's options during its turn.
 
 Inputs:
@@ -4177,6 +4230,8 @@ Check whether this champion can attack.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
 
+**vision**: This function requires you to have the subject in vision.
+
 Check the action allowance before spending fuel to choose an attack target.
 
 ```rust
@@ -4193,6 +4248,8 @@ pub fn can_buy(&self, item: ItemType, count: u32) -> Result<bool>
 Check whether an item can be bought in the current state. # Arguments * `item` - Item to buy. * `count` - Number of copies to buy.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
+
+**vision**: This function requires you to have the subject in vision.
 
 Evaluate your champion's options during its turn.
 
@@ -4216,6 +4273,8 @@ Check whether a consumable can be bought in the current state. # Arguments * `co
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
 
+**vision**: This function requires you to have the subject in vision.
+
 Evaluate your champion's options during its turn.
 
 Inputs:
@@ -4237,6 +4296,8 @@ Check whether this champion can cast.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
 
+**vision**: This function requires you to have the subject in vision.
+
 Check the action allowance before spending fuel to evaluate ready abilities.
 
 ```rust
@@ -4254,6 +4315,8 @@ Check whether this champion can move.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
 
+**vision**: This function requires you to have the subject in vision.
+
 Check the action allowance before spending fuel to plan a path.
 
 ```rust
@@ -4270,6 +4333,8 @@ pub fn can_sell(&self) -> Result<bool>
 Query self's current selling permission.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
+
+**vision**: This function requires you to have the subject in vision.
 
 Evaluate your champion's options during its turn.
 
@@ -4375,6 +4440,8 @@ Query the carried gem count of a live champion.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
 
+**vision**: This function requires you to have the subject in vision.
+
 Evaluate your champion's options during its turn.
 
 ```rust
@@ -4410,6 +4477,8 @@ pub fn has_completed_turn(&self) -> Result<bool>
 Check whether this champion has completed its turn.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
+
+**vision**: This function requires you to have the subject in vision.
 
 Evaluate your champion's options during its turn.
 
@@ -4483,6 +4552,8 @@ Check whether this champion is recalling.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
 
+**vision**: This function requires you to have the subject in vision.
+
 Evaluate your champion's options during its turn.
 
 ```rust
@@ -4500,6 +4571,8 @@ pub fn is_submitting_gems(&self) -> Result<bool>
 Check whether this champion is submitting gems.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
+
+**vision**: This function requires you to have the subject in vision.
 
 Evaluate your champion's options during its turn.
 
@@ -4519,6 +4592,8 @@ Check whether this champion is teleporting.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
 
+**vision**: This function requires you to have the subject in vision.
+
 Evaluate your champion's options during its turn.
 
 ```rust
@@ -4536,6 +4611,8 @@ pub fn item_count(&self) -> Result<ItemCounts>
 Query and return an independent owning item-count snapshot.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
+
+**vision**: This function requires you to have the subject in vision.
 
 Evaluate your champion's options during its turn.
 
@@ -4573,11 +4650,11 @@ if me.can_move()? {
 pub fn move_towards(&self, target: Vec2) -> Result<bool>
 ```
 
-Move self to the reachable tile on a shortest path to `target`, avoiding walls, holes, altars, the enemy spawn and visible units. Returns `Ok(false)` without moving when already there, unable to move, or `target` is blocked or unreachable, and for a newly revealed obstruction. # Arguments * `target` - Map tile to approach.
+Move self to the reachable tile on a shortest path to `target`. Always treat the target as free for pathfinding, while avoiding other walls, holes, altars, enemy spawn tiles, visible units and teleport reservations. Returns `Ok(false)` when already there, unable to move, no route exists, or a hidden obstruction is revealed. The engine still validates the chosen landing tile: trying to enter a known blocked target returns `Err`. # Arguments * `target` - Map tile to approach.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
 
-Take a planned step; false means no movement occurred.
+Path towards a target even when its tile is blocked. Stop at the desired range: the engine still rejects landing on a known blocked tile.
 
 Inputs:
 - destination: a destination selected by your pathfinder
@@ -4636,6 +4713,8 @@ Query the previous scheduling priority for this live champion.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
 
+**vision**: This function requires you to have the subject in vision.
+
 Evaluate your champion's options during its turn.
 
 ```rust
@@ -4653,6 +4732,8 @@ pub fn priority(&self) -> Result<i32>
 Query the current/next scheduling priority for this live champion.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
+
+**vision**: This function requires you to have the subject in vision.
 
 Evaluate your champion's options during its turn.
 
@@ -4716,6 +4797,8 @@ Query the current channel countdown for a visible live champion.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
 
+**vision**: This function requires you to have the subject in vision.
+
 Evaluate your champion's options during its turn.
 
 ```rust
@@ -4733,6 +4816,8 @@ pub fn restrictions(&self) -> Result<BuffRestrictions>
 Query current action-restriction bits; distinct from active buff-kind flags.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
+
+**vision**: This function requires you to have the subject in vision.
 
 Evaluate your champion's options during its turn.
 
@@ -4816,6 +4901,8 @@ Query champion state flags, preserving all engine bits including unknown future 
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
 
+**vision**: This function requires you to have the subject in vision.
+
 Evaluate your champion's options during its turn.
 
 ```rust
@@ -4872,6 +4959,8 @@ pub fn visible_tiles(&self) -> Result<Bitboard>
 Query a fresh owning vision mask for this live champion.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
+
+**vision**: This function requires you to have the subject in vision.
 
 Evaluate your champion's options during its turn.
 
@@ -4933,6 +5022,8 @@ pub fn visible_tiles_into(&self, out: &mut Bitboard) -> Result<()>
 Like [`Self::visible_tiles`], but writes into `out`. # Arguments * `out` - Destination mask; its previous contents are overwritten.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
+
+**vision**: This function requires you to have the subject in vision.
 
 Evaluate your champion's options during its turn.
 
@@ -5432,6 +5523,8 @@ pub fn count(&self) -> Result<u32>
 Query the owning live champion's count of this consumable type.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
+
+**vision**: This function requires you to have the subject in vision.
 
 Plan a purchase or use an owned consumable.
 
@@ -6838,6 +6931,8 @@ pub fn attack_range(&self) -> Result<i32>
 
 Query attack range; camps use their engine design range.
 
+**vision**: This function requires you to have the subject in vision.
+
 Evaluate your champion's options during its turn.
 
 Inputs:
@@ -6857,6 +6952,8 @@ Build the live unit's Chebyshev attack-range mask without filtering targets or a
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
 
+**vision**: This function requires you to have the subject in vision.
+
 Evaluate your champion's options during its turn.
 
 Inputs:
@@ -6875,6 +6972,8 @@ pub fn attack_tiles_into(&self, out: &mut Bitboard) -> Result<()>
 Like [`Self::attack_tiles`], but writes into `out`. # Arguments * `out` - Destination mask; its previous contents are overwritten.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
+
+**vision**: This function requires you to have the subject in vision.
 
 Evaluate your champion's options during its turn.
 
@@ -6896,6 +6995,8 @@ Construct a fresh owning buff collection; designs and hidden units return an err
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
 
+**vision**: This function requires you to have the subject in vision.
+
 Evaluate your champion's options during its turn.
 
 Inputs:
@@ -6915,6 +7016,8 @@ Query current focus.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
 
+**vision**: This function requires you to have the subject in vision.
+
 Evaluate your champion's options during its turn.
 
 Inputs:
@@ -6933,6 +7036,8 @@ pub fn health(&self) -> Result<f32>
 Query current health points.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
+
+**vision**: This function requires you to have the subject in vision.
 
 Evaluate your champion's options during its turn.
 
@@ -6970,6 +7075,8 @@ Query current maximum health points.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
 
+**vision**: This function requires you to have the subject in vision.
+
 Evaluate your champion's options during its turn.
 
 Inputs:
@@ -6989,6 +7096,8 @@ Query the current map position; hidden/design units propagate unavailability.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
 
+**vision**: This function requires you to have the subject in vision.
+
 Evaluate your champion's options during its turn.
 
 Inputs:
@@ -7007,6 +7116,8 @@ pub fn strength(&self) -> Result<f32>
 Query current strength.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
+
+**vision**: This function requires you to have the subject in vision.
 
 Evaluate your champion's options during its turn.
 
@@ -7211,6 +7322,8 @@ Return an owning visible altar lock at `position`, preferring ally then enemy. #
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
 
+**vision**: This function requires you to have the subject in vision.
+
 Check visible objects before choosing a destination.
 
 Inputs:
@@ -7278,6 +7391,76 @@ Inputs:
 let result = bc::vision::altar_locks(team)?;
 ```
 
+### asleep_camp_tiles
+
+```rust
+pub fn asleep_camp_tiles() -> Result<Bitboard>
+```
+
+Query the tiles of visible asleep camps. Dead camps are excluded.
+
+**gameplay**: This function can only be used by champion bots and is not usable during draft phase.
+
+Check visible objects before choosing a destination.
+
+```rust
+let result = bc::vision::asleep_camp_tiles()?;
+```
+
+### asleep_camp_tiles_into
+
+```rust
+pub fn asleep_camp_tiles_into(out: &mut Bitboard) -> Result<()>
+```
+
+Like [`asleep_camp_tiles`], but writes into `out`. # Arguments * `out` - Destination mask; its previous contents are overwritten.
+
+**gameplay**: This function can only be used by champion bots and is not usable during draft phase.
+
+Check visible objects before choosing a destination.
+
+Inputs:
+- out: &mut Bitboard
+
+```rust
+let result = bc::vision::asleep_camp_tiles_into(out)?;
+```
+
+### awake_camp_tiles
+
+```rust
+pub fn awake_camp_tiles() -> Result<Bitboard>
+```
+
+Query the tiles of visible awake camps. Dead camps are excluded.
+
+**gameplay**: This function can only be used by champion bots and is not usable during draft phase.
+
+Check visible objects before choosing a destination.
+
+```rust
+let result = bc::vision::awake_camp_tiles()?;
+```
+
+### awake_camp_tiles_into
+
+```rust
+pub fn awake_camp_tiles_into(out: &mut Bitboard) -> Result<()>
+```
+
+Like [`awake_camp_tiles`], but writes into `out`. # Arguments * `out` - Destination mask; its previous contents are overwritten.
+
+**gameplay**: This function can only be used by champion bots and is not usable during draft phase.
+
+Check visible objects before choosing a destination.
+
+Inputs:
+- out: &mut Bitboard
+
+```rust
+let result = bc::vision::awake_camp_tiles_into(out)?;
+```
+
 ### camp_at
 
 ```rust
@@ -7287,6 +7470,8 @@ pub fn camp_at(position: Vec2) -> Result<Camp>
 Look up a visible camp at its current position and borrow initialised metadata. Absence and hidden tiles are errors; unknown handles and uninitialised caches remain errors. # Arguments * `position` - Current tile of the camp.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
+
+**vision**: This function requires you to have the subject in vision.
 
 Check visible objects before choosing a destination.
 
@@ -7373,6 +7558,8 @@ pub fn champion_at(position: Vec2) -> Result<Champion>
 Return a live wrapper for the visible champion at `position`; absence and hidden tiles are errors. # Arguments * `position` - Tile to query.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
+
+**vision**: This function requires you to have the subject in vision.
 
 Check visible objects before choosing a destination.
 
@@ -7537,6 +7724,25 @@ Inputs:
 let has_ward = bc::vision::has_ward(position, team)?;
 ```
 
+### in_vision
+
+```rust
+pub fn in_vision(position: Vec2) -> Result<bool>
+```
+
+Check current self vision, including owned ward vision, even on empty tiles. Hidden tiles return `Ok(false)`; out-of-bounds positions return `ApiBadPosition`. # Arguments * `position` - Tile to query.
+
+**gameplay**: This function can only be used by champion bots and is not usable during draft phase.
+
+Check visible objects before choosing a destination.
+
+Inputs:
+- position: Vec2
+
+```rust
+let result = bc::vision::in_vision(position)?;
+```
+
 ### teleport_at
 
 ```rust
@@ -7546,6 +7752,8 @@ pub fn teleport_at(position: Vec2) -> Result<Teleport>
 Return the visible teleport reservation at `position`. # Arguments * `position` - Tile to query.
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
+
+**vision**: This function requires you to have the subject in vision.
 
 Check visible objects before choosing a destination.
 
@@ -7652,6 +7860,8 @@ Return a visible ordinary ward for `team`. # Arguments * `position` - Tile to qu
 
 **gameplay**: This function can only be used by champion bots and is not usable during draft phase.
 
+**vision**: This function requires you to have the subject in vision.
+
 Check visible objects before choosing a destination.
 
 Inputs:
@@ -7754,6 +7964,25 @@ Inputs:
 
 ```rust
 let is_enemy = subject.is_enemy();
+```
+
+### owner
+
+```rust
+pub fn owner(&self) -> Result<Champion>
+```
+
+Return the owning champion captured when this ward was visible, even if the owner is hidden. Live champion state still requires the champion to be in vision.
+
+**gameplay**: This function can only be used by champion bots and is not usable during draft phase.
+
+Check visible objects before choosing a destination.
+
+Inputs:
+- subject: bc::Ward
+
+```rust
+let result = subject.owner()?;
 ```
 
 ### position

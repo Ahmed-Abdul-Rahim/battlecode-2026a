@@ -52,6 +52,7 @@ KIND = {
     "Ren": 9,
     "Varg": 10,
     "Tavi": 11,
+    "Heart of Ruin": 12,
 }
 FAMILY = {"Monster": 0, "Power": 1, "Durability": 2, "Treasure": 3, "Jungle": 4, "Home": 5, "Bruiser": 6}
 STAT = {"Strength": 0, "Focus": 1, "Health": 2}

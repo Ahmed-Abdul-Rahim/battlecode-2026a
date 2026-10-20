@@ -22,10 +22,12 @@ pub enum ChampionKind {
     Ren = 9,
     Varg = 10,
     Tavi = 11,
+    /// Engine 1.0.0: melee, damage grows with missing health, shield + stunning dash.
+    HeartOfRuin = 12,
 }
 
 impl ChampionKind {
-    pub const ALL: [Self; 12] = [
+    pub const ALL: [Self; 13] = [
         Self::Ryth,
         Self::VesperVale,
         Self::Vendetta,
@@ -38,6 +40,7 @@ impl ChampionKind {
         Self::Ren,
         Self::Varg,
         Self::Tavi,
+        Self::HeartOfRuin,
     ];
 
     #[must_use]
@@ -60,11 +63,12 @@ impl ChampionKind {
             Self::Ren => DraftChoice::Ren,
             Self::Varg => DraftChoice::Varg,
             Self::Tavi => DraftChoice::Tavi,
+            Self::HeartOfRuin => DraftChoice::HeartOfRuin,
         }
     }
 }
 
-/// Mirrors `cambc::ChampionDraft` (engine values 0..=10).
+/// Mirrors `cambc::ChampionDraft` (engine values 0..=11).
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
 #[repr(u8)]
 pub enum DraftChoice {
@@ -79,10 +83,11 @@ pub enum DraftChoice {
     Ren = 8,
     Varg = 9,
     Tavi = 10,
+    HeartOfRuin = 11,
 }
 
 impl DraftChoice {
-    pub const ALL: [Self; 11] = [
+    pub const ALL: [Self; 12] = [
         Self::Ryth,
         Self::VesperVale,
         Self::Vendetta,
@@ -94,6 +99,7 @@ impl DraftChoice {
         Self::Ren,
         Self::Varg,
         Self::Tavi,
+        Self::HeartOfRuin,
     ];
 
     #[must_use]
@@ -116,6 +122,7 @@ impl DraftChoice {
             Self::Ren => &[ChampionKind::Ren],
             Self::Varg => &[ChampionKind::Varg],
             Self::Tavi => &[ChampionKind::Tavi],
+            Self::HeartOfRuin => &[ChampionKind::HeartOfRuin],
         }
     }
 }
@@ -174,6 +181,8 @@ pub enum Passive {
     ResetCooldownsOnKill,
     Retaliation,
     StunImmunity,
+    /// Heart of Ruin: up to +50% damage, linear in missing health.
+    MissingHealthDamage,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -247,7 +256,10 @@ impl KitInfo {
         let class = match self.passive {
             Passive::BonusGold | Passive::RemoteShop => 18,
             Passive::GemFocus | Passive::HealthStrength => 19,
-            Passive::SplashAttack | Passive::ResetCooldownsOnKill | Passive::Retaliation => 20,
+            Passive::SplashAttack
+            | Passive::ResetCooldownsOnKill
+            | Passive::Retaliation
+            | Passive::MissingHealthDamage => 20,
             Passive::StunImmunity => 21,
             Passive::None if matches!(self.kind, ChampionKind::Cassi | ChampionKind::Issac) => 22,
             Passive::None => 23,
@@ -279,7 +291,8 @@ fn ability(
     Some(AbilitySpec { kind, modifier, range, radius, duration, excludes_walking, targets })
 }
 
-/// Kit table transcribed from docs/GameRules.md (event cambc2026a).
+/// Kit table transcribed from docs/GameRules.md (engine 1.0.0, cambc 3.0.1). The bot overlays
+/// the engine's live base stats at start-up (bots/main/src/sdk.rs), so this is the fallback.
 #[must_use]
 pub fn builtin_kit(kind: ChampionKind) -> KitInfo {
     use targets::{ALLIES, CAMPS, ENEMIES, GROUND, SELF};
@@ -305,25 +318,25 @@ pub fn builtin_kit(kind: ChampionKind) -> KitInfo {
         ChampionKind::Cassi => k(
             Ranged,
             3,
-            700.0,
-            71.25,
+            600.0,
+            65.0,
             30.0,
-            3.5,
+            3.0,
             70.0,
-            15.0,
+            13.0,
             ability(Damage, 2.0, 4.0, 0.0, 0, true, foe),
             ability(Cc, 0.0, 4.0, 0.0, 1, false, foe),
             Passive::None,
         ),
         ChampionKind::Issac => {
-            k(Melee, 1, 900.0, 95.0, 40.0, 4.75, 100.0, 10.0, reset, dash, Passive::None)
+            k(Melee, 1, 900.0, 80.0, 40.0, 3.0, 100.0, 10.0, reset, dash, Passive::None)
         }
         ChampionKind::Ryth => k(
             Melee,
             1,
             1200.0,
             100.0,
-            50.0,
+            45.0,
             5.0,
             100.0,
             10.0,
@@ -332,17 +345,17 @@ pub fn builtin_kit(kind: ChampionKind) -> KitInfo {
             Passive::HealthStrength,
         ),
         ChampionKind::VesperVale => {
-            k(Ranged, 3, 900.0, 100.0, 45.0, 5.0, 100.0, 10.0, reset, dash, Passive::BonusGold)
+            k(Ranged, 3, 900.0, 100.0, 50.0, 5.0, 100.0, 10.0, reset, dash, Passive::BonusGold)
         }
         ChampionKind::Prism => k(
             Ranged,
             3,
             700.0,
-            75.0,
+            60.0,
             35.0,
-            3.5,
+            2.5,
             80.0,
-            10.0,
+            8.0,
             ability(Cc, 1.5, 4.0, 0.0, 1, true, foe),
             ability(AoeDamage, 1.0, 4.0, 1.0, 0, true, GROUND),
             Passive::GemFocus,
@@ -352,10 +365,10 @@ pub fn builtin_kit(kind: ChampionKind) -> KitInfo {
             3,
             750.0,
             75.0,
-            35.0,
+            30.0,
             3.5,
-            100.0,
-            10.0,
+            85.0,
+            9.0,
             ability(Damage, 2.0, 4.0, 0.0, 0, true, foe),
             ability(AoeDamage, 1.4, 4.0, 1.0, 0, true, GROUND),
             Passive::None,
@@ -366,7 +379,7 @@ pub fn builtin_kit(kind: ChampionKind) -> KitInfo {
             800.0,
             100.0,
             70.0,
-            5.0,
+            6.0,
             100.0,
             10.0,
             reset,
@@ -380,8 +393,8 @@ pub fn builtin_kit(kind: ChampionKind) -> KitInfo {
             100.0,
             45.0,
             5.0,
-            50.0,
-            10.0,
+            60.0,
+            15.0,
             reset,
             ability(Damage, 2.0, 4.0, 0.0, 0, true, foe),
             Passive::StunImmunity,
@@ -391,12 +404,12 @@ pub fn builtin_kit(kind: ChampionKind) -> KitInfo {
             3,
             750.0,
             75.0,
-            35.0,
+            45.0,
             5.0,
             100.0,
             10.0,
             reset,
-            ability(Cc, 2.2, 4.0, 0.0, 1, true, foe),
+            ability(Cc, 1.4, 4.0, 0.0, 1, true, foe),
             Passive::RemoteShop,
         ),
         ChampionKind::Willow => k(
@@ -404,9 +417,9 @@ pub fn builtin_kit(kind: ChampionKind) -> KitInfo {
             3,
             700.0,
             50.0,
-            45.0,
+            55.0,
             3.0,
-            105.0,
+            120.0,
             5.0,
             ability(Heal, 3.0, 4.0, 0.0, 0, false, ALLIES),
             reset,
@@ -417,10 +430,10 @@ pub fn builtin_kit(kind: ChampionKind) -> KitInfo {
             1,
             900.0,
             100.0,
-            40.0,
+            35.0,
             5.0,
             100.0,
-            10.0,
+            9.0,
             ability(Cc, 1.25, 4.0, 0.0, 1, true, foe),
             dash,
             Passive::Retaliation,
@@ -430,7 +443,7 @@ pub fn builtin_kit(kind: ChampionKind) -> KitInfo {
             1,
             1000.0,
             100.0,
-            50.0,
+            40.0,
             5.0,
             100.0,
             10.0,
@@ -438,6 +451,30 @@ pub fn builtin_kit(kind: ChampionKind) -> KitInfo {
             ability(Shield, 2.5, 0.0, 0.0, 5, false, SELF),
             Passive::SplashAttack,
         ),
+        ChampionKind::HeartOfRuin => k(
+            Melee,
+            1,
+            1000.0,
+            100.0,
+            40.0,
+            4.0,
+            100.0,
+            12.0,
+            ability(Shield, 1.5, 0.0, 0.0, 5, false, SELF),
+            // Dash 2 tiles, 1.75 x Focus to radius 1 on landing, one-turn stun.
+            ability(Cc, 1.75, 2.0, 1.0, 1, false, GROUND),
+            Passive::MissingHealthDamage,
+        ),
+    }
+}
+
+/// Heart of Ruin's passive: damage x (1 + 0.5 x missing health fraction).
+#[must_use]
+pub fn missing_health_bonus(kind: ChampionKind, hp_frac: f32) -> f32 {
+    if kind == ChampionKind::HeartOfRuin {
+        1.0 + 0.5 * (1.0 - hp_frac.clamp(0.0, 1.0))
+    } else {
+        1.0
     }
 }
 
@@ -466,7 +503,8 @@ mod tests {
         for choice in DraftChoice::ALL {
             assert_eq!(DraftChoice::from_u8(choice as u8), Some(choice));
         }
-        assert_eq!(ChampionKind::from_u8(12), None);
+        assert_eq!(ChampionKind::from_u8(13), None);
+        assert_eq!(DraftChoice::from_u8(12), None);
     }
 
     #[test]
@@ -487,10 +525,13 @@ mod tests {
     #[test]
     fn kit_table_matches_rules_examples() {
         let stellar = builtin_kit(ChampionKind::Stellar);
-        assert_eq!(stellar.base_focus, 100.0);
-        assert_eq!(stellar.abilities[0].unwrap().modifier, 2.0, "2× focus burst = 200 damage");
+        assert_eq!(stellar.base_focus, 85.0);
+        assert_eq!(stellar.abilities[0].unwrap().modifier, 2.0, "2× focus burst = 170 damage");
         let ryth = builtin_kit(ChampionKind::Ryth);
         assert_eq!(ryth.stats_with([2, 0, 0]).0, 1400.0);
         assert_eq!(builtin_kit(ChampionKind::Varg).passive, Passive::SplashAttack);
+        assert_eq!(builtin_kit(ChampionKind::Tavi).abilities[1].unwrap().modifier, 1.4);
+        assert_eq!(missing_health_bonus(ChampionKind::HeartOfRuin, 0.5), 1.25);
+        assert_eq!(missing_health_bonus(ChampionKind::Varg, 0.1), 1.0);
     }
 }

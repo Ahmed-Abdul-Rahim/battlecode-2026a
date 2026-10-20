@@ -18,7 +18,7 @@ struct DraftCache {
     map: MapInfo,
     desc: MapDescriptor,
     team_size: usize,
-    vecs: [ChampVec; 12],
+    vecs: [ChampVec; 13],
     weights: ScorerWeights,
     plan: Option<&'static crate::map_plans::MapPlan>,
     /// Policy-pack draft for this map and team size (harness/mimic.py, ES).

@@ -24,7 +24,7 @@ FINGERPRINTS = ROOT / "data" / "fingerprints.json"
 PACK = ROOT / "bots" / "main" / "src" / "pack" / "pack.bin"
 OUR_ENGINE = ("main", "_lg-", "auto-v", "_es-", "_v6-", "_sr-", "_mt-", "_oos-", "_var-", "_tune")
 TAG_THETA, TAG_HOTSPOTS, TAG_OPENING, TAG_DRAFT, TAG_BUILD = 1, 2, 3, 4, 5
-KINDS, OPENING_LEN, DRAFT_LEN, BUILD_LEN = 12, 4, 5, 12
+KINDS, OPENING_LEN, DRAFT_LEN, BUILD_LEN = 13, 4, 5, 12
 
 
 def _opening_bytes(sides: list[dict]) -> bytes:

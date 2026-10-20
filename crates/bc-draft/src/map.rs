@@ -2,7 +2,7 @@
 
 use bc_core::Pos;
 
-/// Mirrors `cambc::CampType`, with the stats from docs/GameRules.md.
+/// Mirrors `cambc::CampType`, with the stats from docs/GameRules.md (engine 1.0.0).
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum CampKind {
     Wolf,
@@ -10,6 +10,8 @@ pub enum CampKind {
     GemCluster,
     GoldCluster,
     Monolith,
+    /// Engine 1.0.0: 5,000 hp, 120 strength, range 4, 160 gold / 36 gems.
+    Golem,
 }
 
 impl CampKind {
@@ -21,6 +23,7 @@ impl CampKind {
             2 => Some(Self::GemCluster),
             3 => Some(Self::GoldCluster),
             4 => Some(Self::Monolith),
+            5 => Some(Self::Golem),
             _ => None,
         }
     }
@@ -30,8 +33,9 @@ impl CampKind {
         match self {
             Self::Wolf => 1350.0,
             Self::Elk => 2400.0,
-            Self::GemCluster | Self::GoldCluster => 500.0,
+            Self::GemCluster | Self::GoldCluster => 120.0,
             Self::Monolith => 20000.0,
+            Self::Golem => 5000.0,
         }
     }
 
@@ -42,6 +46,7 @@ impl CampKind {
             Self::Elk => 60.0,
             Self::GemCluster | Self::GoldCluster => 0.0,
             Self::Monolith => 200.0,
+            Self::Golem => 120.0,
         }
     }
 }

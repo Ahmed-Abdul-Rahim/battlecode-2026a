@@ -42,10 +42,50 @@ pub fn local_error(message: &str) -> Error {
     }
 }
 
-/// Kit for a champion. Builtin table for now; reading `champion_designs()`
-/// metadata so balance patches flow through automatically is a backlog item.
+/// Live design stats per champion kind (base and growth of health, strength, focus; attack
+/// range), read once from `champion_designs()` so balance patches flow through.
+type LiveStats = [f32; 6];
+static LIVE: std::sync::OnceLock<Vec<(ChampionKind, LiveStats, i32)>> = std::sync::OnceLock::new();
+
+fn live_stats() -> &'static [(ChampionKind, LiveStats, i32)] {
+    LIVE.get_or_init(|| {
+        let Ok(designs) = cambc::champion_designs() else { return Vec::new() };
+        designs
+            .iter()
+            .filter_map(|d| {
+                let k = ChampionKind::from_u8(d.champion_name().ok()? as i32 as u8)?;
+                let s = d.base_stats().ok()?;
+                let v = [
+                    s.base_health,
+                    s.health_growth,
+                    s.base_strength,
+                    s.strength_growth,
+                    s.base_focus,
+                    s.focus_growth,
+                ];
+                Some((k, v, s.base_attack_range))
+            })
+            .collect()
+    })
+}
+
+/// Kit for a champion: the builtin table (abilities, passive) with the engine's live stats.
 pub fn kit(kind: ChampionKind) -> KitInfo {
-    builtin_kit(kind)
+    let mut k = builtin_kit(kind);
+    if let Some((_, s, range)) = live_stats().iter().find(|(c, ..)| *c == kind) {
+        [
+            k.base_health,
+            k.health_growth,
+            k.base_strength,
+            k.strength_growth,
+            k.base_focus,
+            k.focus_growth,
+        ] = *s;
+        if *range > 0 {
+            k.attack_range = *range;
+        }
+    }
+    k
 }
 
 /// Damage per round from basic attacks plus the best damaging spell averaged

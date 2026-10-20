@@ -51,7 +51,7 @@ pub struct Bot {
     /// Per enemy kind: ignored as a fight target until this round (we couldn't reach it).
     /// One slot per kind, so several unreachable enemies are ignored together (a single
     /// slot let the target flip between them forever: the rushbait 2000-round stall).
-    ignore_until: [u32; 12],
+    ignore_until: [u32; 13],
     /// Policy-pack death hotspots for this map: (tile, weight 0..1).
     hotspots: Vec<(Pos, f32)>,
     /// Policy-pack opening route for this champion kind and spawn side (group indices).
@@ -217,7 +217,7 @@ impl Bot {
             items_round: 0,
             turns: 0,
             engage_stall: 0,
-            ignore_until: [0; 12],
+            ignore_until: [0; 13],
             hotspots,
             opening,
             opening_idx: 0,
@@ -1165,8 +1165,10 @@ impl Bot {
             .any(|&s| self.ledger.items[item_id(Family::Home, s, true) as usize] > 0)
     }
 
+    /// Our damage per round: live (items included) once known, else the kit's base stats.
     fn kit_dps(&self) -> f32 {
-        sdk::dps(self.kit.base_strength, self.kit.base_focus, &self.kit).max(1.0)
+        let base = sdk::dps(self.kit.base_strength, self.kit.base_focus, &self.kit);
+        self.cur_dps.max(base).max(1.0)
     }
 
     fn priority_index(&self, group: usize) -> Option<u8> {
@@ -1195,6 +1197,12 @@ impl Bot {
             } else {
                 sdk::dps(strength, focus, &kit)
             };
+            // Heart of Ruin hits harder the lower its health (up to +50%).
+            let dps = dps
+                * crate::bc_core::champion::missing_health_bonus(
+                    kind,
+                    hp / e.max_health().unwrap_or(hp).max(1.0),
+                );
             let view = EnemyView {
                 pos: p,
                 dist: my_pos.cheb(p),
@@ -1346,7 +1354,11 @@ impl Bot {
             self.target = Some(g);
             return;
         }
-        let my_dps = sdk::dps(self.kit.base_strength, self.kit.base_focus, &self.kit).max(10.0);
+        // Live damage (items included): base stats alone underrate a geared champion, making
+        // every camp look slower to clear than it is.
+        let my_dps = sdk::dps(self.kit.base_strength, self.kit.base_focus, &self.kit)
+            .max(self.cur_dps)
+            .max(10.0);
         let live = self.theta.knob(knob::MONOLITH_LIVE) > 0;
         let team_power =
             if live { self.cur_dps.max(my_dps) } else { my_dps } * self.team_size as f32;
@@ -1822,6 +1834,7 @@ fn champ_name(kind: ChampionKind) -> &'static str {
         ChampionKind::Ren => "Ren",
         ChampionKind::Varg => "Varg",
         ChampionKind::Tavi => "Tavi",
+        ChampionKind::HeartOfRuin => "HeartOfRuin",
     }
 }
 

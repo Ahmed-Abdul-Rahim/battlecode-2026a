@@ -56,7 +56,7 @@ impl Ctr2 {
 }
 
 /// Champion kinds (`ChampionKind as usize`); one counter each.
-pub const KINDS: usize = 12;
+pub const KINDS: usize = 13;
 
 /// What happened in our recent fights.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
