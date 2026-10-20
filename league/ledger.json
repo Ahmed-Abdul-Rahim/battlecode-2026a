@@ -288,6 +288,15 @@
    "time": "2026-10-20T15:00:17.843Z",
    "win": false
   },
+  "33ac6723-4aa7-4368-ad8e-f1cdcc3192f6": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "fragment",
+   "opp": "Hidden Lock Pickers",
+   "oppId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
+   "time": "2026-10-20T20:00:10.344Z",
+   "win": false
+  },
   "34c3098c-7f75-414c-a129-448d57209f97": {
    "kind": "ranked",
    "live": null,
@@ -612,6 +621,15 @@
    "time": "2026-10-20T17:50:06.264Z",
    "win": true
   },
+  "6b9055a4-1f21-44bc-a185-6de0411bb069": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "stampede",
+   "opp": "Hidden Lock Pickers",
+   "oppId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
+   "time": "2026-10-20T20:00:10.344Z",
+   "win": false
+  },
   "6dfe4487-639f-4bcb-b868-21da68ba68bd": {
    "kind": "ranked",
    "live": null,
@@ -675,6 +693,15 @@
    "time": "2026-10-20T17:00:08.371Z",
    "win": false
   },
+  "78413ca6-8e50-43b3-bfe5-47cdf554a05d": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "fracture",
+   "opp": "Hidden Lock Pickers",
+   "oppId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
+   "time": "2026-10-20T20:00:10.344Z",
+   "win": false
+  },
   "7aa60547-bd36-48cd-abd9-bee76fa40d36": {
    "kind": "ranked",
    "live": 1,
@@ -736,6 +763,15 @@
    "opp": "Intercontinental Fish",
    "oppId": "1890540d-1ffc-4847-adbf-d0d08772f268",
    "time": "2026-10-20T17:51:26.756Z",
+   "win": false
+  },
+  "84d0cca1-44dd-4fd7-8f18-0386f9b14ef3": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "collision",
+   "opp": "Hidden Lock Pickers",
+   "oppId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
+   "time": "2026-10-20T20:00:10.344Z",
    "win": false
   },
   "86ddfd59-eab4-4080-9b26-0dc149d5c7c5": {
@@ -1359,6 +1395,15 @@
    "time": "2026-10-20T18:20:10.477Z",
    "win": false
   },
+  "f458d2fe-7094-4ce0-bd25-cefd718b1477": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "interlock",
+   "opp": "Hidden Lock Pickers",
+   "oppId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
+   "time": "2026-10-20T20:00:10.344Z",
+   "win": false
+  },
   "f5837cb3-68fa-414d-b459-6439bd37fcec": {
    "kind": "ranked",
    "live": null,
@@ -1574,13 +1619,14 @@
    },
    "deaths_them": 3,
    "deaths_us": 11,
+   "fixed_in": 7,
    "gems_them": "1020",
    "gems_us": "320",
    "id": "03ef19b7-a548-41f4-a625-a50f060f01b5",
    "map": "concentrated-wealth",
    "opp": "Mousa",
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-20T16:00:07.664Z",
    "tries_at": 0
   },
@@ -2107,13 +2153,14 @@
    },
    "deaths_them": 3,
    "deaths_us": 2,
+   "fixed_in": 7,
    "gems_them": "844",
    "gems_us": "435",
    "id": "9f9f807a-4769-4651-86ed-7547e5e5b51e",
    "map": "concentrated-wealth",
    "opp": "MicroStella",
    "oppId": "f0415fa5-b2aa-4958-a47a-4422f74d9ede",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-20T17:30:07.063Z",
    "tries_at": 0
   },
@@ -2431,13 +2478,14 @@
    },
    "deaths_them": 26,
    "deaths_us": 11,
+   "fixed_in": 7,
    "gems_them": "980",
    "gems_us": "823",
    "id": "f079d0bf-bfbc-450f-ba02-1c585afc76cf",
    "map": "concentrated-wealth",
    "opp": "range rover",
    "oppId": "184a3866-fec8-4f0a-8221-6691e1abfdc2",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-20T18:30:06.484Z",
    "tries_at": 1
   },
@@ -2770,6 +2818,91 @@
    "status": "needs-human",
    "time": "2026-10-20T19:50:11.277Z",
    "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 26
+   },
+   "deaths_them": 10,
+   "deaths_us": 26,
+   "gems_them": "1017",
+   "gems_us": "205",
+   "id": "84d0cca1-44dd-4fd7-8f18-0386f9b14ef3",
+   "map": "collision",
+   "opp": "Hidden Lock Pickers",
+   "oppId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
+   "status": "open",
+   "time": "2026-10-20T20:00:10.344Z",
+   "tries_at": 6
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 47,
+    "Unknown entity kind (2)": 5
+   },
+   "deaths_them": 23,
+   "deaths_us": 52,
+   "gems_them": "962",
+   "gems_us": "228",
+   "id": "33ac6723-4aa7-4368-ad8e-f1cdcc3192f6",
+   "map": "fragment",
+   "opp": "Hidden Lock Pickers",
+   "oppId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
+   "status": "open",
+   "time": "2026-10-20T20:00:10.344Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 20,
+    "Unknown entity kind (2)": 33
+   },
+   "deaths_them": 5,
+   "deaths_us": 53,
+   "gems_them": "320",
+   "gems_us": "160",
+   "hint": "map not in maps/ yet: the next map sync registers it",
+   "id": "6b9055a4-1f21-44bc-a185-6de0411bb069",
+   "map": "stampede",
+   "opp": "Hidden Lock Pickers",
+   "oppId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
+   "status": "needs-human",
+   "time": "2026-10-20T20:00:10.344Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 24,
+    "Unknown entity kind (2)": 5
+   },
+   "deaths_them": 21,
+   "deaths_us": 29,
+   "gems_them": "1000",
+   "gems_us": "720",
+   "id": "f458d2fe-7094-4ce0-bd25-cefd718b1477",
+   "map": "interlock",
+   "opp": "Hidden Lock Pickers",
+   "oppId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
+   "status": "open",
+   "time": "2026-10-20T20:00:10.344Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 4,
+    "Unknown entity kind (2)": 33
+   },
+   "deaths_them": 17,
+   "deaths_us": 37,
+   "gems_them": "461",
+   "gems_us": "185",
+   "id": "78413ca6-8e50-43b3-bfe5-47cdf554a05d",
+   "map": "fracture",
+   "opp": "Hidden Lock Pickers",
+   "oppId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
+   "status": "open",
+   "time": "2026-10-20T20:00:10.344Z",
+   "tries_at": 2
   }
  ],
  "map_files": {
