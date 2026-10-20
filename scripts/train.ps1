@@ -16,7 +16,8 @@ function Stop-Trainers {
     Get-CimInstance Win32_Process -Filter "Name='python.exe'" |
         Where-Object { $_.CommandLine -match 'auto_train|league_train|coevo' } |
         ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue; "stopped $($_.ProcessId)" }
-    Remove-Item runs\auto_train\lock, runs\league\lock, runs\coevo\lock -ErrorAction SilentlyContinue
+    Start-Sleep -Milliseconds 800
+    Remove-Item (Join-Path $root "runs\auto_train\lock"), (Join-Path $root "runs\league\lock"), (Join-Path $root "runs\coevo\lock") -ErrorAction SilentlyContinue
 }
 
 switch ($cmd) {

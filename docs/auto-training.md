@@ -89,10 +89,10 @@ train stop
 
 ## Key Components
 
-### 1. Dynamic Top 5 Competitor Benchmarking
-- Top 5 teams on the leaderboard (`Intercontinental Fish`, `Nyx`, `Sneaky Bush Campers`, `Univardisty of Shingtonwash`, `Mite`) are tracked dynamically.
-- `mimic.py` extracts their draft picks, emblem build paths, and tribute cadences into sparring bots under `bots/mimic-*`.
-- The current champion is evaluated against these mimics, and any lost matchup is cataloged to prevent blind spots.
+### 1. Dynamic Top 5 Competitor Benchmarking & Mimic Co-Evolution
+- **Macro Sync from Ladder**: Top 5 teams on the leaderboard (`Intercontinental Fish`, `Nyx`, `Sneaky Bush Campers`, `Univardisty of Shingtonwash`, `Mite`) are tracked dynamically. The pipeline periodically fetches their newest platform match summaries (`runs/ladder_top/*.json`) and runs `mimic.py` to extract updated drafts, emblem build paths, and tribute cadences into `bots/mimic-*`.
+- **Micro Hardening (Co-Evolution)**: Copying macro alone produces naive sparring partners. The pipeline co-evolves the mimics' micro decision weights ($\theta$) against our champion on alternating cycles. In Cycle 4, `mimic-nyx` was hardened against our champion (+0.586 fitness gain), upgrading its aggression and aggro swapping so our champion faces increasingly lethal opposition.
+- **Arms Race**: This two-way adaptation ensures our champion never overfits to weak, static sparring partners.
 
 ### 2. Loss Ingestion & Queue
 - Matches on the Battlecode ladder are polled with exponential backoff to handle HTTP 429 rate limits safely.

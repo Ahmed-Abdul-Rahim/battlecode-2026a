@@ -286,6 +286,65 @@ def get_active_top5_mimics(st: dict) -> list[str]:
     return bots
 
 
+def sync_live_top5_mimics(st: dict) -> list[str]:
+    """Download newly finished games of the top 5 teams and update mimic bots."""
+    stdout, _, rc = cambc_api(["ladder", "--limit", "10", "--json"])
+    if rc != 0 or not stdout.strip():
+        return get_active_top5_mimics(st)
+
+    try:
+        data = json.loads(stdout)
+        ladder = data.get("ladder", [])
+        top5_teams = [t for t in ladder if t.get("teamId") != OUR_TEAM][:5]
+    except Exception:
+        return get_active_top5_mimics(st)
+
+    dest_dir = ROOT / "runs" / "ladder_top"
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    existing_summaries = {p.stem for p in dest_dir.glob("*.json")}
+
+    updated_any = False
+    for team in top5_teams:
+        tid = team.get("teamId")
+        tname = team.get("name")
+        if not tid or not tname:
+            continue
+        out_list, _, rc_l = cambc_api(["matches", "list", "--team", tid, "--limit", "6", "--json"])
+        if rc_l != 0 or not out_list.strip():
+            continue
+        try:
+            m_data = json.loads(out_list)
+            matches = m_data.get("matches", [])
+        except Exception:
+            continue
+
+        for m in matches:
+            mid = m.get("matchId")
+            if not mid or mid in existing_summaries or m.get("status") != "finished":
+                continue
+            out_file = dest_dir / f"{mid}.json"
+            stdout_s, _, rc_s = cambc_api(["matches", "summary", mid, "--json", "-o", str(out_file)])
+            if rc_s == 0 and out_file.exists():
+                existing_summaries.add(mid)
+                updated_any = True
+
+    if updated_any:
+        print("[MIMIC SYNC] New top-team matches downloaded. Rebuilding mimic macro specs...")
+        sh([sys.executable, str(ROOT / "harness" / "mimic.py"), "--all-top"])
+        for spec_p in (ROOT / "runs" / "mimic").glob("*.spec.json"):
+            slug = spec_p.name.replace(".spec.json", "")
+            bot_name = f"mimic-{slug}"
+            bot_dir = ROOT / "bots" / bot_name
+            if bot_dir.exists():
+                try:
+                    spec_data = json.loads(spec_p.read_text(encoding="utf-8"))
+                    packlib.write(spec_data, bot_dir / "src" / "pack" / "pack.bin")
+                except Exception:
+                    pass
+
+    return get_active_top5_mimics(st)
+
+
 def check_ladder_for_losses(st: dict) -> list[dict]:
     stdout, _, rc = cambc_api(["matches", "list", "--team", OUR_TEAM, "--limit", "25", "--json"])
     if rc != 0 or not stdout.strip():
@@ -417,6 +476,113 @@ def push_to_platform(bot_name: str, version_name: str, map_name: str, st: dict) 
     return ok
 
 
+# ----------------------------------------------------------------- Mimic Hardening (Co-Evolution)
+
+
+def harden_mimic_step(st: dict, rng: random.Random) -> dict:
+    """Co-evolve the micro execution (theta) of a Top 5 mimic against our champion."""
+    champ = st["champion"]
+    if not (ROOT / "bots" / champ).exists():
+        champ = "main"
+
+    mimics = get_active_top5_mimics(st)
+    if not mimics:
+        return {"status": "skipped", "reason": "no mimics"}
+
+    mimic_idx = (st["cycle"] // 4) % len(mimics)
+    target_mimic = mimics[mimic_idx]
+    mimic_slug = target_mimic.replace("mimic-", "")
+    target_bot_dir = ROOT / "bots" / target_mimic
+
+    spec_p = ROOT / "runs" / "mimic" / f"{mimic_slug}.spec.json"
+    base_spec = None
+    if spec_p.exists():
+        try:
+            base_spec = json.loads(spec_p.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+
+    all_maps = list_competition_maps()
+    target_mp = all_maps[st["cycle"] % len(all_maps)]
+    target_map_name = target_mp.stem
+
+    cyc_dir = OUT / "cycles" / f"mimic-{st['cycle']:05d}-{mimic_slug}"
+    if cyc_dir.exists():
+        shutil.rmtree(cyc_dir, ignore_errors=True)
+    cyc_dir.mkdir(parents=True, exist_ok=True)
+
+    print(f"[{time.strftime('%H:%M:%S')}] [MIMIC HARDENING] Co-evolving {target_mimic} on '{target_map_name}' vs champion {champ}...")
+
+    base_res = runner.run_matches(target_mimic, champ, maps=[target_mp], out_dir=cyc_dir / "baseline", release=True)
+    base_fit, base_win, base_deaths, base_susp = fitness(base_res, target_mimic)
+
+    st.setdefault("mimic_packs", {})
+    st["mimic_packs"].setdefault(mimic_slug, {})
+    current_th = list(st["mimic_packs"][mimic_slug].get(target_map_name) or base_theta("main"))
+    if len(current_th) < params.size():
+        current_th += base_theta("main")[len(current_th):]
+
+    s0 = params.sigma0()
+    sigma = list(st.get("mimic_sigmas", {}).get(mimic_slug, {}).get(target_map_name, s0))
+    if len(sigma) < params.size():
+        sigma += s0[len(sigma):]
+
+    scored = []
+    # Test 6 antithetic candidates for the mimic
+    for k in range(3):
+        raw_eps = [rng.gauss(0, 1) for _ in current_th]
+        eps = [0.0] * len(current_th)
+        if k == 0:
+            for i in range(18):
+                eps[i] = raw_eps[i]
+        elif k == 1:
+            for i in range(38, 98):
+                eps[i] = raw_eps[i]
+        else:
+            for i in range(18):
+                eps[i] = raw_eps[i]
+            for i in range(38, 98):
+                eps[i] = raw_eps[i]
+
+        for sgn in (1, -1):
+            cand_th = [t + sgn * s * e for t, s, e in zip(current_th, sigma, eps)]
+            cand_name = f"_cand_m_{k}{'p' if sgn > 0 else 'n'}"
+            cand_d = ROOT / "bots" / cand_name
+            safe_copy_bot(target_bot_dir, cand_d)
+            write_pack(cand_d / "src" / "pack" / "pack.bin", {**st["mimic_packs"][mimic_slug], target_map_name: cand_th}, base_spec)
+
+            m_res = runner.run_matches(cand_name, champ, maps=[target_mp], out_dir=cyc_dir / cand_name, release=True)
+            m_fit, m_win, m_deaths, m_susp = fitness(m_res, cand_name)
+            scored.append((m_fit, m_win, m_deaths, m_susp, cand_th, cand_name))
+
+    scored.sort(key=lambda x: -x[0])
+    best_fit, best_win, best_deaths, best_susp, best_th, best_name = scored[0]
+
+    gain = best_fit - base_fit
+    mult = 1.15 if gain > 0 else 0.88
+    st.setdefault("mimic_sigmas", {}).setdefault(mimic_slug, {})[target_map_name] = [
+        max(0.02, min(0.5, s * mult)) for s in sigma
+    ]
+
+    upgraded = False
+    if gain >= 0.03 and best_susp <= max(base_susp * 2, 20):
+        print(f"  *** MIMIC UPGRADED! {target_mimic} fitness vs champion: {base_fit:.3f} -> {best_fit:.3f} (+{gain:.3f}) ***")
+        st["mimic_packs"][mimic_slug][target_map_name] = best_th
+        write_pack(target_bot_dir / "src" / "pack" / "pack.bin", st["mimic_packs"][mimic_slug], base_spec)
+        upgraded = True
+
+    return {
+        "cycle": st["cycle"],
+        "type": "mimic_hardening",
+        "mimic": target_mimic,
+        "map": target_map_name,
+        "base_fit": round(base_fit, 3),
+        "best_fit": round(best_fit, 3),
+        "gain": round(gain, 3),
+        "upgraded": upgraded,
+    }
+
+
 # ----------------------------------------------------------------- Training Cycle
 
 
@@ -424,7 +590,22 @@ def train_step(st: dict, rng: random.Random, auto_submit: bool = True) -> dict:
     st["cycle"] += 1
     cyc_id = f"{st['cycle']:05d}"
     cyc_dir = OUT / "cycles" / cyc_id
+    if cyc_dir.exists():
+        shutil.rmtree(cyc_dir, ignore_errors=True)
     cyc_dir.mkdir(parents=True, exist_ok=True)
+
+    # 1. Periodic live ladder sync of top-5 mimics (every 10 cycles)
+    if st["cycle"] % 10 == 0:
+        sync_live_top5_mimics(st)
+
+    # 2. Mimic Co-Evolution (every 4th cycle): harden the rivals so our champion never plateaus against weak sparring partners
+    if st["cycle"] % 4 == 0:
+        res = harden_mimic_step(st, rng)
+        st.setdefault("history", []).append(res)
+        st["history"] = st["history"][-50:]
+        save_state(st)
+        update_report(st)
+        return res
 
     champ = st["champion"]
     if not (ROOT / "bots" / champ).exists():
@@ -616,11 +797,16 @@ def update_report(st: dict) -> None:
         "",
         "## Recent Training Iterations",
         "",
-        "| Cycle | Map | Champ Fit | Best Fit | Gain | Promoted |",
+        "| Cycle | Task / Map | Base Fit | Best Fit | Gain | Outcome |",
         "| --- | --- | --- | --- | --- | --- |",
     ]
     for h in reversed((st.get("history") or [])[-10:]):
-        lines.append(f"| {h['cycle']} | {h['map']} | {h['champ_fit']} | {h['best_fit']} | {h['gain']} | {h['promoted']} |")
+        if h.get("type") == "mimic_hardening":
+            outcome = f"Mimic Upgraded: {h.get('mimic')}" if h.get("upgraded") else f"Mimic Tested: {h.get('mimic')}"
+            lines.append(f"| {h['cycle']} | [Mimic] {h.get('map')} | {h.get('base_fit', 0.0)} | {h.get('best_fit', 0.0)} | {h.get('gain', 0.0):+.3f} | {outcome} |")
+        else:
+            outcome = "PROMOTED & PUSHED" if h.get("promoted") else "Search"
+            lines.append(f"| {h['cycle']} | [Champ] {h.get('map')} | {h.get('champ_fit', 0.0)} | {h.get('best_fit', 0.0)} | {h.get('gain', 0.0):+.3f} | {outcome} |")
 
     REPORT_FILE.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
@@ -751,7 +937,12 @@ def main() -> int:
             try:
                 res = train_step(st, rng, auto_submit=args.auto_submit)
                 dt = round(time.time() - t0, 1)
-                print(f"Cycle {res['cycle']} finished in {dt}s. Gain: {res['gain']:+.3f}, Promoted: {res['promoted']}")
+                if res.get("type") == "mimic_hardening":
+                    outcome = "Upgraded" if res.get("upgraded") else "Tested"
+                    print(f"Cycle {res['cycle']} [Mimic {res.get('mimic')}] finished in {dt}s. Gain: {res.get('gain', 0.0):+.3f}, Outcome: {outcome}")
+                else:
+                    outcome = "PROMOTED & PUSHED" if res.get("promoted") else "Search"
+                    print(f"Cycle {res['cycle']} [Champion] finished in {dt}s. Gain: {res.get('gain', 0.0):+.3f}, Outcome: {outcome}")
             except Exception as e:
                 print(f"Cycle exception: {e!r}. Retrying after 5s...", flush=True)
                 time.sleep(5)
