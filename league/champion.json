@@ -1,5 +1,6 @@
 {
  "bench": {},
+ "bench_hard": {},
  "history": [],
  "maps": {
   "collision": [
@@ -84,6 +85,10 @@
   ]
  },
  "seed": "coA-v2 (coevo lineage A, exp/v6-features)",
- "tries": {},
+ "tries": {
+  "collision": {
+   "DESKTOP-QVEMEEE": 2
+  }
+ },
  "version": 0
 }
