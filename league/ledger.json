@@ -81,6 +81,15 @@
    "time": "2026-10-20T17:20:08.637Z",
    "win": true
   },
+  "18fa18fe-707b-48ea-add4-336dd428e73f": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "interlock",
+   "opp": "Slough Reps",
+   "oppId": "fd3a404c-954b-4628-a418-7a8e57fb3783",
+   "time": "2026-10-20T17:50:06.264Z",
+   "win": true
+  },
   "1bfb2d1c-c351-40d7-97f7-41b525716554": {
    "kind": "ranked",
    "live": null,
@@ -252,6 +261,15 @@
    "time": "2026-10-20T16:30:26.059Z",
    "win": true
   },
+  "52a40ce8-1dad-4a51-9ee1-24751155cf5e": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "corners",
+   "opp": "Slough Reps",
+   "oppId": "fd3a404c-954b-4628-a418-7a8e57fb3783",
+   "time": "2026-10-20T17:50:06.264Z",
+   "win": false
+  },
   "52a5a323-111c-4813-84b0-7d4e859d790b": {
    "kind": "ranked",
    "live": null,
@@ -259,6 +277,15 @@
    "opp": "ggez",
    "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
    "time": "2026-10-20T17:10:06.134Z",
+   "win": false
+  },
+  "56467df2-ee7a-4b36-87ac-3223083b8280": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "the-farm",
+   "opp": "Slough Reps",
+   "oppId": "fd3a404c-954b-4628-a418-7a8e57fb3783",
+   "time": "2026-10-20T17:50:06.264Z",
    "win": false
   },
   "58e2915f-a159-4571-ba54-fb4d6702bc31": {
@@ -297,6 +324,15 @@
    "time": "2026-10-20T17:40:07.590Z",
    "win": true
   },
+  "61fad147-6f9a-4ff7-beed-52e45cca187f": {
+   "kind": "unranked",
+   "live": 1,
+   "map": "eight",
+   "opp": "Intercontinental Fish",
+   "oppId": "1890540d-1ffc-4847-adbf-d0d08772f268",
+   "time": "2026-10-20T17:51:26.764Z",
+   "win": false
+  },
   "67af3823-022b-46b9-a319-ea3e9e8eed46": {
    "kind": "ranked",
    "live": null,
@@ -305,6 +341,24 @@
    "oppId": "56492446-eca6-4557-9a40-559bd4c318dc",
    "time": "2026-10-20T16:30:26.059Z",
    "win": false
+  },
+  "6a605f93-fb00-4a39-88a4-92f2e935a134": {
+   "kind": "unranked",
+   "live": 1,
+   "map": "broken-curve",
+   "opp": "Intercontinental Fish",
+   "oppId": "1890540d-1ffc-4847-adbf-d0d08772f268",
+   "time": "2026-10-20T17:51:26.777Z",
+   "win": false
+  },
+  "6a8f671d-229e-4291-9e5f-ccd28f3848ba": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "expanse",
+   "opp": "Slough Reps",
+   "oppId": "fd3a404c-954b-4628-a418-7a8e57fb3783",
+   "time": "2026-10-20T17:50:06.264Z",
+   "win": true
   },
   "6dfe4487-639f-4bcb-b868-21da68ba68bd": {
    "kind": "ranked",
@@ -377,6 +431,15 @@
    "oppId": "e89db5d4-c0a7-43eb-9d6d-23732bae07a5",
    "time": "2026-10-20T16:40:04.457Z",
    "win": true
+  },
+  "83195c85-9f88-4e0b-91d9-e306c667d003": {
+   "kind": "unranked",
+   "live": 1,
+   "map": "elk-arena",
+   "opp": "Intercontinental Fish",
+   "oppId": "1890540d-1ffc-4847-adbf-d0d08772f268",
+   "time": "2026-10-20T17:51:26.756Z",
+   "win": false
   },
   "86ddfd59-eab4-4080-9b26-0dc149d5c7c5": {
    "kind": "ranked",
@@ -729,6 +792,15 @@
    "time": "2026-10-20T15:10:13.186Z",
    "win": true
   },
+  "f07abe10-a225-469b-837b-c1ba0ecbd755": {
+   "kind": "unranked",
+   "live": 1,
+   "map": "fragment",
+   "opp": "Intercontinental Fish",
+   "oppId": "1890540d-1ffc-4847-adbf-d0d08772f268",
+   "time": "2026-10-20T17:51:26.716Z",
+   "win": false
+  },
   "f1043ea0-411a-4af9-81d3-44aa6013a4b6": {
    "kind": "ranked",
    "live": null,
@@ -763,6 +835,24 @@
    "opp": "knownasjason",
    "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
    "time": "2026-10-20T17:00:08.371Z",
+   "win": false
+  },
+  "f957f29a-1a2b-4c4f-b278-107ab3528ef4": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "eight",
+   "opp": "Slough Reps",
+   "oppId": "fd3a404c-954b-4628-a418-7a8e57fb3783",
+   "time": "2026-10-20T17:50:06.264Z",
+   "win": true
+  },
+  "feba7732-093a-4b12-b498-eb46741c5948": {
+   "kind": "unranked",
+   "live": 1,
+   "map": "hooks",
+   "opp": "Intercontinental Fish",
+   "oppId": "1890540d-1ffc-4847-adbf-d0d08772f268",
+   "time": "2026-10-20T17:51:26.747Z",
    "win": false
   }
  },
@@ -1490,6 +1580,123 @@
    "oppId": "625bb51a-8d9e-4035-a16e-ce4eea8eb739",
    "status": "open",
    "time": "2026-10-20T17:40:07.589Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "camp": 7,
+    "champion": 5
+   },
+   "deaths_them": 1,
+   "deaths_us": 12,
+   "gems_them": "1154",
+   "gems_us": "458",
+   "id": "6a605f93-fb00-4a39-88a4-92f2e935a134",
+   "map": "broken-curve",
+   "opp": "Intercontinental Fish",
+   "oppId": "1890540d-1ffc-4847-adbf-d0d08772f268",
+   "status": "open",
+   "time": "2026-10-20T17:51:26.777Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "champion": 50
+   },
+   "deaths_them": 2,
+   "deaths_us": 50,
+   "gems_them": "1020",
+   "gems_us": "11",
+   "id": "61fad147-6f9a-4ff7-beed-52e45cca187f",
+   "map": "eight",
+   "opp": "Intercontinental Fish",
+   "oppId": "1890540d-1ffc-4847-adbf-d0d08772f268",
+   "status": "open",
+   "time": "2026-10-20T17:51:26.764Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "champion": 83
+   },
+   "deaths_them": 4,
+   "deaths_us": 83,
+   "gems_them": "1008",
+   "gems_us": "0",
+   "id": "83195c85-9f88-4e0b-91d9-e306c667d003",
+   "map": "elk-arena",
+   "opp": "Intercontinental Fish",
+   "oppId": "1890540d-1ffc-4847-adbf-d0d08772f268",
+   "status": "open",
+   "time": "2026-10-20T17:51:26.756Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "camp": 3,
+    "champion": 54
+   },
+   "deaths_them": 8,
+   "deaths_us": 57,
+   "gems_them": "1001",
+   "gems_us": "0",
+   "id": "feba7732-093a-4b12-b498-eb46741c5948",
+   "map": "hooks",
+   "opp": "Intercontinental Fish",
+   "oppId": "1890540d-1ffc-4847-adbf-d0d08772f268",
+   "status": "open",
+   "time": "2026-10-20T17:51:26.747Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "champion": 59
+   },
+   "deaths_them": 0,
+   "deaths_us": 59,
+   "gems_them": "1000",
+   "gems_us": "0",
+   "id": "f07abe10-a225-469b-837b-c1ba0ecbd755",
+   "map": "fragment",
+   "opp": "Intercontinental Fish",
+   "oppId": "1890540d-1ffc-4847-adbf-d0d08772f268",
+   "status": "open",
+   "time": "2026-10-20T17:51:26.716Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "camp": 8,
+    "champion": 6
+   },
+   "deaths_them": 9,
+   "deaths_us": 14,
+   "gems_them": "1011",
+   "gems_us": "883",
+   "id": "52a40ce8-1dad-4a51-9ee1-24751155cf5e",
+   "map": "corners",
+   "opp": "Slough Reps",
+   "oppId": "fd3a404c-954b-4628-a418-7a8e57fb3783",
+   "status": "open",
+   "time": "2026-10-20T17:50:06.264Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "camp": 22,
+    "champion": 1
+   },
+   "deaths_them": 11,
+   "deaths_us": 23,
+   "gems_them": "549",
+   "gems_us": "104",
+   "hint": "map not in maps/ yet: the next map sync registers it",
+   "id": "56467df2-ee7a-4b36-87ac-3223083b8280",
+   "map": "the-farm",
+   "opp": "Slough Reps",
+   "oppId": "fd3a404c-954b-4628-a418-7a8e57fb3783",
+   "status": "needs-human",
+   "time": "2026-10-20T17:50:06.264Z",
    "tries_at": 0
   }
  ],
