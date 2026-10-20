@@ -276,7 +276,7 @@
    9
   ]
  },
- "games": 75,
+ "games": 85,
  "opening": {
   "big-world": [
    {
@@ -999,5 +999,5 @@
   ]
  },
  "team": "Sponge(Albert and Bob)",
- "win_rate": 0.653
+ "win_rate": 0.647
 }

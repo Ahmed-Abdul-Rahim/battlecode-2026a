@@ -438,7 +438,7 @@
   ]
  },
  "cadence": {
-  "bag": 48.5,
+  "bag": 46.9,
   "first_emblem": 236,
   "shops_per_100r": 0.65
  },
@@ -462,7 +462,7 @@
    9
   ]
  },
- "games": 46,
+ "games": 56,
  "opening": {
   "ambush": [
    {
@@ -918,5 +918,5 @@
   ]
  },
  "team": ":3",
- "win_rate": 0.783
+ "win_rate": 0.821
 }

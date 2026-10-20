@@ -498,7 +498,7 @@
   ]
  },
  "cadence": {
-  "bag": 35.6,
+  "bag": 35.1,
   "first_emblem": 178,
   "shops_per_100r": 0.84
  },
@@ -522,7 +522,7 @@
    10
   ]
  },
- "games": 80,
+ "games": 90,
  "opening": {
   "big-world": [
    {
@@ -1329,5 +1329,5 @@
   ]
  },
  "team": "Sneaky Bush Campers",
- "win_rate": 0.738
+ "win_rate": 0.767
 }
