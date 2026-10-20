@@ -1606,7 +1606,17 @@
    "why": "loss"
   }
  ],
- "submissions": [],
+ "submissions": [
+  {
+   "bot": "lg-v1",
+   "host": "DESKTOP-QVEMEEE",
+   "ok": true,
+   "output": "Uploading D:\\Code\\battlecode\\bots\\lg-v1 (118639 bytes)...\nSubmitted bot version 11. View submissions at https://2026a.battlecode.co.uk/game/submissions",
+   "reason": "ladder loss since the last upload",
+   "time": "2026-10-20T17:44:40Z",
+   "version": 1
+  }
+ ],
  "top": [
   {
    "teams": [
