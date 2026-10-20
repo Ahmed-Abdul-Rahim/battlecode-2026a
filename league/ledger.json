@@ -270,6 +270,15 @@
    "time": "2026-10-20T15:32:13.244Z",
    "win": true
   },
+  "3233d49a-3ec5-4ad4-be55-ad9924f41183": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "reverse-spiral",
+   "opp": "Prime Bot 007",
+   "oppId": "4b09b8ff-b429-43dc-9be1-180565784e87",
+   "time": "2026-10-20T19:50:11.277Z",
+   "win": true
+  },
   "32f9b532-0243-4348-9af9-7559a623041d": {
    "kind": "ranked",
    "live": null,
@@ -386,6 +395,15 @@
    "oppId": "db94d858-5170-41ef-ad90-b2faf85dd5e8",
    "time": "2026-10-20T15:40:12.934Z",
    "win": true
+  },
+  "4a008747-7c47-4b4e-a05b-b2d5dff35d41": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "shortcut",
+   "opp": "Prime Bot 007",
+   "oppId": "4b09b8ff-b429-43dc-9be1-180565784e87",
+   "time": "2026-10-20T19:50:11.277Z",
+   "win": false
   },
   "4a2e0fac-c061-4690-949c-bd333fe3bcb8": {
    "kind": "ranked",
@@ -603,6 +621,15 @@
    "time": "2026-10-20T17:10:06.134Z",
    "win": false
   },
+  "70bb89c4-2b52-4b41-aa7c-eccae8e64bcb": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "pilgrimage",
+   "opp": "Prime Bot 007",
+   "oppId": "4b09b8ff-b429-43dc-9be1-180565784e87",
+   "time": "2026-10-20T19:50:11.277Z",
+   "win": false
+  },
   "71cf9a7e-ffbd-455c-9ba1-c81a8a00a7d8": {
    "kind": "ranked",
    "live": null,
@@ -692,6 +719,15 @@
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
    "time": "2026-10-20T18:00:13.679Z",
    "win": false
+  },
+  "81ea0031-d591-423b-9829-38f91aa57c56": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "the-farm",
+   "opp": "Prime Bot 007",
+   "oppId": "4b09b8ff-b429-43dc-9be1-180565784e87",
+   "time": "2026-10-20T19:50:11.277Z",
+   "win": true
   },
   "83195c85-9f88-4e0b-91d9-e306c667d003": {
    "kind": "unranked",
@@ -871,6 +907,15 @@
    "opp": "Patient Stunners",
    "oppId": "3edd1441-9f24-4e2c-9645-d8f1e489a2c0",
    "time": "2026-10-20T15:20:09.962Z",
+   "win": false
+  },
+  "a9ba8fde-29bc-4681-91e7-4c591ff0d2be": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "gold-rush",
+   "opp": "Prime Bot 007",
+   "oppId": "4b09b8ff-b429-43dc-9be1-180565784e87",
+   "time": "2026-10-20T19:50:11.277Z",
    "win": false
   },
   "aaaee705-a8e4-4b87-a28a-3cedc4d8215f": {
@@ -2672,6 +2717,59 @@
    "status": "open",
    "time": "2026-10-20T19:40:10.999Z",
    "tries_at": 5
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 8,
+    "Unknown entity kind (2)": 31
+   },
+   "deaths_them": 25,
+   "deaths_us": 39,
+   "gems_them": "314",
+   "gems_us": "300",
+   "hint": "map not in maps/ yet: the next map sync registers it",
+   "id": "4a008747-7c47-4b4e-a05b-b2d5dff35d41",
+   "map": "shortcut",
+   "opp": "Prime Bot 007",
+   "oppId": "4b09b8ff-b429-43dc-9be1-180565784e87",
+   "status": "needs-human",
+   "time": "2026-10-20T19:50:11.277Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 22,
+    "Unknown entity kind (2)": 26
+   },
+   "deaths_them": 22,
+   "deaths_us": 48,
+   "gems_them": "893",
+   "gems_us": "330",
+   "id": "a9ba8fde-29bc-4681-91e7-4c591ff0d2be",
+   "map": "gold-rush",
+   "opp": "Prime Bot 007",
+   "oppId": "4b09b8ff-b429-43dc-9be1-180565784e87",
+   "status": "open",
+   "time": "2026-10-20T19:50:11.277Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 36,
+    "Unknown entity kind (2)": 3
+   },
+   "deaths_them": 24,
+   "deaths_us": 39,
+   "gems_them": "1031",
+   "gems_us": "119",
+   "hint": "map not in maps/ yet: the next map sync registers it",
+   "id": "70bb89c4-2b52-4b41-aa7c-eccae8e64bcb",
+   "map": "pilgrimage",
+   "opp": "Prime Bot 007",
+   "oppId": "4b09b8ff-b429-43dc-9be1-180565784e87",
+   "status": "needs-human",
+   "time": "2026-10-20T19:50:11.277Z",
+   "tries_at": 0
   }
  ],
  "map_files": {
