@@ -1,0 +1,32 @@
+{
+ "build": {},
+ "cadence": {
+  "bag": 33.6,
+  "first_emblem": null,
+  "shops_per_100r": null
+ },
+ "draft": {
+  "3": [
+   3,
+   4,
+   1
+  ],
+  "4": [
+   3,
+   4,
+   1,
+   9
+  ],
+  "5": [
+   3,
+   4,
+   1,
+   9,
+   0
+  ]
+ },
+ "games": 10,
+ "opening": {},
+ "team": "Lone Oski",
+ "win_rate": 0.4
+}
