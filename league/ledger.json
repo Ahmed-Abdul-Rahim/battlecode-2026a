@@ -207,6 +207,15 @@
    "time": "2026-10-20T19:10:09.463Z",
    "win": false
   },
+  "250227f6-cefa-4267-b0db-b0ccdc7accb5": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "islands",
+   "opp": "Azerbaijan Technologies",
+   "oppId": "7218a6a8-8211-4587-bdf8-3bae779e930e",
+   "time": "2026-10-20T19:30:09.721Z",
+   "win": true
+  },
   "274b84ee-1784-4176-9be9-a11b7a944612": {
    "kind": "ranked",
    "live": null,
@@ -223,6 +232,15 @@
    "opp": "Patient Stunners",
    "oppId": "3edd1441-9f24-4e2c-9645-d8f1e489a2c0",
    "time": "2026-10-20T15:20:09.962Z",
+   "win": false
+  },
+  "29d81a03-07a7-4b11-8dc3-6c4d6ee31063": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "contest",
+   "opp": "Azerbaijan Technologies",
+   "oppId": "7218a6a8-8211-4587-bdf8-3bae779e930e",
+   "time": "2026-10-20T19:30:09.721Z",
    "win": false
   },
   "29f2fe43-7348-4022-97c0-32fdfe7baf0c": {
@@ -322,6 +340,15 @@
    "opp": "Mousa",
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
    "time": "2026-10-20T18:00:13.679Z",
+   "win": false
+  },
+  "3e73e89f-7896-42fe-8bc3-8f86a4afe51f": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "fracture",
+   "opp": "Azerbaijan Technologies",
+   "oppId": "7218a6a8-8211-4587-bdf8-3bae779e930e",
+   "time": "2026-10-20T19:30:09.721Z",
    "win": false
   },
   "40771b5a-a8ed-47df-ad03-8f403bd07e14": {
@@ -466,6 +493,15 @@
    "opp": "Stubborn Altar Keepers",
    "oppId": "625bb51a-8d9e-4035-a16e-ce4eea8eb739",
    "time": "2026-10-20T17:40:07.590Z",
+   "win": true
+  },
+  "61a81123-530a-4b3a-8726-10e30bf99664": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "shortcut",
+   "opp": "Azerbaijan Technologies",
+   "oppId": "7218a6a8-8211-4587-bdf8-3bae779e930e",
+   "time": "2026-10-20T19:30:09.721Z",
    "win": true
   },
   "61fad147-6f9a-4ff7-beed-52e45cca187f": {
@@ -899,6 +935,15 @@
    "oppId": "e89db5d4-c0a7-43eb-9d6d-23732bae07a5",
    "time": "2026-10-20T16:40:04.457Z",
    "win": true
+  },
+  "b9139497-9f87-4b2d-9fa5-59697e948962": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "interlock",
+   "opp": "Azerbaijan Technologies",
+   "oppId": "7218a6a8-8211-4587-bdf8-3bae779e930e",
+   "time": "2026-10-20T19:30:09.721Z",
+   "win": false
   },
   "bda43876-4a16-40bd-853c-7c5d80ca32ab": {
    "kind": "ranked",
@@ -2510,6 +2555,56 @@
    "status": "needs-human",
    "time": "2026-10-20T19:20:09.080Z",
    "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 60,
+    "Unknown entity kind (2)": 20
+   },
+   "deaths_them": 54,
+   "deaths_us": 80,
+   "gems_them": "200",
+   "gems_us": "0",
+   "id": "29d81a03-07a7-4b11-8dc3-6c4d6ee31063",
+   "map": "contest",
+   "opp": "Azerbaijan Technologies",
+   "oppId": "7218a6a8-8211-4587-bdf8-3bae779e930e",
+   "status": "open",
+   "time": "2026-10-20T19:30:09.721Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (2)": 31
+   },
+   "deaths_them": 12,
+   "deaths_us": 31,
+   "gems_them": "343",
+   "gems_us": "75",
+   "id": "3e73e89f-7896-42fe-8bc3-8f86a4afe51f",
+   "map": "fracture",
+   "opp": "Azerbaijan Technologies",
+   "oppId": "7218a6a8-8211-4587-bdf8-3bae779e930e",
+   "status": "open",
+   "time": "2026-10-20T19:30:09.721Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 27,
+    "Unknown entity kind (2)": 5
+   },
+   "deaths_them": 29,
+   "deaths_us": 32,
+   "gems_them": "1018",
+   "gems_us": "487",
+   "id": "b9139497-9f87-4b2d-9fa5-59697e948962",
+   "map": "interlock",
+   "opp": "Azerbaijan Technologies",
+   "oppId": "7218a6a8-8211-4587-bdf8-3bae779e930e",
+   "status": "open",
+   "time": "2026-10-20T19:30:09.721Z",
+   "tries_at": 1
   }
  ],
  "map_files": {
