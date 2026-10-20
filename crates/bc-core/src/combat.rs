@@ -270,6 +270,13 @@ pub struct Tuning {
     pub last_stand_advantage: f32,
     /// ALERT starts when a remembered threat can reach us within this many turns.
     pub alert_eta: i32,
+    /// After getting away, go home (recall) only below this health fraction or with a big
+    /// bag; otherwise stay on alert nearby and keep farming. Above 1.0 = always go home.
+    pub recover_below_hp: f32,
+    /// Answer teammates' help calls at all.
+    pub answer_calls: bool,
+    /// Never travel more than this many turns to help.
+    pub max_help_eta: i32,
 }
 
 impl Default for Tuning {
@@ -281,6 +288,9 @@ impl Default for Tuning {
             retreat_hp: 0.35,
             last_stand_advantage: 0.8,
             alert_eta: 6,
+            recover_below_hp: 1.01,
+            answer_calls: true,
+            max_help_eta: 99,
         }
     }
 }
@@ -341,7 +351,12 @@ impl Fsm {
 
     /// Will we answer this call?
     fn answers(&self, inp: &Inputs, c: &CallIn, k: &Tuning) -> bool {
-        if c.age > 1 || inp.hp_frac < k.assist_min_hp || c.my_eta <= 0 {
+        if !k.answer_calls
+            || c.age > 1
+            || inp.hp_frac < k.assist_min_hp
+            || c.my_eta <= 0
+            || c.my_eta > k.max_help_eta
+        {
             return false;
         }
         let budget = (time_left_turns(c.time_left) as f32 * k.assist_eta_scale).round() as i32;
@@ -514,8 +529,7 @@ impl Fsm {
         let round = inp.round;
         let Some(e) = inp.enemy else {
             if inp.threat_eta.is_none_or(|t| t > inp.recall_ticks + 1) {
-                self.go(State::Recover, round);
-                return (Directive::Recover, None);
+                return self.got_away(inp, k, None);
             }
             return (Directive::Disengage, None);
         };
@@ -536,10 +550,25 @@ impl Fsm {
             Call { pos: inp.me, intent, time_left: tl }
         });
         if e.dist > e.range + 1 + inp.recall_ticks {
-            self.go(State::Recover, round);
-            return (Directive::Recover, call);
+            return self.got_away(inp, k, call);
         }
         (Directive::Disengage, call)
+    }
+
+    /// Out of reach: go home only when hurt (or carrying a big bag), else stay wary nearby.
+    fn got_away(
+        &mut self,
+        inp: &Inputs,
+        k: &Tuning,
+        call: Option<Call>,
+    ) -> (Directive, Option<Call>) {
+        if inp.hp_frac < k.recover_below_hp || inp.big_bag {
+            self.go(State::Recover, inp.round);
+            (Directive::Recover, call)
+        } else {
+            self.go(State::Alert, inp.round);
+            (Directive::NoChannel, call)
+        }
     }
 }
 

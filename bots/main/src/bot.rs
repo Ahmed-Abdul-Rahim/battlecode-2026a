@@ -70,6 +70,8 @@ pub struct Bot {
     fsm: Fsm,
     /// COMBAT_FSM: the enemy we watched last turn (kind, hp), to measure damage dealt.
     fsm_seen: Option<(ChampionKind, f32)>,
+    /// COMBAT_FSM bit 64: last fight-or-flee choice against the visible enemy.
+    fsm_fighting: Option<bool>,
 }
 
 /// Engage turns without landing anything before we give up on that enemy.
@@ -222,6 +224,7 @@ impl Bot {
             saw_down: None,
             fsm: Fsm::default(),
             fsm_seen: None,
+            fsm_fighting: None,
         })
     }
 
@@ -284,8 +287,11 @@ impl Bot {
         let mut raw = [0u8; TEAM_CHANNEL_BYTES];
         cambc::shared_memory().read(0, &mut raw)?;
         let mut chan = TeamChannel::decode(raw);
-        let fsm_on = self.theta.knob(knob::COMBAT_FSM) > 0;
-        chan.keep_calls = fsm_on;
+        let fsm_bits = self.theta.knob(knob::COMBAT_FSM);
+        let fsm_on = fsm_bits > 0;
+        // Bit 64: hysteresis only (no states, calls or channel rules): the old mechanisms stay.
+        let fsm_full = fsm_on && fsm_bits & 64 == 0;
+        chan.keep_calls = fsm_full;
         let leader = chan.begin_turn(round, self.slot);
         let team_respawn = self.theta.knob(knob::TEAM_RESPAWN) > 0;
         if leader && !team_respawn {
@@ -306,7 +312,7 @@ impl Bot {
         if !alive {
             // Dead champions still get a turn: shop.
             chan.set_claim(self.slot as usize, None);
-            if fsm_on {
+            if fsm_full {
                 // Died mid-fight: tell anyone on the way not to come.
                 let dead = Inputs {
                     round,
@@ -345,7 +351,7 @@ impl Bot {
             let ally_call = chan
                 .call(round)
                 .is_some_and(|(c, _)| matches!(c.intent, CallIntent::Escape | CallIntent::Abort));
-            if let Some((p, age)) = shared.filter(|_| !(fsm_on && ally_call)) {
+            if let Some((p, age)) = shared.filter(|_| !(fsm_full && ally_call)) {
                 let unseen = vis.enemies.iter().all(|e| e.pos.cheb(p) > 2);
                 if unseen && vis.ghosts.len() < MAX_GHOSTS && p.cheb(my_pos) <= TEAM_SIGHTING_RADIUS
                 {
@@ -418,7 +424,7 @@ impl Bot {
                     && ctx.hp_frac() > ASSIST_MIN_HP * crate::learned::w(crate::learned::ASSIST_HP)
             };
             // COMBAT_FSM answers calls itself (by intent and time left); hunting still swarms.
-            if (!fsm_on || hunting)
+            if (!fsm_full || hunting)
                 && free_to_assist
                 && (chan.help || hunting)
                 && ctx.gems < router::BIG_BAG_GEMS
@@ -483,7 +489,7 @@ impl Bot {
                     intent = fix;
                 }
             }
-            if fight_v6 & 1 != 0 && !fsm_on {
+            if fight_v6 & 1 != 0 && !fsm_full {
                 if let Intent::Engage(p) = intent {
                     if vis.enemies.iter().any(|e| e.pos == p) {
                         chan.post_sighting(p, round);
@@ -622,7 +628,7 @@ impl Bot {
                 _ => None,
             };
             chan.set_claim(self.slot as usize, claim);
-            if !fsm_on && ctx.low_hp() && ctx.in_danger() {
+            if !fsm_full && ctx.low_hp() && ctx.in_danger() {
                 chan.help = true;
             }
 
@@ -732,6 +738,18 @@ impl Bot {
             crate::learned::extra(crate::learned::X_FSM_ASSIST),
         );
         tuning.retreat_hp = f32::from(ctx.knobs.retreat_hp_pct) / 100.0;
+        // COMBAT_FSM bits beyond 1: 2 = only go home after a fight when below half health,
+        // 4 = channels/camps blocked only by enemies in sight within 2 turns (not remembered
+        // ones), 8 = don't answer help calls.
+        let bits = self.theta.knob(knob::COMBAT_FSM);
+        if bits & 2 != 0 {
+            tuning.recover_below_hp = 0.5;
+        }
+        tuning.answer_calls = bits & 8 == 0;
+        // 16 = help only from close by; 32 = when healthy, step out of reach instead of walking home.
+        if bits & 16 != 0 {
+            tuning.max_help_eta = 4;
+        }
         let big_bag = ctx.gems >= router::BIG_BAG_GEMS;
         // The enemy the rule layers are looking at, with its kind and reach.
         let seen =
@@ -757,6 +775,9 @@ impl Bot {
             }
         }
         self.fsm_seen = seen.map(|(_, e)| (e.kind, e.hp));
+        if self.theta.knob(knob::COMBAT_FSM) & 64 != 0 {
+            return (self.fsm_hysteresis(ctx, enemy, mode, intent), None);
+        }
         // Turns until something seen or remembered can hit us (enemies move a tile a turn).
         let threat_eta = vis
             .enemies
@@ -821,16 +842,22 @@ impl Bot {
             Intent::Tribute => ctx.gems.div_ceil(10).max(1) as i32,
             _ => 0,
         };
-        let channel_safe = threat_eta.is_none_or(|t| t > channel_turns + 1);
+        let seen_eta =
+            vis.enemies.iter().filter(|e| !e.on_spawn).map(|e| (e.dist - e.range).max(0)).min();
+        let (block_eta, camp_eta) = if bits & 4 != 0 {
+            (seen_eta.map(|t| (t, 2)), seen_eta.map(|t| (t, 2)))
+        } else {
+            (threat_eta.map(|t| (t, channel_turns + 1)), threat_eta.map(|t| (t, tuning.alert_eta)))
+        };
+        let channel_safe = block_eta.is_none_or(|(t, limit)| t > limit);
+        let camp_safe = camp_eta.is_none_or(|(t, limit)| t > limit);
         let overridden = matches!(mode, Mode::Override(_));
         match dir {
             Directive::Keep => (intent, None),
             Directive::NoChannel => {
                 let fixed = match intent {
                     // Waking a camp with an enemy in sight invites a third party.
-                    Intent::ClearCamp(g) if threat_eta.is_some_and(|t| t <= tuning.alert_eta) => {
-                        Intent::Approach(g)
-                    }
+                    Intent::ClearCamp(g) if !camp_safe => Intent::Approach(g),
                     Intent::Capture(_) | Intent::Tribute if !channel_safe => Intent::Hold,
                     i => i,
                 };
@@ -849,7 +876,12 @@ impl Bot {
                     self.kit.attack_range > 1 && enemy.is_some_and(|e| e.pos == p && e.range <= 1);
                 (if kite { Intent::Kite(p) } else { Intent::Engage(p) }, None)
             }
-            Directive::Disengage => (Intent::WalkHome, None),
+            Directive::Disengage => match enemy {
+                Some(e) if bits & 32 != 0 && !big_bag && ctx.hp_frac() > 0.5 => {
+                    (Intent::StepBack(e.pos), None)
+                }
+                _ => (Intent::WalkHome, None),
+            },
             Directive::Recover => (Intent::Retreat, None),
             Directive::Assist(p) if !overridden => (Intent::Engage(p), Some(p)),
             Directive::Escort(p) if !overridden => {
@@ -861,6 +893,50 @@ impl Bot {
             }
             Directive::Assist(_) | Directive::Escort(_) => (intent, None),
         }
+    }
+
+    /// COMBAT_FSM bit 64: only hysteresis on the existing fight-or-flee decision. The bot may
+    /// switch between fighting and fleeing an enemy only when the 2-bit fight counter agrees
+    /// (two turns of evidence); everything else is left to the other layers.
+    fn fsm_hysteresis(
+        &mut self,
+        ctx: &Context,
+        enemy: Option<EnemyIn>,
+        mode: Mode,
+        intent: Intent,
+    ) -> Intent {
+        let Some(e) = enemy else {
+            self.fsm_fighting = None;
+            return intent;
+        };
+        let aggression =
+            if ctx.team.version > 0 { ctx.team.aggression } else { ctx.knobs.aggression };
+        let margin =
+            f32::from(ctx.knobs.fight_margin_pct) / 100.0 * (255.0 - f32::from(aggression)) / 127.0;
+        let history_ok = !self.fsm.hist.bad_against(e.kind) && self.fsm.hist.recent_losses(3) < 3;
+        self.fsm.fight.update(e.advantage >= 1.0 + margin && history_ok);
+        let fights = matches!(intent, Intent::Engage(p) | Intent::Kite(p) if p == e.pos);
+        let flees = matches!(intent, Intent::Retreat | Intent::WalkHome | Intent::StepBack(_));
+        let kept = match self.fsm_fighting {
+            // Was fighting, now told to flee: only if the counter agrees (safety overrides win).
+            Some(true) if flees && self.fsm.fight.yes() && !matches!(mode, Mode::Override(_)) => {
+                let kite = self.kit.attack_range > 1 && e.range <= 1;
+                if kite {
+                    Intent::Kite(e.pos)
+                } else {
+                    Intent::Engage(e.pos)
+                }
+            }
+            // Was fleeing, now told to fight: only if the counter agrees.
+            Some(false) if fights && !self.fsm.fight.yes() => Intent::WalkHome,
+            _ => intent,
+        };
+        if matches!(kept, Intent::Engage(p) | Intent::Kite(p) if p == e.pos) {
+            self.fsm_fighting = Some(true);
+        } else if matches!(kept, Intent::Retreat | Intent::WalkHome | Intent::StepBack(_)) {
+            self.fsm_fighting = Some(false);
+        }
+        kept
     }
 
     /// Charge fuel spent since `mark` to `stage`; returns the new mark.
