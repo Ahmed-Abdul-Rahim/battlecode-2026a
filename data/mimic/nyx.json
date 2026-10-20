@@ -452,7 +452,7 @@
    10
   ]
  },
- "games": 90,
+ "games": 112,
  "opening": {
   "ambush": [
    {
@@ -1271,5 +1271,5 @@
   ]
  },
  "team": "Nyx",
- "win_rate": 0.744
+ "win_rate": 0.714
 }

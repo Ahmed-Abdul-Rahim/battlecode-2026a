@@ -106,7 +106,7 @@
   ]
  },
  "cadence": {
-  "bag": 18.2,
+  "bag": 20.2,
   "first_emblem": 293,
   "shops_per_100r": 0.36
  },
@@ -124,7 +124,7 @@
    10
   ]
  },
- "games": 12,
+ "games": 17,
  "opening": {
   "monolith": [
    {
@@ -177,5 +177,5 @@
   ]
  },
  "team": "777",
- "win_rate": 0.25
+ "win_rate": 0.294
 }

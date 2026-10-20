@@ -1,32 +1,32 @@
 {
  "build": {},
  "cadence": {
-  "bag": 22.2,
+  "bag": 56.0,
   "first_emblem": null,
   "shops_per_100r": null
  },
  "draft": {
   "3": [
-   11,
    4,
-   8
+   8,
+   10
   ],
   "4": [
-   11,
    4,
    8,
-   3
+   10,
+   0
   ],
   "5": [
-   11,
    4,
    8,
-   3,
-   0
+   10,
+   0,
+   5
   ]
  },
- "games": 35,
+ "games": 15,
  "opening": {},
- "team": "Kvantai",
- "win_rate": 0.543
+ "team": "meowest",
+ "win_rate": 0.333
 }
