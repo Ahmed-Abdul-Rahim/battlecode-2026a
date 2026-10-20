@@ -162,6 +162,24 @@
    "time": "2026-10-20T15:00:17.843Z",
    "win": false
   },
+  "34c3098c-7f75-414c-a129-448d57209f97": {
+   "kind": "ranked",
+   "live": null,
+   "map": "ambush",
+   "opp": "Stubborn Altar Keepers",
+   "oppId": "625bb51a-8d9e-4035-a16e-ce4eea8eb739",
+   "time": "2026-10-20T17:40:07.590Z",
+   "win": true
+  },
+  "366cbc7b-ca53-4aa2-bc38-f649a9b3afad": {
+   "kind": "ranked",
+   "live": null,
+   "map": "rushbait-v2",
+   "opp": "Stubborn Altar Keepers",
+   "oppId": "625bb51a-8d9e-4035-a16e-ce4eea8eb739",
+   "time": "2026-10-20T17:40:07.590Z",
+   "win": true
+  },
   "3a320f21-2229-4517-906d-0464a173e2f9": {
    "kind": "ranked",
    "live": null,
@@ -269,6 +287,15 @@
    "oppId": "fd3a404c-954b-4628-a418-7a8e57fb3783",
    "time": "2026-10-20T15:10:13.185Z",
    "win": false
+  },
+  "611c0dcc-9e06-4263-9e92-43e8be530b1e": {
+   "kind": "ranked",
+   "live": null,
+   "map": "starfish",
+   "opp": "Stubborn Altar Keepers",
+   "oppId": "625bb51a-8d9e-4035-a16e-ce4eea8eb739",
+   "time": "2026-10-20T17:40:07.590Z",
+   "win": true
   },
   "67af3823-022b-46b9-a319-ea3e9e8eed46": {
    "kind": "ranked",
@@ -540,6 +567,15 @@
    "time": "2026-10-20T16:00:07.665Z",
    "win": true
   },
+  "c9c01652-6530-4663-bece-73cb9e329e36": {
+   "kind": "ranked",
+   "live": null,
+   "map": "fracture",
+   "opp": "Stubborn Altar Keepers",
+   "oppId": "625bb51a-8d9e-4035-a16e-ce4eea8eb739",
+   "time": "2026-10-20T17:40:07.589Z",
+   "win": true
+  },
   "cb4dbf23-7bcf-48e2-b01f-5ec56cf7654b": {
    "kind": "ranked",
    "live": null,
@@ -674,6 +710,15 @@
    "oppId": "e89db5d4-c0a7-43eb-9d6d-23732bae07a5",
    "time": "2026-10-20T16:40:04.457Z",
    "win": true
+  },
+  "edea21af-c49f-40f5-9d0a-1f0fa92f110d": {
+   "kind": "ranked",
+   "live": null,
+   "map": "corners",
+   "opp": "Stubborn Altar Keepers",
+   "oppId": "625bb51a-8d9e-4035-a16e-ce4eea8eb739",
+   "time": "2026-10-20T17:40:07.589Z",
+   "win": false
   },
   "ee3ca839-cf10-4a2a-80a8-cb2f58c36c1b": {
    "kind": "ranked",
@@ -1132,13 +1177,14 @@
    },
    "deaths_them": 25,
    "deaths_us": 35,
+   "fixed_in": 1,
    "gems_them": "1004",
    "gems_us": "173",
    "id": "ae1c093f-5ec1-4e4a-b785-6bc2554f37d2",
    "map": "collision",
    "opp": "knownasjason",
    "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-20T15:00:17.843Z",
    "tries_at": 0
   },
@@ -1215,13 +1261,14 @@
    },
    "deaths_them": 25,
    "deaths_us": 35,
+   "fixed_in": 1,
    "gems_them": "1004",
    "gems_us": "173",
    "id": "f7939e70-0621-4114-9f46-dcc8b4319d27",
    "map": "collision",
    "opp": "knownasjason",
    "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-20T17:00:08.371Z",
    "tries_at": 0
   },
@@ -1317,13 +1364,14 @@
    },
    "deaths_them": 8,
    "deaths_us": 26,
+   "fixed_in": 1,
    "gems_them": "1040",
    "gems_us": "458",
    "id": "6dfe4487-639f-4bcb-b868-21da68ba68bd",
    "map": "collision",
    "opp": "ggez",
    "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-20T17:10:06.134Z",
    "tries_at": 0
   },
@@ -1425,6 +1473,23 @@
    "oppId": "f0415fa5-b2aa-4958-a47a-4422f74d9ede",
    "status": "open",
    "time": "2026-10-20T17:30:07.063Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "camp": 11,
+    "champion": 9
+   },
+   "deaths_them": 1,
+   "deaths_us": 20,
+   "gems_them": "1002",
+   "gems_us": "567",
+   "id": "edea21af-c49f-40f5-9d0a-1f0fa92f110d",
+   "map": "corners",
+   "opp": "Stubborn Altar Keepers",
+   "oppId": "625bb51a-8d9e-4035-a16e-ce4eea8eb739",
+   "status": "open",
+   "time": "2026-10-20T17:40:07.589Z",
    "tries_at": 0
   }
  ],
