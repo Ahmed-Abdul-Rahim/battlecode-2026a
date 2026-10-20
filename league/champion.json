@@ -2848,11 +2848,14 @@
  },
  "seed": "coA-v2 (coevo lineage A, exp/v6-features)",
  "tries": {
+  "ambush": {
+   "DESKTOP-QVEMEEE": 1
+  },
   "collision": {
    "DESKTOP-QVEMEEE": 6
   },
   "islands": {
-   "DESKTOP-QVEMEEE": 4
+   "DESKTOP-QVEMEEE": 5
   }
  },
  "version": 2
