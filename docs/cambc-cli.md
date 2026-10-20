@@ -20,6 +20,7 @@ Day to day, use `bctools run` / `bctools gate` instead. They build once, write t
 
 ## Quirks we hit
 
+- **`cambc init` dates sdk/ files 1980, so Cargo keeps a stale compiled SDK** in every bot's `.cambc` cache. After the 3.0.1 refresh, all local bots still had the old SDK and stood still on every map with a Golem ("invalid CampType value: 5"). `bctools.runner` now re-dates such files before building; by hand: `find sdk/rust -exec touch {} +`.
 - **3.0.1 (2026-10-20):** the ladder runs engine 1.0.0; cambc 2.2.5 ran engine 0.0.3 and can't `maps pull` (HTTP 303). After upgrading, run `cambc init --yes .` (refreshes `sdk/`, `cambc.toml`, maps). `--statistics` is **binary** unless `--json` is given (bctools passes `--json`). Pulled maps are named `00contest`, `01islands`; `harness/league.py maps` tidies `maps/`.
 
 - **Bot `Cargo.toml` must match the template exactly**, or the build fails with "managed by cambc". So the bot can't depend on our crates by path. `bctools sync` vendors `crates/*` into `bots/main/src/bc_*/` instead, and CI checks the copy is current.

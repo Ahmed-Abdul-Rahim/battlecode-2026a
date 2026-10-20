@@ -73,7 +73,25 @@ def needs_build(bot: str, release: bool = False) -> bool:
     return any(p.is_file() and p.stat().st_mtime > w_mtime for p in src.rglob("*"))
 
 
+_SDK_CHECKED = False
+
+
+def _fresh_sdk() -> None:
+    """`cambc init` writes sdk/ files dated 1970/1980, so Cargo keeps a stale compiled SDK in
+    every bot's cache (2026-10-21: bots built before engine 1.0.0 failed on every Golem map
+    with "invalid CampType value: 5"). Re-date such files once per process."""
+    global _SDK_CHECKED
+    if _SDK_CHECKED:
+        return
+    _SDK_CHECKED = True
+    cutoff = 978307200  # 2001-01-01
+    for f in (ROOT / "sdk" / "rust").rglob("*"):
+        if f.is_file() and f.stat().st_mtime < cutoff:
+            os.utime(f)
+
+
 def build(bot: str, release: bool = False, force: bool = False) -> None:
+    _fresh_sdk()
     if not force and not needs_build(bot, release):
         return
     args = [str(CAMBC), "build", str(bot_dir(bot))]
