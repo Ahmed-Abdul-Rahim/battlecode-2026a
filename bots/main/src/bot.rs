@@ -13,7 +13,7 @@ use crate::bc_core::champion::{AttackType, ChampionKind, KitInfo};
 use crate::bc_core::combat::{CallIn, Directive, EnemyIn, Fsm, Inputs, Tuning};
 use crate::bc_core::fuel::{FuelGovernor, Stage};
 use crate::bc_core::ledger::{Family, Ledger, SelfObs, Stat, ITEM_TYPES};
-use crate::bc_core::memory::{knob, TeamChannel, ThetaMatch, TEAM_CHANNEL_BYTES};
+use crate::bc_core::memory::{knob, knob2, TeamChannel, ThetaMatch, TEAM_CHANNEL_BYTES};
 use crate::bc_core::Pos;
 use crate::bc_path::danger::Threat;
 use crate::bc_path::{DistanceOracle, Goal};
@@ -66,6 +66,8 @@ pub struct Bot {
     cur_max_hp: f32,
     /// TEAM_RESPAWN: a group we just saw go down (index, respawn round) to broadcast.
     saw_down: Option<(usize, u32)>,
+    /// Our passive (engine PassiveType value), read live at start-up (knob2 PASSIVE_AWARE).
+    passive: usize,
     /// COMBAT_FSM: combat state machine with history (bc_core::combat).
     fsm: Fsm,
     /// COMBAT_FSM: the enemy we watched last turn (kind, hp), to measure damage dealt.
@@ -117,6 +119,10 @@ const HELP_ON_WAY_MAX: i32 = 10;
 /// COMBAT_FSM 64|2: finish an enemy at <= 50% a teammate reports within this many tiles.
 const KILL_ASSIST_RADIUS: i32 = 4;
 const KILL_ASSIST_MIN_HP: f32 = 0.4;
+/// Engine PassiveType values used by knob2 PASSIVE_AWARE.
+const PASSIVE_BONUS_GOLD: usize = 1;
+const PASSIVE_SPLASH: usize = 4;
+const PASSIVE_MISSING_HEALTH: usize = 10;
 /// FIGHT_V6: join fights from this health fraction.
 const ASSIST_MIN_HP_V6: f32 = 0.5;
 /// TAVI_META: Tavi's field build (shop.rs profile) and when it starts hunting.
@@ -172,6 +178,7 @@ impl Bot {
         let me = cambc::self_champion()?.ok_or_else(|| sdk::local_error("no self champion"))?;
         let kind = sdk::kind(me.champion_name()?);
         let kit = sdk::kit(kind);
+        let passive = me.passive().map_or(0, |p| p as i32 as usize);
         let build_profile = theta.knob(knob::BUILD_PROFILE);
         let opening = entry.opening_for((world.spawn_hint.x, world.spawn_hint.y), kind as usize);
         let pack_build = entry.build_for(kind as usize);
@@ -229,6 +236,7 @@ impl Bot {
             cur_dps: 0.0,
             cur_max_hp: 0.0,
             saw_down: None,
+            passive,
             fsm: Fsm::default(),
             fsm_seen: None,
             fsm_fighting: None,
@@ -387,6 +395,26 @@ impl Bot {
             mark = self.charge(Stage::Precompute, mark);
 
             let mut ctx = self.context(round, my_pos, hp, max_hp, &vis, &chan, state, me)?;
+            // knob2 PASSIVE_AWARE: play to the live passive, without champion names. Fight
+            // margin, retreat health and bag sizes scale per passive type (learned PS block)
+            // and margin / aggression per champion kind (KD block); priors in learned.rs.
+            if self.theta.knob2(knob2::PASSIVE_AWARE) > 0 {
+                let (pt, k) = (self.passive, self.kind as usize);
+                let scale = |v: u8, m: f32| (f32::from(v) * m).round().clamp(0.0, 255.0) as u8;
+                let margin = crate::learned::passive(pt, 0) * crate::learned::kind(k, 0);
+                ctx.knobs.fight_margin_pct = scale(ctx.knobs.fight_margin_pct, margin);
+                ctx.knobs.retreat_hp_pct =
+                    scale(ctx.knobs.retreat_hp_pct, crate::learned::passive(pt, 1));
+                ctx.knobs.tribute_min =
+                    scale(ctx.knobs.tribute_min, crate::learned::passive(pt, 2));
+                ctx.knobs.tribute_max =
+                    scale(ctx.knobs.tribute_max, crate::learned::passive(pt, 2));
+                ctx.knobs.aggression = scale(ctx.knobs.aggression, crate::learned::kind(k, 1));
+                // Missing-health damage (Heart of Ruin-like): live strength doesn't show the bonus.
+                if pt == PASSIVE_MISSING_HEALTH {
+                    ctx.my_dps *= 1.0 + 0.5 * (1.0 - ctx.hp_frac());
+                }
+            }
             // COMBAT_FSM 64|32: Marcella earns 2 gold per gem delivered, so small bags pay
             // too and carry less risk: halve her delivery thresholds.
             if fsm_bits & (64 | 32) == 64 | 32 && self.kind == ChampionKind::Marcella {
@@ -1395,6 +1423,16 @@ impl Bot {
             };
             // Passives: Vesper's gold bonus applies to her capture share (gear herself first),
             // Prism's Focus grows with the gems she carries (she collects them).
+            if self.theta.knob2(knob2::PASSIVE_AWARE) > 0 {
+                // Gold-bonus passives: gold is worth more until geared. Splash attacks clear
+                // multi-camp groups faster.
+                if self.passive == PASSIVE_BONUS_GOLD && self.emblems() < 3 {
+                    value += g.gold as f32 * 0.3;
+                }
+                if self.passive == PASSIVE_SPLASH {
+                    value *= 1.0 + 0.15 * g.tiles.len().saturating_sub(1) as f32;
+                }
+            }
             if self.theta.knob(knob::PASSIVE_ROLES) > 0 {
                 match self.kind {
                     ChampionKind::VesperVale if self.emblems() < VESPER_GOLD_EMBLEMS => {

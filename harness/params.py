@@ -68,6 +68,41 @@ U_PHI = [
     "ranged",
 ]
 X_NAMES = ["tavi_respec", "arbiter_fuel_floor_k", "fsm_alert_turns", "fsm_assist_eta"]
+PASSIVE_NAMES = [
+    "none",
+    "bonus_gold",
+    "remote_shop",
+    "gem_focus",
+    "splash",
+    "health_strength",
+    "reset_on_kill",
+    "retaliation",
+    "stun_immunity",
+    "unused9",
+    "missing_health_damage",
+]
+KIND_NAMES = [
+    "ryth",
+    "vesper",
+    "vendetta",
+    "cassi",
+    "issac",
+    "stellar",
+    "prism",
+    "marcella",
+    "willow",
+    "ren",
+    "varg",
+    "tavi",
+    "heart_of_ruin",
+]
+PS_NAMES = [f"{p}.{d}" for p in PASSIVE_NAMES for d in ("fight_margin", "retreat_hp", "bag")]
+KD_NAMES = [f"{k}.{d}" for k in KIND_NAMES for d in ("fight_margin", "aggression")]
+E_NAMES = [f"e{i}" for i in range(8)]
+#: Steps for the PS / KD / E blocks: 0 (frozen) until knob2 PASSIVE_AWARE / ENDGAME ship, so
+#: training doesn't spend rounds on numbers no code reads yet.
+PS_SIGMA = 0.0
+E_SIGMA = 0.0
 
 # (block, names, scale, lo, hi, sigma0) -- lo/hi in search space.
 BLOCKS = [
@@ -82,8 +117,11 @@ BLOCKS = [
     # COMBAT_FSM (bc_core::combat::Tuning): 0 = default (6 turns / x1.0), else 2..12 / 0.5..2.
     ("X.alert", X_NAMES[2:3], "lin", 0.0, 12.0, 1.0),
     ("X.assist", X_NAMES[3:4], "lin", 0.0, 2.0, 0.2),
+    ("PS", PS_NAMES, "log", math.log(0.33), math.log(3.0), PS_SIGMA),
+    ("KD", KD_NAMES, "log", math.log(0.5), math.log(2.0), PS_SIGMA),
+    ("E", E_NAMES, "lin", -3.0, 3.0, E_SIGMA),
 ]
-RUST_LEN = {"W": "N", "TARGET": "T_N", "FIGHT": "F_N", "U": "U_N"}
+RUST_LEN = {"W": "N", "TARGET": "T_N", "FIGHT": "F_N", "U": "U_N", "PS": "PS_N", "KD": "KD_N", "E": "E_N"}
 #: Blocks that together form one Rust array (name, length const).
 RUST_SPLIT = {"X": (("X.flag", "X.fuel", "X.alert", "X.assist"), "X_N")}
 
