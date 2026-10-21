@@ -1791,16 +1791,57 @@
    "added": "2026-10-21T15:12:04Z",
    "area": "farming",
    "claimed": "2026-10-21T20:16:23Z",
+   "finished": "2026-10-21T20:24:14Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 31,
    "notes": "",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.474,
+     "h2h_games": 76,
+     "live": {
+      "deaths": 23.75,
+      "fitness": 0.398,
+      "games": 988,
+      "gem_margin": 0.096,
+      "win": 0.611
+     },
+     "variant": {
+      "deaths": 22.93,
+      "fitness": 0.407,
+      "games": 988,
+      "gem_margin": 0.089,
+      "win": 0.614
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 16.96,
+      "fitness": 0.364,
+      "games": 182,
+      "gem_margin": 0.003,
+      "win": 0.533
+     },
+     "paired": {
+      "mean": -0.0067,
+      "pairs": 182,
+      "se": 0.0458
+     },
+     "variant": {
+      "deaths": 16.25,
+      "fitness": 0.358,
+      "games": 182,
+      "gem_margin": -0.03,
+      "win": 0.527
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "CAMP_SAFE": 2
     }
    },
-   "status": "screening",
+   "status": "passed",
    "title": "Don't wake a group alone that kills you"
   },
   {
