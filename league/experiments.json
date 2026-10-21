@@ -2723,6 +2723,8 @@
   {
    "added": "2026-10-21T15:12:04Z",
    "area": "draft",
+   "claimed": "2026-10-21T23:48:33Z",
+   "host": "muhammad-usman-Inspiron-14-5410-2-in-1",
    "id": 36,
    "notes": "",
    "results": {},
@@ -2731,7 +2733,7 @@
      "DRAFT_BEST": 1
     }
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Draft like the best ladder bot"
   },
   {
