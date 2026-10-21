@@ -4,11 +4,12 @@
 #   scripts\train.ps1 start --lead --auto-submit     # ... and uploads (team-agreed rules, one PC only)
 #   scripts\train.ps1 stop | status | logs | review | sync | bench | submit
 #   scripts\train.ps1 once [--no-push]               # one cycle in the foreground
-#   scripts\train.ps1 experiments [list|stop]         # experiment autopilot (own worktree)
+#   scripts\train.ps1 experiments [list|add|stop]     # experiment autopilot (own worktree)
+#   scripts\train.ps1 exp-status                       # what was tried, merged, rejected, next
 #   scripts\train.ps1 ml [list|stop]                  # neural-net jobs: data games + training
 param(
     [Parameter(Position = 0)]
-    [ValidateSet("start", "stop", "status", "logs", "review", "sync", "maps", "bench", "submit", "replay", "experiments", "ml", "once")]
+    [ValidateSet("start", "stop", "status", "logs", "review", "sync", "maps", "bench", "submit", "replay", "experiments", "exp-status", "ml", "once")]
     [string]$cmd = "status",
     [Parameter(ValueFromRemainingArguments = $true)]
     [string[]]$rest = @()
@@ -76,6 +77,7 @@ switch ($cmd) {
             -RedirectStandardError (Join-Path $wt "runs\league\experiments.err")
         Write-Host "experiment autopilot started in $wt (log: runs\league\experiments.log)" -ForegroundColor Green
     }
+    "exp-status" { & $py -X utf8 (Join-Path $root "harness\experiments.py") status }
     "ml" {
         # Data games and training runs (harness/mljobs.py), shared with every PC through git.
         $wt = Join-Path (Split-Path -Parent $root) "battlecode-ml"

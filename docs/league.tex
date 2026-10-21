@@ -85,7 +85,9 @@ git switch -c feat/my-idea      (code, cargo test, then: git push -u origin feat
 scripts\train.ps1 experiments add --title "My idea" --area combat --ref origin/feat/my-idea --knobs MY_IDEA=1
 
 scripts\train.ps1 experiments add ... --first   # test it before everything else in the queue
-scripts\train.ps1 experiments list              # queue and results
+scripts\train.ps1 experiments list              # queue and results (short)
+scripts\train.ps1 exp-status                    # readable report: running, merged,
+                                                #   rejected (and why), up next
 \end{lstlisting}
 The branch is merged onto the live code before every test, so keep it small; if it conflicts, the
 command says ``needs rebase'' (run \f{git merge origin/league} on the branch, push, add again).

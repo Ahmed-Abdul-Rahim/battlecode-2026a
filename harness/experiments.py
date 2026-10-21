@@ -338,6 +338,113 @@ def tex(reg: dict) -> str:
     )
 
 
+def shared_registry() -> dict:
+    """The registry as on GitHub (every PC's results), falling back to the local file."""
+    subprocess.run(["git", "fetch", "-q", "origin", L.BRANCH], cwd=ROOT, capture_output=True)
+    p = subprocess.run(
+        ["git", "show", f"origin/{L.BRANCH}:league/experiments.json"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+    )
+    if p.returncode == 0 and p.stdout.strip():
+        import json
+
+        return {"experiments": [], **json.loads(p.stdout)}
+    return load()
+
+
+def why(e: dict) -> str:
+    """One short reason for a result."""
+    notes = e.get("notes", "")
+    r = e.get("results", {})
+    if not r and "error:" in notes:  # an old error note stays after a successful re-run
+        msg = notes.rsplit("error:", 1)[1].strip()
+        return "error: " + msg.replace("ValueError(", "").strip("\"'")[:80]
+    if "full" in r:
+        f = r["full"]
+        v, live = f["variant"], f["live"]
+        bits = []
+        if v["win"] < live["win"]:
+            bits.append(f"fewer wins ({v['win']:.3f} vs {live['win']:.3f})")
+        if v["fitness"] < live["fitness"]:
+            bits.append(f"less fit ({v['fitness']:.3f} vs {live['fitness']:.3f})")
+        if f.get("h2h", 1) < H2H_MIN:
+            bits.append(f"lost head-to-head ({f['h2h']:.2f})")
+        return "full check: " + (", ".join(bits) or "passed")
+    if "screen" in r and "paired" in r["screen"]:
+        p = r["screen"]["paired"]
+        return f"screen: worse by {-p['mean']:.3f} per game (noise {p['se']:.3f})"
+    first = notes.split(". ")[0].strip()
+    return first[:90]
+
+
+def result_line(e: dict) -> str:
+    r = e.get("results", {})
+    s = r.get("full") or r.get("screen")
+    if not s or "variant" not in s:
+        return ""
+    v, live = s["variant"], s["live"]
+    out = f"win {live['win']:.2f} -> {v['win']:.2f}"
+    if "h2h" in s:
+        out += f", h2h {s['h2h']:.2f}"
+    return out
+
+
+def local_time(iso: str | None) -> str:
+    return time.strftime("%d %b %H:%M", time.localtime(L.ts(iso))) if iso else "?"
+
+
+def status_report(reg: dict) -> str:
+    ex = reg["experiments"]
+    by = {s: [e for e in ex if e["status"] == s] for s in STATUSES}
+    running = by["screening"] + by["full"]
+    lines = [
+        f"EXPERIMENTS: {len(ex)} ideas | {len(by['merged'])} in the bot | {len(by['passed'])} passed, "
+        f"waiting to merge | {len(by['rejected'])} rejected | {len(running)} running | "
+        f"{len(by['queued'])} waiting",
+        "",
+    ]
+
+    def row(e: dict, extra: str = "") -> str:
+        return f"  #{e['id']:<3} {e['title'][:46]:46s} {e['area'][:9]:9s} {extra}".rstrip()
+
+    def section(title: str, items: list[dict], fn) -> None:
+        if items:
+            lines.append(title)
+            lines.extend(fn(e) for e in items)
+            lines.append("")
+
+    section(
+        "RUNNING NOW",
+        running,
+        lambda e: row(
+            e,
+            f"{'full check' if e['status'] == 'full' else 'screen'} on {e.get('host', '?')}, "
+            f"since {local_time(e.get('claimed'))}",
+        ),
+    )
+    section(
+        "PASSED - waiting for someone to merge (see the PDF, Quick start)",
+        by["passed"],
+        lambda e: row(e, result_line(e)),
+    )
+    section("IN THE BOT (merged)", by["merged"], lambda e: row(e, result_line(e)))
+    section("REJECTED - tried, did not help", by["rejected"], lambda e: row(e, why(e)))
+    section(
+        "UP NEXT (in order)", by["queued"][:12], lambda e: row(e, "re-run" if e.get("run", 1) > 1 else "")
+    )
+    if len(by["queued"]) > 12:
+        lines.append(f"  ... and {len(by['queued']) - 12} more (experiments list)")
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def cmd_status(_: argparse.Namespace) -> int:
+    print(status_report(shared_registry()), end="")
+    return 0
+
+
 def cmd_list(_: argparse.Namespace) -> int:
     for e in load()["experiments"]:
         r = e["results"].get("full") or e["results"].get("screen") or {}
@@ -405,6 +512,7 @@ def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = p.add_subparsers(dest="cmd", required=True)
     sub.add_parser("list")
+    sub.add_parser("status", help="human-readable report of everything tried")
     ad = sub.add_parser("add")
     ad.add_argument("--title", required=True)
     ad.add_argument("--area", required=True)
@@ -418,7 +526,7 @@ def main(argv: list[str] | None = None) -> int:
     rn.add_argument("--no-push", dest="push", action="store_false")
     sub.add_parser("tex")
     a = p.parse_args(argv)
-    return {"list": cmd_list, "add": cmd_add, "run": cmd_run, "tex": cmd_tex}[a.cmd](a)
+    return {"list": cmd_list, "status": cmd_status, "add": cmd_add, "run": cmd_run, "tex": cmd_tex}[a.cmd](a)
 
 
 if __name__ == "__main__":

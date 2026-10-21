@@ -96,6 +96,28 @@ def test_two_pcs_adding_the_same_new_id_keep_both():
     assert [(e["id"], e["title"]) for e in m] == [(1, "old"), (2, "theirs"), (3, "mine")]
 
 
+def test_status_report_groups_and_explains():
+    reg = {"experiments": []}
+    m = X.add(reg, "Hysteresis", "combat", knobs={"A": 1}, status="merged")
+    m["results"] = {
+        "full": {"live": {"win": 0.5, "fitness": 0.3}, "variant": {"win": 0.52, "fitness": 0.31}, "h2h": 0.6}
+    }
+    r = X.add(reg, "Bad idea", "combat", knobs={"B": 1}, status="rejected")
+    r["results"] = {
+        "screen": {
+            "live": {"win": 0.55, "fitness": 0.38},
+            "variant": {"win": 0.5, "fitness": 0.33},
+            "paired": {"pairs": 182, "mean": -0.05, "se": 0.02},
+        }
+    }
+    X.add(reg, "Next one", "teamwork", knobs={"C": 1})
+    out = X.status_report(reg)
+    assert "1 in the bot" in out and "1 rejected" in out and "1 waiting" in out
+    assert "win 0.50 -> 0.52, h2h 0.60" in out
+    assert "screen: worse by 0.050 per game (noise 0.020)" in out
+    assert out.index("IN THE BOT") < out.index("REJECTED") < out.index("UP NEXT")
+
+
 def test_tex_escapes_backslashes_and_braces():
     reg = {"experiments": []}
     X.add(reg, "err", "x", knobs={"A": 1}, notes="error: ValueError('a\\tb {c}')")
