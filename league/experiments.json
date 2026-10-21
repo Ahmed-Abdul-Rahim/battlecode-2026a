@@ -583,6 +583,8 @@
   {
    "added": "2026-10-21T15:20:12Z",
    "area": "passives",
+   "claimed": "2026-10-21T15:55:18Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 42,
    "notes": "Re-queued: the first run built the branch as cut, before PvE assist was merged, so it tested old code against the improved live bot (screen 0.451 vs 0.555). Refs are now merged onto the live code first.",
    "results": {},
@@ -592,7 +594,7 @@
     },
     "ref": "origin/feat/passive-aware"
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Passive-aware play (per passive / kind)"
   },
   {
