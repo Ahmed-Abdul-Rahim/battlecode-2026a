@@ -1919,17 +1919,58 @@
    "added": "2026-10-21T20:16:07Z",
    "area": "combat",
    "claimed": "2026-10-21T20:24:19Z",
+   "finished": "2026-10-21T20:31:56Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 56,
    "notes": "Damage cancels a recall; only when no other enemy is within 4 of it and we're above 40% HP.",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.487,
+     "h2h_games": 76,
+     "live": {
+      "deaths": 23.75,
+      "fitness": 0.398,
+      "games": 988,
+      "gem_margin": 0.096,
+      "win": 0.611
+     },
+     "variant": {
+      "deaths": 23.8,
+      "fitness": 0.371,
+      "games": 988,
+      "gem_margin": 0.085,
+      "win": 0.588
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 16.96,
+      "fitness": 0.364,
+      "games": 182,
+      "gem_margin": 0.003,
+      "win": 0.533
+     },
+     "paired": {
+      "mean": -0.0141,
+      "pairs": 182,
+      "se": 0.0408
+     },
+     "variant": {
+      "deaths": 17.59,
+      "fitness": 0.35,
+      "games": 182,
+      "gem_margin": -0.006,
+      "win": 0.527
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "PUNISH_RECALL": 4
     },
     "ref": "origin/feat/gaps-2"
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "Hit a lone enemy recalling within 4"
   },
   {
