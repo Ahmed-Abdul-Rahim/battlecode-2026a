@@ -477,6 +477,15 @@
    "time": "2026-10-21T15:30:12.916Z",
    "win": true
   },
+  "27389ff4-3d6b-492f-a655-86bcd027c884": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "pilgrimage",
+   "opp": "eclipsed Sunlight",
+   "oppId": "dba8d35f-fd1d-432d-8ba5-9f076cb3dcac",
+   "time": "2026-10-21T16:00:12.834Z",
+   "win": true
+  },
   "274b84ee-1784-4176-9be9-a11b7a944612": {
    "kind": "ranked",
    "live": null,
@@ -1062,6 +1071,15 @@
    "time": "2026-10-20T16:10:05.811Z",
    "win": false
   },
+  "59e91f08-c61f-4dd7-bf14-485574e97044": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "corners",
+   "opp": "Motu Patlu",
+   "oppId": "4e6d067e-75a9-4891-bc9d-cf69e5def756",
+   "time": "2026-10-21T15:50:14.108Z",
+   "win": false
+  },
   "5aa5ac5a-7983-4c10-8bcd-74f8e0eaa44e": {
    "kind": "ranked",
    "live": 1,
@@ -1231,6 +1249,15 @@
    "opp": "Kvantai",
    "oppId": "0580c098-a7c9-46d7-b414-bf39c02c3dcc",
    "time": "2026-10-20T20:50:10.904Z",
+   "win": true
+  },
+  "695bf33b-c020-46c8-8493-10716f03f917": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "big-world",
+   "opp": "eclipsed Sunlight",
+   "oppId": "dba8d35f-fd1d-432d-8ba5-9f076cb3dcac",
+   "time": "2026-10-21T16:00:12.834Z",
    "win": true
   },
   "6a1a8e73-3efd-4f6b-a6c2-915283213694": {
@@ -1645,6 +1672,15 @@
    "opp": "haha",
    "oppId": "70dc8c4e-5d63-4f8d-8915-1b9c7fe7fee7",
    "time": "2026-10-20T17:20:08.637Z",
+   "win": true
+  },
+  "8ea3c3e3-5b9e-472f-9510-7fe4dda31106": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "reverse-spiral",
+   "opp": "Motu Patlu",
+   "oppId": "4e6d067e-75a9-4891-bc9d-cf69e5def756",
+   "time": "2026-10-21T15:50:14.108Z",
    "win": true
   },
   "8edc05bc-234f-42c2-ad98-f1b2fa29691a": {
@@ -2106,6 +2142,15 @@
    "time": "2026-10-20T21:30:09.966Z",
    "win": false
   },
+  "b587618e-f591-4ec1-b9ec-7e5ac60f9733": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "split",
+   "opp": "Motu Patlu",
+   "oppId": "4e6d067e-75a9-4891-bc9d-cf69e5def756",
+   "time": "2026-10-21T15:50:14.108Z",
+   "win": true
+  },
   "b65eddd7-d9a0-4522-8af9-dcd65ac98a52": {
    "kind": "ranked",
    "live": 1,
@@ -2113,6 +2158,15 @@
    "opp": "Rogue Lock Pickers",
    "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
    "time": "2026-10-20T19:40:10.999Z",
+   "win": true
+  },
+  "b75016d3-49be-470d-b37f-438a2e143f7f": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "expanse",
+   "opp": "Motu Patlu",
+   "oppId": "4e6d067e-75a9-4891-bc9d-cf69e5def756",
+   "time": "2026-10-21T15:50:14.109Z",
    "win": true
   },
   "b7be61b6-cdf0-49b5-b0e4-efc49e72011b": {
@@ -2195,6 +2249,15 @@
    "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
    "time": "2026-10-21T15:40:12.911Z",
    "win": false
+  },
+  "bce9bb09-568d-4218-8cc2-9d68bbc99722": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "broken-curve",
+   "opp": "eclipsed Sunlight",
+   "oppId": "dba8d35f-fd1d-432d-8ba5-9f076cb3dcac",
+   "time": "2026-10-21T16:00:12.835Z",
+   "win": true
   },
   "bcf070ed-1de5-4e11-9ab3-6a4918368a95": {
    "kind": "unranked",
@@ -2430,6 +2493,15 @@
    "time": "2026-10-20T15:32:13.243Z",
    "win": false
   },
+  "d34fb599-9eb8-404e-8712-f7436e43d3bd": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "swirl",
+   "opp": "Motu Patlu",
+   "oppId": "4e6d067e-75a9-4891-bc9d-cf69e5def756",
+   "time": "2026-10-21T15:50:14.108Z",
+   "win": true
+  },
   "d359b78d-7053-4389-b841-cfe81284b22f": {
    "kind": "ranked",
    "live": 1,
@@ -2474,6 +2546,15 @@
    "oppId": "625bb51a-8d9e-4035-a16e-ce4eea8eb739",
    "time": "2026-10-20T19:00:08.517Z",
    "win": true
+  },
+  "db397bbb-dae4-436c-93ee-2ab1d83148e9": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "interlock",
+   "opp": "eclipsed Sunlight",
+   "oppId": "dba8d35f-fd1d-432d-8ba5-9f076cb3dcac",
+   "time": "2026-10-21T16:00:12.834Z",
+   "win": false
   },
   "db7eee6d-913e-4387-b3f5-7d2204f52aef": {
    "kind": "ranked",
@@ -2905,6 +2986,15 @@
    "opp": "another name",
    "oppId": "b095a9ef-91f3-4c4a-b4aa-3ec386286b82",
    "time": "2026-10-21T14:50:14.152Z",
+   "win": true
+  },
+  "fdfd9431-e5d9-4bae-a7b9-67d65244d9fc": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "swirl",
+   "opp": "eclipsed Sunlight",
+   "oppId": "dba8d35f-fd1d-432d-8ba5-9f076cb3dcac",
+   "time": "2026-10-21T16:00:12.834Z",
    "win": true
   },
   "fe9a23d9-350c-4432-aded-12a42cfbce2d": {
@@ -5836,6 +5926,40 @@
    "status": "open",
    "time": "2026-10-21T15:40:12.911Z",
    "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 44,
+    "Unknown entity kind (2)": 7
+   },
+   "deaths_them": 31,
+   "deaths_us": 51,
+   "gems_them": "1005",
+   "gems_us": "409",
+   "id": "db397bbb-dae4-436c-93ee-2ab1d83148e9",
+   "map": "interlock",
+   "opp": "eclipsed Sunlight",
+   "oppId": "dba8d35f-fd1d-432d-8ba5-9f076cb3dcac",
+   "status": "open",
+   "time": "2026-10-21T16:00:12.834Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 19,
+    "Unknown entity kind (2)": 4
+   },
+   "deaths_them": 4,
+   "deaths_us": 23,
+   "gems_them": "1014",
+   "gems_us": "961",
+   "id": "59e91f08-c61f-4dd7-bf14-485574e97044",
+   "map": "corners",
+   "opp": "Motu Patlu",
+   "oppId": "4e6d067e-75a9-4891-bc9d-cf69e5def756",
+   "status": "open",
+   "time": "2026-10-21T15:50:14.108Z",
+   "tries_at": 3
   }
  ],
  "map_files": {
