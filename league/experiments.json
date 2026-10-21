@@ -671,6 +671,8 @@
   {
    "added": "2026-10-21T15:30:46Z",
    "area": "teamwork",
+   "claimed": "2026-10-21T16:04:56Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 44,
    "notes": "From round 1700 or 80% of winning gems: ahead = bank bags, only clear fights; behind = hunt.",
    "results": {},
@@ -680,7 +682,7 @@
     },
     "ref": "origin/feat/team-endgame"
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Endgame mode near a win or tie"
   },
   {
