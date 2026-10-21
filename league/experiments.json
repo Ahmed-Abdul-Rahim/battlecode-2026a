@@ -790,7 +790,7 @@
   {
    "added": "2026-10-21T15:30:46Z",
    "area": "teamwork",
-   "claimed": "2026-10-21T16:42:02Z",
+   "claimed": "2026-10-21T17:03:37Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 44,
    "notes": "error: ValueError(\"needs rebase: origin/feat/team-endgame conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 e104209eb453a182007c31e8d53097 Re-run: the branch conflicted with the live code after #43 (fixed: #42/#44 are now plain switches on live, the stun-upgrade branch is merged with live).",
