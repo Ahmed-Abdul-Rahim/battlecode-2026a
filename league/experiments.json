@@ -732,6 +732,8 @@
   {
    "added": "2026-10-21T15:20:12Z",
    "area": "passives",
+   "claimed": "2026-10-21T16:30:40Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 42,
    "notes": "error: ValueError(\"needs rebase: origin/feat/passive-aware conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 e7367465603fe08dc0b0385ebeed2 Re-run: the branch conflicted with the live code after #43 (fixed: #42/#44 are now plain switches on live, the stun-upgrade branch is merged with live).",
    "results": {},
@@ -741,7 +743,7 @@
      "PASSIVE_AWARE": 1
     }
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Passive-aware play (per passive / kind)"
   },
   {
