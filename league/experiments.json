@@ -1526,6 +1526,23 @@
    "title": "Endgame hunt when behind / enemy near win"
   },
   {
+   "added": "2026-10-21T18:31:11Z",
+   "area": "learning",
+   "id": 54,
+   "notes": "Offline RL on 36 shards; train agreement 0.804.",
+   "results": {},
+   "spec": {
+    "files": {
+     "bots/main/src/weights/router.bin": "ml-data:candidates/router-00042.bin"
+    },
+    "knobs": {
+     "ROUTER": 1
+    }
+   },
+   "status": "queued",
+   "title": "Learned router #42 (5538225 rows, AWR)"
+  },
+  {
    "added": "2026-10-21T15:12:04Z",
    "area": "endgame",
    "id": 29,
