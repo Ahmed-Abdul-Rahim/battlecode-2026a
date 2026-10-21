@@ -1119,6 +1119,7 @@
   {
    "added": "2026-10-21T18:37:45Z",
    "claimed": "2026-10-21T18:37:45Z",
+   "finished": "2026-10-21T18:40:01Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 45,
    "kind": "gen",
@@ -1126,8 +1127,18 @@
     "explore": 10,
     "offset": 114
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "games": 78,
+    "maps": [
+     "00ambush",
+     "01big-world",
+     "01boss-battle"
+    ],
+    "rows": 181109,
+    "shard": "gen-00045-DESKTOP-QVEMEEE.npz",
+    "win": 0.295
+   },
+   "status": "done"
   }
  ]
 }
