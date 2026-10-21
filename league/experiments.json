@@ -1104,10 +1104,33 @@
    "added": "2026-10-21T17:40:42Z",
    "area": "learning",
    "claimed": "2026-10-21T17:43:31Z",
+   "finished": "2026-10-21T17:45:43Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 51,
-   "notes": "Offline RL on 18 shards; train agreement 0.806.",
-   "results": {},
+   "notes": "Offline RL on 18 shards; train agreement 0.806. Screen: win 0.434 vs 0.5, fitness 0.093 vs 0.316 (paired -0.223 +- 0.060).",
+   "results": {
+    "screen": {
+     "live": {
+      "deaths": 18.05,
+      "fitness": 0.316,
+      "games": 182,
+      "gem_margin": -0.013,
+      "win": 0.5
+     },
+     "paired": {
+      "mean": -0.223,
+      "pairs": 182,
+      "se": 0.0599
+     },
+     "variant": {
+      "deaths": 33.23,
+      "fitness": 0.093,
+      "games": 182,
+      "gem_margin": -0.035,
+      "win": 0.434
+     }
+    }
+   },
    "spec": {
     "files": {
      "bots/main/src/weights/router.bin": "ml-data:candidates/router-00021.bin"
@@ -1116,7 +1139,7 @@
      "ROUTER": 1
     }
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "Learned router #21 (2790392 rows, AWR)"
   },
   {
