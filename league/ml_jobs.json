@@ -835,6 +835,7 @@
   {
    "added": "2026-10-21T18:12:29Z",
    "claimed": "2026-10-21T18:12:29Z",
+   "finished": "2026-10-21T18:15:13Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 34,
    "kind": "gen",
@@ -842,8 +843,18 @@
     "explore": 10,
     "offset": 87
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "games": 78,
+    "maps": [
+     "00elkring",
+     "00expanse",
+     "01fracture"
+    ],
+    "rows": 162689,
+    "shard": "gen-00034-DESKTOP-QVEMEEE.npz",
+    "win": 0.41
+   },
+   "status": "done"
   }
  ]
 }
