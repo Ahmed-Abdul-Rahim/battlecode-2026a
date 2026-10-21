@@ -730,6 +730,8 @@
   {
    "added": "2026-10-21T15:30:46Z",
    "area": "teamwork",
+   "claimed": "2026-10-21T16:12:06Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 48,
    "notes": "",
    "results": {},
@@ -739,7 +741,7 @@
     },
     "ref": "origin/feat/stun-upgrade"
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Team up: join ally fights within 6"
   },
   {
