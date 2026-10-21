@@ -692,6 +692,8 @@
   {
    "added": "2026-10-21T15:30:46Z",
    "area": "combat",
+   "claimed": "2026-10-21T16:11:48Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 45,
    "notes": "Champions and camps: hold the stun while the target is stunned, so allies' stuns chain. Screen: win 0.516 vs 0.555, fitness 0.334 vs 0.385. Re-run: rejected by the old strict screen; now measured with the paired screen on top of #43.",
    "results": {},
@@ -702,7 +704,7 @@
     },
     "ref": "origin/feat/stun-upgrade"
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Stun lock (no stun on a stunned unit)"
   },
   {
