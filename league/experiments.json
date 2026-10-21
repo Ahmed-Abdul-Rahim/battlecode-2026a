@@ -1905,16 +1905,57 @@
    "added": "2026-10-21T15:12:04Z",
    "area": "safety",
    "claimed": "2026-10-21T19:55:29Z",
+   "finished": "2026-10-21T20:38:35Z",
    "host": "muhammad-usman-Inspiron-14-5410-2-in-1",
    "id": 33,
    "notes": "",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.539,
+     "h2h_games": 76,
+     "live": {
+      "deaths": 22.63,
+      "fitness": 0.455,
+      "games": 988,
+      "gem_margin": 0.132,
+      "win": 0.649
+     },
+     "variant": {
+      "deaths": 22.04,
+      "fitness": 0.469,
+      "games": 988,
+      "gem_margin": 0.152,
+      "win": 0.652
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 16.52,
+      "fitness": 0.39,
+      "games": 182,
+      "gem_margin": -0.0,
+      "win": 0.555
+     },
+     "paired": {
+      "mean": 0.0516,
+      "pairs": 182,
+      "se": 0.0482
+     },
+     "variant": {
+      "deaths": 15.78,
+      "fitness": 0.441,
+      "games": 182,
+      "gem_margin": 0.045,
+      "win": 0.588
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "RECALL_SAFE": 2
     }
    },
-   "status": "screening",
+   "status": "passed",
    "title": "Recall only when nothing can reach us"
   },
   {
