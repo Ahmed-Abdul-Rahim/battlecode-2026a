@@ -2077,6 +2077,8 @@
   {
    "added": "2026-10-21T20:16:07Z",
    "area": "movement",
+   "claimed": "2026-10-21T20:39:59Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 58,
    "notes": "Retreat/recall near spawn walks instead (no frozen 5-turn channel that damage cancels).",
    "results": {},
@@ -2086,7 +2088,7 @@
     },
     "ref": "origin/feat/gaps-2"
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Walk home when spawn is within 6"
   },
   {
