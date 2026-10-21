@@ -807,6 +807,8 @@
   {
    "added": "2026-10-21T17:03:37Z",
    "area": "learning",
+   "claimed": "2026-10-21T17:10:49Z",
+   "host": "Abdul-Rahim",
    "id": 49,
    "notes": "Offline RL on 6 shards; train agreement 0.826.",
    "results": {},
@@ -818,7 +820,7 @@
      "ROUTER": 1
     }
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Learned router #7 (933738 rows, AWR)"
   },
   {
