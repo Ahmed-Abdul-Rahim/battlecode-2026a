@@ -965,6 +965,7 @@
   {
    "added": "2026-10-21T18:23:36Z",
    "claimed": "2026-10-21T18:23:36Z",
+   "finished": "2026-10-21T18:26:10Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 39,
    "kind": "gen",
@@ -972,8 +973,18 @@
     "explore": 10,
     "offset": 99
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "games": 78,
+    "maps": [
+     "00monolith",
+     "00packs",
+     "00pilgrimage"
+    ],
+    "rows": 150459,
+    "shard": "gen-00039-DESKTOP-QVEMEEE.npz",
+    "win": 0.487
+   },
+   "status": "done"
   }
  ]
 }
