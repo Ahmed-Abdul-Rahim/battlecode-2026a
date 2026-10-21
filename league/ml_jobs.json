@@ -917,6 +917,7 @@
   {
    "added": "2026-10-21T18:18:11Z",
    "claimed": "2026-10-21T18:18:11Z",
+   "finished": "2026-10-21T18:20:26Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 37,
    "kind": "gen",
@@ -924,8 +925,18 @@
     "explore": 10,
     "offset": 93
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "games": 78,
+    "maps": [
+     "01gold-rush",
+     "00great-wall",
+     "01hooks"
+    ],
+    "rows": 154628,
+    "shard": "gen-00037-DESKTOP-QVEMEEE.npz",
+    "win": 0.256
+   },
+   "status": "done"
   }
  ]
 }
