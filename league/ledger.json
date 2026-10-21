@@ -171,6 +171,15 @@
    "time": "2026-10-21T17:50:18.948Z",
    "win": true
   },
+  "0bc4f913-6997-4c24-9540-4ded9763ecc0": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "corridors",
+   "opp": "Watermelon",
+   "oppId": "f537e7fe-e576-4563-8fd8-3cd30a318652",
+   "time": "2026-10-21T18:30:14.997Z",
+   "win": true
+  },
   "0c41b204-1e4e-42a3-a88b-61479ac2ecc4": {
    "kind": "ranked",
    "live": null,
@@ -358,6 +367,15 @@
    "opp": "Slough Reps",
    "oppId": "fd3a404c-954b-4628-a418-7a8e57fb3783",
    "time": "2026-10-20T17:50:06.264Z",
+   "win": true
+  },
+  "19966849-be46-4daa-b6a7-2e34049ce74e": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "big-world",
+   "opp": "Watermelon",
+   "oppId": "f537e7fe-e576-4563-8fd8-3cd30a318652",
+   "time": "2026-10-21T18:30:14.995Z",
    "win": true
   },
   "1bfb2d1c-c351-40d7-97f7-41b525716554": {
@@ -809,6 +827,15 @@
    "oppId": "5e0c725a-b9b4-4523-8739-4427f20b9ce5",
    "time": "2026-10-21T16:10:12.194Z",
    "win": false
+  },
+  "3731588c-3141-429d-aa14-f43dc6c307a2": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "ambush",
+   "opp": "The Onkeys",
+   "oppId": "aa795cbd-97f0-489d-868b-2988d7b2e394",
+   "time": "2026-10-21T18:20:17.185Z",
+   "win": true
   },
   "374481e9-5d80-489b-a776-27bb042ff8e7": {
    "kind": "ranked",
@@ -1746,6 +1773,15 @@
    "time": "2026-10-21T16:30:13.511Z",
    "win": false
   },
+  "75d93aa5-14b7-4377-8812-0aefaea995be": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "concentrated-wealth",
+   "opp": "The Onkeys",
+   "oppId": "aa795cbd-97f0-489d-868b-2988d7b2e394",
+   "time": "2026-10-21T18:20:17.185Z",
+   "win": false
+  },
   "7663500f-2598-4a90-9ae7-ac9fea2a8353": {
    "kind": "ranked",
    "live": 1,
@@ -2304,6 +2340,15 @@
    "time": "2026-10-21T17:50:18.948Z",
    "win": true
   },
+  "a1c7055c-9472-44ea-a3af-bdad0701db49": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "gold-rush",
+   "opp": "The Onkeys",
+   "oppId": "aa795cbd-97f0-489d-868b-2988d7b2e394",
+   "time": "2026-10-21T18:20:17.186Z",
+   "win": false
+  },
   "a27297b2-a852-4636-9163-3c10c2e887a7": {
    "kind": "unranked",
    "live": 10,
@@ -2682,6 +2727,15 @@
    "time": "2026-10-21T14:20:15.008Z",
    "win": false
   },
+  "bb0bffd5-38c4-4438-9e40-0e2da854a496": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "elk-arena",
+   "opp": "Watermelon",
+   "oppId": "f537e7fe-e576-4563-8fd8-3cd30a318652",
+   "time": "2026-10-21T18:30:14.997Z",
+   "win": true
+  },
   "bb2d8698-b535-4bfb-b21e-c6425a1c1ea2": {
    "kind": "ranked",
    "live": 1,
@@ -3051,6 +3105,15 @@
    "time": "2026-10-20T19:00:08.517Z",
    "win": true
   },
+  "daf3d119-3a50-4452-821e-4837e55bf0bf": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "islands",
+   "opp": "Watermelon",
+   "oppId": "f537e7fe-e576-4563-8fd8-3cd30a318652",
+   "time": "2026-10-21T18:30:14.995Z",
+   "win": true
+  },
   "db397bbb-dae4-436c-93ee-2ab1d83148e9": {
    "kind": "ranked",
    "live": 1,
@@ -3105,6 +3168,15 @@
    "time": "2026-10-20T16:20:07.815Z",
    "win": false
   },
+  "de5589a0-ee5c-44f7-95fa-87b351f6b3b0": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "lost-world",
+   "opp": "Watermelon",
+   "oppId": "f537e7fe-e576-4563-8fd8-3cd30a318652",
+   "time": "2026-10-21T18:30:14.995Z",
+   "win": true
+  },
   "de64f4fa-5372-4ddc-84c4-dd06e3718f29": {
    "kind": "ranked",
    "live": null,
@@ -3139,6 +3211,15 @@
    "opp": "knownasjason",
    "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
    "time": "2026-10-20T17:00:08.372Z",
+   "win": false
+  },
+  "e02a8a75-b304-489f-8ec8-4038b4436fda": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "the-farm",
+   "opp": "The Onkeys",
+   "oppId": "aa795cbd-97f0-489d-868b-2988d7b2e394",
+   "time": "2026-10-21T18:20:17.186Z",
    "win": false
   },
   "e080afe5-c3e8-42cc-9c3f-892e09ec696b": {
@@ -3500,6 +3581,15 @@
    "oppId": "0e2abba9-e657-4025-a4e6-a1eed7c5dea0",
    "time": "2026-10-20T16:20:07.816Z",
    "win": true
+  },
+  "f742d52b-7fd3-48ab-ae6c-bb159c4fc8c7": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "corridors",
+   "opp": "The Onkeys",
+   "oppId": "aa795cbd-97f0-489d-868b-2988d7b2e394",
+   "time": "2026-10-21T18:20:17.185Z",
+   "win": false
   },
   "f7939e70-0621-4114-9f46-dcc8b4319d27": {
    "kind": "ranked",
@@ -7214,6 +7304,74 @@
    "superseded_by": 15,
    "time": "2026-10-21T18:10:15.060Z",
    "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 10,
+    "Unknown entity kind (2)": 19
+   },
+   "deaths_them": 23,
+   "deaths_us": 29,
+   "gems_them": "14",
+   "gems_us": "0",
+   "id": "e02a8a75-b304-489f-8ec8-4038b4436fda",
+   "map": "the-farm",
+   "opp": "The Onkeys",
+   "oppId": "aa795cbd-97f0-489d-868b-2988d7b2e394",
+   "status": "open",
+   "time": "2026-10-21T18:20:17.186Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 12,
+    "Unknown entity kind (2)": 32
+   },
+   "deaths_them": 68,
+   "deaths_us": 44,
+   "gems_them": "442",
+   "gems_us": "266",
+   "id": "a1c7055c-9472-44ea-a3af-bdad0701db49",
+   "map": "gold-rush",
+   "opp": "The Onkeys",
+   "oppId": "aa795cbd-97f0-489d-868b-2988d7b2e394",
+   "status": "open",
+   "time": "2026-10-21T18:20:17.186Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 10,
+    "Unknown entity kind (2)": 1
+   },
+   "deaths_them": 7,
+   "deaths_us": 11,
+   "gems_them": "1016",
+   "gems_us": "125",
+   "id": "75d93aa5-14b7-4377-8812-0aefaea995be",
+   "map": "concentrated-wealth",
+   "opp": "The Onkeys",
+   "oppId": "aa795cbd-97f0-489d-868b-2988d7b2e394",
+   "status": "open",
+   "time": "2026-10-21T18:20:17.185Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 4,
+    "Unknown entity kind (2)": 57
+   },
+   "deaths_them": 15,
+   "deaths_us": 61,
+   "gems_them": "1001",
+   "gems_us": "592",
+   "id": "f742d52b-7fd3-48ab-ae6c-bb159c4fc8c7",
+   "map": "corridors",
+   "opp": "The Onkeys",
+   "oppId": "aa795cbd-97f0-489d-868b-2988d7b2e394",
+   "status": "open",
+   "time": "2026-10-21T18:20:17.185Z",
+   "tries_at": 1
   }
  ],
  "map_files": {
