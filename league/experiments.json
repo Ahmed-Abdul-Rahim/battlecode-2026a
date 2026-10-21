@@ -1611,6 +1611,8 @@
   {
    "added": "2026-10-21T15:12:04Z",
    "area": "endgame",
+   "claimed": "2026-10-21T18:42:18Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 29,
    "notes": "",
    "results": {},
@@ -1619,7 +1621,7 @@
      "ENDGAME_BANK": 1
     }
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Deliver everything from round 1850"
   },
   {
