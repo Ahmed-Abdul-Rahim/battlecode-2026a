@@ -603,6 +603,15 @@
    "time": "2026-10-20T20:10:09.725Z",
    "win": false
   },
+  "2f4aa7bb-4b18-489a-a930-7161f4c376ba": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "swirl",
+   "opp": "ohhhhhh caml",
+   "oppId": "5bfa785b-3a15-4398-96b7-624e1a1e103c",
+   "time": "2026-10-21T16:30:13.511Z",
+   "win": false
+  },
   "2ff47531-5657-4481-b764-c3de9d8f3c42": {
    "kind": "ranked",
    "live": 1,
@@ -828,6 +837,15 @@
    "time": "2026-10-21T13:20:11.646Z",
    "win": true
   },
+  "405ca27c-0398-48b6-ab1c-56f4de89458c": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "monolith",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-21T16:20:14.380Z",
+   "win": true
+  },
   "40771b5a-a8ed-47df-ad03-8f403bd07e14": {
    "kind": "ranked",
    "live": null,
@@ -999,6 +1017,15 @@
    "time": "2026-10-20T17:10:06.134Z",
    "win": false
   },
+  "53f322df-51f4-4727-a9c3-9cd782b4c188": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "rows",
+   "opp": "knownasjason",
+   "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
+   "time": "2026-10-21T16:40:14.609Z",
+   "win": false
+  },
   "548eb9be-caeb-4497-b0c3-735bf5289a30": {
    "kind": "ranked",
    "live": 10,
@@ -1043,6 +1070,15 @@
    "oppId": "dba8d35f-fd1d-432d-8ba5-9f076cb3dcac",
    "time": "2026-10-20T20:40:10.182Z",
    "win": true
+  },
+  "56d105a4-06b8-4410-a18f-0a22373d8d91": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "collision",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-21T16:20:14.381Z",
+   "win": false
   },
   "5717e6c6-2895-4512-86b5-65a2e894c9f3": {
    "kind": "ranked",
@@ -1241,6 +1277,15 @@
    "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
    "time": "2026-10-20T22:30:11.149Z",
    "win": true
+  },
+  "66c15e88-d817-4c0b-ada1-1623de390b9f": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "the-farm",
+   "opp": "ohhhhhh caml",
+   "oppId": "5bfa785b-3a15-4398-96b7-624e1a1e103c",
+   "time": "2026-10-21T16:30:13.511Z",
+   "win": false
   },
   "67af3823-022b-46b9-a319-ea3e9e8eed46": {
    "kind": "ranked",
@@ -1449,6 +1494,15 @@
    "time": "2026-10-20T17:00:08.371Z",
    "win": false
   },
+  "75586a5c-5dc5-4bc5-919f-d2fd392a6d5a": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "split",
+   "opp": "ohhhhhh caml",
+   "oppId": "5bfa785b-3a15-4398-96b7-624e1a1e103c",
+   "time": "2026-10-21T16:30:13.511Z",
+   "win": false
+  },
   "758a8422-8287-4a8e-a32f-b967902ce5ca": {
    "kind": "ranked",
    "live": 1,
@@ -1456,6 +1510,24 @@
    "opp": "3 Treasure",
    "oppId": "90ddaf0d-1cf1-4110-a127-d14da2ce2c66",
    "time": "2026-10-21T14:40:12.891Z",
+   "win": false
+  },
+  "75aa6331-ed82-4e09-8a38-b4aa13e8cdbd": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "eight",
+   "opp": "ohhhhhh caml",
+   "oppId": "5bfa785b-3a15-4398-96b7-624e1a1e103c",
+   "time": "2026-10-21T16:30:13.511Z",
+   "win": false
+  },
+  "7663500f-2598-4a90-9ae7-ac9fea2a8353": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "lanes",
+   "opp": "ohhhhhh caml",
+   "oppId": "5bfa785b-3a15-4398-96b7-624e1a1e103c",
+   "time": "2026-10-21T16:30:13.512Z",
    "win": false
   },
   "78413ca6-8e50-43b3-bfe5-47cdf554a05d": {
@@ -1764,6 +1836,15 @@
    "time": "2026-10-20T17:00:08.371Z",
    "win": false
   },
+  "91fdf5bf-ce13-4f1b-9813-79231fcd5308": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "interlock",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-21T16:20:14.380Z",
+   "win": true
+  },
   "92a36a6d-5d2c-4b8f-a5da-929adc2982d2": {
    "kind": "ranked",
    "live": 1,
@@ -1798,6 +1879,15 @@
    "opp": "Turbo Bush Campers",
    "oppId": "b2981f3c-2006-4307-b745-45086626336b",
    "time": "2026-10-20T22:20:11.555Z",
+   "win": false
+  },
+  "98624f4e-3030-48db-bd7f-9eea9ef371bb": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "lanes",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-21T16:20:14.381Z",
    "win": false
   },
   "9872a596-2d12-4e55-a208-a246e060ad63": {
@@ -1890,6 +1980,15 @@
    "time": "2026-10-20T20:40:10.182Z",
    "win": true
   },
+  "9e01c938-98d4-4e49-a6c0-de555301344f": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "big-world",
+   "opp": "knownasjason",
+   "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
+   "time": "2026-10-21T16:40:14.608Z",
+   "win": true
+  },
   "9e2fcfc0-a78d-45ca-8e2c-c78128f035bd": {
    "kind": "ranked",
    "live": 1,
@@ -1934,6 +2033,15 @@
    "oppId": "b095a9ef-91f3-4c4a-b4aa-3ec386286b82",
    "time": "2026-10-21T14:50:14.151Z",
    "win": true
+  },
+  "a2f2998c-ebd1-4cc4-b42e-0e95476991dc": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "swirl",
+   "opp": "knownasjason",
+   "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
+   "time": "2026-10-21T16:40:14.609Z",
+   "win": false
   },
   "a3e94d15-3ae1-4d5b-89bb-58687ef5df7e": {
    "kind": "ranked",
@@ -2565,6 +2673,15 @@
    "time": "2026-10-20T22:30:11.149Z",
    "win": true
   },
+  "d7d67518-a48b-48fd-a650-f3a08a4c2351": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "concentrated-wealth",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-21T16:20:14.380Z",
+   "win": true
+  },
   "d8c9d920-7db9-4533-a673-d35849695e2d": {
    "kind": "ranked",
    "live": 1,
@@ -2663,6 +2780,15 @@
    "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
    "time": "2026-10-20T17:00:08.372Z",
    "win": false
+  },
+  "e080afe5-c3e8-42cc-9c3f-892e09ec696b": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "shortcut",
+   "opp": "knownasjason",
+   "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
+   "time": "2026-10-21T16:40:14.609Z",
+   "win": true
   },
   "e128a4cc-2b57-4e3f-9a03-4eeb056120b1": {
    "kind": "ranked",
@@ -2825,6 +2951,15 @@
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
    "time": "2026-10-21T15:00:13.926Z",
    "win": false
+  },
+  "eda7484a-213c-4091-ae33-d27b2c89b9a9": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "expanse",
+   "opp": "knownasjason",
+   "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
+   "time": "2026-10-21T16:40:14.609Z",
+   "win": true
   },
   "edcf9156-ed24-42b4-b0fd-3ddcac3988bf": {
    "kind": "ranked",
@@ -6039,6 +6174,157 @@
    "status": "open",
    "time": "2026-10-21T16:10:12.194Z",
    "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 16
+   },
+   "deaths_them": 23,
+   "deaths_us": 16,
+   "gems_them": "903",
+   "gems_us": "769",
+   "id": "53f322df-51f4-4727-a9c3-9cd782b4c188",
+   "map": "rows",
+   "opp": "knownasjason",
+   "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
+   "status": "open",
+   "time": "2026-10-21T16:40:14.609Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 40,
+    "Unknown entity kind (2)": 15
+   },
+   "deaths_them": 73,
+   "deaths_us": 55,
+   "gems_them": "825",
+   "gems_us": "775",
+   "id": "a2f2998c-ebd1-4cc4-b42e-0e95476991dc",
+   "map": "swirl",
+   "opp": "knownasjason",
+   "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
+   "status": "open",
+   "time": "2026-10-21T16:40:14.609Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 9,
+    "Unknown entity kind (2)": 5
+   },
+   "deaths_them": 10,
+   "deaths_us": 14,
+   "gems_them": "1009",
+   "gems_us": "441",
+   "id": "7663500f-2598-4a90-9ae7-ac9fea2a8353",
+   "map": "lanes",
+   "opp": "ohhhhhh caml",
+   "oppId": "5bfa785b-3a15-4398-96b7-624e1a1e103c",
+   "status": "open",
+   "time": "2026-10-21T16:30:13.512Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 59,
+    "Unknown entity kind (2)": 1
+   },
+   "deaths_them": 47,
+   "deaths_us": 60,
+   "gems_them": "1020",
+   "gems_us": "189",
+   "id": "2f4aa7bb-4b18-489a-a930-7161f4c376ba",
+   "map": "swirl",
+   "opp": "ohhhhhh caml",
+   "oppId": "5bfa785b-3a15-4398-96b7-624e1a1e103c",
+   "status": "open",
+   "time": "2026-10-21T16:30:13.511Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 19,
+    "Unknown entity kind (2)": 23
+   },
+   "deaths_them": 14,
+   "deaths_us": 42,
+   "gems_them": "271",
+   "gems_us": "37",
+   "id": "66c15e88-d817-4c0b-ada1-1623de390b9f",
+   "map": "the-farm",
+   "opp": "ohhhhhh caml",
+   "oppId": "5bfa785b-3a15-4398-96b7-624e1a1e103c",
+   "status": "open",
+   "time": "2026-10-21T16:30:13.511Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 72,
+    "Unknown entity kind (2)": 3
+   },
+   "deaths_them": 80,
+   "deaths_us": 75,
+   "gems_them": "949",
+   "gems_us": "679",
+   "id": "75aa6331-ed82-4e09-8a38-b4aa13e8cdbd",
+   "map": "eight",
+   "opp": "ohhhhhh caml",
+   "oppId": "5bfa785b-3a15-4398-96b7-624e1a1e103c",
+   "status": "open",
+   "time": "2026-10-21T16:30:13.511Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 12,
+    "Unknown entity kind (2)": 24
+   },
+   "deaths_them": 29,
+   "deaths_us": 36,
+   "gems_them": "1052",
+   "gems_us": "585",
+   "id": "75586a5c-5dc5-4bc5-919f-d2fd392a6d5a",
+   "map": "split",
+   "opp": "ohhhhhh caml",
+   "oppId": "5bfa785b-3a15-4398-96b7-624e1a1e103c",
+   "status": "open",
+   "time": "2026-10-21T16:30:13.511Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 25
+   },
+   "deaths_them": 29,
+   "deaths_us": 25,
+   "gems_them": "550",
+   "gems_us": "483",
+   "id": "56d105a4-06b8-4410-a18f-0a22373d8d91",
+   "map": "collision",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "status": "open",
+   "time": "2026-10-21T16:20:14.381Z",
+   "tries_at": 6
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 7,
+    "Unknown entity kind (2)": 3
+   },
+   "deaths_them": 6,
+   "deaths_us": 10,
+   "gems_them": "1015",
+   "gems_us": "857",
+   "id": "98624f4e-3030-48db-bd7f-9eea9ef371bb",
+   "map": "lanes",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "status": "open",
+   "time": "2026-10-21T16:20:14.381Z",
+   "tries_at": 2
   }
  ],
  "map_files": {
