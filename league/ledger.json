@@ -551,7 +551,7 @@
   },
   "2d742f10-cbb4-472a-a471-cbcfa18363e0": {
    "kind": "ranked",
-   "live": 1,
+   "live": 9,
    "map": "stampede",
    "opp": "Mousa",
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
@@ -713,7 +713,7 @@
   },
   "3b17b6ab-56b0-41ed-868d-9e1f69ddb583": {
    "kind": "ranked",
-   "live": 1,
+   "live": 9,
    "map": "contest",
    "opp": "another name",
    "oppId": "b095a9ef-91f3-4c4a-b4aa-3ec386286b82",
@@ -740,7 +740,7 @@
   },
   "3bf36a2d-1db8-48bd-9fd2-2752310b6b71": {
    "kind": "ranked",
-   "live": 1,
+   "live": 9,
    "map": "rows",
    "opp": "another name",
    "oppId": "b095a9ef-91f3-4c4a-b4aa-3ec386286b82",
@@ -1487,7 +1487,7 @@
   },
   "814978a2-d822-4b08-b25b-e30c3e66ca11": {
    "kind": "ranked",
-   "live": 1,
+   "live": 9,
    "map": "swirl",
    "opp": "Mousa",
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
@@ -1838,7 +1838,7 @@
   },
   "a2767920-c5b2-4d7b-b668-7d26ae409e90": {
    "kind": "ranked",
-   "live": 1,
+   "live": 9,
    "map": "starfish",
    "opp": "another name",
    "oppId": "b095a9ef-91f3-4c4a-b4aa-3ec386286b82",
@@ -2333,7 +2333,7 @@
   },
   "cfbbb9c7-4c03-46f1-8b6a-d82433ffcc6a": {
    "kind": "ranked",
-   "live": 1,
+   "live": 9,
    "map": "hooks",
    "opp": "Mousa",
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
@@ -2369,7 +2369,7 @@
   },
   "d0fa64c4-1d47-4629-b1d9-17eb6e86cf31": {
    "kind": "ranked",
-   "live": 1,
+   "live": 9,
    "map": "reverse-spiral",
    "opp": "Mousa",
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
@@ -2657,7 +2657,7 @@
   },
   "ecd3fe0c-a91d-41cd-b4da-f3e98ba73a33": {
    "kind": "ranked",
-   "live": 1,
+   "live": 9,
    "map": "eight",
    "opp": "Mousa",
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
@@ -2747,7 +2747,7 @@
   },
   "f120bc92-c762-4455-9ebe-0ad43678658d": {
    "kind": "ranked",
-   "live": 1,
+   "live": 9,
    "map": "fragment",
    "opp": "another name",
    "oppId": "b095a9ef-91f3-4c4a-b4aa-3ec386286b82",
@@ -2855,7 +2855,7 @@
   },
   "fdb961ae-9766-4749-886b-8fe8b8333b60": {
    "kind": "ranked",
-   "live": 1,
+   "live": 9,
    "map": "corridors",
    "opp": "another name",
    "oppId": "b095a9ef-91f3-4c4a-b4aa-3ec386286b82",
@@ -5957,6 +5957,15 @@
    "reason": "ladder loss since the last upload",
    "time": "2026-10-20T17:44:40Z",
    "version": 1
+  },
+  {
+   "bot": "lg-v9",
+   "host": "DESKTOP-QVEMEEE",
+   "ok": true,
+   "output": "Uploading D:\\Code\\battlecode\\bots\\lg-v9 (136787 bytes)...\nSubmitted bot version 12. View submissions at https://2026a.battlecode.co.uk/game/submissions\nA newer version of cambc is available for windows-x64. Download: https://2026a.battlecode.co.uk/game/download\nIf installed with pip, run `python -m ",
+   "reason": "ladder loss since the last upload",
+   "time": "2026-10-21T14:47:07Z",
+   "version": 9
   },
   {
    "bot": "lg-v10",
