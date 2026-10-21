@@ -2175,6 +2175,8 @@
   {
    "added": "2026-10-21T20:16:07Z",
    "area": "farming",
+   "claimed": "2026-10-21T20:47:32Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 60,
    "notes": "Value / (1 + 0.25 per extra monster) when no ally within 6.",
    "results": {},
@@ -2184,7 +2186,7 @@
     },
     "ref": "origin/feat/gaps-2"
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Alone: easier groups first (fewer monsters)"
   },
   {
