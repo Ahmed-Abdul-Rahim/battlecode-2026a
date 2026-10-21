@@ -1146,16 +1146,57 @@
    "added": "2026-10-21T15:12:04Z",
    "area": "combat",
    "claimed": "2026-10-21T17:45:49Z",
+   "finished": "2026-10-21T17:54:38Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 22,
    "notes": "",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.443,
+     "h2h_games": 70,
+     "live": {
+      "deaths": 24.16,
+      "fitness": 0.397,
+      "games": 910,
+      "gem_margin": 0.092,
+      "win": 0.615
+     },
+     "variant": {
+      "deaths": 24.17,
+      "fitness": 0.421,
+      "games": 910,
+      "gem_margin": 0.093,
+      "win": 0.64
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 18.05,
+      "fitness": 0.316,
+      "games": 182,
+      "gem_margin": -0.013,
+      "win": 0.5
+     },
+     "paired": {
+      "mean": 0.0991,
+      "pairs": 182,
+      "se": 0.0402
+     },
+     "variant": {
+      "deaths": 16.87,
+      "fitness": 0.415,
+      "games": 182,
+      "gem_margin": 0.05,
+      "win": 0.571
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "FIGHT_V6": 4
     }
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "Finish kills / fight when outnumbering"
   },
   {
