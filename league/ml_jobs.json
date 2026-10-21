@@ -383,6 +383,7 @@
   {
    "added": "2026-10-21T17:26:55Z",
    "claimed": "2026-10-21T17:26:55Z",
+   "finished": "2026-10-21T17:29:32Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 16,
    "kind": "gen",
@@ -390,8 +391,18 @@
     "explore": 10,
     "offset": 39
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "games": 78,
+    "maps": [
+     "00collision",
+     "01concentrated-wealth",
+     "00contest"
+    ],
+    "rows": 166919,
+    "shard": "gen-00016-DESKTOP-QVEMEEE.npz",
+    "win": 0.41
+   },
+   "status": "done"
   }
  ]
 }
