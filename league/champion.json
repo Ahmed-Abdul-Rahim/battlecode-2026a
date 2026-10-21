@@ -8921,7 +8921,7 @@
    "DESKTOP-QVEMEEE": 1
   },
   "fracture": {
-   "DESKTOP-QVEMEEE": 3
+   "DESKTOP-QVEMEEE": 4
   },
   "fragment": {
    "DESKTOP-QVEMEEE": 4
@@ -8933,7 +8933,7 @@
    "DESKTOP-QVEMEEE": 2
   },
   "interlock": {
-   "DESKTOP-QVEMEEE": 2
+   "DESKTOP-QVEMEEE": 3
   },
   "islands": {
    "DESKTOP-QVEMEEE": 5
@@ -8956,13 +8956,25 @@
   "reverse-spiral": {
    "DESKTOP-QVEMEEE": 1
   },
+  "rows": {
+   "DESKTOP-QVEMEEE": 1
+  },
+  "rushbait-v2": {
+   "DESKTOP-QVEMEEE": 1
+  },
   "shortcut": {
+   "DESKTOP-QVEMEEE": 1
+  },
+  "split": {
    "DESKTOP-QVEMEEE": 1
   },
   "stampede": {
    "DESKTOP-QVEMEEE": 1
   },
   "starfish": {
+   "DESKTOP-QVEMEEE": 1
+  },
+  "starvation": {
    "DESKTOP-QVEMEEE": 1
   },
   "swirl": {
