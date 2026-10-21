@@ -51,6 +51,7 @@
   {
    "added": "2026-10-21T16:31:37Z",
    "claimed": "2026-10-21T16:31:37Z",
+   "finished": "2026-10-21T16:35:00Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 3,
    "kind": "gen",
@@ -58,8 +59,18 @@
     "explore": 10,
     "offset": 6
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "games": 78,
+    "maps": [
+     "00contest",
+     "00corners",
+     "01corridors"
+    ],
+    "rows": 161380,
+    "shard": "gen-00003-DESKTOP-QVEMEEE.npz",
+    "win": 0.282
+   },
+   "status": "done"
   }
  ]
 }
