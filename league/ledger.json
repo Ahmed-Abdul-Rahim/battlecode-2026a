@@ -765,6 +765,15 @@
    "time": "2026-10-21T14:20:15.009Z",
    "win": false
   },
+  "46f1654e-e765-48e2-bd2a-b44d4db6ce62": {
+   "kind": "unranked",
+   "live": 10,
+   "map": "islands",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "time": "2026-10-21T15:10:26.221Z",
+   "win": true
+  },
   "481909ab-1a45-4898-95b3-c3dbee65e3e4": {
    "kind": "ranked",
    "live": 1,
@@ -891,6 +900,15 @@
    "time": "2026-10-20T17:10:06.134Z",
    "win": false
   },
+  "548eb9be-caeb-4497-b0c3-735bf5289a30": {
+   "kind": "ranked",
+   "live": 10,
+   "map": "collision",
+   "opp": "Lucky Stunner",
+   "oppId": "d48d65ef-625c-4966-b2cc-a7b1b02fafec",
+   "time": "2026-10-21T15:10:10.876Z",
+   "win": false
+  },
   "551e942f-71c6-4d0c-8988-bf56a41e83ec": {
    "kind": "ranked",
    "live": 1,
@@ -943,6 +961,15 @@
    "opp": "Rogue Lock Pickers",
    "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
    "time": "2026-10-20T22:30:11.149Z",
+   "win": true
+  },
+  "580a7bfa-9074-410c-ac9b-3b9427bad60f": {
+   "kind": "unranked",
+   "live": 10,
+   "map": "eight",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "time": "2026-10-21T15:10:26.178Z",
    "win": true
   },
   "58e2915f-a159-4571-ba54-fb4d6702bc31": {
@@ -1692,6 +1719,15 @@
    "time": "2026-10-20T17:30:07.063Z",
    "win": false
   },
+  "a27297b2-a852-4636-9163-3c10c2e887a7": {
+   "kind": "unranked",
+   "live": 10,
+   "map": "gold-rush",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "time": "2026-10-21T15:10:26.210Z",
+   "win": false
+  },
   "a2767920-c5b2-4d7b-b668-7d26ae409e90": {
    "kind": "ranked",
    "live": 1,
@@ -1926,6 +1962,15 @@
    "time": "2026-10-20T22:30:11.149Z",
    "win": false
   },
+  "b7c9db92-6cec-49b2-9d65-8bb1c931fc9e": {
+   "kind": "unranked",
+   "live": 10,
+   "map": "fracture",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "time": "2026-10-21T15:10:26.236Z",
+   "win": false
+  },
   "b7d44330-f4f0-4423-a1d5-5b4cdaff8fca": {
    "kind": "ranked",
    "live": null,
@@ -1980,6 +2025,15 @@
    "time": "2026-10-21T14:20:15.008Z",
    "win": false
   },
+  "bcf070ed-1de5-4e11-9ab3-6a4918368a95": {
+   "kind": "unranked",
+   "live": 10,
+   "map": "boss-battle",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "time": "2026-10-21T15:10:26.195Z",
+   "win": true
+  },
   "bd6f80d3-e3d9-44f3-9208-cfec933eb895": {
    "kind": "ranked",
    "live": 1,
@@ -1997,6 +2051,24 @@
    "oppId": "db94d858-5170-41ef-ad90-b2faf85dd5e8",
    "time": "2026-10-20T15:40:12.934Z",
    "win": true
+  },
+  "bf31eb4d-39a2-45bc-b693-87dcd0913394": {
+   "kind": "ranked",
+   "live": 10,
+   "map": "fracture",
+   "opp": "Lucky Stunner",
+   "oppId": "d48d65ef-625c-4966-b2cc-a7b1b02fafec",
+   "time": "2026-10-21T15:10:10.877Z",
+   "win": false
+  },
+  "c02655c5-5f6b-42d3-ac79-f145309dacde": {
+   "kind": "ranked",
+   "live": 10,
+   "map": "starfish",
+   "opp": "Lucky Stunner",
+   "oppId": "d48d65ef-625c-4966-b2cc-a7b1b02fafec",
+   "time": "2026-10-21T15:10:10.876Z",
+   "win": false
   },
   "c140b99c-5f35-4476-a685-937936d7627e": {
    "kind": "ranked",
@@ -2293,6 +2365,24 @@
    "opp": "Silent Fog Walkers",
    "oppId": "0e2abba9-e657-4025-a4e6-a1eed7c5dea0",
    "time": "2026-10-20T16:20:07.816Z",
+   "win": false
+  },
+  "e329e08e-668e-4cd8-9cf6-7bca6f1be22b": {
+   "kind": "ranked",
+   "live": 10,
+   "map": "rows",
+   "opp": "Lucky Stunner",
+   "oppId": "d48d65ef-625c-4966-b2cc-a7b1b02fafec",
+   "time": "2026-10-21T15:10:10.876Z",
+   "win": true
+  },
+  "e3e5575b-55ba-4b60-b2ef-980b637c7991": {
+   "kind": "ranked",
+   "live": 10,
+   "map": "pilgrimage",
+   "opp": "Lucky Stunner",
+   "oppId": "d48d65ef-625c-4966-b2cc-a7b1b02fafec",
+   "time": "2026-10-21T15:10:10.876Z",
    "win": false
   },
   "e4bd7274-a182-4428-a32e-7972f59e79db": {
@@ -5202,6 +5292,107 @@
    "status": "open",
    "time": "2026-10-21T14:50:14.152Z",
    "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 2,
+    "Unknown entity kind (2)": 26
+   },
+   "deaths_them": 6,
+   "deaths_us": 28,
+   "gems_them": "324",
+   "gems_us": "0",
+   "id": "b7c9db92-6cec-49b2-9d65-8bb1c931fc9e",
+   "map": "fracture",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "status": "open",
+   "time": "2026-10-21T15:10:26.236Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 11,
+    "Unknown entity kind (2)": 13
+   },
+   "deaths_them": 19,
+   "deaths_us": 24,
+   "gems_them": "582",
+   "gems_us": "316",
+   "id": "a27297b2-a852-4636-9163-3c10c2e887a7",
+   "map": "gold-rush",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "status": "open",
+   "time": "2026-10-21T15:10:26.210Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 5,
+    "Unknown entity kind (2)": 28
+   },
+   "deaths_them": 15,
+   "deaths_us": 33,
+   "gems_them": "579",
+   "gems_us": "187",
+   "id": "bf31eb4d-39a2-45bc-b693-87dcd0913394",
+   "map": "fracture",
+   "opp": "Lucky Stunner",
+   "oppId": "d48d65ef-625c-4966-b2cc-a7b1b02fafec",
+   "status": "open",
+   "time": "2026-10-21T15:10:10.877Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 46
+   },
+   "deaths_them": 13,
+   "deaths_us": 46,
+   "gems_them": "1000",
+   "gems_us": "125",
+   "id": "548eb9be-caeb-4497-b0c3-735bf5289a30",
+   "map": "collision",
+   "opp": "Lucky Stunner",
+   "oppId": "d48d65ef-625c-4966-b2cc-a7b1b02fafec",
+   "status": "open",
+   "time": "2026-10-21T15:10:10.876Z",
+   "tries_at": 6
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 75,
+    "Unknown entity kind (2)": 1
+   },
+   "deaths_them": 5,
+   "deaths_us": 76,
+   "gems_them": "541",
+   "gems_us": "15",
+   "id": "e3e5575b-55ba-4b60-b2ef-980b637c7991",
+   "map": "pilgrimage",
+   "opp": "Lucky Stunner",
+   "oppId": "d48d65ef-625c-4966-b2cc-a7b1b02fafec",
+   "status": "open",
+   "time": "2026-10-21T15:10:10.876Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 63,
+    "Unknown entity kind (2)": 19
+   },
+   "deaths_them": 56,
+   "deaths_us": 82,
+   "gems_them": "630",
+   "gems_us": "146",
+   "id": "c02655c5-5f6b-42d3-ac79-f145309dacde",
+   "map": "starfish",
+   "opp": "Lucky Stunner",
+   "oppId": "d48d65ef-625c-4966-b2cc-a7b1b02fafec",
+   "status": "open",
+   "time": "2026-10-21T15:10:10.876Z",
+   "tries_at": 1
   }
  ],
  "map_files": {
