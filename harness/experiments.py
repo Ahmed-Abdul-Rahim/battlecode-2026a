@@ -299,7 +299,18 @@ def tex(reg: dict) -> str:
     """A LaTeX table of every experiment (\\input from docs/league.tex)."""
 
     def esc(s: str) -> str:
-        return re.sub(r"([_&%#$])", r"\\\1", s)
+        # Notes may hold error text with backslashes and braces; '\\' would end a table row.
+        out = []
+        for ch in s:
+            if ch == "\\":
+                out.append(r"\textbackslash{}")
+            elif ch in "_&%#${}":
+                out.append("\\" + ch)
+            elif ch in "^~":
+                out.append(r"\textasciicircum{}" if ch == "^" else r"\textasciitilde{}")
+            else:
+                out.append(ch)
+        return "".join(out)
 
     def nums(e: dict) -> str:
         r = e["results"].get("full") or e["results"].get("screen")
