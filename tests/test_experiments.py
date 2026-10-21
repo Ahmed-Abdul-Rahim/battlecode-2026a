@@ -62,6 +62,10 @@ def test_registry_merge_keeps_progress_and_first_claim():
     assert [e["id"] for e in m] == [a["id"], b["id"], 3]
     assert m[0]["status"] == "rejected"  # finished beats claimed
     assert m[1]["host"] == "pc2"  # the earlier claim wins
+    again = copy.deepcopy(up)
+    X.requeue(again["experiments"][0], "re-run")
+    m2 = L.merge_experiments(again, up)["experiments"]
+    assert m2[0]["status"] == "queued" and m2[0]["run"] == 2  # a re-run beats the old result
 
 
 def test_paired_difference_matches_games():

@@ -245,6 +245,14 @@ def available(e: dict, now: float) -> bool:
     return e.get("host") == L.HOST or now - L.ts(e["claimed"]) > CLAIM_TTL
 
 
+def requeue(e: dict, note: str) -> None:
+    """Run `e` again (a new run number, so the re-run wins registry merges over the old result)."""
+    e.update(status="queued", results={}, run=e.get("run", 1) + 1)
+    for k in ("host", "claimed", "finished"):
+        e.pop(k, None)
+    e["notes"] = (e.get("notes", "") + " " + note).strip()
+
+
 def next_queued(reg: dict, now: float | None = None) -> dict | None:
     now = time.time() if now is None else now
     return next((e for e in reg["experiments"] if available(e, now)), None)

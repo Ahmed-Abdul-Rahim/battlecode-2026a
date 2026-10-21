@@ -271,12 +271,15 @@ STATUS_RANK = {"queued": 0, "screening": 1, "full": 2, "passed": 3, "rejected": 
 
 
 def merge_experiments(ours: dict | None, theirs: dict | None) -> dict:
-    """Experiment registry from two PCs: per id the further-along entry wins; two claims on the
-    same id keep the earlier one. Order (= queue priority) follows `theirs`, then new ids."""
+    """Experiment registry from two PCs: per id the later run, then the further-along entry wins;
+    two claims on the same id keep the earlier one. Order (= queue priority) follows `theirs`, then new ids."""
     ours, theirs = ours or {"experiments": []}, theirs or {"experiments": []}
     mine = {e["id"]: e for e in ours.get("experiments", [])}
 
     def pick(a: dict, b: dict) -> dict:
+        # A deliberate re-run (run + 1) beats the older run's result; then the further status.
+        if a.get("run", 1) != b.get("run", 1):
+            return a if a.get("run", 1) > b.get("run", 1) else b
         ra, rb = STATUS_RANK.get(a.get("status"), 0), STATUS_RANK.get(b.get("status"), 0)
         if ra != rb:
             return a if ra > rb else b
