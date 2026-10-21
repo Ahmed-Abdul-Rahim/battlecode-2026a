@@ -741,6 +741,8 @@
   {
    "added": "2026-10-21T15:30:46Z",
    "area": "economy",
+   "claimed": "2026-10-21T16:08:29Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 46,
    "notes": "Recall and buy when about to start a fight with advantage < 1.5 or a camp > 25 rounds to clear.",
    "results": {},
@@ -750,7 +752,7 @@
     },
     "ref": "origin/feat/stun-upgrade"
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Upgrade before a hard fight (60 gold)"
   },
   {
