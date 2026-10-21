@@ -749,16 +749,39 @@
    "added": "2026-10-21T15:12:04Z",
    "area": "teamwork",
    "claimed": "2026-10-21T16:12:14Z",
+   "finished": "2026-10-21T16:17:38Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 20,
-   "notes": "",
-   "results": {},
+   "notes": "Screen: win 0.505 vs 0.549, fitness 0.329 vs 0.372 (paired -0.043 +- 0.039).",
+   "results": {
+    "screen": {
+     "live": {
+      "deaths": 17.84,
+      "fitness": 0.372,
+      "games": 182,
+      "gem_margin": 0.004,
+      "win": 0.549
+     },
+     "paired": {
+      "mean": -0.0434,
+      "pairs": 182,
+      "se": 0.039
+     },
+     "variant": {
+      "deaths": 17.15,
+      "fitness": 0.329,
+      "games": 182,
+      "gem_margin": -0.022,
+      "win": 0.505
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "FIGHT_V6": 1
     }
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "Focus the weakest enemy and call it"
   },
   {
