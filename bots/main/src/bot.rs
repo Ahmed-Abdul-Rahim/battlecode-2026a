@@ -123,6 +123,15 @@ const KILL_ASSIST_MIN_HP: f32 = 0.4;
 const PASSIVE_BONUS_GOLD: usize = 1;
 const PASSIVE_SPLASH: usize = 4;
 const PASSIVE_MISSING_HEALTH: usize = 10;
+/// knob2 TEAM_UP: join only above this health fraction, and unless the joint fight advantage
+/// (allies' damage included) is below this.
+const TEAM_UP_MIN_HP: f32 = 0.4;
+const TEAM_UP_MIN_ADVANTAGE: f32 = 0.7;
+/// knob2 UPGRADE_FIRST: shop first when the fight advantage is below this, or the camp takes
+/// more rounds than this to clear alone; only from this far from spawn.
+const UPGRADE_HARD_ADVANTAGE: f32 = 1.5;
+const UPGRADE_SLOW_CLEAR: f32 = 25.0;
+const UPGRADE_MIN_SPAWN_DIST: u16 = 8;
 /// knob2 FOCUS: call our target for the team once it is at or below this health fraction.
 const FOCUS_CALL_HP: f32 = 0.6;
 /// knob2 ENDGAME: from this round (or when a team has 80% of the winning gems); bank bags from
@@ -673,6 +682,32 @@ impl Bot {
                     assist = helping;
                 }
             }
+            // knob2 TEAM_UP: an ally within N tiles is trading hits with an enemy champion: go
+            // help (two separate fights lose both; one shared fight wins it).
+            let team_up = i32::from(self.theta.knob2(knob2::TEAM_UP));
+            if team_up > 0
+                && !matches!(mode, Mode::Override(_))
+                && ctx.hp_frac() > TEAM_UP_MIN_HP
+                && !matches!(intent, Intent::Engage(_) | Intent::Capture(_) | Intent::Tribute)
+            {
+                let target = vis
+                    .allies
+                    .iter()
+                    .filter(|a| a.dist <= team_up)
+                    .flat_map(|a| {
+                        vis.enemies
+                            .iter()
+                            .filter(move |e| !e.on_spawn && e.pos.cheb(a.pos) <= e.range.max(2))
+                    })
+                    .min_by(|x, y| x.hp.total_cmp(&y.hp));
+                let winnable = ctx.enemy.is_none_or(|n| {
+                    crate::bc_brain::router::fight_advantage(&ctx, &n) >= TEAM_UP_MIN_ADVANTAGE
+                });
+                if let (Some(e), true) = (target, winnable) {
+                    intent = Intent::Engage(e.pos);
+                    telemetry::event(round, champ_name(self.kind), "team_up", 1);
+                }
+            }
             // knob2 FOCUS: call the enemy we're attacking once it is hurt and an ally can help.
             if self.theta.knob2(knob2::FOCUS) > 0 {
                 if let Intent::Engage(p) = intent {
@@ -681,6 +716,31 @@ impl Bot {
                     if let (Some(e), true) = (hurt, vis.allies.iter().any(|a| a.dist <= 6)) {
                         chan.post_focus(p, round, e.hp / e.max_hp.max(1.0));
                     }
+                }
+            }
+            // knob2 UPGRADE_FIRST: about to start a fight we don't clearly win, or a camp that
+            // takes long to clear, with gold in the pocket: buy first (items compound).
+            let upgrade_gold = u32::from(self.theta.knob2(knob2::UPGRADE_FIRST)) * 10;
+            if upgrade_gold > 0
+                && ctx.gold >= upgrade_gold.max(crate::bc_core::ledger::SHARD_COST)
+                && !matches!(mode, Mode::Override(_))
+                && !ctx.in_danger()
+                && ctx.dist_spawn.is_some_and(|d| d > UPGRADE_MIN_SPAWN_DIST)
+                && ctx.gems < u32::from(ctx.knobs.tribute_min)
+                && crate::bc_brain::shop::next_shard(&self.order, &self.ledger).is_some()
+            {
+                let hard = match intent {
+                    Intent::Engage(_) => ctx.enemy.is_some_and(|e| {
+                        crate::bc_brain::router::fight_advantage(&ctx, &e) < UPGRADE_HARD_ADVANTAGE
+                    }),
+                    Intent::ClearCamp(i) => ctx.target.is_some_and(|t| {
+                        t.index == i && t.hp_left / ctx.my_dps.max(1.0) > UPGRADE_SLOW_CLEAR
+                    }),
+                    _ => false,
+                };
+                if hard {
+                    telemetry::event(round, champ_name(self.kind), "upgrade_first", 1);
+                    intent = Intent::Shop;
                 }
             }
             // knob2 ENDGAME, ahead late: bank whatever we carry when nothing threatens us.
@@ -740,6 +800,7 @@ impl Bot {
                 let recall_ticks = if self.has_home() { 3 } else { 5 };
                 let tavi_respec = self.kind == ChampionKind::Tavi
                     && crate::learned::extra(crate::learned::X_TAVI_RESPEC) > 0.5;
+                let stun_lock = self.theta.knob2(knob2::STUN_LOCK) > 0;
                 let mut exec = self.exec(me, &vis, my_pos, hurt_this_round);
                 exec.field_shop = field_shop;
                 exec.recall_safe = recall_safe;
@@ -750,6 +811,7 @@ impl Bot {
                 exec.deny_ground = deny_ground;
                 exec.altar_lock = altar_lock;
                 exec.combo = fsm_bits & (64 | 8) == 64 | 8;
+                exec.stun_lock = stun_lock;
                 exec.dash_in = fsm_bits & (64 | 16) == 64 | 16;
                 exec.execute(intent)?;
                 exec_out = exec.out;
@@ -1050,6 +1112,7 @@ impl Bot {
             deny_ground: false,
             altar_lock: false,
             combo: false,
+            stun_lock: false,
             dash_in: false,
             field_shop: false,
             recall_safe: false,

@@ -143,6 +143,8 @@ pub struct Exec<'a> {
     pub altar_lock: bool,
     /// COMBAT_FSM 64|8: combo cast order against champions (Exec::combo_cast).
     pub combo: bool,
+    /// knob2 STUN_LOCK: hold stuns while the target is already stunned.
+    pub stun_lock: bool,
     /// COMBAT_FSM 64|16: melee champions dash into attack range.
     pub dash_in: bool,
     /// TAVI_META: Tavi buys shards anywhere on the map (its passive).
@@ -552,12 +554,17 @@ impl Exec<'_> {
             }
         }
         let dist = self.my_pos.cheb(target_pos);
+        // knob2 STUN_LOCK: a stun on a stunned unit is wasted; keep it for when the stun ends
+        // (an ally acting after us then re-stuns, and the stuns chain).
+        let hold_stun = self.stun_lock
+            && (camp.is_some_and(|c| stunned(c)) || enemy.is_some_and(|e| stunned(e)));
         for ability in me.abilities() {
             let Some(info) = ability.info()? else { continue };
             let meta = info.as_dyn();
             let Ok(range) = meta.range() else { continue };
             if dist as f32 > range
                 || (meta.is_exclusive_with_movement() && (will_move || self.out.moved))
+                || (hold_stun && meta.kind() == AbilityKind::Cc)
             {
                 continue;
             }
@@ -950,4 +957,9 @@ pub fn occupied_tiles(vis: &Visible, me: Pos) -> Vec<Pos> {
         .chain(vis.camps.iter().filter(|c| c.hp > 0.0).map(|c| c.pos))
         .filter(|&p| p != me)
         .collect()
+}
+
+/// The unit carries a stun right now (camps are units too).
+fn stunned(u: &cambc::Unit) -> bool {
+    u.buffs().is_ok_and(|b| b.has_stun())
 }

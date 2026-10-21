@@ -65,8 +65,16 @@ pub mod knob2 {
     pub const PREDICT: usize = 6;
     /// Place the free ward on likely approach paths.
     pub const WARDS: usize = 7;
+    /// Never spend a stun on a unit (champion or camp) that is already stunned: hold it for the
+    /// turn the stun ends, so teammates' stuns chain into a lock.
+    pub const STUN_LOCK: usize = 8;
+    /// Recall and buy before a hard fight or a slow camp when carrying value x 10 gold.
+    pub const UPGRADE_FIRST: usize = 9;
+    /// Join an ally's fight with an enemy champion within this many tiles, at any enemy health
+    /// (kill assist only joins at <= 50%), unless the two of us still clearly lose.
+    pub const TEAM_UP: usize = 10;
 
-    pub const DEFAULTS: [(usize, u8); 8] = [
+    pub const DEFAULTS: [(usize, u8); 11] = [
         (PASSIVE_AWARE, 0),
         (FOCUS, 0),
         (ENDGAME, 0),
@@ -75,6 +83,9 @@ pub mod knob2 {
         (CAMP_DIVERT, 0),
         (PREDICT, 0),
         (WARDS, 0),
+        (STUN_LOCK, 0),
+        (UPGRADE_FIRST, 0),
+        (TEAM_UP, 0),
     ];
 }
 
