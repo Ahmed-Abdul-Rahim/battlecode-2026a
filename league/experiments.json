@@ -619,17 +619,53 @@
    "added": "2026-10-21T15:30:46Z",
    "area": "teamwork",
    "claimed": "2026-10-21T15:57:14Z",
+   "finished": "2026-10-21T16:04:49Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 43,
    "notes": "Attacker calls a hurt enemy (<=60% HP, ally within 6); allies in reach take it first. Re-queued: first run used the branch as cut (before PvE assist), screen 0.473 vs 0.555; refs are now merged onto live first.",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.586,
+     "h2h_games": 70,
+     "live": {
+      "deaths": 23.52,
+      "fitness": 0.4,
+      "games": 910,
+      "gem_margin": 0.081,
+      "win": 0.615
+     },
+     "variant": {
+      "deaths": 23.32,
+      "fitness": 0.423,
+      "games": 910,
+      "gem_margin": 0.103,
+      "win": 0.631
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 16.91,
+      "fitness": 0.385,
+      "games": 182,
+      "gem_margin": -0.001,
+      "win": 0.555
+     },
+     "variant": {
+      "deaths": 16.38,
+      "fitness": 0.402,
+      "games": 182,
+      "gem_margin": 0.02,
+      "win": 0.56
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "FOCUS": 1
     },
     "ref": "origin/feat/team-endgame"
    },
-   "status": "screening",
+   "status": "passed",
    "title": "Team focus target (channel bit 39)"
   },
   {
