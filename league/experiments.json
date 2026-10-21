@@ -1807,16 +1807,57 @@
    "added": "2026-10-21T15:12:04Z",
    "area": "farming",
    "claimed": "2026-10-21T19:11:51Z",
+   "finished": "2026-10-21T19:55:24Z",
    "host": "muhammad-usman-Inspiron-14-5410-2-in-1",
    "id": 32,
    "notes": "",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.487,
+     "h2h_games": 76,
+     "live": {
+      "deaths": 22.63,
+      "fitness": 0.455,
+      "games": 988,
+      "gem_margin": 0.132,
+      "win": 0.649
+     },
+     "variant": {
+      "deaths": 20.61,
+      "fitness": 0.479,
+      "games": 988,
+      "gem_margin": 0.148,
+      "win": 0.648
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 16.52,
+      "fitness": 0.39,
+      "games": 182,
+      "gem_margin": -0.0,
+      "win": 0.555
+     },
+     "paired": {
+      "mean": 0.0433,
+      "pairs": 182,
+      "se": 0.0471
+     },
+     "variant": {
+      "deaths": 14.65,
+      "fitness": 0.433,
+      "games": 182,
+      "gem_margin": 0.011,
+      "win": 0.577
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "CAMP_SAFE": 3
     }
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "Both camp-safety rules"
   },
   {
