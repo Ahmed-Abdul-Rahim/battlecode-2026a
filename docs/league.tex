@@ -33,20 +33,45 @@
 \maketitle
 
 \section*{Quick start}
-Open PowerShell in the repo folder and activate the environment once per window:
+\textbf{0. Set up a PC once} (a teammate's desktop, your laptop: any Windows PC). The person needs
+push access to the GitHub repo, because results are shared by pushing to \f{league}:
+\begin{lstlisting}
+git clone -b league https://github.com/Ahmed-Abdul-Rahim/battlecode-2026a.git
+cd battlecode-2026a
+powershell -ExecutionPolicy Bypass -File scripts\setup.ps1
+\end{lstlisting}
+Then open PowerShell in the repo folder and activate the environment once per window:
 \begin{lstlisting}
 .\.venv\Scripts\Activate.ps1
 \end{lstlisting}
 
-\textbf{1. Start training} (runs in the background until you stop it):
+\textbf{1. Start the work} (each runs in the background until you stop it):
 \begin{lstlisting}
-scripts\train.ps1 start                          # a normal PC
-scripts\train.ps1 start --lead                   # the ONE lead PC, no uploads
-scripts\train.ps1 start --lead --auto-submit     # the ONE lead PC, may upload
-scripts\train.ps1 stop                           # stop it
+scripts\train.ps1 start                          # any PC: tune the numbers per map
+scripts\train.ps1 experiments                    # any PC: test the queued ideas
+scripts\train.ps1 ml                             # optional: data games + network training
+scripts\train.ps1 start --lead --auto-submit     # the ONE lead PC only: ladder + uploads
 \end{lstlisting}
-Only one PC in the team may use \f{-{}-lead}. \f{-{}-auto-submit} needs \f{-{}-lead} and a logged-in cambc
-(\f{cambc login}). The upload rules are in \S\ref{sec:release}.
+\textbf{Which to run:} on a teammate's PC or a laptop, \f{start} and \f{experiments}. Two processes
+per PC is enough: each already uses every core but two, so a third only shares the same CPU. Only
+one PC in the team may use \f{-{}-lead}; \f{-{}-auto-submit} also needs \f{cambc login}. The upload
+rules are in \S\ref{sec:release}.
+
+\textbf{Stop} before you shut down or carry a laptop away (unfinished work returns to the shared
+queue):
+\begin{lstlisting}
+scripts\train.ps1 stop
+scripts\train.ps1 experiments stop
+scripts\train.ps1 ml stop
+\end{lstlisting}
+\textbf{Laptops:} keep them plugged in and set ``when I close the lid'' to \emph{Do nothing}
+(Control Panel, Power Options), or a sleeping laptop holds its claimed experiment for up to 6 hours.
+Each PC is known by its computer name; if two share one, set \f{\$env:LEAGUE\_HOST = "laptop"} before
+starting. \textbf{After a change to \f{harness/}} (the Python), restart: \f{stop}, then \f{start} and
+\f{experiments} again. Bot code and new queue items reach every PC by themselves.
+
+\textbf{More PCs = faster, not linearly:} an 8-core laptop adds about half of what a 16-core desktop
+does, and each experiment still runs whole on one PC; the queue just drains faster.
 
 \textbf{2. See how the latest model is doing:}
 \begin{lstlisting}
@@ -392,16 +417,7 @@ as mimics (Section~\ref{sec:opp}).
 Games are the slow part, and they run on the CPU (a GPU cannot run them). Every extra PC adds games.
 All coordination goes through git: each PC \emph{claims} an experiment or job (its name and the time,
 pushed) before starting, so two PCs never do the same one. A claim older than 6 hours is free again.
-\begin{lstlisting}
-git clone -b league https://github.com/Ahmed-Abdul-Rahim/battlecode-2026a.git
-cd battlecode-2026a
-powershell -ExecutionPolicy Bypass -File scripts\setup.ps1
-scripts\train.ps1 start          train the numbers (worker: no --lead, no --auto-submit)
-scripts\train.ps1 experiments    test queued ideas
-scripts\train.ps1 ml             data games + training for the network
-\end{lstlisting}
-Run whichever fit the PC; all three together use every core. \f{experiments list} and \f{ml list}
-show the queues, \f{experiments stop} and \f{ml stop} stop them.
+Setup and commands are in the Quick start. \f{experiments list} and \f{ml list} show the queues.
 
 \section{Maps}
 The lead follows the platform's current map pool (21 maps in October 2026). New maps are downloaded
