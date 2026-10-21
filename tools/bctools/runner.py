@@ -172,7 +172,9 @@ def run_pairs(
         Path(replay).unlink(missing_ok=True)
     manifest = out_dir / "manifest.txt"
     manifest.write_text("\n".join(rows) + "\n", encoding="utf-8")
-    args = [str(CAMBC), "run-batch", str(manifest), "--jobs", str(jobs or max(1, (os.cpu_count() or 2) - 2))]
+    # BCTOOLS_JOBS: games at once (a dedicated cloud box can use every core; a desktop keeps 2 free).
+    jobs = jobs or int(os.environ.get("BCTOOLS_JOBS") or 0) or max(1, (os.cpu_count() or 2) - 2)
+    args = [str(CAMBC), "run-batch", str(manifest), "--jobs", str(jobs)]
     args += ["--json", "--log-limit", str(log_limit)]
     if rounds:
         args += ["--rounds", str(rounds)]

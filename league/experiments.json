@@ -2335,7 +2335,7 @@
    "finished": "2026-10-21T21:05:47Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 63,
-   "notes": "Gold can't be passed; rewards split among allies on the tile, so others step off for the highest-damage kit until 15 gear. Screen: win 0.516 vs 0.533, fitness 0.33 vs 0.364 (paired -0.034 +- 0.034).",
+   "notes": "Gold can't be passed; rewards split among allies on the tile, so others step off for the highest-damage kit until 15 gear. Screen: win 0.516 vs 0.533, fitness 0.33 vs 0.364 (paired -0.034 +- 0.034). Not a real test: GOLD_ORDER 1 and 2 gave identical games, so the step-off almost never triggered (it waits for a higher-priority ally already on the capture tile). Needs a different trigger.",
    "results": {
     "screen": {
      "live": {
@@ -2375,7 +2375,7 @@
    "finished": "2026-10-21T21:07:16Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 64,
-   "notes": "Catch-up version of the gold order. Screen: win 0.516 vs 0.533, fitness 0.33 vs 0.364 (paired -0.034 +- 0.034).",
+   "notes": "Catch-up version of the gold order. Screen: win 0.516 vs 0.533, fitness 0.33 vs 0.364 (paired -0.034 +- 0.034). Not a real test: GOLD_ORDER 1 and 2 gave identical games, so the step-off almost never triggered (it waits for a higher-priority ally already on the capture tile). Needs a different trigger.",
    "results": {
     "screen": {
      "live": {
@@ -2469,18 +2469,17 @@
   {
    "added": "2026-10-21T20:16:07Z",
    "area": "movement",
-   "claimed": "2026-10-21T21:14:47Z",
-   "host": "DESKTOP-QVEMEEE",
    "id": 66,
-   "notes": "No healing outside spawn, so: break the chasers' line of sight first so the recall isn't cancelled.",
+   "notes": "No healing outside spawn, so: break the chasers' line of sight first so the recall isn't cancelled. Claim released: DESKTOP-QVEMEEE stopped before finishing.",
    "results": {},
+   "run": 2,
    "spec": {
     "knobs": {
      "LOS_RETREAT": 1
     },
     "ref": "origin/feat/gaps-2"
    },
-   "status": "screening",
+   "status": "queued",
    "title": "Hide out of sight, then recall"
   },
   {

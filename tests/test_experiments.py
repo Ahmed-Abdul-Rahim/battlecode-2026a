@@ -118,6 +118,19 @@ def test_status_report_groups_and_explains():
     assert out.index("IN THE BOT") < out.index("REJECTED") < out.index("UP NEXT")
 
 
+def test_release_requeues_only_this_pcs_unfinished_claims():
+    reg = {"experiments": []}
+    a = X.add(reg, "mine", "x", knobs={"A": 1}, status="full")
+    a.update(host="kaggle-1", claimed="2026-10-22T01:00:00Z")
+    b = X.add(reg, "theirs", "x", knobs={"B": 1}, status="screening")
+    b.update(host="desktop", claimed="2026-10-22T01:00:00Z")
+    done = X.add(reg, "done", "x", knobs={"C": 1}, status="rejected")
+    done.update(host="kaggle-1")
+    assert X.release_claims(reg, "kaggle-1") == [a["id"]]
+    assert a["status"] == "queued" and a["run"] == 2 and "host" not in a
+    assert b["status"] == "screening" and done["status"] == "rejected"
+
+
 def test_tex_escapes_backslashes_and_braces():
     reg = {"experiments": []}
     X.add(reg, "err", "x", knobs={"A": 1}, notes="error: ValueError('a\\tb {c}')")

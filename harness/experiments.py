@@ -493,9 +493,34 @@ def cmd_add(a: argparse.Namespace) -> int:
     return 0
 
 
+def release_claims(reg: dict, host: str = L.HOST) -> list[int]:
+    """Put this PC's unfinished experiments back in the queue (it is shutting down)."""
+    mine = [e for e in reg["experiments"] if e["status"] in ("screening", "full") and e.get("host") == host]
+    for e in mine:
+        requeue(e, f"Claim released: {host} stopped before finishing.")
+    return [e["id"] for e in mine]
+
+
+def cmd_release(a: argparse.Namespace) -> int:
+    if a.push and L.git_ready():
+        L.integrate(L.h2h_decider(OUT, L.load_champion()["maps"]))
+    reg = load()
+    ids = release_claims(reg)
+    save(reg)
+    if ids and a.push and L.git_ready():
+        L.publish([REGISTRY], f"league: {L.HOST} released experiments {ids}", L.h2h_decider(OUT, {}))
+    print(f"released {ids}" if ids else "nothing to release")
+    return 0
+
+
 def cmd_run(a: argparse.Namespace) -> int:
     clean_outputs()  # leftovers of an interrupted run
+    started = time.time()
     while True:
+        # --hours: a session with a time limit (Kaggle: 12 h) starts no experiment in its last hour.
+        if a.hours and time.time() - started > (a.hours - 1) * 3600:
+            L.log(f"experiments: {a.hours} h session nearly over; not starting another")
+            return 0
         L.ensure_space()
         if a.push and L.git_ready():
             L.integrate(L.h2h_decider(OUT, L.load_champion()["maps"]))  # test against the latest live bot
@@ -542,9 +567,15 @@ def main(argv: list[str] | None = None) -> int:
     rn = sub.add_parser("run")
     rn.add_argument("--forever", action="store_true")
     rn.add_argument("--no-push", dest="push", action="store_false")
+    rn.add_argument(
+        "--hours", type=float, default=0, help="session length; no new experiment in its last hour"
+    )
+    rl = sub.add_parser("release", help="put this PC's unfinished experiments back in the queue")
+    rl.add_argument("--no-push", dest="push", action="store_false")
     sub.add_parser("tex")
     a = p.parse_args(argv)
-    return {"list": cmd_list, "status": cmd_status, "add": cmd_add, "run": cmd_run, "tex": cmd_tex}[a.cmd](a)
+    cmds = {"list": cmd_list, "status": cmd_status, "add": cmd_add, "run": cmd_run, "tex": cmd_tex}
+    return {**cmds, "release": cmd_release}[a.cmd](a)
 
 
 if __name__ == "__main__":
