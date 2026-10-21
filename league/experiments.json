@@ -2372,17 +2372,40 @@
    "added": "2026-10-21T20:16:07Z",
    "area": "economy",
    "claimed": "2026-10-21T21:05:51Z",
+   "finished": "2026-10-21T21:07:16Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 64,
-   "notes": "Catch-up version of the gold order.",
-   "results": {},
+   "notes": "Catch-up version of the gold order. Screen: win 0.516 vs 0.533, fitness 0.33 vs 0.364 (paired -0.034 +- 0.034).",
+   "results": {
+    "screen": {
+     "live": {
+      "deaths": 16.96,
+      "fitness": 0.364,
+      "games": 182,
+      "gem_margin": 0.003,
+      "win": 0.533
+     },
+     "paired": {
+      "mean": -0.0344,
+      "pairs": 182,
+      "se": 0.0341
+     },
+     "variant": {
+      "deaths": 18.23,
+      "fitness": 0.33,
+      "games": 182,
+      "gem_margin": -0.018,
+      "win": 0.516
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "GOLD_ORDER": 2
     },
     "ref": "origin/feat/gaps-2"
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "Gold order: least geared takes gold rewards"
   },
   {
