@@ -747,6 +747,15 @@
    "time": "2026-10-20T20:00:10.344Z",
    "win": false
   },
+  "344945d1-f799-4466-a385-d2da7bb0e1f6": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "gemfight",
+   "opp": "High Frequency Gaming",
+   "oppId": "d23f2627-97ea-48b1-b353-5bf2368008f4",
+   "time": "2026-10-21T18:10:15.060Z",
+   "win": true
+  },
   "34c3098c-7f75-414c-a129-448d57209f97": {
    "kind": "ranked",
    "live": null,
@@ -755,6 +764,15 @@
    "oppId": "625bb51a-8d9e-4035-a16e-ce4eea8eb739",
    "time": "2026-10-20T17:40:07.590Z",
    "win": true
+  },
+  "34d04183-d83c-45a0-acd9-1517026db2cf": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "boss-battle",
+   "opp": "High Frequency Gaming",
+   "oppId": "d23f2627-97ea-48b1-b353-5bf2368008f4",
+   "time": "2026-10-21T18:10:15.060Z",
+   "win": false
   },
   "35fc7014-ee3b-4d22-adb3-1595794d7499": {
    "kind": "ranked",
@@ -1205,6 +1223,15 @@
    "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
    "time": "2026-10-20T19:40:10.999Z",
    "win": true
+  },
+  "5570bcd5-e22b-46c7-b125-2aa5af9b85d3": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "split",
+   "opp": "High Frequency Gaming",
+   "oppId": "d23f2627-97ea-48b1-b353-5bf2368008f4",
+   "time": "2026-10-21T18:10:15.060Z",
+   "win": false
   },
   "56467df2-ee7a-4b36-87ac-3223083b8280": {
    "kind": "ranked",
@@ -2177,6 +2204,15 @@
    "oppId": "cfd44d0a-4d7b-42db-a1e6-e04ff397f391",
    "time": "2026-10-20T20:30:13.466Z",
    "win": false
+  },
+  "9c320b1c-a607-4a91-80db-fb2b36928b1e": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "rushbait-v2",
+   "opp": "High Frequency Gaming",
+   "oppId": "d23f2627-97ea-48b1-b353-5bf2368008f4",
+   "time": "2026-10-21T18:10:15.060Z",
+   "win": true
   },
   "9c7e22dc-b8c0-42dd-b54a-4829929d9a6c": {
    "kind": "unranked",
@@ -3238,6 +3274,15 @@
    "opp": "Rogue Lock Pickers",
    "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
    "time": "2026-10-20T19:40:10.999Z",
+   "win": true
+  },
+  "e96328da-4770-420b-bda8-9a810ebe9837": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "islands",
+   "opp": "High Frequency Gaming",
+   "oppId": "d23f2627-97ea-48b1-b353-5bf2368008f4",
+   "time": "2026-10-21T18:10:15.060Z",
    "win": true
   },
   "ea7a33e5-aad2-4bef-bd49-33ac3e87e1e5": {
@@ -7089,6 +7134,40 @@
    "status": "open",
    "time": "2026-10-21T17:50:18.948Z",
    "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 31,
+    "Unknown entity kind (2)": 20
+   },
+   "deaths_them": 36,
+   "deaths_us": 51,
+   "gems_them": "1005",
+   "gems_us": "897",
+   "id": "5570bcd5-e22b-46c7-b125-2aa5af9b85d3",
+   "map": "split",
+   "opp": "High Frequency Gaming",
+   "oppId": "d23f2627-97ea-48b1-b353-5bf2368008f4",
+   "status": "open",
+   "time": "2026-10-21T18:10:15.060Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 3,
+    "Unknown entity kind (2)": 11
+   },
+   "deaths_them": 17,
+   "deaths_us": 14,
+   "gems_them": "0",
+   "gems_us": "0",
+   "id": "34d04183-d83c-45a0-acd9-1517026db2cf",
+   "map": "boss-battle",
+   "opp": "High Frequency Gaming",
+   "oppId": "d23f2627-97ea-48b1-b353-5bf2368008f4",
+   "status": "open",
+   "time": "2026-10-21T18:10:15.060Z",
+   "tries_at": 3
   }
  ],
  "map_files": {
