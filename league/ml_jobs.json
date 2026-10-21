@@ -1345,6 +1345,7 @@
   {
    "added": "2026-10-21T19:01:26Z",
    "claimed": "2026-10-21T19:01:26Z",
+   "finished": "2026-10-21T19:04:04Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 54,
    "kind": "gen",
@@ -1352,8 +1353,10 @@
     "explore": 10,
     "offset": 138
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "error": "OSError(28, 'No space left on device')"
+   },
+   "status": "failed"
   }
  ]
 }
