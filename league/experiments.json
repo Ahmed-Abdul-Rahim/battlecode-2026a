@@ -1877,6 +1877,186 @@
    "title": "Recall only when nothing can reach us"
   },
   {
+   "added": "2026-10-21T20:16:07Z",
+   "area": "combat",
+   "id": 56,
+   "notes": "Damage cancels a recall; only when no other enemy is within 4 of it and we're above 40% HP.",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "PUNISH_RECALL": 4
+    },
+    "ref": "origin/feat/gaps-2"
+   },
+   "status": "queued",
+   "title": "Hit a lone enemy recalling within 4"
+  },
+  {
+   "added": "2026-10-21T20:16:07Z",
+   "area": "movement",
+   "id": 57,
+   "notes": "12 idle turns over two tiles (not waiting, capturing or delivering) -> recall.",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "UNSTICK": 1
+    },
+    "ref": "origin/feat/gaps-2"
+   },
+   "status": "queued",
+   "title": "Escape two-tile loops (recall)"
+  },
+  {
+   "added": "2026-10-21T20:16:07Z",
+   "area": "movement",
+   "id": 58,
+   "notes": "Retreat/recall near spawn walks instead (no frozen 5-turn channel that damage cancels).",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "WALK_HOME": 6
+    },
+    "ref": "origin/feat/gaps-2"
+   },
+   "status": "queued",
+   "title": "Walk home when spawn is within 6"
+  },
+  {
+   "added": "2026-10-21T20:16:07Z",
+   "area": "farming",
+   "id": 59,
+   "notes": "Skip unless an ally is near/claims it, or clear time x1.5 < survival time (late game).",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "SOLO_CAP": 4
+    },
+    "ref": "origin/feat/gaps-2"
+   },
+   "status": "queued",
+   "title": "No 4+ monster group alone unless geared"
+  },
+  {
+   "added": "2026-10-21T20:16:07Z",
+   "area": "farming",
+   "id": 60,
+   "notes": "Value / (1 + 0.25 per extra monster) when no ally within 6.",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "EASE_FIRST": 1
+    },
+    "ref": "origin/feat/gaps-2"
+   },
+   "status": "queued",
+   "title": "Alone: easier groups first (fewer monsters)"
+  },
+  {
+   "added": "2026-10-21T20:16:07Z",
+   "area": "farming",
+   "id": 61,
+   "notes": "Approach the group's lowest-HP monster (100 HP ~ 1 tile) instead of the nearest.",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "WEAK_CAMP_FIRST": 1
+    },
+    "ref": "origin/feat/gaps-2"
+   },
+   "status": "queued",
+   "title": "Walk to the weakest monster first"
+  },
+  {
+   "added": "2026-10-21T20:16:07Z",
+   "area": "economy",
+   "id": 62,
+   "notes": "+0.5 value per gold on groups cleared in <= 20 turns before 2 emblems.",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "EARLY_GOLD": 1
+    },
+    "ref": "origin/feat/gaps-2"
+   },
+   "status": "queued",
+   "title": "Quick gold first until 2 emblems"
+  },
+  {
+   "added": "2026-10-21T20:16:07Z",
+   "area": "economy",
+   "id": 63,
+   "notes": "Gold can't be passed; rewards split among allies on the tile, so others step off for the highest-damage kit until 15 gear.",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "GOLD_ORDER": 1
+    },
+    "ref": "origin/feat/gaps-2"
+   },
+   "status": "queued",
+   "title": "Gold order: carry takes gold rewards"
+  },
+  {
+   "added": "2026-10-21T20:16:07Z",
+   "area": "economy",
+   "id": 64,
+   "notes": "Catch-up version of the gold order.",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "GOLD_ORDER": 2
+    },
+    "ref": "origin/feat/gaps-2"
+   },
+   "status": "queued",
+   "title": "Gold order: least geared takes gold rewards"
+  },
+  {
+   "added": "2026-10-21T20:16:07Z",
+   "area": "denial",
+   "id": 65,
+   "notes": "Lock altars about as close to the enemy spawn as to ours (within 3).",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "ALTAR_LOCK": 2
+    },
+    "ref": "origin/feat/gaps-2"
+   },
+   "status": "queued",
+   "title": "Altar locks on contested altars only"
+  },
+  {
+   "added": "2026-10-21T20:16:07Z",
+   "area": "movement",
+   "id": 66,
+   "notes": "No healing outside spawn, so: break the chasers' line of sight first so the recall isn't cancelled.",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "LOS_RETREAT": 1
+    },
+    "ref": "origin/feat/gaps-2"
+   },
+   "status": "queued",
+   "title": "Hide out of sight, then recall"
+  },
+  {
+   "added": "2026-10-21T20:16:07Z",
+   "area": "movement",
+   "id": 67,
+   "notes": "Carry one; teleport (3 tiles over walls/holes) when it saves 7+ steps and no enemy within 6.",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "TP_CRYSTAL": 1
+    },
+    "ref": "origin/feat/gaps-2"
+   },
+   "status": "queued",
+   "title": "Teleport crystal shortcuts"
+  },
+  {
    "added": "2026-10-21T15:12:04Z",
    "area": "economy",
    "id": 34,
