@@ -1060,6 +1060,23 @@
    "title": "Team up: join ally fights within 6"
   },
   {
+   "added": "2026-10-21T17:40:42Z",
+   "area": "learning",
+   "id": 51,
+   "notes": "Offline RL on 18 shards; train agreement 0.806.",
+   "results": {},
+   "spec": {
+    "files": {
+     "bots/main/src/weights/router.bin": "ml-data:candidates/router-00021.bin"
+    },
+    "knobs": {
+     "ROUTER": 1
+    }
+   },
+   "status": "queued",
+   "title": "Learned router #21 (2790392 rows, AWR)"
+  },
+  {
    "added": "2026-10-21T15:12:04Z",
    "area": "combat",
    "id": 22,
