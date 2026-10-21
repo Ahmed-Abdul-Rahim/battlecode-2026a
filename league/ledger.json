@@ -495,6 +495,15 @@
    "time": "2026-10-20T21:50:14.541Z",
    "win": true
   },
+  "2d742f10-cbb4-472a-a471-cbcfa18363e0": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "stampede",
+   "opp": "Mousa",
+   "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
+   "time": "2026-10-21T15:00:13.926Z",
+   "win": true
+  },
   "2ee21475-09aa-4428-85d7-d3c76a33a247": {
    "kind": "ranked",
    "live": 1,
@@ -648,6 +657,15 @@
    "time": "2026-10-20T17:10:06.134Z",
    "win": true
   },
+  "3b17b6ab-56b0-41ed-868d-9e1f69ddb583": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "contest",
+   "opp": "another name",
+   "oppId": "b095a9ef-91f3-4c4a-b4aa-3ec386286b82",
+   "time": "2026-10-21T14:50:14.152Z",
+   "win": false
+  },
   "3b85a483-28fa-4294-a15f-c82949bdd92d": {
    "kind": "ranked",
    "live": null,
@@ -664,6 +682,15 @@
    "opp": "Slough Reps",
    "oppId": "fd3a404c-954b-4628-a418-7a8e57fb3783",
    "time": "2026-10-20T15:10:13.186Z",
+   "win": true
+  },
+  "3bf36a2d-1db8-48bd-9fd2-2752310b6b71": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "rows",
+   "opp": "another name",
+   "oppId": "b095a9ef-91f3-4c4a-b4aa-3ec386286b82",
+   "time": "2026-10-21T14:50:14.151Z",
    "win": true
   },
   "3c2b594c-6cdd-4aef-9d0a-f308a7279988": {
@@ -1359,6 +1386,15 @@
    "time": "2026-10-20T18:00:13.679Z",
    "win": false
   },
+  "814978a2-d822-4b08-b25b-e30c3e66ca11": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "swirl",
+   "opp": "Mousa",
+   "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
+   "time": "2026-10-21T15:00:13.926Z",
+   "win": false
+  },
   "81bcf8c9-4e66-4e33-aaec-d93b001d31ce": {
    "kind": "ranked",
    "live": 1,
@@ -1655,6 +1691,15 @@
    "oppId": "f0415fa5-b2aa-4958-a47a-4422f74d9ede",
    "time": "2026-10-20T17:30:07.063Z",
    "win": false
+  },
+  "a2767920-c5b2-4d7b-b668-7d26ae409e90": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "starfish",
+   "opp": "another name",
+   "oppId": "b095a9ef-91f3-4c4a-b4aa-3ec386286b82",
+   "time": "2026-10-21T14:50:14.151Z",
+   "win": true
   },
   "a4fc810c-facd-4296-998d-0d0133a45623": {
    "kind": "ranked",
@@ -2052,6 +2097,15 @@
    "time": "2026-10-20T17:20:08.637Z",
    "win": true
   },
+  "cfbbb9c7-4c03-46f1-8b6a-d82433ffcc6a": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "hooks",
+   "opp": "Mousa",
+   "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
+   "time": "2026-10-21T15:00:13.926Z",
+   "win": false
+  },
   "cffb46ba-8a9a-4864-b608-206a7e977c9e": {
    "kind": "ranked",
    "live": null,
@@ -2078,6 +2132,15 @@
    "oppId": "dc24ee25-0f21-4353-8ebf-1ce5a82e22bb",
    "time": "2026-10-20T21:10:08.566Z",
    "win": false
+  },
+  "d0fa64c4-1d47-4629-b1d9-17eb6e86cf31": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "reverse-spiral",
+   "opp": "Mousa",
+   "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
+   "time": "2026-10-21T15:00:13.926Z",
+   "win": true
   },
   "d33ff9a7-e1ea-4fc2-9f45-31dd8d2fd56a": {
    "kind": "ranked",
@@ -2331,6 +2394,15 @@
    "time": "2026-10-20T20:20:12.928Z",
    "win": true
   },
+  "ecd3fe0c-a91d-41cd-b4da-f3e98ba73a33": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "eight",
+   "opp": "Mousa",
+   "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
+   "time": "2026-10-21T15:00:13.926Z",
+   "win": false
+  },
   "edcf9156-ed24-42b4-b0fd-3ddcac3988bf": {
    "kind": "ranked",
    "live": 1,
@@ -2411,6 +2483,15 @@
    "oppId": "f0415fa5-b2aa-4958-a47a-4422f74d9ede",
    "time": "2026-10-20T17:30:07.064Z",
    "win": true
+  },
+  "f120bc92-c762-4455-9ebe-0ad43678658d": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "fragment",
+   "opp": "another name",
+   "oppId": "b095a9ef-91f3-4c4a-b4aa-3ec386286b82",
+   "time": "2026-10-21T14:50:14.152Z",
+   "win": false
   },
   "f1482175-30a6-4209-b915-0dd35201689e": {
    "kind": "ranked",
@@ -2500,6 +2581,15 @@
    "opp": "777",
    "oppId": "1158c8e5-3ab7-47da-9a7a-344e175243d0",
    "time": "2026-10-20T21:00:10.929Z",
+   "win": true
+  },
+  "fdb961ae-9766-4749-886b-8fe8b8333b60": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "corridors",
+   "opp": "another name",
+   "oppId": "b095a9ef-91f3-4c4a-b4aa-3ec386286b82",
+   "time": "2026-10-21T14:50:14.152Z",
    "win": true
   },
   "fe9a23d9-350c-4432-aded-12a42cfbce2d": {
@@ -5029,6 +5119,89 @@
    "superseded_by": 10,
    "time": "2026-10-21T13:10:15.673Z",
    "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 18,
+    "Unknown entity kind (2)": 8
+   },
+   "deaths_them": 16,
+   "deaths_us": 26,
+   "gems_them": "448",
+   "gems_us": "121",
+   "id": "814978a2-d822-4b08-b25b-e30c3e66ca11",
+   "map": "swirl",
+   "opp": "Mousa",
+   "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
+   "status": "open",
+   "time": "2026-10-21T15:00:13.926Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 28
+   },
+   "deaths_them": 27,
+   "deaths_us": 28,
+   "gems_them": "1001",
+   "gems_us": "33",
+   "id": "cfbbb9c7-4c03-46f1-8b6a-d82433ffcc6a",
+   "map": "hooks",
+   "opp": "Mousa",
+   "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
+   "status": "open",
+   "time": "2026-10-21T15:00:13.926Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 32
+   },
+   "deaths_them": 43,
+   "deaths_us": 32,
+   "gems_them": "1063",
+   "gems_us": "802",
+   "id": "ecd3fe0c-a91d-41cd-b4da-f3e98ba73a33",
+   "map": "eight",
+   "opp": "Mousa",
+   "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
+   "status": "open",
+   "time": "2026-10-21T15:00:13.926Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 45,
+    "Unknown entity kind (2)": 6
+   },
+   "deaths_them": 28,
+   "deaths_us": 51,
+   "gems_them": "710",
+   "gems_us": "432",
+   "id": "f120bc92-c762-4455-9ebe-0ad43678658d",
+   "map": "fragment",
+   "opp": "another name",
+   "oppId": "b095a9ef-91f3-4c4a-b4aa-3ec386286b82",
+   "status": "open",
+   "time": "2026-10-21T14:50:14.152Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 48,
+    "Unknown entity kind (2)": 8
+   },
+   "deaths_them": 66,
+   "deaths_us": 56,
+   "gems_them": "200",
+   "gems_us": "200",
+   "id": "3b17b6ab-56b0-41ed-868d-9e1f69ddb583",
+   "map": "contest",
+   "opp": "another name",
+   "oppId": "b095a9ef-91f3-4c4a-b4aa-3ec386286b82",
+   "status": "open",
+   "time": "2026-10-21T14:50:14.152Z",
+   "tries_at": 0
   }
  ],
  "map_files": {
