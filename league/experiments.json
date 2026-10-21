@@ -2101,17 +2101,58 @@
    "added": "2026-10-21T20:16:07Z",
    "area": "movement",
    "claimed": "2026-10-21T20:39:59Z",
+   "finished": "2026-10-21T20:47:24Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 58,
    "notes": "Retreat/recall near spawn walks instead (no frozen 5-turn channel that damage cancels).",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.553,
+     "h2h_games": 76,
+     "live": {
+      "deaths": 23.75,
+      "fitness": 0.398,
+      "games": 988,
+      "gem_margin": 0.096,
+      "win": 0.611
+     },
+     "variant": {
+      "deaths": 23.38,
+      "fitness": 0.405,
+      "games": 988,
+      "gem_margin": 0.095,
+      "win": 0.615
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 16.96,
+      "fitness": 0.364,
+      "games": 182,
+      "gem_margin": 0.003,
+      "win": 0.533
+     },
+     "paired": {
+      "mean": -0.0309,
+      "pairs": 182,
+      "se": 0.0349
+     },
+     "variant": {
+      "deaths": 17.99,
+      "fitness": 0.333,
+      "games": 182,
+      "gem_margin": -0.035,
+      "win": 0.522
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "WALK_HOME": 6
     },
     "ref": "origin/feat/gaps-2"
    },
-   "status": "screening",
+   "status": "passed",
    "title": "Walk home when spawn is within 6"
   },
   {
