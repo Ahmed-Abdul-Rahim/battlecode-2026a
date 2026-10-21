@@ -1203,16 +1203,57 @@
    "added": "2026-10-21T15:12:04Z",
    "area": "combat",
    "claimed": "2026-10-21T17:54:49Z",
+   "finished": "2026-10-21T18:02:52Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 23,
    "notes": "",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.486,
+     "h2h_games": 70,
+     "live": {
+      "deaths": 24.16,
+      "fitness": 0.397,
+      "games": 910,
+      "gem_margin": 0.092,
+      "win": 0.615
+     },
+     "variant": {
+      "deaths": 28.09,
+      "fitness": 0.369,
+      "games": 910,
+      "gem_margin": 0.082,
+      "win": 0.63
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 18.05,
+      "fitness": 0.316,
+      "games": 182,
+      "gem_margin": -0.013,
+      "win": 0.5
+     },
+     "paired": {
+      "mean": -0.0307,
+      "pairs": 182,
+      "se": 0.0454
+     },
+     "variant": {
+      "deaths": 20.13,
+      "fitness": 0.285,
+      "games": 182,
+      "gem_margin": -0.031,
+      "win": 0.495
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "FIGHT_V6": 8
     }
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "Last stand instead of a doomed retreat"
   },
   {
