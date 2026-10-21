@@ -1711,16 +1711,39 @@
    "added": "2026-10-21T15:12:04Z",
    "area": "farming",
    "claimed": "2026-10-21T18:56:45Z",
+   "finished": "2026-10-21T19:04:11Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 30,
-   "notes": "",
-   "results": {},
+   "notes": "error: OSError(28, 'No space left on device')",
+   "results": {
+    "screen": {
+     "live": {
+      "deaths": 16.96,
+      "fitness": 0.364,
+      "games": 182,
+      "gem_margin": 0.003,
+      "win": 0.533
+     },
+     "paired": {
+      "mean": 0.0658,
+      "pairs": 182,
+      "se": 0.0465
+     },
+     "variant": {
+      "deaths": 15.52,
+      "fitness": 0.43,
+      "games": 182,
+      "gem_margin": 0.011,
+      "win": 0.582
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "CAMP_SAFE": 1
     }
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "Leave awake camps while escape works"
   },
   {
