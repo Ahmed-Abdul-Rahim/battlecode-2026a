@@ -498,7 +498,9 @@ def benchmark(bot: str, mimics: list[str], maps: list[Path], out: Path) -> dict:
 
 def git_ready() -> bool:
     """Only commit/push from the league branch with an origin remote."""
-    if git("rev-parse", "--abbrev-ref", "HEAD").stdout.strip() != BRANCH:
+    # The experiment autopilot runs in its own worktree on branch 'autopilot' (league is
+    # checked out by the daemon's clone); it rebases on and pushes to origin/league too.
+    if git("rev-parse", "--abbrev-ref", "HEAD").stdout.strip() not in (BRANCH, "autopilot"):
         log(f"not on branch '{BRANCH}': git sync disabled")
         return False
     return git("remote", "get-url", "origin").returncode == 0

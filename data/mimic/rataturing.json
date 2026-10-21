@@ -1,32 +1,32 @@
 {
  "build": {},
  "cadence": {
-  "bag": 56.0,
+  "bag": 16.6,
   "first_emblem": null,
   "shops_per_100r": null
  },
  "draft": {
   "3": [
    4,
-   8,
-   10
+   0,
+   3
   ],
   "4": [
-   4,
    8,
-   10,
-   0
+   4,
+   0,
+   3
   ],
   "5": [
    4,
-   8,
-   10,
+   3,
+   6,
    0,
-   5
+   8
   ]
  },
- "games": 15,
+ "games": 57,
  "opening": {},
- "team": "meowest",
- "win_rate": 0.333
+ "team": "Rataturing",
+ "win_rate": 0.0
 }

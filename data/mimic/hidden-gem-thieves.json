@@ -1,0 +1,21 @@
+{
+ "build": {},
+ "cadence": {
+  "bag": 26.0,
+  "first_emblem": null,
+  "shops_per_100r": null
+ },
+ "draft": {
+  "5": [
+   9,
+   10,
+   2,
+   0,
+   1
+  ]
+ },
+ "games": 5,
+ "opening": {},
+ "team": "Hidden Gem Thieves",
+ "win_rate": 0.4
+}
