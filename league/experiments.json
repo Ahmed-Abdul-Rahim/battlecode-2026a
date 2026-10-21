@@ -1668,6 +1668,8 @@
   {
    "added": "2026-10-21T18:51:14Z",
    "area": "learning",
+   "claimed": "2026-10-21T18:54:06Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 55,
    "notes": "Offline RL on 42 shards; train agreement 0.808.",
    "results": {},
@@ -1679,7 +1681,7 @@
      "ROUTER": 1
     }
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Learned router #49 (6493818 rows, AWR)"
   },
   {
