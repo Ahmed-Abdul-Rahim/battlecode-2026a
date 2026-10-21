@@ -397,10 +397,24 @@
   {
    "added": "2026-10-21T15:12:04Z",
    "area": "economy",
-   "finished": null,
+   "finished": "2026-10-21T15:30:46Z",
    "id": 16,
-   "notes": "Screens: bags 6/42 alone 0.571/0.560, en-route alone 0.582. Full check running.",
+   "notes": "Screen passed (0.549 -> 0.582); full pool: win 0.586 < live 0.592 (fitness 0.353 vs 0.351, h2h 0.514, fewer deaths). Fails the win rule; not merged.",
    "results": {
+    "full": {
+     "h2h": 0.514,
+     "h2h_games": 70,
+     "live": {
+      "fitness": 0.351,
+      "games": 910,
+      "win": 0.592
+     },
+     "variant": {
+      "fitness": 0.353,
+      "games": 910,
+      "win": 0.586
+     }
+    },
     "screen": {
      "live": {
       "fitness": 0.369,
@@ -419,7 +433,7 @@
      "TRIBUTE_MIN_GEMS": 6
     }
    },
-   "status": "full",
+   "status": "rejected",
    "title": "Bags 6/42 + wide en-route and free money"
   },
   {
@@ -427,45 +441,283 @@
    "area": "farming",
    "finished": null,
    "id": 17,
-   "notes": "First screen invalid (survival check was on too); re-screening.",
-   "results": {},
+   "notes": "Re-screen after the bit fix: worse.",
+   "results": {
+    "screen": {
+     "live": {
+      "fitness": 0.411,
+      "games": 182,
+      "win": 0.588
+     },
+     "variant": {
+      "fitness": 0.367,
+      "games": 182,
+      "win": 0.538
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "CAMP_FEASIBLE": 4
     }
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "Live camp HP for clear time"
   },
   {
    "added": "2026-10-21T15:12:04Z",
    "area": "farming",
-   "finished": null,
+   "finished": "2026-10-21T15:36:54Z",
    "id": 18,
-   "notes": "Re-screening.",
-   "results": {},
+   "notes": "Merged together with #19 as CAMP_FEASIBLE 24 (default on).",
+   "results": {
+    "full": {
+     "h2h": 0.557,
+     "h2h_games": 70,
+     "live": {
+      "fitness": 0.351,
+      "games": 910,
+      "win": 0.592
+     },
+     "variant": {
+      "fitness": 0.504,
+      "games": 910,
+      "win": 0.705
+     }
+    },
+    "screen": {
+     "live": {
+      "fitness": 0.411,
+      "games": 182,
+      "win": 0.588
+     },
+     "variant": {
+      "fitness": 0.473,
+      "games": 182,
+      "win": 0.626
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "CAMP_FEASIBLE": 8
     }
    },
-   "status": "screening",
+   "status": "merged",
    "title": "PvE assist within 4 tiles"
   },
   {
    "added": "2026-10-21T15:12:04Z",
    "area": "economy",
-   "finished": null,
+   "finished": "2026-10-21T15:36:54Z",
    "id": 19,
-   "notes": "Re-screening.",
-   "results": {},
+   "notes": "Measured with PvE assist (CAMP_FEASIBLE 24): best of the batch; merged as the default.",
+   "results": {
+    "full": {
+     "h2h": 0.543,
+     "h2h_games": 70,
+     "live": {
+      "fitness": 0.351,
+      "games": 910,
+      "win": 0.592
+     },
+     "variant": {
+      "fitness": 0.518,
+      "games": 910,
+      "win": 0.719
+     }
+    },
+    "screen": {
+     "live": {
+      "fitness": 0.411,
+      "games": 182,
+      "win": 0.588
+     },
+     "variant": {
+      "fitness": 0.435,
+      "games": 182,
+      "win": 0.61
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "CAMP_FEASIBLE": 16
     }
    },
-   "status": "screening",
+   "status": "merged",
    "title": "Deliver when an altar is on the way"
+  },
+  {
+   "added": "2026-10-21T15:20:12Z",
+   "area": "infra",
+   "finished": "2026-10-21T15:47:41Z",
+   "id": 41,
+   "notes": "Neutrality check for the bigger theta and second knob block. Screen: win 0.5 vs 0.555, fitness 0.312 vs 0.385.",
+   "results": {
+    "screen": {
+     "live": {
+      "deaths": 16.91,
+      "fitness": 0.385,
+      "games": 182,
+      "gem_margin": -0.001,
+      "win": 0.555
+     },
+     "variant": {
+      "deaths": 16.64,
+      "fitness": 0.312,
+      "games": 182,
+      "gem_margin": -0.086,
+      "win": 0.5
+     }
+    }
+   },
+   "spec": {
+    "ref": "origin/feat/passive-aware"
+   },
+   "status": "rejected",
+   "title": "theta 169 + knob2 block, all off (must equal live)"
+  },
+  {
+   "added": "2026-10-21T15:20:12Z",
+   "area": "passives",
+   "finished": "2026-10-21T15:49:11Z",
+   "id": 42,
+   "notes": "Screen: win 0.451 vs 0.555, fitness 0.252 vs 0.385.",
+   "results": {
+    "screen": {
+     "live": {
+      "deaths": 16.91,
+      "fitness": 0.385,
+      "games": 182,
+      "gem_margin": -0.001,
+      "win": 0.555
+     },
+     "variant": {
+      "deaths": 17.29,
+      "fitness": 0.252,
+      "games": 182,
+      "gem_margin": -0.102,
+      "win": 0.451
+     }
+    }
+   },
+   "spec": {
+    "knobs": {
+     "PASSIVE_AWARE": 1
+    },
+    "ref": "origin/feat/passive-aware"
+   },
+   "status": "rejected",
+   "title": "Passive-aware play (per passive / kind)"
+  },
+  {
+   "added": "2026-10-21T15:30:46Z",
+   "area": "teamwork",
+   "finished": "2026-10-21T15:50:40Z",
+   "id": 43,
+   "notes": "Attacker calls a hurt enemy (<=60% HP, ally within 6); allies in reach take it first. Screen: win 0.473 vs 0.555, fitness 0.278 vs 0.385.",
+   "results": {
+    "screen": {
+     "live": {
+      "deaths": 16.91,
+      "fitness": 0.385,
+      "games": 182,
+      "gem_margin": -0.001,
+      "win": 0.555
+     },
+     "variant": {
+      "deaths": 17.14,
+      "fitness": 0.278,
+      "games": 182,
+      "gem_margin": -0.091,
+      "win": 0.473
+     }
+    }
+   },
+   "spec": {
+    "knobs": {
+     "FOCUS": 1
+    },
+    "ref": "origin/feat/team-endgame"
+   },
+   "status": "rejected",
+   "title": "Team focus target (channel bit 39)"
+  },
+  {
+   "added": "2026-10-21T15:30:46Z",
+   "area": "teamwork",
+   "id": 44,
+   "notes": "From round 1700 or 80% of winning gems: ahead = bank bags, only clear fights; behind = hunt.",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "ENDGAME": 1
+    },
+    "ref": "origin/feat/team-endgame"
+   },
+   "status": "queued",
+   "title": "Endgame mode near a win or tie"
+  },
+  {
+   "added": "2026-10-21T15:30:46Z",
+   "area": "combat",
+   "id": 45,
+   "notes": "Champions and camps: hold the stun while the target is stunned, so allies' stuns chain.",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "STUN_LOCK": 1
+    },
+    "ref": "origin/feat/stun-upgrade"
+   },
+   "status": "queued",
+   "title": "Stun lock (no stun on a stunned unit)"
+  },
+  {
+   "added": "2026-10-21T15:30:46Z",
+   "area": "economy",
+   "id": 46,
+   "notes": "Recall and buy when about to start a fight with advantage < 1.5 or a camp > 25 rounds to clear.",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "UPGRADE_FIRST": 6
+    },
+    "ref": "origin/feat/stun-upgrade"
+   },
+   "status": "queued",
+   "title": "Upgrade before a hard fight (60 gold)"
+  },
+  {
+   "added": "2026-10-21T15:30:46Z",
+   "area": "teamwork",
+   "id": 47,
+   "notes": "Any enemy HP (kill assist needs <= 50%); skipped when joint advantage < 0.7. If it passes, radius / advantage move into the learned E block.",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "TEAM_UP": 4
+    },
+    "ref": "origin/feat/stun-upgrade"
+   },
+   "status": "queued",
+   "title": "Team up: join ally fights within 4"
+  },
+  {
+   "added": "2026-10-21T15:30:46Z",
+   "area": "teamwork",
+   "id": 48,
+   "notes": "",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "TEAM_UP": 6
+    },
+    "ref": "origin/feat/stun-upgrade"
+   },
+   "status": "queued",
+   "title": "Team up: join ally fights within 6"
   },
   {
    "added": "2026-10-21T15:12:04Z",
