@@ -18,6 +18,8 @@ pub const THETA_VERSION: u8 = 1;
 pub const MAX_PRIORITY_GROUPS: usize = 15;
 pub const FILM_UNITS: usize = 48;
 pub const KNOB_COUNT: usize = 32;
+/// Second knob block (knob2), in what used to be reserved bytes: zeros = everything off.
+pub const KNOB2_COUNT: usize = 32;
 pub const CHAMP_SLOTS: usize = 10;
 pub const CHAMP_VEC_LEN: usize = 16;
 pub const MAP_CACHE_BYTES: usize = 192;
@@ -37,10 +39,43 @@ mod off {
     pub const CHAMP_VECS: usize = 176;
     pub const CHAMP_KINDS: usize = 336;
     pub const MAP_CACHE: usize = 352;
+    pub const KNOBS2: usize = 544;
     pub const CRC: usize = 1022;
 }
 
 const MAGIC: [u8; 2] = *b"BC";
+
+/// Second knob block (offset 544): switches for behaviours added after the first 32 ran out.
+/// Every default is 0 (off) until the experiment autopilot shows a value is better.
+pub mod knob2 {
+    /// Passive-aware play from the live passive type (generic rules per PassiveType).
+    pub const PASSIVE_AWARE: usize = 0;
+    /// Team focus target: bit 39 of the channel marks the sighting as the team's target.
+    pub const FOCUS: usize = 1;
+    /// Endgame mode near a win or a tie (bank and group when ahead, hunt when behind).
+    pub const ENDGAME: usize = 2;
+    /// Keep out of a ready enemy spell's range when not committed to a fight.
+    pub const SPACING: usize = 3;
+    /// Retreat through bushes / out of the chaser's line of sight.
+    pub const LOS_RETREAT: usize = 4;
+    /// Lead a chaser past an awake camp (camps hit the nearest champion).
+    pub const CAMP_DIVERT: usize = 5;
+    /// Reachable-area prediction of unseen enemies.
+    pub const PREDICT: usize = 6;
+    /// Place the free ward on likely approach paths.
+    pub const WARDS: usize = 7;
+
+    pub const DEFAULTS: [(usize, u8); 8] = [
+        (PASSIVE_AWARE, 0),
+        (FOCUS, 0),
+        (ENDGAME, 0),
+        (SPACING, 0),
+        (LOS_RETREAT, 0),
+        (CAMP_DIVERT, 0),
+        (PREDICT, 0),
+        (WARDS, 0),
+    ];
+}
 
 /// Indices into [`ThetaMatch::knobs`] and their neutral defaults.
 pub mod knob {
@@ -190,6 +225,7 @@ pub struct ThetaMatch {
     /// FiLM (γ, β) per hidden unit. Scale is `1 + γ/64`; (0, 0) is identity.
     pub film: [(i8, i8); FILM_UNITS],
     pub knobs: [u8; KNOB_COUNT],
+    pub knobs2: [u8; KNOB2_COUNT],
     /// Champion kind per slot: allies 0..5, enemies 5..10; `NO_CHAMPION` if empty.
     pub champ_kinds: [u8; CHAMP_SLOTS],
     pub champ_vecs: [[i8; CHAMP_VEC_LEN]; CHAMP_SLOTS],
@@ -202,6 +238,10 @@ impl Default for ThetaMatch {
         for (i, v) in knob::DEFAULTS {
             knobs[i] = v;
         }
+        let mut knobs2 = [0u8; KNOB2_COUNT];
+        for (i, v) in knob2::DEFAULTS {
+            knobs2[i] = v;
+        }
         Self {
             team_size: 0,
             schema_hash: 0,
@@ -210,6 +250,7 @@ impl Default for ThetaMatch {
             camp_priority: Vec::new(),
             film: [(0, 0); FILM_UNITS],
             knobs,
+            knobs2,
             champ_kinds: [NO_CHAMPION; CHAMP_SLOTS],
             champ_vecs: [[0; CHAMP_VEC_LEN]; CHAMP_SLOTS],
             map_cache: [0; MAP_CACHE_BYTES],
@@ -239,6 +280,7 @@ impl ThetaMatch {
             b[off::FILM + 2 * i + 1] = beta as u8;
         }
         b[off::KNOBS..off::KNOBS + KNOB_COUNT].copy_from_slice(&self.knobs);
+        b[off::KNOBS2..off::KNOBS2 + KNOB2_COUNT].copy_from_slice(&self.knobs2);
         for (s, v) in self.champ_vecs.iter().enumerate() {
             for (j, &x) in v.iter().enumerate() {
                 b[off::CHAMP_VECS + s * CHAMP_VEC_LEN + j] = x as u8;
@@ -284,6 +326,7 @@ impl ThetaMatch {
             *slot = (b[off::FILM + 2 * i] as i8, b[off::FILM + 2 * i + 1] as i8);
         }
         t.knobs.copy_from_slice(&b[off::KNOBS..off::KNOBS + KNOB_COUNT]);
+        t.knobs2.copy_from_slice(&b[off::KNOBS2..off::KNOBS2 + KNOB2_COUNT]);
         for (s, v) in t.champ_vecs.iter_mut().enumerate() {
             for (j, x) in v.iter_mut().enumerate() {
                 *x = b[off::CHAMP_VECS + s * CHAMP_VEC_LEN + j] as i8;
@@ -297,6 +340,12 @@ impl ThetaMatch {
     #[must_use]
     pub fn knob(&self, index: usize) -> u8 {
         self.knobs.get(index).copied().unwrap_or(0)
+    }
+
+    /// Second-block knob ([`knob2`]); 0 (off) when absent.
+    #[must_use]
+    pub fn knob2(&self, index: usize) -> u8 {
+        self.knobs2.get(index).copied().unwrap_or(0)
     }
 
     /// Champion vector for a champion kind, if the draft recorded it.
@@ -519,6 +568,21 @@ mod tests {
         wrong[2] = 9;
         assert_eq!(ThetaMatch::decode(&wrong), Err(DecodeError::UnsupportedVersion(9)));
         assert_eq!(ThetaMatch::decode(b"hello world"), Err(DecodeError::TooShort));
+    }
+
+    #[test]
+    fn knobs2_round_trip_and_default_off() {
+        let mut t = sample_theta();
+        assert_eq!(t.knob2(knob2::FOCUS), 0);
+        t.knobs2[knob2::WARDS] = 3;
+        let d = ThetaMatch::decode(&t.encode()).unwrap();
+        assert_eq!(d.knob2(knob2::WARDS), 3);
+        assert_eq!(d.knob2(999), 0);
+        // knobs2 live in the formerly reserved bytes, clear of the map cache and the CRC.
+        assert!(
+            off::KNOBS2 >= off::MAP_CACHE + MAP_CACHE_BYTES
+                && off::KNOBS2 + KNOB2_COUNT <= off::CRC
+        );
     }
 
     #[test]

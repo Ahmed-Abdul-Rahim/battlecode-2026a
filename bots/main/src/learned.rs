@@ -53,13 +53,37 @@ pub const X_F_CHEAP: usize = 1;
 pub const X_FSM_ALERT: usize = 2;
 pub const X_FSM_ASSIST: usize = 3;
 pub const X: [f32; X_N] = [0.0, 30.0, 0.0, 0.0];
+/// Per passive type (engine PassiveType value 0..=10), knob2 PASSIVE_AWARE:
+/// [fight-margin x, retreat-hp x, bag-size x] for a champion with that passive. Priors:
+/// GemFocus (3) carries bigger bags (its damage grows with them); MissingHealthDamage (10)
+/// retreats later (its damage grows as health falls).
+pub const PASSIVES: usize = 11;
+pub const PS_N: usize = 33; // PASSIVES x 3
+/// Rows (engine PassiveType): 0 None, 1 BonusGold, 2 RemoteShop, 3 GemFocus, 4 SplashAttack,
+/// 5 HealthStrength, 6 ResetCooldownsOnKill, 7 Retaliation, 8 StunImmunity, 9 unused,
+/// 10 MissingHealthDamage.
+pub const PS: [f32; PS_N] = [
+    1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.8,
+    1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.9, 0.6, 1.0,
+];
+/// Per champion kind (0..=12), knob2 PASSIVE_AWARE: [fight-margin x, aggression x].
+pub const KINDS: usize = 13;
+pub const KD_N: usize = 26; // KINDS x 2
+pub const KD: [f32; KD_N] = [1.0; KD_N];
+/// Endgame / teamwork weights (knob2 ENDGAME / FOCUS); 0 = the coded defaults.
+pub const E_N: usize = 8;
+pub const E: [f32; E_N] = [0.0; E_N];
 
-/// Full parameter vector: W (N) + TARGET (T_N) + FIGHT (F_N) + HOTSPOT_W + U (U_N) + X (X_N).
+/// Full parameter vector: W (N), TARGET (T_N), FIGHT (F_N), HOTSPOT_W, U (U_N), X (X_N),
+/// PS (PS_N), KD (KD_N) and E (E_N), in that order.
 /// harness/params.py mirrors this layout (python harness/params.py --check).
-pub const P_N: usize = N + T_N + F_N + 1 + U_N + X_N;
+pub const P_N: usize = N + T_N + F_N + 1 + U_N + X_N + PS_N + KD_N + E_N;
 const H_AT: usize = N + T_N + F_N;
 const U_AT: usize = H_AT + 1;
 const X_AT: usize = U_AT + U_N;
+const PS_AT: usize = X_AT + X_N;
+const KD_AT: usize = PS_AT + PS_N;
+const E_AT: usize = KD_AT + KD_N;
 
 static PARAMS: std::sync::OnceLock<[f32; P_N]> = std::sync::OnceLock::new();
 
@@ -72,6 +96,9 @@ pub fn init(theta: Option<&[u8]>) {
     p[H_AT] = HOTSPOT_W;
     p[U_AT..U_AT + U_N].copy_from_slice(&U);
     p[X_AT..X_AT + X_N].copy_from_slice(&X);
+    p[PS_AT..PS_AT + PS_N].copy_from_slice(&PS);
+    p[KD_AT..KD_AT + KD_N].copy_from_slice(&KD);
+    p[E_AT..E_AT + E_N].copy_from_slice(&E);
     // Packs written for a shorter layout fill a prefix; the rest keeps the compiled values.
     if let Some(b) = theta {
         for (i, c) in b.as_chunks::<4>().0.iter().take(P_N).enumerate() {
@@ -117,4 +144,31 @@ pub fn utility() -> &'static [f32] {
 #[must_use]
 pub fn extra(i: usize) -> f32 {
     params()[X_AT + i]
+}
+
+/// Per-passive multiplier `i` (0 fight margin, 1 retreat hp, 2 bag size); 1.0 if unknown.
+#[must_use]
+pub fn passive(passive_type: usize, i: usize) -> f32 {
+    if passive_type < PASSIVES && i < 3 {
+        params()[PS_AT + passive_type * 3 + i]
+    } else {
+        1.0
+    }
+}
+
+/// Per-kind multiplier `i` (0 fight margin, 1 aggression); 1.0 if unknown.
+#[must_use]
+pub fn kind(kind: usize, i: usize) -> f32 {
+    if kind < KINDS && i < 2 {
+        params()[KD_AT + kind * 2 + i]
+    } else {
+        1.0
+    }
+}
+
+/// Endgame / teamwork weight `i` (0 = coded default). Read by knob2 ENDGAME (stage 4).
+#[must_use]
+#[allow(dead_code)]
+pub fn endgame(i: usize) -> f32 {
+    params().get(E_AT + i).copied().unwrap_or(0.0)
 }
