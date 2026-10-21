@@ -1,17 +1,19 @@
 {
  "rows": 933738,
- "beta": 122.63,
- "mean_return": 78.3,
+ "rows_used": 300000,
+ "val_agreement": 0.827,
+ "beta": 122.37,
+ "mean_return": 78.8,
  "label_counts": {
-  "farm": 572057,
-  "capture": 93991,
-  "tribute": 64786,
-  "fight": 46913,
-  "kite": 26171,
-  "retreat": 57092,
-  "recall_shop": 72728
+  "farm": 183824,
+  "capture": 30248,
+  "tribute": 20961,
+  "fight": 15058,
+  "kite": 8277,
+  "retreat": 18205,
+  "recall_shop": 23427
  },
- "train_agreement": 0.818,
+ "train_agreement": 0.826,
  "blob_bytes": 3966,
  "out": "D:\\Code\\battlecode-ml-mldata\\candidates\\router-00007.bin"
 }
