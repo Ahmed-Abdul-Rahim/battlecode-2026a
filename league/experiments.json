@@ -1473,6 +1473,8 @@
   {
    "added": "2026-10-21T15:12:04Z",
    "area": "combat",
+   "claimed": "2026-10-21T18:28:24Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 27,
    "notes": "",
    "results": {},
@@ -1481,7 +1483,7 @@
      "STUN_THREAT": 1
     }
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Value stun kits on a 6-round horizon"
   },
   {
