@@ -117,6 +117,15 @@
    "time": "2026-10-21T15:30:43.130Z",
    "win": false
   },
+  "09053907-d358-42a4-aed1-9675fc63dcdc": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "broken-curve",
+   "opp": "tvojtatko",
+   "oppId": "0263b3aa-28cf-469f-abd3-e07327c6e757",
+   "time": "2026-10-21T17:40:16.367Z",
+   "win": false
+  },
   "0913c280-d351-4cf9-b553-ee0bba4fc4e6": {
    "kind": "ranked",
    "live": 1,
@@ -457,6 +466,15 @@
    "opp": "Rataturing",
    "oppId": "0a7f58a2-84f8-4c83-abdc-82d7fe4d4558",
    "time": "2026-10-20T19:20:09.080Z",
+   "win": false
+  },
+  "24597701-33bc-4a4f-bf6e-5d9a9d0ddebc": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "fracture",
+   "opp": "tvojtatko",
+   "oppId": "0263b3aa-28cf-469f-abd3-e07327c6e757",
+   "time": "2026-10-21T17:40:16.367Z",
    "win": false
   },
   "249ee835-d2da-48c6-829b-34546410134d": {
@@ -1043,6 +1061,15 @@
    "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
    "time": "2026-10-20T19:40:10.999Z",
    "win": false
+  },
+  "4fae9683-da65-4fad-bb80-dc94a44d0a53": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "shortcut",
+   "opp": "tvojtatko",
+   "oppId": "0263b3aa-28cf-469f-abd3-e07327c6e757",
+   "time": "2026-10-21T17:40:16.367Z",
+   "win": true
   },
   "4fde5987-15b0-4f5b-bc4a-f12be8a1ab56": {
    "kind": "ranked",
@@ -1971,6 +1998,15 @@
    "time": "2026-10-20T18:10:10.514Z",
    "win": true
   },
+  "91043463-7f4d-414a-b308-b17a636ecbec": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "packs",
+   "opp": "tvojtatko",
+   "oppId": "0263b3aa-28cf-469f-abd3-e07327c6e757",
+   "time": "2026-10-21T17:40:16.367Z",
+   "win": true
+  },
   "91146400-e4b9-4528-9c57-b1827316b01e": {
    "kind": "ranked",
    "live": 1,
@@ -2797,6 +2833,15 @@
    "opp": "Mousa",
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
    "time": "2026-10-21T15:00:13.926Z",
+   "win": true
+  },
+  "d18a0f0d-eb20-44d2-9a15-45909083e431": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "corners",
+   "opp": "tvojtatko",
+   "oppId": "0263b3aa-28cf-469f-abd3-e07327c6e757",
+   "time": "2026-10-21T17:40:16.367Z",
    "win": true
   },
   "d33ff9a7-e1ea-4fc2-9f45-31dd8d2fd56a": {
@@ -6803,6 +6848,40 @@
    "status": "open",
    "time": "2026-10-21T17:30:26.108Z",
    "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 3,
+    "Unknown entity kind (2)": 27
+   },
+   "deaths_them": 23,
+   "deaths_us": 30,
+   "gems_them": "280",
+   "gems_us": "109",
+   "id": "24597701-33bc-4a4f-bf6e-5d9a9d0ddebc",
+   "map": "fracture",
+   "opp": "tvojtatko",
+   "oppId": "0263b3aa-28cf-469f-abd3-e07327c6e757",
+   "status": "open",
+   "time": "2026-10-21T17:40:16.367Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 1,
+    "Unknown entity kind (2)": 19
+   },
+   "deaths_them": 22,
+   "deaths_us": 20,
+   "gems_them": "1000",
+   "gems_us": "639",
+   "id": "09053907-d358-42a4-aed1-9675fc63dcdc",
+   "map": "broken-curve",
+   "opp": "tvojtatko",
+   "oppId": "0263b3aa-28cf-469f-abd3-e07327c6e757",
+   "status": "open",
+   "time": "2026-10-21T17:40:16.367Z",
+   "tries_at": 3
   }
  ],
  "map_files": {
@@ -6821,7 +6900,10 @@
   "expanse": "df9b83dfc432",
   "fracture": "ccb9c1ec2563",
   "fragment": "49e34ad600ac",
+  "gem-fields": "b82a8d0105f5",
+  "gemfight": "8fd7635cb922",
   "gold-rush": "4103b232a520",
+  "great-wall": "beaba1376636",
   "hooks": "96d758c443ed",
   "interlock": "e8b3f42b3426",
   "islands": "bb68151dab04",
@@ -6858,7 +6940,10 @@
   "expanse",
   "fracture",
   "fragment",
+  "gem-fields",
+  "gemfight",
   "gold-rush",
+  "great-wall",
   "hooks",
   "interlock",
   "islands",
@@ -6881,24 +6966,14 @@
  ],
  "pool": [
   {
-   "games": 110,
-   "macro_hash": "2732a5c84bba",
+   "games": 120,
+   "macro_hash": "263266eb1dd0",
    "name": "Intercontinental Fish",
-   "since": "2026-10-21T14:47:36Z",
+   "since": "2026-10-21T17:53:35Z",
    "slug": "intercontinental-fish",
    "static": false,
    "teamId": "1890540d-1ffc-4847-adbf-d0d08772f268",
    "why": "top1"
-  },
-  {
-   "games": 95,
-   "macro_hash": "26b3c79d90ac",
-   "name": "procless",
-   "since": "2026-10-21T14:47:57Z",
-   "slug": "procless",
-   "static": false,
-   "teamId": "8df7e1cd-0d60-413b-9331-f5427ce9ca88",
-   "why": "top2"
   },
   {
    "games": 100,
@@ -6906,108 +6981,118 @@
    "name": "EMPEROR Tung",
    "since": "2026-10-21T14:48:10Z",
    "slug": "emperor-tung",
-   "static": false,
+   "static": true,
    "teamId": "a1e82708-dfd3-4609-8b9a-69f652d12185",
+   "why": "top2"
+  },
+  {
+   "games": 95,
+   "macro_hash": "26b3c79d90ac",
+   "name": "procless",
+   "since": "2026-10-21T14:47:57Z",
+   "slug": "procless",
+   "static": true,
+   "teamId": "8df7e1cd-0d60-413b-9331-f5427ce9ca88",
    "why": "top3"
   },
   {
-   "games": 135,
-   "macro_hash": "ba66da763925",
-   "name": "Sponge(Albert and Bob)",
-   "since": "2026-10-21T14:48:31Z",
-   "slug": "sponge-albert-and-bob",
+   "games": 136,
+   "macro_hash": "7eb6eda8707c",
+   "name": ":3",
+   "since": "2026-10-21T17:54:38Z",
+   "slug": "3",
    "static": false,
-   "teamId": "26824601-d225-427f-bd2d-ce8aa9faa392",
+   "teamId": "bbe481a7-4575-4826-9a3e-f81c28205de8",
    "why": "top4"
   },
   {
-   "games": 20,
+   "games": 145,
+   "macro_hash": "9c689bb0b56b",
+   "name": "Sponge(Albert and Bob)",
+   "since": "2026-10-21T17:55:01Z",
+   "slug": "sponge-albert-and-bob",
+   "static": false,
+   "teamId": "26824601-d225-427f-bd2d-ce8aa9faa392",
+   "why": "top5"
+  },
+  {
+   "games": 30,
    "macro_hash": "6bcde3a6b139",
    "name": "Pantheon",
    "since": "2026-10-21T14:48:52Z",
    "slug": "pantheon",
-   "static": false,
+   "static": true,
    "teamId": "547efb5b-57e5-4355-8501-3b331f506d62",
-   "why": "top5"
-  },
-  {
-   "games": 131,
-   "macro_hash": "acdf4b74c624",
-   "name": ":3",
-   "since": "2026-10-21T14:49:07Z",
-   "slug": "3",
-   "static": false,
-   "teamId": "bbe481a7-4575-4826-9a3e-f81c28205de8",
    "why": "top6"
   },
   {
-   "games": 25,
-   "macro_hash": "ad8e41f31718",
+   "games": 35,
+   "macro_hash": "e78731da739c",
    "name": "policy wonk",
-   "since": "2026-10-21T14:49:20Z",
+   "since": "2026-10-21T17:56:09Z",
    "slug": "policy-wonk",
    "static": false,
    "teamId": "3ec4a701-a9b5-498f-9361-eea4a6dd1cde",
    "why": "top7"
   },
   {
-   "games": 145,
-   "macro_hash": "7658a5576d01",
-   "name": "Trzy Kwaterki",
-   "since": "2026-10-21T14:49:41Z",
-   "slug": "trzy-kwaterki",
-   "static": false,
-   "teamId": "36258abf-3fd0-4827-8fa5-2a217438cf6f",
-   "why": "top8"
-  },
-  {
-   "games": 10,
-   "macro_hash": "ddf18f03711c",
+   "games": 22,
+   "macro_hash": "64e2f6556212",
    "name": "Nanyang Technological University",
-   "since": "2026-10-21T14:49:55Z",
+   "since": "2026-10-21T17:56:42Z",
    "slug": "nanyang-technological-university",
    "static": false,
    "teamId": "93fd07ff-2f73-4ed4-9911-356cc1034ba5",
+   "why": "top8"
+  },
+  {
+   "games": 85,
+   "macro_hash": "7ba2d4d72863",
+   "name": "Zarzorki",
+   "since": "2026-10-21T17:57:17Z",
+   "slug": "zarzorki",
+   "static": false,
+   "teamId": "c0a5d0a5-eb8f-4aa7-8d6a-8e74ed78874c",
    "why": "top9"
   },
   {
-   "games": 40,
-   "macro_hash": "cfc75eca6cc6",
-   "name": "NEETCoders",
-   "since": "2026-10-21T14:50:23Z",
-   "slug": "neetcoders",
+   "games": 160,
+   "macro_hash": "543e5e9601d3",
+   "name": "Trzy Kwaterki",
+   "since": "2026-10-21T17:58:05Z",
+   "slug": "trzy-kwaterki",
    "static": false,
-   "teamId": "882106d4-9deb-40cc-9d5c-8522c1d32129",
+   "teamId": "36258abf-3fd0-4827-8fa5-2a217438cf6f",
    "why": "top10"
   },
   {
    "games": 15,
-   "macro_hash": "6fa7b4df3b28",
-   "name": "3 Treasure",
-   "since": "2026-10-21T14:50:48Z",
-   "slug": "3-treasure",
+   "macro_hash": "9bee1a90d9c5",
+   "name": "tvojtatko",
+   "since": "2026-10-21T17:58:42Z",
+   "slug": "tvojtatko",
    "static": false,
-   "teamId": "90ddaf0d-1cf1-4110-a127-d14da2ce2c66",
+   "teamId": "0263b3aa-28cf-469f-abd3-e07327c6e757",
    "why": "loss"
   },
   {
-   "games": 57,
-   "macro_hash": "68fe919c88f9",
-   "name": "Rataturing",
-   "since": "2026-10-21T14:51:00Z",
-   "slug": "rataturing",
+   "games": 10,
+   "macro_hash": "4c429ef56f3b",
+   "name": "gargantua",
+   "since": "2026-10-21T17:59:17Z",
+   "slug": "gargantua",
    "static": false,
-   "teamId": "0a7f58a2-84f8-4c83-abdc-82d7fe4d4558",
+   "teamId": "61e5f5c0-3ba9-4c48-ba68-bf125f0fdfc0",
    "why": "loss"
   },
   {
-   "games": 5,
-   "macro_hash": "e93fc297ff08",
-   "name": "Hidden Gem Thieves",
-   "since": "2026-10-21T14:51:25Z",
-   "slug": "hidden-gem-thieves",
+   "games": 10,
+   "macro_hash": "e5f36bed824b",
+   "name": "Lucky Stunner",
+   "since": "2026-10-21T17:59:38Z",
+   "slug": "lucky-stunner",
    "static": false,
-   "teamId": "c8773982-afe9-4f64-99ba-0cc1fb3fe3c2",
+   "teamId": "d48d65ef-625c-4966-b2cc-a7b1b02fafec",
    "why": "loss"
   }
  ],
@@ -7874,6 +7959,81 @@
     }
    ],
    "time": "2026-10-21T14:47:17Z"
+  },
+  {
+   "teams": [
+    {
+     "name": "Intercontinental Fish",
+     "rank": 1,
+     "rating": 2211.1,
+     "slug": "intercontinental-fish",
+     "teamId": "1890540d-1ffc-4847-adbf-d0d08772f268"
+    },
+    {
+     "name": "EMPEROR Tung",
+     "rank": 2,
+     "rating": 2202.8,
+     "slug": "emperor-tung",
+     "teamId": "a1e82708-dfd3-4609-8b9a-69f652d12185"
+    },
+    {
+     "name": "procless",
+     "rank": 3,
+     "rating": 2157.4,
+     "slug": "procless",
+     "teamId": "8df7e1cd-0d60-413b-9331-f5427ce9ca88"
+    },
+    {
+     "name": ":3",
+     "rank": 4,
+     "rating": 2111.5,
+     "slug": "3",
+     "teamId": "bbe481a7-4575-4826-9a3e-f81c28205de8"
+    },
+    {
+     "name": "Sponge(Albert and Bob)",
+     "rank": 5,
+     "rating": 2098.1,
+     "slug": "sponge-albert-and-bob",
+     "teamId": "26824601-d225-427f-bd2d-ce8aa9faa392"
+    },
+    {
+     "name": "Pantheon",
+     "rank": 6,
+     "rating": 2087.1,
+     "slug": "pantheon",
+     "teamId": "547efb5b-57e5-4355-8501-3b331f506d62"
+    },
+    {
+     "name": "policy wonk",
+     "rank": 7,
+     "rating": 2077.9,
+     "slug": "policy-wonk",
+     "teamId": "3ec4a701-a9b5-498f-9361-eea4a6dd1cde"
+    },
+    {
+     "name": "Nanyang Technological University",
+     "rank": 8,
+     "rating": 2055.1,
+     "slug": "nanyang-technological-university",
+     "teamId": "93fd07ff-2f73-4ed4-9911-356cc1034ba5"
+    },
+    {
+     "name": "Zarzorki",
+     "rank": 9,
+     "rating": 2032.9,
+     "slug": "zarzorki",
+     "teamId": "c0a5d0a5-eb8f-4aa7-8d6a-8e74ed78874c"
+    },
+    {
+     "name": "Trzy Kwaterki",
+     "rank": 10,
+     "rating": 2032.7,
+     "slug": "trzy-kwaterki",
+     "teamId": "36258abf-3fd0-4827-8fa5-2a217438cf6f"
+    }
+   ],
+   "time": "2026-10-21T17:52:25Z"
   }
  ]
 }
