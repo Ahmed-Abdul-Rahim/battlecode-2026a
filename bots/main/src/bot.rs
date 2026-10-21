@@ -116,6 +116,11 @@ const ASSIST_MIN_HP: f32 = 0.7;
 /// from at most this far.
 const HELP_DETOUR: i32 = 4;
 const HELP_ON_WAY_MAX: i32 = 10;
+/// CAMP_FEASIBLE bit 8: join an ally's camp fight from this far.
+const PVE_ASSIST_RADIUS: i32 = 4;
+/// CAMP_FEASIBLE bit 16: deliver at an altar this far off our route, at most this far away.
+const ALTAR_DETOUR: i32 = 3;
+const ALTAR_ON_WAY_MAX: i32 = 8;
 /// COMBAT_FSM 64|2: finish an enemy at <= 50% a teammate reports within this many tiles.
 const KILL_ASSIST_RADIUS: i32 = 4;
 const KILL_ASSIST_MIN_HP: f32 = 0.4;
@@ -156,11 +161,20 @@ const TAVI_HUNT_RADIUS: i32 = 6;
 /// CAMP_FEASIBLE: a group needing more than this many times our survival time to clear
 /// keeps only CAMP_INFEASIBLE_VALUE of its value.
 const CAMP_FEASIBLE_SLACK: f32 = 3.0;
+/// CAMP_FEASIBLE bit 2: the early-game ramp (quick camps first) lasts this long, and a camp
+/// starts losing value past this many turns to clear.
+const EARLY_RAMP_ROUNDS: u32 = 300;
+const EARLY_RAMP_KNEE: f32 = 20.0;
 const CAMP_INFEASIBLE_VALUE: f32 = 0.1;
 /// EN_ROUTE: only for targets this far; detour, solo clear time and damage limits.
 const EN_ROUTE_MIN_DIST: i32 = 15;
 const EN_ROUTE_DETOUR: i32 = 6;
 const EN_ROUTE_MAX_CLEAR: f32 = 25.0;
+/// EN_ROUTE 2 (wide, engine 1.0.0 economy): stop for targets this far, camps up to this many turns,
+/// and free money (rewards, zero-damage clusters) within this radius and detour.
+const EN_ROUTE_WIDE_MIN_DIST: i32 = 8;
+const EN_ROUTE_WIDE_MAX_CLEAR: f32 = 40.0;
+const EN_ROUTE_FREE_RADIUS: i32 = 4;
 /// MONOLITH_LIVE: attack once pooled team health lasts this fraction of the kill time.
 const MONOLITH_SLACK: f32 = 1.0;
 /// VALUE_PROFILE 4/5: the opening (near camps first: early gold compounds into items).
@@ -479,7 +493,7 @@ impl Bot {
             if (!fsm_full || hunting)
                 && free_to_assist
                 && (chan.help || hunting)
-                && ctx.gems < router::BIG_BAG_GEMS
+                && ctx.gems < ctx.knobs.big_bag()
             {
                 if let Some((p, age)) = shared {
                     // COMBAT_FSM bit 128: only help when the fight is on the way to where we're
@@ -499,7 +513,7 @@ impl Bot {
             if deny && !matches!(mode, Mode::Override(_)) && ctx.hp_frac() > DENY_MIN_HP {
                 if let Some(e) = vis.enemies.iter().find(|e| e.tributing && e.dist <= DENY_RADIUS) {
                     intent = Intent::Engage(e.pos);
-                } else if deny_level >= 3 && chan.enemy_tributing && ctx.gems < router::BIG_BAG_GEMS
+                } else if deny_level >= 3 && chan.enemy_tributing && ctx.gems < ctx.knobs.big_bag()
                 {
                     // A teammate saw an enemy channelling: go cancel it (long bags take turns).
                     if let Some((p, age)) = chan.sighting(round) {
@@ -516,7 +530,7 @@ impl Bot {
                 && self.kind == ChampionKind::Tavi
                 && !matches!(mode, Mode::Override(_))
                 && ctx.hp_frac() > TAVI_HUNT_MIN_HP
-                && ctx.gems < router::BIG_BAG_GEMS
+                && ctx.gems < ctx.knobs.big_bag()
                 && self.emblems() >= TAVI_HUNT_EMBLEMS
             {
                 let allies_near = vis.allies.iter().filter(|a| a.dist <= 4).count();
@@ -605,7 +619,7 @@ impl Bot {
                         Intent::Retreat | Intent::Engage(_) | Intent::Kite(_)
                             if ratio > SKIRMISH_WIN
                                 && ctx.hp_frac() > 0.5
-                                && ctx.gems < router::BIG_BAG_GEMS =>
+                                && ctx.gems < ctx.knobs.big_bag() =>
                         {
                             if let Some(e) = weakest {
                                 intent = Intent::Engage(e.pos);
@@ -641,7 +655,7 @@ impl Bot {
                 );
                 if let Some((plan, target)) = pick {
                     use crate::skirmish::Plan;
-                    let carrying = ctx.gems >= router::BIG_BAG_GEMS;
+                    let carrying = ctx.gems >= ctx.knobs.big_bag();
                     intent = match (plan, target) {
                         (Plan::Retreat, _) => Intent::Retreat,
                         _ if carrying => intent,
@@ -654,7 +668,7 @@ impl Bot {
             // Finish a hurt enemy (<= 50%) a teammate reports within KILL_ASSIST_RADIUS.
             let calm = !matches!(mode, Mode::Override(_))
                 && vis.enemies.iter().all(|e| e.on_spawn || e.dist > 4)
-                && ctx.gems < router::BIG_BAG_GEMS;
+                && ctx.gems < ctx.knobs.big_bag();
             if kill_assist && calm && ctx.hp_frac() > KILL_ASSIST_MIN_HP && !chan.enemy_tributing {
                 if let Some((p, age)) = chan.sighting(round) {
                     let near = (1..=KILL_ASSIST_RADIUS).contains(&p.cheb(my_pos));
@@ -663,6 +677,46 @@ impl Bot {
                         assist = Some(p);
                         telemetry::event(round, champ_name(self.kind), "kill_assist", 1);
                     }
+                }
+            }
+            let camp_bits = self.theta.knob(knob::CAMP_FEASIBLE);
+            let quiet = !matches!(mode, Mode::Override(_))
+                && vis.enemies.iter().all(|e| e.on_spawn || e.dist > 5);
+            // CAMP_FEASIBLE bit 8, PvE assist: an ally within PVE_ASSIST_RADIUS is fighting an awake
+            // camp: join it on its weakest camp (faster clear, less damage taken by the ally).
+            if camp_bits & 8 != 0 && quiet && ctx.hp_frac() > 0.5 && ctx.gems < ctx.knobs.big_bag()
+            {
+                let busy = matches!(intent, Intent::Capture(_) | Intent::Tribute | Intent::Shop);
+                let fight = vis
+                    .allies
+                    .iter()
+                    .filter(|a| a.dist <= PVE_ASSIST_RADIUS)
+                    .flat_map(|a| {
+                        vis.camps
+                            .iter()
+                            .filter(move |c| c.awake && c.hp > 0.0 && c.pos.cheb(a.pos) <= 4)
+                    })
+                    .min_by(|x, y| x.hp.total_cmp(&y.hp));
+                if let (false, Some(c)) = (busy, fight) {
+                    if let Some(g) = c.group {
+                        intent = Intent::ClearCamp(g as u8);
+                        telemetry::event(round, champ_name(self.kind), "pve_assist", 1);
+                    }
+                }
+            }
+            // CAMP_FEASIBLE bit 16: an altar a few tiles off our route: deliver on the way.
+            if camp_bits & 16 != 0 && quiet && ctx.gems > 0 {
+                let enough = ctx.gems >= (u32::from(ctx.knobs.tribute_min) / 3).max(3);
+                let on_way =
+                    self.world.altars.iter().any(|&a| self.altar_on_the_way(my_pos, a, intent));
+                if enough && on_way && !matches!(intent, Intent::Tribute | Intent::Capture(_)) {
+                    intent = Intent::Tribute;
+                    telemetry::event(
+                        round,
+                        champ_name(self.kind),
+                        "altar_on_way",
+                        i64::from(ctx.gems),
+                    );
                 }
             }
             // Combat state machine: memory between turns (alert / engage / disengage / help).
@@ -894,7 +948,7 @@ impl Bot {
         if bits & 16 != 0 {
             tuning.max_help_eta = 4;
         }
-        let big_bag = ctx.gems >= router::BIG_BAG_GEMS;
+        let big_bag = ctx.gems >= ctx.knobs.big_bag();
         // The enemy the rule layers are looking at, with its kind and reach.
         let seen =
             ctx.enemy.and_then(|n| vis.enemies.iter().find(|e| e.pos == n.pos).map(|e| (n, e)));
@@ -1065,6 +1119,20 @@ impl Bot {
             self.fsm_fighting = Some(false);
         }
         kept
+    }
+
+    /// Is altar `a` at most ALTAR_DETOUR tiles off the way to a camp target (and close)?
+    fn altar_on_the_way(&self, me: Pos, a: Pos, intent: Intent) -> bool {
+        let goal = match intent {
+            Intent::ClearCamp(g) | Intent::Approach(g) => {
+                self.world.groups.get(usize::from(g)).map(|gr| gr.center)
+            }
+            Intent::Retreat | Intent::WalkHome => Some(self.world.spawn_hint),
+            _ => None,
+        };
+        goal.is_some_and(|g| {
+            me.cheb(a) <= ALTAR_ON_WAY_MAX && me.cheb(a) + a.cheb(g) - me.cheb(g) <= ALTAR_DETOUR
+        })
     }
 
     /// Is `p` on the way to where `intent` takes us (camp, altar or home)? At most
@@ -1563,6 +1631,23 @@ impl Bot {
                     _ => {}
                 }
             }
+            // CAMP_FEASIBLE bit 4: a group whose camps are all in sight costs its live HP
+            // (an ally may have half-killed it), not its full HP.
+            let group_hp = if self.theta.knob(knob::CAMP_FEASIBLE) & 4 != 0 {
+                let seen: Vec<f32> = vis
+                    .camps
+                    .iter()
+                    .filter(|c| c.group == Some(i))
+                    .map(|c| c.hp.max(0.0))
+                    .collect();
+                if !seen.is_empty() && seen.len() >= g.tiles.len() {
+                    seen.iter().sum()
+                } else {
+                    g.total_hp
+                }
+            } else {
+                g.total_hp
+            };
             let clear = match state {
                 GroupState::RewardAvailable => {
                     value *= 1.5 * crate::learned::w(crate::learned::REWARD);
@@ -1570,7 +1655,7 @@ impl Bot {
                 }
                 // A monolith is cleared by the whole team, not one champion.
                 _ if g.has_monolith && live => g.total_hp / team_power.max(1.0),
-                _ => g.total_hp / my_dps,
+                _ => group_hp / my_dps,
             };
             // A capture needs one champion; an ally already on the tile has it.
             let ally_on_tile = vis.allies.iter().any(|a| self.world.group_at(a.pos) == Some(i));
@@ -1598,15 +1683,23 @@ impl Bot {
             value /=
                 1.0 + g.max_strength / 100.0 * crate::learned::w(crate::learned::STRENGTH_DISCOUNT);
             // Can the champions on it clear it before the tank dies? Gear up on others first.
-            if self.theta.knob(knob::CAMP_FEASIBLE) > 0 && state != GroupState::RewardAvailable {
+            if self.theta.knob(knob::CAMP_FEASIBLE) & 1 != 0 && state != GroupState::RewardAvailable
+            {
                 let helpers = 1 + self
                     .priority_index(i)
                     .map_or(0, |pi| chan.claimants(pi, self.slot as usize));
                 let survive = self.last_hp.max(1.0) / (g.total_strength * CAMP_DMG_FLOOR).max(1.0);
-                let kill = g.total_hp / (self.cur_dps.max(my_dps) * helpers as f32).max(1.0);
+                let kill = group_hp / (self.cur_dps.max(my_dps) * helpers as f32).max(1.0);
                 if kill > survive * CAMP_FEASIBLE_SLACK {
                     value *= CAMP_INFEASIBLE_VALUE;
                 }
+            }
+            // CAMP_FEASIBLE bit 2, early ramp: before EARLY_RAMP_ROUNDS or our 2nd emblem, quick
+            // camps first; value falls with clear time past EARLY_RAMP_KNEE turns, so guarded
+            // groups (Golem, Elk packs) wait until we've geared up.
+            let early = round < EARLY_RAMP_ROUNDS || self.emblems() < 2;
+            if self.theta.knob(knob::CAMP_FEASIBLE) & 2 != 0 && early {
+                value /= 1.0 + (clear - EARLY_RAMP_KNEE).max(0.0) / EARLY_RAMP_KNEE;
             }
             // Remote farmer: the last slot of a 4+ team goes further for quieter groups.
             let remote = self.theta.knob(knob::REMOTE_FARMER) > 0
@@ -1634,7 +1727,8 @@ impl Bot {
         }
         if self.theta.knob(knob::EN_ROUTE) > 0 {
             if let Some((_, far)) = best {
-                if let Some(stop) = self.en_route_stop(far, my_pos, round, chan) {
+                let quiet = vis.enemies.iter().all(|e| e.on_spawn || e.dist > 6);
+                if let Some(stop) = self.en_route_stop(far, my_pos, round, chan, quiet) {
                     best = Some((0.0, stop));
                 }
             }
@@ -1672,9 +1766,17 @@ impl Bot {
         my_pos: Pos,
         round: u32,
         chan: &TeamChannel,
+        quiet: bool,
     ) -> Option<usize> {
         let to_far = self.group_distance(far, my_pos)? as i32;
-        if to_far <= EN_ROUTE_MIN_DIST {
+        // EN_ROUTE 2 (wide): limits for the engine 1.0.0 economy, plus free money nearby.
+        let wide = self.theta.knob(knob::EN_ROUTE) >= 2;
+        let (min_dist, max_clear) = if wide {
+            (EN_ROUTE_WIDE_MIN_DIST, EN_ROUTE_WIDE_MAX_CLEAR)
+        } else {
+            (EN_ROUTE_MIN_DIST, EN_ROUTE_MAX_CLEAR)
+        };
+        if to_far <= min_dist && !(wide && quiet) {
             return None;
         }
         let dps = self.cur_dps.max(10.0);
@@ -1683,10 +1785,16 @@ impl Bot {
             if i == far || g.has_monolith || g.gold + g.gems == 0 {
                 continue;
             }
-            if !matches!(
-                self.belief.expected_state(i, round),
-                GroupState::Alive | GroupState::Unknown
-            ) {
+            let state = self.belief.expected_state(i, round);
+            // Free money: a reward waiting to be captured, or a camp that can't hurt us.
+            let free = wide
+                && quiet
+                && (state == GroupState::RewardAvailable
+                    || (g.total_strength <= 0.0
+                        && matches!(state, GroupState::Alive | GroupState::Unknown)));
+            if !free
+                && (to_far <= min_dist || !matches!(state, GroupState::Alive | GroupState::Unknown))
+            {
                 continue;
             }
             if self.priority_index(i).is_some_and(|pi| chan.claimants(pi, self.slot as usize) > 0) {
@@ -1698,13 +1806,20 @@ impl Bot {
                 continue;
             };
             let detour = d1 as i32 + d2 as i32 - to_far;
-            let clear = g.total_hp / dps;
-            let damage = g.total_strength * CAMP_DMG_FLOOR * clear;
-            if detour as f32 > EN_ROUTE_DETOUR as f32 * crate::learned::w(crate::learned::EN_DETOUR)
-                || clear > EN_ROUTE_MAX_CLEAR * crate::learned::w(crate::learned::EN_CLEAR)
-                || damage > self.last_hp * 0.7
-            {
-                continue;
+            let clear = if state == GroupState::RewardAvailable { 0.0 } else { g.total_hp / dps };
+            if free {
+                if d1 as i32 > EN_ROUTE_FREE_RADIUS || detour > EN_ROUTE_FREE_RADIUS {
+                    continue;
+                }
+            } else {
+                let damage = g.total_strength * CAMP_DMG_FLOOR * clear;
+                if detour as f32
+                    > EN_ROUTE_DETOUR as f32 * crate::learned::w(crate::learned::EN_DETOUR)
+                    || clear > max_clear * crate::learned::w(crate::learned::EN_CLEAR)
+                    || damage > self.last_hp * 0.7
+                {
+                    continue;
+                }
             }
             let cost = detour as f32 + clear;
             if pick.is_none_or(|(c, _)| cost < c) {
@@ -2015,7 +2130,7 @@ thread_local! {
 /// An expert the situation allows (exploration and the learned router never pick nonsense).
 fn feasible(e: Expert, ctx: &Context) -> bool {
     match e {
-        Expert::Fight => ctx.enemy.is_some() && ctx.gems < router::BIG_BAG_GEMS,
+        Expert::Fight => ctx.enemy.is_some() && ctx.gems < ctx.knobs.big_bag(),
         Expert::Kite => ctx.enemy.is_some(),
         Expert::Tribute => ctx.gems > 0,
         Expert::Capture => ctx.target.is_some_and(|t| t.state == GroupState::RewardAvailable),
@@ -2040,7 +2155,7 @@ fn fight_fix(
     }
     let forced = matches!(mode, Mode::Override(_));
     let our_dps = (ctx.my_dps + ctx.ally_dps_near).max(1.0);
-    if bits & 4 != 0 && !forced && ctx.gems < router::BIG_BAG_GEMS {
+    if bits & 4 != 0 && !forced && ctx.gems < ctx.knobs.big_bag() {
         // Finish it: two turns of our damage kill the target.
         if e.dist <= my_range + 1 && e.hp <= our_dps * 2.0 {
             return Some((Intent::Engage(e.pos), "finish"));

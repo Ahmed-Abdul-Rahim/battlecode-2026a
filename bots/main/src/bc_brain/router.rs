@@ -11,7 +11,6 @@ use crate::bc_brain::policy::should_tribute;
 use crate::bc_core::belief::GroupState;
 
 /// Carried gems worth protecting before tributing.
-pub const BIG_BAG_GEMS: u32 = 100;
 /// Below this health fraction a big-bag carrier recalls to heal first.
 pub const BIG_BAG_MIN_HP: f32 = 0.6;
 /// On spawn below this health fraction, stay a turn to heal to full.
@@ -28,7 +27,7 @@ pub fn routine(ctx: &Context) -> Expert {
     }
     // A big bag is the whole game on some maps (the killer takes it): heal at
     // spawn first (recall keeps carried gems) instead of limping to an altar.
-    if ctx.gems >= BIG_BAG_GEMS && ctx.hp_frac() < BIG_BAG_MIN_HP && !ctx.at_spawn {
+    if ctx.gems >= ctx.knobs.big_bag() && ctx.hp_frac() < BIG_BAG_MIN_HP && !ctx.at_spawn {
         return Expert::RecallShop;
     }
     let far_from_spawn = ctx.dist_spawn.is_none_or(|d| d > 15);
@@ -80,7 +79,7 @@ pub fn rule_route(ctx: &Context) -> Expert {
         // A gem carrier is worth chasing: the killer takes the whole bag.
         let bounty = if e.gems >= 20 { 0.2 } else { 0.0 };
         // Carrying a big bag ourselves: only take one-sided fights (losing hands it over).
-        let risk = if ctx.gems >= BIG_BAG_GEMS { 1.0 } else { 0.0 };
+        let risk = if ctx.gems >= ctx.knobs.big_bag() { 1.0 } else { 0.0 };
         if advantage >= 1.0 + margin - bounty + risk {
             return Expert::Fight;
         }
@@ -197,7 +196,7 @@ mod tests {
     #[test]
     fn big_bag_heals_before_tributing() {
         let mut ctx = Context::neutral();
-        ctx.gems = BIG_BAG_GEMS;
+        ctx.gems = ctx.knobs.big_bag();
         ctx.hp = ctx.max_hp * 0.4;
         assert_eq!(routine(&ctx), Expert::RecallShop, "hurt carrier recalls (keeps gems)");
         ctx.hp = ctx.max_hp;
@@ -229,7 +228,7 @@ mod tests {
         ctx.enemies_in_range = 1;
         ctx.enemy = Some(enemy(300.0, 40.0, false));
         assert_eq!(rule_route(&ctx), Expert::Fight);
-        ctx.gems = BIG_BAG_GEMS;
+        ctx.gems = ctx.knobs.big_bag();
         ctx.enemy = Some(enemy(900.0, 60.0, false));
         assert_ne!(rule_route(&ctx), Expert::Fight, "close duel while carrying the bag");
     }

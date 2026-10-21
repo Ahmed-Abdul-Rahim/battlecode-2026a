@@ -147,7 +147,8 @@ pub mod knob {
     pub const FIGHT_V6: usize = 21;
     /// 1 = value stun / attack-reset kits (Tavi, Prism, Cassi, Ryth) on a 6-round fight horizon.
     pub const STUN_THREAT: usize = 22;
-    /// 1 = discount camp groups the team can't survive yet (farm gold and gear up first).
+    /// Bits: 1 = discount camp groups the team can't survive yet (farm gold and gear up first);
+    /// 2 = early-game ramp: quick camps first until round 300 or the 2nd emblem.
     pub const CAMP_FEASIBLE: usize = 23;
     /// 1 = play to passives: Vesper Vale (+20/40% gold) farms gold groups until geared,
     /// Prism (+0.2 Focus per carried gem) collects gems and carries bigger bags.
@@ -163,7 +164,8 @@ pub mod knob {
     /// 1 = shop before banking: recall to spend gold even while carrying gems (recall keeps
     /// them), so items come early and one trip home does both; tribute stays bag-driven.
     pub const SHOP_FIRST: usize = 28;
-    /// 1 = on the way to a far target, first take a small camp we can clear and survive
+    /// 1 = on the way to a far target, first take a small camp we can clear and survive (2 = wide:
+    /// targets >= 8 tiles, camps up to 40 turns, and free rewards/clusters within 4 tiles when quiet)
     /// alone within a short detour (gold on the path; stampede ran past it all game).
     pub const EN_ROUTE: usize = 29;
     /// 1 = share respawn timers: whoever sees a group go down writes (group, respawn round)
@@ -201,7 +203,7 @@ pub mod knob {
         (RECALL_SAFE, 1),
         (FIGHT_V6, 0),
         (STUN_THREAT, 0),
-        (CAMP_FEASIBLE, 0),
+        (CAMP_FEASIBLE, 24),
         (PASSIVE_ROLES, 0),
         (DRAFT_BEST, 0),
         (SAFE_ALTAR, 1),

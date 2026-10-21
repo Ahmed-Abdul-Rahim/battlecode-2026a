@@ -10,13 +10,16 @@
 \usepackage{enumitem}
 \usepackage{listings}
 \usepackage{tikz}
-\usetikzlibrary{arrows.meta,positioning}
+\usetikzlibrary{arrows.meta,positioning,automata}
 \usepackage[colorlinks=true,linkcolor=blue!50!black,urlcolor=blue!50!black]{hyperref}
 
 \definecolor{codebg}{gray}{0.96}
 \lstset{basicstyle=\ttfamily\small,backgroundcolor=\color{codebg},frame=single,rulecolor=\color{gray!40},
   columns=fullflexible,keepspaces=true,breaklines=true,showstringspaces=false}
 \newcommand{\f}[1]{\texttt{#1}}
+\lstdefinelanguage{Rust}{morekeywords={fn,let,mut,pub,struct,enum,impl,match,if,else,for,in,return,Some,None,true,false,self,Self,use,const,as,while,loop},
+  sensitive=true,morecomment=[l]{//},morestring=[b]"}
+\lstset{keywordstyle=\color{blue!60!black}\bfseries}
 \setlist{nosep,leftmargin=1.4em}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{5pt}
@@ -94,10 +97,15 @@ A round takes about 4 minutes. Every third round, we train one of the \emph{mimi
 \begin{enumerate}
 \item \textbf{Maps that were never trained} (new maps, or old ones still on default numbers). Each gets 4 rounds
   first, and maps we lost on the ladder go first.
-\item \textbf{The oldest ladder loss}, unless its map already had 6 rounds since that loss. After that
-  it goes to the human review.
-\item \textbf{The map we do worst on} in the latest test, or simply the next map in turn.
+\item \textbf{The oldest ladder loss of the version that is live now}, unless its map already had 6 rounds
+  since that loss. After that it goes to the human review.
+\item \textbf{Where we keep losing:} a weighted pick by ``map pressure'', meaning recent ladder losses on
+  that map (a loss counts less every day, and double if the live version lost it), times how badly we
+  do on that map locally. Every map keeps a small share, so none is forgotten.
 \end{enumerate}
+\textbf{When a new version is uploaded,} the open losses are marked \emph{superseded}: they leave the
+queue, because they were losses of the old version, but they stay in the review and still count in map
+pressure. So training never runs out of work and never replays an endless queue.
 Every map in the platform's pool always has an entry: a new map starts with the default numbers
 until training improves them. \f{train status} checks that the counts agree
 (\emph{fingerprint 21/21, geometry 21/21, in pack 21/21, trained N/21}). It also lists each untrained
@@ -251,6 +259,77 @@ newest trained version when \textbf{all} of these are true:
 If the new version then does more than 10\% worse on the ladder (after 10 ranked games each), the
 previous version is put back.
 
+The 3 hours count from the last upload's time in \f{league/ledger.json}, not from when the daemon
+started. The daemon checks at the start and the end of every round, so after a restart a due upload goes
+out within seconds. \f{train status} shows it on the \emph{next upload} line. While the daemon runs, it
+also stops Windows from going to sleep on its own; you can still put the PC to sleep yourself.
+
+\section{What our bot can and can't do}\label{sec:can}
+Status on 21 October 2026 (engine 1.0.0). ``Tested'' means we played old against new on the same games
+against our copies of the top teams; ``no gain'' means it didn't win more, so it is switched off.
+
+\subsection*{It can}
+\begin{itemize}
+\item \textbf{Farm camps.} It picks the next camp by gems, gold, distance and how long the camp takes to
+  kill, with numbers trained for each map. It captures the reward and avoids camps an ally already claimed.
+\item \textbf{Deliver gems.} It walks to an altar once its bag is big enough (bigger when the altar is far,
+  smaller when it is hurt or near the end). Next to an altar it delivers from 5 gems.
+\item \textbf{Shop and recall.} It goes home to buy items when it has gold, and recalls only when nothing
+  can reach it during the recall.
+\item \textbf{Decide fights.} It compares how fast it kills the enemy with how fast the enemy kills it
+  (allies nearby included). It only switches between fighting and fleeing after two turns that agree,
+  so it doesn't flip-flop.
+\item \textbf{Remember fights.} It keeps a short record of recent fights and of each enemy champion type.
+  After three lost exchanges, or a bad record against that type, it stops taking those fights.
+\item \textbf{Finish hurt enemies.} When a teammate reports an enemy champion at half health or less
+  within 4 tiles, it goes to kill it. This is PvP only.
+\item \textbf{Help teammates on its way.} When a teammate calls for help and the fight is at most 4 tiles
+  off its route, it joins.
+\item \textbf{Stop enemy deliveries.} It stuns or attacks an enemy channelling a delivery nearby, which
+  cancels it.
+\item \textbf{Know the current game.} All 13 champions including Heart of Ruin, the Golem camp, and live
+  champion stats read from the engine, so balance patches flow through.
+\item \textbf{Share 8 bytes with its team:} which of the 10 best camps each ally is going for, the last
+  enemy seen (where, how hurt, whether it is delivering), a help flag, and team-wide aggression and
+  bag-size settings.
+\end{itemize}
+
+\subsection*{It can't (yet)}
+\begin{itemize}
+\item \textbf{Check whether it can survive a camp.} By default it doesn't, so a lone champion can walk into
+  a Golem. \emph{Being tested:} a survival check, and an early-game ramp (easy camps first).
+\item \textbf{See monster damage.} It treats a half-killed camp group as full health. \emph{Next test:}
+  use the live health of the camps it can see.
+\item \textbf{Help with monsters.} It doesn't join an ally fighting a camp next to it. \emph{Next test:} join
+  within 4 tiles.
+\item \textbf{Deliver on the way.} It walks past altars on its route unless it is right next to one.
+  \emph{Next test:} deliver if an altar is at most 3 tiles off the route.
+\item \textbf{Use bag sizes for the new economy.} They were tuned when camps paid 3--5$\times$ more gems.
+  \emph{Being tested:} smaller bags.
+\item \textbf{Play skill combos.} Its stun is not timed with its burst. \emph{Tested:} a ``stun first, then
+  burst'' order; no gain.
+\item \textbf{Dodge or kite.} It only keeps distance when it is ranged and the enemy is melee; it doesn't
+  step out of spells. Melee champions don't dash in (tested; no gain).
+\item \textbf{See far.} It sees only its own vision plus the one shared sighting, and forgets an enemy
+  after 12 rounds.
+\item \textbf{Play Heart of Ruin itself.} It knows how dangerous an enemy Heart of Ruin is at low health,
+  but its draft doesn't pick it and it has no special play for it.
+\end{itemize}
+
+\subsection*{Tried and switched off (measured worse or no better)}
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+\toprule
+Idea & What happened\\
+\midrule
+Full combat state machine & 40\% fewer deaths, but farmed far less: win rate 0.52 $\to$ 0.43.\\
+Help calls with intent (fight / escape / finish / abort) & Win rate fell; removed from the 8 bytes.\\
+Travelling to answer any help call & Abandoned camps; cost more than it saved.\\
+Stepping back instead of walking home & More deaths and fewer gems.\\
+Stun-then-burst combo order & Slightly fewer gems; no gain.\\
+Prism/Vesper ``play to the passive'' roles & Win rate 0.58 $\to$ 0.48.\\
+\bottomrule
+\end{tabularx}
+
 \section{What humans do}
 Every few hours the lead writes \f{league/review/<date>.md}. Read it, and write your thoughts in its
 \emph{Reviewer notes} section. The program keeps that section.
@@ -331,5 +410,270 @@ Results differ from the ladder & Check that your cambc is 3.0.1 or newer.\\
 An evolved mimic looks broken & Delete \f{league/mimics/<team>.json} and push. It starts over.\\
 \bottomrule
 \end{tabularx}
+
+\appendix
+\lstset{basicstyle=\ttfamily\footnotesize}
+\section{Technical reference}\label{sec:tech}
+This appendix is for reviewing the design. Code is quoted from \f{league} (21 October 2026); file paths
+are given so you can check the current version.
+
+\paragraph{Determinism.} There are no NFAs anywhere: every state machine below is deterministic (a DFA). The
+engine has no randomness (WASI random returns zeros), so the same two bots on the same map always play the
+same game. The only randomness in the whole system is the trainer's seeded map pick (\S\ref{sec:pressure}).
+
+\subsection{Team channel: the 8 shared bytes (layout v3)}
+Every champion bot runs separately; the only way to talk is 8 bytes of shared memory the whole team can read
+and write during the game. Allies act one after another inside a round, so later allies see what earlier
+ones wrote that round. Codec: \f{crates/bc-core/src/memory.rs}, \f{TeamChannel}.
+
+\begin{center}\small
+\begin{tabular}{@{}rll@{}}
+\toprule
+Byte & Bits & Field\\
+\midrule
+0 & 0--1 & version (0 = never written, 3 = this layout)\\
+0 & 2 & parity of the round the leader last wrote\\
+0 & 3--5 & leader slot\\
+0 & 6 & the sighting is an enemy \emph{delivering} (tribute alert)\\
+0 & 7 & help flag (``I'm low and in danger''), cleared each round by the leader\\
+1 & 0--7 & team aggression (0--255), or a camp respawn broadcast (TEAM\_RESPAWN)\\
+2 & 0--7 & team bag threshold (gems), or the respawn round (TEAM\_RESPAWN)\\
+3--7 & 0--20 & camp claims: 6 slots, packed base 11\\
+3--7 & 21--34 & last enemy sighting: $x$ (7 bits), $y$ (7 bits)\\
+3--7 & 35--36 & sighting age: round mod 4\\
+3--7 & 37--38 & sighted enemy health in quarters ($<$25\%, $<$50\%, $<$75\%, more or unknown)\\
+3--7 & 39 & spare\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Camp claims} are 6 numbers 0--10 (0 = none, $k$ = priority index $k-1$, so only the 10 best camps
+of the draft's priority list can be claimed). $11^6 = 1{,}771{,}561 < 2^{21}$, so they fit in 21 bits as
+one base-11 number:
+\begin{lstlisting}[language=Rust]
+let mut packed = 0u64;
+for c in self.claims.iter().rev() {               // slot 5 first, slot 0 last
+    let x = c.map_or(0, |i| u64::from(i.min(MAX_CLAIM_INDEX)) + 1);
+    packed = packed * CLAIM_BASE + x;             // CLAIM_BASE = 11
+}
+let v = packed | s << CLAIM_BITS;                 // s = sighting x | y<<7 | r<<14 | hp_q<<16
+b[3..8].copy_from_slice(&v.to_le_bytes()[..5]);
+\end{lstlisting}
+
+\textbf{Leader protocol.} The first ally to act in a round sees a stale parity bit and becomes the leader:
+it clears the help flag and drops a sighting whose age reached 3 (age 3 can't be told from $-1$ with
+2 bits). \textbf{Who writes what:} every champion posts the nearest enemy it sees, with its health quarter
+(\f{post\_sighting\_hp}); a fresh tribute alert is not overwritten for 2 rounds; claims are rewritten every
+turn by each slot.
+
+\textbf{History of the layout.} v1: 4-bit claims (15 camps), no health. v2: 3-bit claims (7 camps) plus help
+calls with intent (fight/escape/finish/abort) and time left; measured worse, removed. v3: the table above.
+
+\subsection{Draft memory: the per-match parameters (1,024 bytes)}
+The draft bot sees the whole map with 10$\times$ fuel and writes \f{ThetaMatch} once; every champion reads it
+on its first turn (\f{memory.rs}, \f{docs/memory-layout.md}). Main parts: team size, role per pick, the camp
+priority list (up to 15 groups with scores; the claims above index into it), FiLM modulation for the learned
+router, \textbf{32 knob bytes}, champion vectors and kinds for both teams, a map-descriptor cache and a CRC.
+The knobs used by this document:
+{\small
+\begin{tabularx}{\linewidth}{@{}llX@{}}
+\toprule
+Knob (index) & Value & Meaning\\
+\midrule
+TRIBUTE\_MIN\_GEMS (2) & 20 & smallest bag worth a trip to an altar\\
+TRIBUTE\_MAX\_GEMS (3) & 120 & always deliver at this bag; big bag $=\frac56\times$ this (100)\\
+CAMP\_FEASIBLE (23) & 0 & bits: 1 survival check, 2 early ramp, 4 live camp HP, 8 PvE assist, 16 altar on way\\
+COMBAT\_FSM (31) & 195 & bits: 64 hysteresis, 128 help on my way, 2 kill assist (1 = full FSM: off)\\
+\bottomrule
+\end{tabularx}}
+
+\subsection{The trained vector $\theta$ and \f{pack.bin}}
+$\theta$ has 102 floats per map (\f{harness/params.py}, \f{bots/main/src/learned.rs}):
+\begin{center}\small
+\begin{tabular}{@{}lrll@{}}
+\toprule
+Block & Index & Search space & Bounds\\
+\midrule
+W multipliers & 0--17 & $\log$ (bot uses $e^x$) & $[\log 0.2, \log 5]$\\
+TARGET weights & 18--27 & linear & $[-3, 3]$\\
+FIGHT weights & 28--36 & linear & $[-3, 3]$\\
+HOT & 37 & fixed & 0\\
+U (6 actions $\times$ 10 facts) & 38--97 & linear & $[-4, 4]$\\
+X: Tavi re-spec, fuel floor, FSM alert, FSM assist & 98--101 & linear & $[0,1]$, $[25,60]$, $[0,12]$, $[0,2]$\\
+\bottomrule
+\end{tabular}
+\end{center}
+Training perturbs the search-space vector; \f{params.to\_bot} clips to the bounds and applies $e^x$ to W.
+\f{league/champion.json} stores the search-space vector per map; \f{pack.bin} stores bot-space floats:
+\begin{lstlisting}
+"BCPK" u16 version=1 u16 n_entries
+per entry:   u32 map_fingerprint  u16 n_sections
+per section: u8 tag  u32 length  bytes
+  tag 1  theta     f32[] (may be shorter than 102: the rest = learned.rs defaults)
+  tag 2  hotspots  (x u8, y u8, weight u8)[]
+  tag 3  opening   n_sides u8; per side: spawn x,y u8, then 13 kinds x 4 group indices (255 = end)
+  tag 4  draft     3 team sizes x 5 picks (255 = end)
+  tag 5  build     13 kinds x 12 emblems as family*3+stat (255 = end)
+\end{lstlisting}
+The map fingerprint is an FNV-1a hash of width, height, walls, holes and altars (\f{world::fingerprint}); the
+lead registers each new map's fingerprint by playing one debug game (\f{register\_map}). Our champion pack
+only has tag 1; mimic packs also carry tags 3--5 copied from the real team.
+
+\subsection{State machines}
+\subsubsection*{2-bit saturating counter (\f{bc\_core::combat::Ctr2})}
+Four states, like a branch predictor. ``Yes'' = states 2 and 3, so one contrary turn never flips a strong answer:
+\begin{center}
+\begin{tikzpicture}[->,>=Stealth,node distance=24mm,auto,
+  st/.style={circle,draw,minimum size=12mm,font=\small,align=center}]
+  \node[st] (0) {0\\[-2pt]\scriptsize strong no};
+  \node[st,right=of 0] (1) {1\\[-2pt]\scriptsize weak no};
+  \node[st,right=of 1,fill=green!8] (2) {2\\[-2pt]\scriptsize weak yes};
+  \node[st,right=of 2,fill=green!8] (3) {3\\[-2pt]\scriptsize strong yes};
+  \path (0) edge[bend left] node{\scriptsize good} (1)
+        (1) edge[bend left] node{\scriptsize good} (2)
+        (2) edge[bend left] node{\scriptsize good} (3)
+        (3) edge[bend left] node{\scriptsize bad} (2)
+        (2) edge[bend left] node{\scriptsize bad} (1)
+        (1) edge[bend left] node{\scriptsize bad} (0)
+        (0) edge[loop left] node{\scriptsize bad} (0)
+        (3) edge[loop right] node{\scriptsize good} (3);
+\end{tikzpicture}
+\end{center}
+Start state: 1. A turn is \emph{good} when \f{advantage} $\ge 1 + \text{margin}$ \textbf{and} the history
+allows it (next part).
+
+\subsubsection*{Fight history}
+\begin{lstlisting}[language=Rust]
+pub struct History {
+    pub results: u8,             // last 8 exchanges, newest in bit 0: 1 = we dealt >= we took
+    pub len: u8,                 // how many are recorded (max 8)
+    pub vs_kind: [Ctr2; 13],     // per enemy champion type: fights go well / badly
+}
+// history allows a fight unless: vs_kind[enemy] is "strong no", or the last 3 exchanges were all lost
+let history_ok = !hist.bad_against(e.kind) && hist.recent_losses(3) < 3;
+\end{lstlisting}
+An \emph{exchange} is one turn near an enemy champion (within its range + 2): damage we dealt is the drop
+in the watched enemy's health since our last turn; damage we took counts only when an enemy champion
+could hit us. Turns with neither are not recorded.
+
+\subsubsection*{Hysteresis gate (live: COMBAT\_FSM bit 64)}
+The other layers still choose this turn's action; the gate only blocks a switch between fighting and fleeing
+that the counter doesn't support. The memory is one value, \f{fsm\_fighting} $\in$ \{none, fighting,
+fleeing\}, reset when no enemy is in view:
+\begin{center}
+\begin{tikzpicture}[->,>=Stealth,node distance=40mm,auto,
+  st/.style={rounded corners,draw,minimum width=24mm,minimum height=8mm,font=\small}]
+  \node[st] (f) {fighting};
+  \node[st,right=of f] (r) {fleeing};
+  \path (f) edge[bend left] node[align=center]{\scriptsize layers say flee \textbf{and}\\[-2pt]\scriptsize counter says no} (r)
+        (r) edge[bend left] node[align=center,below]{\scriptsize layers say fight \textbf{and}\\[-2pt]\scriptsize counter says yes} (f)
+        (f) edge[loop left] node[align=center]{\scriptsize flee blocked:\\[-2pt]\scriptsize keep attacking} (f)
+        (r) edge[loop right] node[align=center]{\scriptsize fight blocked:\\[-2pt]\scriptsize walk home} (r);
+\end{tikzpicture}
+\end{center}
+\begin{lstlisting}[language=Rust]
+let kept = match self.fsm_fighting {
+    // was fighting, told to flee: only if the counter agrees (safety overrides always win)
+    Some(true) if flees && self.fsm.fight.yes() && !matches!(mode, Mode::Override(_)) =>
+        if ranged_vs_melee { Intent::Kite(e.pos) } else { Intent::Engage(e.pos) },
+    // was fleeing, told to fight: only if the counter agrees
+    Some(false) if fights && !self.fsm.fight.yes() => Intent::WalkHome,
+    _ => intent,
+};
+\end{lstlisting}
+\textbf{Points to criticise:} the counter is updated from the same advantage estimate the layers use, so it
+filters noise but can't correct a wrong estimate; the gate never overrides the low-health safety rule.
+
+\subsubsection*{Full combat state machine (COMBAT\_FSM bit 1 alone: off)}
+Kept in \f{crates/bc-core/src/combat.rs} for future work; measured worse (\S\ref{sec:can}).
+\begin{center}
+\begin{tikzpicture}[->,>=Stealth,node distance=22mm and 30mm,
+  st/.style={rounded corners,draw,minimum width=22mm,minimum height=7mm,font=\small},
+  lb/.style={font=\scriptsize,fill=white,inner sep=1pt}]
+  \node[st] (e) {ECONOMY};
+  \node[st,right=of e] (a) {ALERT};
+  \node[st,right=of a] (g) {ENGAGE};
+  \node[st,below=of e] (r) {RECOVER};
+  \node[st,below=of a] (d) {DISENGAGE};
+  \node[st,below=of g] (h) {ASSIST / ESCORT};
+  \draw (e) to[bend left=15] node[lb,above]{threat $\le$ 6 turns} (a);
+  \draw (a) to[bend left=15] node[lb,below]{quiet 6 turns} (e);
+  \draw (a) -- node[lb,above]{counter yes} (g);
+  \draw (a) -- node[lb,left]{in reach, no} (d);
+  \draw (g) to[bend right=12] node[lb,pos=0.35,above left]{losing / low hp / big bag} (d);
+  \draw (d) to[bend right=12] node[lb,pos=0.4,below right,xshift=-4mm]{trapped: hit 2 turns} (g);
+  \draw (d) -- node[lb,below]{out of reach} (r);
+  \draw (r) -- node[lb,left]{hp $>$ 90\%} (e);
+  \draw (h) -- node[lb,right,xshift=1mm]{own enemy, yes} (g);
+\end{tikzpicture}
+\end{center}
+States have minimum dwell times (ENGAGE 2 turns); ALERT blocks captures and deliveries when a threat can
+arrive before the channel ends. Its cost was economic: champions spent too many turns not farming.
+
+\subsection{Decision formulas}
+\paragraph{Fight advantage} (\f{crates/bc-brain/src/router.rs}):
+\begin{lstlisting}[language=Rust]
+let our_dps   = (ctx.my_dps + ctx.ally_dps_near).max(1.0);         // live stats, items included
+let their_dps = (e.dps * f32::from(ctx.enemies_in_range.max(1))).max(1.0);
+let advantage = (ctx.hp / their_dps) / (e.hp / our_dps).max(0.1)  // time to kill us / time to kill them
+              * ctx.fight_bias.exp();                               // learned FIGHT weights
+// fight if advantage >= 1 + margin - bounty + risk
+//   margin = fight_margin% x (255 - aggression) / 127;  bounty 0.2 if the enemy carries >= 20 gems
+//   risk 1.0 if we carry a big bag;  enemy dps x (1 + 0.5 x missing hp) for Heart of Ruin
+\end{lstlisting}
+\paragraph{Camp choice} (\f{bots/main/src/bot.rs}, \f{choose\_target}), per camp group:
+\[
+\text{score} = \frac{\text{value}}{\text{dist}\cdot w_{\text{dist}} + \text{clear}\cdot w_{\text{clear}} + \max(0, \text{eta}-\text{dist}) + 5}
+\times e^{\,\text{TARGET}\cdot\phi} \times (1.3\,w_{\text{hyst}} \text{ if current target})
+\]
+where
+\begin{itemize}
+\item value $= (\text{gems}\cdot w_{\text{gem}} + 0.6\,\text{gold}\cdot w_{\text{gold}}) \,/\, (1 + \text{max strength}/100 \cdot w_{\text{strength}})$;
+\item clear $= \text{group HP} / \text{our live damage}$ (turns to kill it alone);
+\item eta $=$ rounds until it respawns.
+\end{itemize} The $w$ are the trained W dials. \emph{Missing today (being tested):} survival
+($\text{kill time} > 3 \times \text{survival time} \Rightarrow \times 0.1$), the early ramp
+($\div\, 1 + \max(0, \text{clear} - 20)/20$) and live camp HP.
+
+\paragraph{Delivering gems} (\f{policy::should\_tribute}): deliver when the bag reaches TRIBUTE\_MAX, or
+$\text{bag} \ge \text{TRIBUTE\_MIN} + \text{dist to altar} \times \text{scale}/10$, halved when hurt, threatened
+or after round 1800; within 2 tiles of an altar the requirement is at most 5 gems.
+
+\paragraph{Kill assist} (bit 2): if no enemy champion is within 4 tiles, we carry less than a big bag, our
+health is over 40\%, and the shared sighting is at most 1 round old, within 4 tiles and at $\le$ 50\% health
+(quarters 0--1) $\Rightarrow$ engage it.
+
+\paragraph{Help on my way} (bit 128): the goal is where the current intent leads (camp centre, nearest altar
+or home); we answer the 1-bit help flag only if $\text{dist}(me, p) \le 10$ and
+$\text{dist}(me,p) + \text{dist}(p, goal) - \text{dist}(me, goal) \le 4$ (Chebyshev distances).
+
+\subsection{League daemon logic}\label{sec:pressure}
+\begin{lstlisting}[language=Python]
+def cycle():                          # harness/league.py, one round
+    integrate()                       # git fetch + rebase; champion.json is merged per map
+    seed_maps(); apply_champion()     # every pool map has a theta; pack.bin follows champion.json
+    maybe_release()                   # lead + --auto-submit: upload if due (also at the end)
+    if lead: watch(); refresh_maps(); sync()   # ladder games, map pool, top-10 mimics
+    if every 3rd round and no map still needs bootstrap: evolve_mimic()
+    else: train()                     # 8 antithetic ES copies of one map's theta vs 5 opponents
+    publish(champion.json, pack.bin)  # on a promotion or every 30 min (try counts)
+    maybe_release()
+
+def release_decision(ch, led, now):   # upload v if all hold
+    newer = ch["version"] > live_version
+    gap   = now - last_upload_time >= 3 * 3600
+    why   = any loss since the last upload  or  bench(v) >= bench(live) + 0.05
+
+def map_pressure(led, now):           # used when no open loss of the live version is queued
+    for loss in led["losses"] (except needs-human):
+        w = exp(-(now - loss.time) / 24h) * (2 if the live version lost it else 1)
+        pressure[loss.map] += w
+# pick map ~ (pressure[m] + 0.1 * max pressure + 0.05) * (1.1 - local win rate on m)
+\end{lstlisting}
+\paragraph{Promotion gate:} a copy replaces the champion's $\theta$ on that map only if its fitness
+(win $+ 0.25\,$gem lead $- 0.01\,$deaths) beats the champion by 0.04 on the same games, it wins the
+head-to-head ($\ge$ 0.5), it is at least as good on 3 fresh opponents, and it runs out of fuel at most
+twice as often. \paragraph{Merging two PCs:} \f{merge\_champion} is a 3-way merge per map; if both sides
+changed the same map, a head-to-head on that map decides; promotion history is unioned and renumbered.
 
 \end{document}
