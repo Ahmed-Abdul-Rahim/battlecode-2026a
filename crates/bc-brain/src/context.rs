@@ -24,6 +24,14 @@ pub struct Knobs {
 }
 
 impl Knobs {
+    /// Carrying at least this many gems is a "big bag": avoid even fights, don't join others'
+    /// (the killer takes the whole bag). Tied to the delivery cap (100 at the old 120), so the
+    /// two move together when the economy or training changes the cap.
+    #[must_use]
+    pub fn big_bag(&self) -> u32 {
+        (u32::from(self.tribute_max) * 5 / 6).max(5)
+    }
+
     #[must_use]
     pub fn from_theta(t: &ThetaMatch) -> Self {
         Self {
