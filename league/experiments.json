@@ -2273,6 +2273,8 @@
   {
    "added": "2026-10-21T20:16:07Z",
    "area": "economy",
+   "claimed": "2026-10-21T20:56:32Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 62,
    "notes": "+0.5 value per gold on groups cleared in <= 20 turns before 2 emblems.",
    "results": {},
@@ -2282,7 +2284,7 @@
     },
     "ref": "origin/feat/gaps-2"
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Quick gold first until 2 emblems"
   },
   {
