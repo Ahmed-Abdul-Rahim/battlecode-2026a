@@ -2234,17 +2234,40 @@
    "added": "2026-10-21T20:16:07Z",
    "area": "farming",
    "claimed": "2026-10-21T20:54:58Z",
+   "finished": "2026-10-21T20:56:27Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 61,
-   "notes": "Approach the group's lowest-HP monster (100 HP ~ 1 tile) instead of the nearest.",
-   "results": {},
+   "notes": "Approach the group's lowest-HP monster (100 HP ~ 1 tile) instead of the nearest. Screen: win 0.489 vs 0.533, fitness 0.29 vs 0.364 (paired -0.075 +- 0.040).",
+   "results": {
+    "screen": {
+     "live": {
+      "deaths": 16.96,
+      "fitness": 0.364,
+      "games": 182,
+      "gem_margin": 0.003,
+      "win": 0.533
+     },
+     "paired": {
+      "mean": -0.0746,
+      "pairs": 182,
+      "se": 0.0397
+     },
+     "variant": {
+      "deaths": 18.86,
+      "fitness": 0.29,
+      "games": 182,
+      "gem_margin": -0.043,
+      "win": 0.489
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "WEAK_CAMP_FIRST": 1
     },
     "ref": "origin/feat/gaps-2"
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "Walk to the weakest monster first"
   },
   {
