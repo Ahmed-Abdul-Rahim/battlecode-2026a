@@ -2411,6 +2411,8 @@
   {
    "added": "2026-10-21T20:16:07Z",
    "area": "denial",
+   "claimed": "2026-10-21T21:07:21Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 65,
    "notes": "Lock altars about as close to the enemy spawn as to ours (within 3).",
    "results": {},
@@ -2420,7 +2422,7 @@
     },
     "ref": "origin/feat/gaps-2"
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Altar locks on contested altars only"
   },
   {
