@@ -2233,6 +2233,8 @@
   {
    "added": "2026-10-21T20:16:07Z",
    "area": "farming",
+   "claimed": "2026-10-21T20:54:58Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 61,
    "notes": "Approach the group's lowest-HP monster (100 HP ~ 1 tile) instead of the nearest.",
    "results": {},
@@ -2242,7 +2244,7 @@
     },
     "ref": "origin/feat/gaps-2"
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Walk to the weakest monster first"
   },
   {
