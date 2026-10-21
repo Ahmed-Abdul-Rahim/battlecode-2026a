@@ -657,6 +657,7 @@
   {
    "added": "2026-10-21T17:53:43Z",
    "claimed": "2026-10-21T17:53:43Z",
+   "finished": "2026-10-21T17:55:34Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 27,
    "kind": "gen",
@@ -664,8 +665,18 @@
     "explore": 10,
     "offset": 69
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "games": 78,
+    "maps": [
+     "01yellow-brick-road",
+     "00ambush",
+     "01big-world"
+    ],
+    "rows": 189532,
+    "shard": "gen-00027-DESKTOP-QVEMEEE.npz",
+    "win": 0.256
+   },
+   "status": "done"
   }
  ]
 }
