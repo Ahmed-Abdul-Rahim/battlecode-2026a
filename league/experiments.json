@@ -1749,6 +1749,8 @@
   {
    "added": "2026-10-21T15:12:04Z",
    "area": "farming",
+   "claimed": "2026-10-21T19:04:21Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 31,
    "notes": "",
    "results": {},
@@ -1757,7 +1759,7 @@
      "CAMP_SAFE": 2
     }
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Don't wake a group alone that kills you"
   },
   {
