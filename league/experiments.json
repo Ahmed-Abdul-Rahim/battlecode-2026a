@@ -706,6 +706,8 @@
   {
    "added": "2026-10-21T15:30:46Z",
    "area": "combat",
+   "claimed": "2026-10-21T16:06:30Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 45,
    "notes": "Champions and camps: hold the stun while the target is stunned, so allies' stuns chain.",
    "results": {},
@@ -715,7 +717,7 @@
     },
     "ref": "origin/feat/stun-upgrade"
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Stun lock (no stun on a stunned unit)"
   },
   {
