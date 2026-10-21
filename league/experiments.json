@@ -707,17 +707,35 @@
    "added": "2026-10-21T15:30:46Z",
    "area": "combat",
    "claimed": "2026-10-21T16:06:30Z",
+   "finished": "2026-10-21T16:08:22Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 45,
-   "notes": "Champions and camps: hold the stun while the target is stunned, so allies' stuns chain.",
-   "results": {},
+   "notes": "Champions and camps: hold the stun while the target is stunned, so allies' stuns chain. Screen: win 0.516 vs 0.555, fitness 0.334 vs 0.385.",
+   "results": {
+    "screen": {
+     "live": {
+      "deaths": 16.91,
+      "fitness": 0.385,
+      "games": 182,
+      "gem_margin": -0.001,
+      "win": 0.555
+     },
+     "variant": {
+      "deaths": 17.46,
+      "fitness": 0.334,
+      "games": 182,
+      "gem_margin": -0.031,
+      "win": 0.516
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "STUN_LOCK": 1
     },
     "ref": "origin/feat/stun-upgrade"
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "Stun lock (no stun on a stunned unit)"
   },
   {
