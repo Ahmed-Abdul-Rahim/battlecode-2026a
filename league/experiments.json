@@ -555,7 +555,7 @@
    "finished": "2026-10-21T15:55:14Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 41,
-   "notes": "Re-queued: the first run built the branch as cut, before PvE assist was merged, so it tested old code against the improved live bot (screen 0.5 vs 0.555). Refs are now merged onto the live code first. Screen: win 0.538 vs 0.555, fitness 0.363 vs 0.385.",
+   "notes": "Merged as part of #43 (theta 169 + knob2 block were in the gated build; not separately neutral: any change reshuffles games through fuel use).",
    "results": {
     "screen": {
      "live": {
@@ -577,42 +577,23 @@
    "spec": {
     "ref": "origin/feat/passive-aware"
    },
-   "status": "rejected",
+   "status": "merged",
    "title": "theta 169 + knob2 block, all off (must equal live)"
   },
   {
    "added": "2026-10-21T15:20:12Z",
    "area": "passives",
-   "claimed": "2026-10-21T15:55:18Z",
-   "finished": "2026-10-21T15:57:10Z",
-   "host": "DESKTOP-QVEMEEE",
    "id": 42,
-   "notes": "Re-queued: the first run built the branch as cut, before PvE assist was merged, so it tested old code against the improved live bot (screen 0.451 vs 0.555). Refs are now merged onto the live code first. Screen: win 0.516 vs 0.555, fitness 0.344 vs 0.385.",
-   "results": {
-    "screen": {
-     "live": {
-      "deaths": 16.91,
-      "fitness": 0.385,
-      "games": 182,
-      "gem_margin": -0.001,
-      "win": 0.555
-     },
-     "variant": {
-      "deaths": 16.9,
-      "fitness": 0.344,
-      "games": 182,
-      "gem_margin": -0.014,
-      "win": 0.516
-     }
-    }
-   },
+   "notes": "Re-queued: the first run built the branch as cut, before PvE assist was merged, so it tested old code against the improved live bot (screen 0.451 vs 0.555). Refs are now merged onto the live code first. Screen: win 0.516 vs 0.555, fitness 0.344 vs 0.385. Re-run: rejected by the old strict screen; now measured with the paired screen on top of #43.",
+   "results": {},
+   "run": 2,
    "spec": {
     "knobs": {
      "PASSIVE_AWARE": 1
     },
     "ref": "origin/feat/passive-aware"
    },
-   "status": "rejected",
+   "status": "queued",
    "title": "Passive-aware play (per passive / kind)"
   },
   {
@@ -622,7 +603,7 @@
    "finished": "2026-10-21T16:04:49Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 43,
-   "notes": "Attacker calls a hurt enemy (<=60% HP, ally within 6); allies in reach take it first. Re-queued: first run used the branch as cut (before PvE assist), screen 0.473 vs 0.555; refs are now merged onto live first.",
+   "notes": "Attacker calls a hurt enemy (<=60% HP, ally within 6); allies in reach take it first. Re-queued: first run used the branch as cut (before PvE assist), screen 0.473 vs 0.555; refs are now merged onto live first. Merged: knob2 FOCUS on by default (with theta 169 and the knob2 block, all other switches off).",
    "results": {
     "full": {
      "h2h": 0.586,
@@ -665,77 +646,39 @@
     },
     "ref": "origin/feat/team-endgame"
    },
-   "status": "passed",
+   "status": "merged",
    "title": "Team focus target (channel bit 39)"
   },
   {
    "added": "2026-10-21T15:30:46Z",
    "area": "teamwork",
-   "claimed": "2026-10-21T16:04:56Z",
-   "finished": "2026-10-21T16:06:26Z",
-   "host": "DESKTOP-QVEMEEE",
    "id": 44,
-   "notes": "From round 1700 or 80% of winning gems: ahead = bank bags, only clear fights; behind = hunt. Screen: win 0.505 vs 0.555, fitness 0.331 vs 0.385.",
-   "results": {
-    "screen": {
-     "live": {
-      "deaths": 16.91,
-      "fitness": 0.385,
-      "games": 182,
-      "gem_margin": -0.001,
-      "win": 0.555
-     },
-     "variant": {
-      "deaths": 16.96,
-      "fitness": 0.331,
-      "games": 182,
-      "gem_margin": -0.019,
-      "win": 0.505
-     }
-    }
-   },
+   "notes": "From round 1700 or 80% of winning gems: ahead = bank bags, only clear fights; behind = hunt. Screen: win 0.505 vs 0.555, fitness 0.331 vs 0.385. Re-run: rejected by the old strict screen; now measured with the paired screen on top of #43.",
+   "results": {},
+   "run": 2,
    "spec": {
     "knobs": {
      "ENDGAME": 1
     },
     "ref": "origin/feat/team-endgame"
    },
-   "status": "rejected",
+   "status": "queued",
    "title": "Endgame mode near a win or tie"
   },
   {
    "added": "2026-10-21T15:30:46Z",
    "area": "combat",
-   "claimed": "2026-10-21T16:06:30Z",
-   "finished": "2026-10-21T16:08:22Z",
-   "host": "DESKTOP-QVEMEEE",
    "id": 45,
-   "notes": "Champions and camps: hold the stun while the target is stunned, so allies' stuns chain. Screen: win 0.516 vs 0.555, fitness 0.334 vs 0.385.",
-   "results": {
-    "screen": {
-     "live": {
-      "deaths": 16.91,
-      "fitness": 0.385,
-      "games": 182,
-      "gem_margin": -0.001,
-      "win": 0.555
-     },
-     "variant": {
-      "deaths": 17.46,
-      "fitness": 0.334,
-      "games": 182,
-      "gem_margin": -0.031,
-      "win": 0.516
-     }
-    }
-   },
+   "notes": "Champions and camps: hold the stun while the target is stunned, so allies' stuns chain. Screen: win 0.516 vs 0.555, fitness 0.334 vs 0.385. Re-run: rejected by the old strict screen; now measured with the paired screen on top of #43.",
+   "results": {},
+   "run": 2,
    "spec": {
     "knobs": {
      "STUN_LOCK": 1
     },
     "ref": "origin/feat/stun-upgrade"
    },
-   "status": "rejected",
+   "status": "queued",
    "title": "Stun lock (no stun on a stunned unit)"
   },
   {

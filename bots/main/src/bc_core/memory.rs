@@ -68,7 +68,7 @@ pub mod knob2 {
 
     pub const DEFAULTS: [(usize, u8); 8] = [
         (PASSIVE_AWARE, 0),
-        (FOCUS, 0),
+        (FOCUS, 1),
         (ENDGAME, 0),
         (SPACING, 0),
         (LOS_RETREAT, 0),
@@ -616,7 +616,8 @@ mod tests {
     #[test]
     fn knobs2_round_trip_and_default_off() {
         let mut t = sample_theta();
-        assert_eq!(t.knob2(knob2::FOCUS), 0);
+        assert_eq!(t.knob2(knob2::SPACING), 0);
+        assert_eq!(t.knob2(knob2::FOCUS), 1, "team focus target is on (experiment 43)");
         t.knobs2[knob2::WARDS] = 3;
         let d = ThetaMatch::decode(&t.encode()).unwrap();
         assert_eq!(d.knob2(knob2::WARDS), 3);
