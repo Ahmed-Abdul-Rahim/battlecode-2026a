@@ -1474,16 +1474,39 @@
    "added": "2026-10-21T15:12:04Z",
    "area": "combat",
    "claimed": "2026-10-21T18:28:24Z",
+   "finished": "2026-10-21T18:30:15Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 27,
-   "notes": "",
-   "results": {},
+   "notes": "Screen: win 0.467 vs 0.533, fitness 0.271 vs 0.364 (paired -0.093 +- 0.046).",
+   "results": {
+    "screen": {
+     "live": {
+      "deaths": 16.96,
+      "fitness": 0.364,
+      "games": 182,
+      "gem_margin": 0.003,
+      "win": 0.533
+     },
+     "paired": {
+      "mean": -0.0935,
+      "pairs": 182,
+      "se": 0.046
+     },
+     "variant": {
+      "deaths": 17.53,
+      "fitness": 0.271,
+      "games": 182,
+      "gem_margin": -0.084,
+      "win": 0.467
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "STUN_THREAT": 1
     }
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "Value stun kits on a 6-round horizon"
   },
   {
