@@ -1297,6 +1297,7 @@
   {
    "added": "2026-10-21T18:55:51Z",
    "claimed": "2026-10-21T18:55:51Z",
+   "finished": "2026-10-21T18:57:52Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 52,
    "kind": "gen",
@@ -1304,8 +1305,18 @@
     "explore": 10,
     "offset": 132
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "games": 78,
+    "maps": [
+     "00great-wall",
+     "01hooks",
+     "00interlock"
+    ],
+    "rows": 160790,
+    "shard": "gen-00052-DESKTOP-QVEMEEE.npz",
+    "win": 0.282
+   },
+   "status": "done"
   }
  ]
 }
