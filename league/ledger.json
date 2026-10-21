@@ -180,6 +180,15 @@
    "time": "2026-10-20T22:10:10.068Z",
    "win": true
   },
+  "0f29af4f-41da-4b28-997f-77749a077df6": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "concentrated-wealth",
+   "opp": "What Are We Doing",
+   "oppId": "1a73e547-36f0-42df-aba5-698de2d22685",
+   "time": "2026-10-21T17:10:14.313Z",
+   "win": false
+  },
   "0f74cd8d-30e5-407a-8d79-79528e2142ba": {
    "kind": "ranked",
    "live": 1,
@@ -882,6 +891,15 @@
    "time": "2026-10-20T16:20:07.816Z",
    "win": false
   },
+  "410c342e-d09a-4884-9049-0ddc37d68d1b": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "corridors",
+   "opp": "jazz",
+   "oppId": "96b0be30-6a0e-45b3-8d4b-cd2a910d6bf8",
+   "time": "2026-10-21T17:00:20.988Z",
+   "win": false
+  },
   "41bc95c2-d828-4939-bb3c-95177dbe2858": {
    "kind": "ranked",
    "live": 1,
@@ -1035,6 +1053,15 @@
    "time": "2026-10-21T13:20:11.646Z",
    "win": false
   },
+  "525d67bd-4bd8-4adf-be3e-b2f738cb2742": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "packs",
+   "opp": "What Are We Doing",
+   "oppId": "1a73e547-36f0-42df-aba5-698de2d22685",
+   "time": "2026-10-21T17:10:14.312Z",
+   "win": true
+  },
   "52a40ce8-1dad-4a51-9ee1-24751155cf5e": {
    "kind": "ranked",
    "live": 1,
@@ -1177,6 +1204,15 @@
    "opp": "Patient Gem Thieves",
    "oppId": "cfd44d0a-4d7b-42db-a1e6-e04ff397f391",
    "time": "2026-10-20T20:30:13.466Z",
+   "win": true
+  },
+  "5b32abca-b30e-475c-9138-9a7d13cf8ddb": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "concentrated-wealth",
+   "opp": "jazz",
+   "oppId": "96b0be30-6a0e-45b3-8d4b-cd2a910d6bf8",
+   "time": "2026-10-21T17:00:20.987Z",
    "win": true
   },
   "5c372318-2a1f-4bf5-939c-4e7409133894": {
@@ -1413,6 +1449,15 @@
    "time": "2026-10-20T17:10:06.134Z",
    "win": false
   },
+  "6e1723f1-7882-42e7-981b-1a9e60da231b": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "boss-battle",
+   "opp": "jazz",
+   "oppId": "96b0be30-6a0e-45b3-8d4b-cd2a910d6bf8",
+   "time": "2026-10-21T17:00:20.987Z",
+   "win": false
+  },
   "6e93c353-39db-4597-bdac-7018eec5a482": {
    "kind": "ranked",
    "live": 1,
@@ -1574,6 +1619,15 @@
    "oppId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
    "time": "2026-10-20T20:00:10.344Z",
    "win": false
+  },
+  "78b411a1-6b37-46df-b6d4-d2071e868cba": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "expanse",
+   "opp": "What Are We Doing",
+   "oppId": "1a73e547-36f0-42df-aba5-698de2d22685",
+   "time": "2026-10-21T17:10:14.313Z",
+   "win": true
   },
   "7a5c7bb4-a560-4d41-a204-400e9338a377": {
    "kind": "ranked",
@@ -2511,6 +2565,15 @@
    "time": "2026-10-20T16:00:07.665Z",
    "win": true
   },
+  "c6b69406-0eb4-461d-9a99-92343f108688": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "collision",
+   "opp": "What Are We Doing",
+   "oppId": "1a73e547-36f0-42df-aba5-698de2d22685",
+   "time": "2026-10-21T17:10:14.313Z",
+   "win": true
+  },
   "c7620b9f-30c7-43ec-902a-41a25e26d4af": {
    "kind": "ranked",
    "live": 1,
@@ -2717,6 +2780,15 @@
    "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
    "time": "2026-10-21T16:20:14.380Z",
    "win": true
+  },
+  "d7d884e2-e66d-4c63-a184-6c7ea27faa7f": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "starvation",
+   "opp": "jazz",
+   "oppId": "96b0be30-6a0e-45b3-8d4b-cd2a910d6bf8",
+   "time": "2026-10-21T17:00:20.987Z",
+   "win": false
   },
   "d8c9d920-7db9-4533-a673-d35849695e2d": {
    "kind": "ranked",
@@ -3024,6 +3096,15 @@
    "time": "2026-10-20T15:10:13.186Z",
    "win": true
   },
+  "eedc3368-54bc-4887-b93e-0e1c8d7242fa": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "yellow-brick-road",
+   "opp": "jazz",
+   "oppId": "96b0be30-6a0e-45b3-8d4b-cd2a910d6bf8",
+   "time": "2026-10-21T17:00:20.988Z",
+   "win": false
+  },
   "ef78efd8-5aeb-4f54-9151-cc19c307066a": {
    "kind": "ranked",
    "live": 1,
@@ -3176,6 +3257,15 @@
    "oppId": "fd3a404c-954b-4628-a418-7a8e57fb3783",
    "time": "2026-10-20T17:50:06.264Z",
    "win": true
+  },
+  "f9abd877-2549-43b8-bd8c-6b768da578aa": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "pilgrimage",
+   "opp": "What Are We Doing",
+   "oppId": "1a73e547-36f0-42df-aba5-698de2d22685",
+   "time": "2026-10-21T17:10:14.313Z",
+   "win": false
   },
   "fac53974-8eb7-4760-b824-6ab79d29b193": {
    "kind": "ranked",
@@ -6422,6 +6512,106 @@
    "status": "open",
    "time": "2026-10-21T16:50:14.905Z",
    "tries_at": 2
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 25
+   },
+   "deaths_them": 10,
+   "deaths_us": 25,
+   "gems_them": "862",
+   "gems_us": "120",
+   "id": "f9abd877-2549-43b8-bd8c-6b768da578aa",
+   "map": "pilgrimage",
+   "opp": "What Are We Doing",
+   "oppId": "1a73e547-36f0-42df-aba5-698de2d22685",
+   "status": "open",
+   "time": "2026-10-21T17:10:14.313Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 8
+   },
+   "deaths_them": 11,
+   "deaths_us": 8,
+   "gems_them": "970",
+   "gems_us": "821",
+   "id": "0f29af4f-41da-4b28-997f-77749a077df6",
+   "map": "concentrated-wealth",
+   "opp": "What Are We Doing",
+   "oppId": "1a73e547-36f0-42df-aba5-698de2d22685",
+   "status": "open",
+   "time": "2026-10-21T17:10:14.313Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 20,
+    "Unknown entity kind (2)": 15
+   },
+   "deaths_them": 15,
+   "deaths_us": 35,
+   "gems_them": "1029",
+   "gems_us": "331",
+   "id": "eedc3368-54bc-4887-b93e-0e1c8d7242fa",
+   "map": "yellow-brick-road",
+   "opp": "jazz",
+   "oppId": "96b0be30-6a0e-45b3-8d4b-cd2a910d6bf8",
+   "status": "open",
+   "time": "2026-10-21T17:00:20.988Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 2,
+    "Unknown entity kind (2)": 40
+   },
+   "deaths_them": 4,
+   "deaths_us": 42,
+   "gems_them": "1058",
+   "gems_us": "442",
+   "id": "410c342e-d09a-4884-9049-0ddc37d68d1b",
+   "map": "corridors",
+   "opp": "jazz",
+   "oppId": "96b0be30-6a0e-45b3-8d4b-cd2a910d6bf8",
+   "status": "open",
+   "time": "2026-10-21T17:00:20.988Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 12,
+    "Unknown entity kind (2)": 16
+   },
+   "deaths_them": 0,
+   "deaths_us": 28,
+   "gems_them": "0",
+   "gems_us": "0",
+   "id": "6e1723f1-7882-42e7-981b-1a9e60da231b",
+   "map": "boss-battle",
+   "opp": "jazz",
+   "oppId": "96b0be30-6a0e-45b3-8d4b-cd2a910d6bf8",
+   "status": "open",
+   "time": "2026-10-21T17:00:20.987Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 13,
+    "Unknown entity kind (2)": 40
+   },
+   "deaths_them": 5,
+   "deaths_us": 53,
+   "gems_them": "396",
+   "gems_us": "260",
+   "id": "d7d884e2-e66d-4c63-a184-6c7ea27faa7f",
+   "map": "starvation",
+   "opp": "jazz",
+   "oppId": "96b0be30-6a0e-45b3-8d4b-cd2a910d6bf8",
+   "status": "open",
+   "time": "2026-10-21T17:00:20.987Z",
+   "tries_at": 1
   }
  ],
  "map_files": {
