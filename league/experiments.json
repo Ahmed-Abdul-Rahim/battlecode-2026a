@@ -2511,10 +2511,51 @@
    "added": "2026-10-21T20:16:07Z",
    "area": "movement",
    "claimed": "2026-10-21T21:30:06Z",
+   "finished": "2026-10-21T22:13:52Z",
    "host": "muhammad-usman-Inspiron-14-5410-2-in-1",
    "id": 66,
    "notes": "No healing outside spawn, so: break the chasers' line of sight first so the recall isn't cancelled. Claim released: DESKTOP-QVEMEEE stopped before finishing.",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.447,
+     "h2h_games": 76,
+     "live": {
+      "deaths": 22.63,
+      "fitness": 0.455,
+      "games": 988,
+      "gem_margin": 0.132,
+      "win": 0.649
+     },
+     "variant": {
+      "deaths": 23.5,
+      "fitness": 0.399,
+      "games": 988,
+      "gem_margin": 0.109,
+      "win": 0.606
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 16.52,
+      "fitness": 0.39,
+      "games": 182,
+      "gem_margin": -0.0,
+      "win": 0.555
+     },
+     "paired": {
+      "mean": -0.0439,
+      "pairs": 182,
+      "se": 0.0466
+     },
+     "variant": {
+      "deaths": 16.25,
+      "fitness": 0.346,
+      "games": 182,
+      "gem_margin": 0.011,
+      "win": 0.505
+     }
+    }
+   },
    "run": 2,
    "spec": {
     "knobs": {
@@ -2522,7 +2563,7 @@
     },
     "ref": "origin/feat/gaps-2"
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "Hide out of sight, then recall"
   },
   {
