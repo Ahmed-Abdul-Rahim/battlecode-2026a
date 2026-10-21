@@ -31,6 +31,38 @@ def test_gates():
     assert not X.full_passes(live, {"win": 0.54, "fitness": 0.40}, 0.6)  # fewer wins
 
 
+def test_claims_and_stale_claims():
+    reg = {"experiments": []}
+    other = X.add(reg, "theirs", "x", knobs={"A": 1}, status="screening")
+    other.update(host="other-pc", claimed="2026-10-21T10:00:00Z")
+    mine = X.add(reg, "mine, interrupted", "x", knobs={"A": 2}, status="full")
+    mine.update(host=X.L.HOST, claimed="2026-10-21T10:00:00Z")
+    now = X.L.ts("2026-10-21T12:00:00Z")
+    assert X.next_queued(reg, now) is mine  # resume our own interrupted claim
+    mine["status"] = "rejected"
+    assert X.next_queued(reg, now) is None  # the other PC's claim is fresh
+    assert X.next_queued(reg, now + X.CLAIM_TTL) is other  # ... until it goes stale
+
+
+def test_registry_merge_keeps_progress_and_first_claim():
+    L = X.L
+    base = {"experiments": []}
+    a = X.add(base, "a", "x", knobs={"A": 1})
+    b = X.add(base, "b", "x", knobs={"B": 1})
+    import copy
+
+    up, ours = copy.deepcopy(base), copy.deepcopy(base)
+    up["experiments"][0].update(status="rejected", results={"screen": 1})
+    ours["experiments"][0].update(status="screening", host="me", claimed="2026-10-21T11:00:00Z")
+    up["experiments"][1].update(status="screening", host="pc2", claimed="2026-10-21T10:00:00Z")
+    ours["experiments"][1].update(status="screening", host="me", claimed="2026-10-21T10:05:00Z")
+    X.add(ours, "c (new here)", "x", knobs={"C": 1})
+    m = L.merge_experiments(ours, up)["experiments"]
+    assert [e["id"] for e in m] == [a["id"], b["id"], 3]
+    assert m[0]["status"] == "rejected"  # finished beats claimed
+    assert m[1]["host"] == "pc2"  # the earlier claim wins
+
+
 def test_next_queued_and_tex_escaping():
     reg = {"experiments": []}
     X.add(reg, "done", "x", knobs={"A": 1}, status="rejected")

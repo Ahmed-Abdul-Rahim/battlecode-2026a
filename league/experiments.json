@@ -551,97 +551,43 @@
   {
    "added": "2026-10-21T15:20:12Z",
    "area": "infra",
-   "finished": "2026-10-21T15:47:41Z",
    "id": 41,
-   "notes": "Neutrality check for the bigger theta and second knob block. Screen: win 0.5 vs 0.555, fitness 0.312 vs 0.385.",
-   "results": {
-    "screen": {
-     "live": {
-      "deaths": 16.91,
-      "fitness": 0.385,
-      "games": 182,
-      "gem_margin": -0.001,
-      "win": 0.555
-     },
-     "variant": {
-      "deaths": 16.64,
-      "fitness": 0.312,
-      "games": 182,
-      "gem_margin": -0.086,
-      "win": 0.5
-     }
-    }
-   },
+   "notes": "Re-queued: the first run built the branch as cut, before PvE assist was merged, so it tested old code against the improved live bot (screen 0.5 vs 0.555). Refs are now merged onto the live code first.",
+   "results": {},
    "spec": {
     "ref": "origin/feat/passive-aware"
    },
-   "status": "rejected",
+   "status": "queued",
    "title": "theta 169 + knob2 block, all off (must equal live)"
   },
   {
    "added": "2026-10-21T15:20:12Z",
    "area": "passives",
-   "finished": "2026-10-21T15:49:11Z",
    "id": 42,
-   "notes": "Screen: win 0.451 vs 0.555, fitness 0.252 vs 0.385.",
-   "results": {
-    "screen": {
-     "live": {
-      "deaths": 16.91,
-      "fitness": 0.385,
-      "games": 182,
-      "gem_margin": -0.001,
-      "win": 0.555
-     },
-     "variant": {
-      "deaths": 17.29,
-      "fitness": 0.252,
-      "games": 182,
-      "gem_margin": -0.102,
-      "win": 0.451
-     }
-    }
-   },
+   "notes": "Re-queued: the first run built the branch as cut, before PvE assist was merged, so it tested old code against the improved live bot (screen 0.451 vs 0.555). Refs are now merged onto the live code first.",
+   "results": {},
    "spec": {
     "knobs": {
      "PASSIVE_AWARE": 1
     },
     "ref": "origin/feat/passive-aware"
    },
-   "status": "rejected",
+   "status": "queued",
    "title": "Passive-aware play (per passive / kind)"
   },
   {
    "added": "2026-10-21T15:30:46Z",
    "area": "teamwork",
-   "finished": "2026-10-21T15:50:40Z",
    "id": 43,
-   "notes": "Attacker calls a hurt enemy (<=60% HP, ally within 6); allies in reach take it first. Screen: win 0.473 vs 0.555, fitness 0.278 vs 0.385.",
-   "results": {
-    "screen": {
-     "live": {
-      "deaths": 16.91,
-      "fitness": 0.385,
-      "games": 182,
-      "gem_margin": -0.001,
-      "win": 0.555
-     },
-     "variant": {
-      "deaths": 17.14,
-      "fitness": 0.278,
-      "games": 182,
-      "gem_margin": -0.091,
-      "win": 0.473
-     }
-    }
-   },
+   "notes": "Attacker calls a hurt enemy (<=60% HP, ally within 6); allies in reach take it first. Re-queued: first run used the branch as cut (before PvE assist), screen 0.473 vs 0.555; refs are now merged onto live first.",
+   "results": {},
    "spec": {
     "knobs": {
      "FOCUS": 1
     },
     "ref": "origin/feat/team-endgame"
    },
-   "status": "rejected",
+   "status": "queued",
    "title": "Team focus target (channel bit 39)"
   },
   {

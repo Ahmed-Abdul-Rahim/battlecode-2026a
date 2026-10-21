@@ -38,6 +38,8 @@ REGISTRY = L.LEAGUE / "experiments.json"
 OUT = L.SCRATCH / "experiments"
 SCREEN_MAPS = ("contest", "lanes", "islands", "hooks", "big-world", "ambush", "expanse")
 SCREEN_SLACK = 0.01
+#: A claim (status screening/full with a host) older than this is free for any PC again.
+CLAIM_TTL = 6 * 3600
 H2H_MIN = 0.45
 STATUSES = ("queued", "screening", "full", "passed", "rejected", "merged")
 
@@ -100,14 +102,27 @@ def knob_variant(name: str, knobs: dict[str, int], copy: bool = True) -> str:
     return name
 
 
+def merged_tree(ref: str) -> str:
+    """The tree of `ref` merged onto HEAD (the latest live code), so an experiment branch cut
+    before a later merge is not tested against code it never saw. ValueError on conflicts."""
+    subprocess.run(["git", "fetch", "-q", "origin"], cwd=ROOT, capture_output=True)
+    p = subprocess.run(
+        ["git", "merge-tree", "--write-tree", "HEAD", ref], cwd=ROOT, capture_output=True, text=True
+    )
+    if p.returncode != 0:
+        conflicts = [ln for ln in p.stdout.splitlines()[1:] if ln and "\t" in ln][:5]
+        raise ValueError(f"needs rebase: {ref} conflicts with the live code {conflicts}")
+    return p.stdout.split()[0]
+
+
 def ref_variant(name: str, ref: str) -> str:
-    """bots/<name> = bots/main as it is at git `ref` (a branch or commit with code changes)."""
+    """bots/<name> = bots/main of git `ref` merged onto the live code (a branch with code changes)."""
     dst = ROOT / "bots" / name
     tmp = OUT / f"src-{name}"
     shutil.rmtree(tmp, ignore_errors=True)
     tmp.mkdir(parents=True)
     arch = subprocess.run(
-        ["git", "archive", ref, "bots/main"], cwd=ROOT, capture_output=True, check=True
+        ["git", "archive", merged_tree(ref), "bots/main"], cwd=ROOT, capture_output=True, check=True
     ).stdout
     subprocess.run(["tar", "xf", "-", "-C", str(tmp)], input=arch, check=True)
     if dst.exists():
@@ -199,8 +214,34 @@ def finish(e: dict, reg: dict, push: bool) -> dict:
     return e
 
 
-def next_queued(reg: dict) -> dict | None:
-    return next((e for e in reg["experiments"] if e["status"] == "queued"), None)
+def available(e: dict, now: float) -> bool:
+    """Queued, or a claim of ours (interrupted run) or one gone stale on another PC."""
+    if e["status"] == "queued":
+        return True
+    if e["status"] not in ("screening", "full") or "claimed" not in e:
+        return False
+    return e.get("host") == L.HOST or now - L.ts(e["claimed"]) > CLAIM_TTL
+
+
+def next_queued(reg: dict, now: float | None = None) -> dict | None:
+    now = time.time() if now is None else now
+    return next((e for e in reg["experiments"] if available(e, now)), None)
+
+
+def claim(e: dict, reg: dict, push: bool) -> bool:
+    """Mark `e` as ours and publish it; False if another PC claimed it first (seen after the
+    merge), so two autopilots never test the same experiment."""
+    e.update(status="screening", host=L.HOST, claimed=L.now_iso())
+    save(reg)
+    if not (push and L.git_ready()):
+        return True
+    L.publish(
+        [REGISTRY],
+        f"league: experiment {e['id']} claimed by {L.HOST}",
+        L.h2h_decider(OUT, L.load_champion()["maps"]),
+    )
+    now = next((x for x in load()["experiments"] if x["id"] == e["id"]), e)
+    return now.get("host") == L.HOST
 
 
 # ----------------------------------------------------------------- reporting
@@ -263,6 +304,9 @@ def cmd_run(a: argparse.Namespace) -> int:
             L.apply_champion(L.load_champion())
         reg = load()
         e = next_queued(reg)
+        if e and not claim(e, reg, a.push):
+            L.log(f"experiments: {e['id']} was claimed by another PC; next")
+            continue
         if not e:
             L.log("experiments: queue empty")
             if not a.forever:

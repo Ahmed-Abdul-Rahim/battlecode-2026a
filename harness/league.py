@@ -267,6 +267,25 @@ def merge_champion(base: dict, ours: dict, theirs: dict, decide) -> dict:
     }
 
 
+STATUS_RANK = {"queued": 0, "screening": 1, "full": 2, "passed": 3, "rejected": 3, "merged": 4}
+
+
+def merge_experiments(ours: dict | None, theirs: dict | None) -> dict:
+    """Experiment registry from two PCs: per id the further-along entry wins; two claims on the
+    same id keep the earlier one. Order (= queue priority) follows `theirs`, then new ids."""
+    ours, theirs = ours or {"experiments": []}, theirs or {"experiments": []}
+    mine = {e["id"]: e for e in ours.get("experiments", [])}
+
+    def pick(a: dict, b: dict) -> dict:
+        ra, rb = STATUS_RANK.get(a.get("status"), 0), STATUS_RANK.get(b.get("status"), 0)
+        if ra != rb:
+            return a if ra > rb else b
+        return a if a.get("claimed", "~") <= b.get("claimed", "~") else b
+
+    out = [pick(mine.pop(e["id"]), e) if e["id"] in mine else e for e in theirs.get("experiments", [])]
+    return {**theirs, "experiments": out + list(mine.values())}
+
+
 def merge_ledger(ours: dict, theirs: dict) -> dict:
     """Union of two ledgers (only the lead writes it, so this is a safety net)."""
     ours, theirs = {**empty_ledger(), **(ours or {})}, {**empty_ledger(), **(theirs or {})}
@@ -535,6 +554,8 @@ def resolve_conflicts(decide) -> bool:
             )
         elif f == "league/ledger.json":
             save_json(LEDGER, merge_ledger(show(":2", f), show(":3", f)))
+        elif f == "league/experiments.json":
+            save_json(ROOT / f, merge_experiments(show(":3", f), show(":2", f)))
         elif f.startswith("league/review/"):
             ours, up = git("show", f":3:{f}"), git("show", f":2:{f}")
             (ROOT / f).write_text(
