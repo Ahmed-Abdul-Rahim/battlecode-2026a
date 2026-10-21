@@ -499,6 +499,19 @@
     "win": 0.423
    },
    "status": "done"
+  },
+  {
+   "added": "2026-10-21T17:40:22Z",
+   "claimed": "2026-10-21T17:40:22Z",
+   "host": "DESKTOP-QVEMEEE",
+   "id": 21,
+   "kind": "train",
+   "params": {
+    "epochs": 8,
+    "hidden": 32
+   },
+   "result": {},
+   "status": "running"
   }
  ]
 }
