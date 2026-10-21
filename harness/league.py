@@ -626,6 +626,11 @@ def integrate(decide) -> bool:
     if git("fetch", "-q", "origin", BRANCH).returncode != 0:
         log("git fetch failed (offline?)")
         return False
+    # pack.bin is regenerated from champion.json after every pull (apply_champion), so the local
+    # copy never needs keeping; stashing it was what left 'unmerged pack.bin' behind.
+    if not rebasing():
+        git("reset", "-q", "--", PACK.relative_to(ROOT).as_posix())
+        git("checkout", "-q", "--", PACK.relative_to(ROOT).as_posix())
     p = git("rebase", "--autostash", f"origin/{BRANCH}")
     env = {**os.environ, "GIT_EDITOR": "true"}
     for _ in range(50):

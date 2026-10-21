@@ -31,7 +31,7 @@ sys.path.insert(0, str(ROOT))
 from bctools import replay  # noqa: E402
 from bctools.dataset import EXPERTS  # noqa: E402
 from ml.distill import quant  # noqa: E402
-from ml.distill.train_np import SCHEMA_HASH, adam_train, predict, quantise  # noqa: E402
+from ml.distill.train_np import SCHEMA_HASH, predict, quantise  # noqa: E402
 
 HORIZON = 40
 GEM_W = 3.0
@@ -116,24 +116,76 @@ def train(dirs: list[Path], bot: str, out: Path, hidden: int = 32, epochs: int =
     return fit(load(dirs, bot), out, hidden, epochs)
 
 
-def fit(data: dict[str, np.ndarray], out: Path, hidden: int = 32, epochs: int = 500) -> dict:
-    """AWR on rows from `load` / `load_shards`; writes the BCW1 blob and a .json report."""
+MAX_ROWS = 300_000  # a random sample this big trains as well as all rows, in a fraction of the time
+BATCH = 4096
+MAX_PASSES = 20
+
+
+def minibatch_train(x, y, w, hidden: int, passes: int, lr: float, l2: float, seed: int = 0) -> dict:
+    """Weighted softmax MLP (n_in -> hidden ReLU -> N_EXPERTS), minibatch Adam, float32."""
+    rng = np.random.default_rng(seed)
+    n, n_in = x.shape
+    n_out = len(EXPERTS)
+    params = {
+        "w1": rng.normal(0, np.sqrt(2 / n_in), (hidden, n_in)).astype(np.float32),
+        "b1": np.zeros(hidden, np.float32),
+        "w2": rng.normal(0, np.sqrt(1 / hidden), (n_out, hidden)).astype(np.float32),
+        "b2": np.zeros(n_out, np.float32),
+    }
+    m = {k: np.zeros_like(v) for k, v in params.items()}
+    v = {k: np.zeros_like(p) for k, p in params.items()}
+    t = 0
+    for _ in range(passes):
+        batch = min(BATCH, max(64, n // 20))  # at least ~20 updates per pass on small data
+        for idx in np.array_split(rng.permutation(n), max(1, n // batch)):
+            xb, yb, wb = x[idx], y[idx], w[idx]
+            h_pre = xb @ params["w1"].T + params["b1"]
+            h = np.maximum(h_pre, 0)
+            logits = h @ params["w2"].T + params["b2"]
+            logits -= logits.max(axis=1, keepdims=True)
+            p = np.exp(logits)
+            p /= p.sum(axis=1, keepdims=True)
+            p[np.arange(len(yb)), yb] -= 1.0
+            g = p * (wb / wb.sum())[:, None]
+            grads = {"w2": g.T @ h + l2 * params["w2"], "b2": g.sum(0)}
+            g_h = (g @ params["w2"]) * (h_pre > 0)
+            grads["w1"] = g_h.T @ xb + l2 * params["w1"]
+            grads["b1"] = g_h.sum(0)
+            t += 1
+            for k in params:
+                m[k] = 0.9 * m[k] + 0.1 * grads[k]
+                v[k] = 0.999 * v[k] + 0.001 * grads[k] ** 2
+                params[k] -= lr * (m[k] / (1 - 0.9**t)) / (np.sqrt(v[k] / (1 - 0.999**t)) + 1e-8)
+    return {k: p.astype(np.float64) for k, p in params.items()}
+
+
+def fit(data: dict[str, np.ndarray], out: Path, hidden: int = 32, epochs: int = 8) -> dict:
+    """AWR on rows from `load` / `load_shards`; writes the BCW1 blob and a .json report.
+    `epochs` = passes over a random sample of at most MAX_ROWS rows (minibatch Adam)."""
     n = len(data["y"])
     if n < 200:
         return {"rows": n, "skipped": "too few rows"}
-    xq = data["X"].astype(np.int64)
-    x = xq / 127.0
-    adv = advantages(x, data["R"])
+    rng = np.random.default_rng(0)
+    keep = rng.permutation(n)[:MAX_ROWS]
+    xq, y, ret = data["X"][keep], np.asarray(data["y"])[keep], np.asarray(data["R"], dtype=float)[keep]
+    x = xq.astype(np.float32) / 127.0
+    adv = advantages(x.astype(np.float64), ret)
     beta = max(float(adv.std()), 1e-6)
-    w = np.clip(np.exp(adv / beta), 0.0, 20.0)
-    params = adam_train(x, data["y"], w, hidden, epochs, 0.01, 1e-4)
-    layers = quantise(params, x)
+    w = np.clip(np.exp(adv / beta), 0.0, 20.0).astype(np.float32)
+    n_val = len(y) // 10
+    tr, va = slice(n_val, None), slice(0, n_val)
+    params = minibatch_train(x[tr], y[tr], w[tr], hidden, min(epochs, MAX_PASSES), 0.01, 1e-5)
+    layers = quantise(params, x[tr].astype(np.float64))
     blob = quant.encode(SCHEMA_HASH, layers)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_bytes(blob)
-    agree = float((predict(params, x) == data["y"]).mean())
+    agree = float((predict(params, x[tr]) == y[tr]).mean())
+    val = float((predict(params, x[va]) == y[va]).mean())
+    data = {"y": y, "R": ret}
     report = {
         "rows": n,
+        "rows_used": len(y),
+        "val_agreement": round(val, 3),
         "beta": round(beta, 2),
         "mean_return": round(float(data["R"].mean()), 1),
         "label_counts": {EXPERTS[k]: int((data["y"] == k).sum()) for k in np.unique(data["y"])},

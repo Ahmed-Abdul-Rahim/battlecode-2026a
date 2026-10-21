@@ -45,6 +45,8 @@ case "$cmd" in
     echo "experiment autopilot started in $wt (log: runs/league/experiments.log)" ;;
   exp-status)
     "$PY" harness/experiments.py status ;;
+  ml-status)
+    "$PY" harness/mljobs.py status ;;
   ml)
     wt="$(cd .. && pwd)/battlecode-ml"
     [ -d "$wt" ] || { git fetch -q origin && git worktree add -q -B mlpilot "$wt" origin/league; }
@@ -59,5 +61,5 @@ case "$cmd" in
   status|review|sync|maps|bench|submit|replay)
     "$PY" harness/league.py "$cmd" "$@" ;;
   *)
-    echo "usage: $0 start|stop|status|logs|review|sync|maps|bench|submit|replay|experiments|exp-status|ml|once [args]"; exit 2 ;;
+    echo "usage: $0 start|stop|status|logs|review|sync|maps|bench|submit|replay|experiments|exp-status|ml|ml-status|once [args]"; exit 2 ;;
 esac
