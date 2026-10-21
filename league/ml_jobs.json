@@ -1273,6 +1273,7 @@
   {
    "added": "2026-10-21T18:53:54Z",
    "claimed": "2026-10-21T18:53:54Z",
+   "finished": "2026-10-21T18:55:34Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 51,
    "kind": "gen",
@@ -1280,8 +1281,18 @@
     "explore": 10,
     "offset": 129
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "games": 78,
+    "maps": [
+     "00gem-fields",
+     "00gemfight",
+     "01gold-rush"
+    ],
+    "rows": 123578,
+    "shard": "gen-00051-DESKTOP-QVEMEEE.npz",
+    "win": 0.628
+   },
+   "status": "done"
   }
  ]
 }
