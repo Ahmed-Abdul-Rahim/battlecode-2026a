@@ -2628,16 +2628,57 @@
    "added": "2026-10-21T15:12:04Z",
    "area": "economy",
    "claimed": "2026-10-21T22:57:56Z",
+   "finished": "2026-10-21T23:41:19Z",
    "host": "muhammad-usman-Inspiron-14-5410-2-in-1",
    "id": 34,
    "notes": "",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.526,
+     "h2h_games": 76,
+     "live": {
+      "deaths": 22.63,
+      "fitness": 0.455,
+      "games": 988,
+      "gem_margin": 0.132,
+      "win": 0.649
+     },
+     "variant": {
+      "deaths": 22.14,
+      "fitness": 0.471,
+      "games": 988,
+      "gem_margin": 0.142,
+      "win": 0.657
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 16.52,
+      "fitness": 0.39,
+      "games": 182,
+      "gem_margin": -0.0,
+      "win": 0.555
+     },
+     "paired": {
+      "mean": 0.0409,
+      "pairs": 182,
+      "se": 0.0436
+     },
+     "variant": {
+      "deaths": 15.67,
+      "fitness": 0.431,
+      "games": 182,
+      "gem_margin": -0.002,
+      "win": 0.588
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "ALTAR_LOCK": 1
     }
    },
-   "status": "screening",
+   "status": "passed",
    "title": "Carry and place altar locks"
   },
   {
