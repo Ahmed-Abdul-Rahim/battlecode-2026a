@@ -1238,6 +1238,23 @@
    },
    "status": "queued",
    "title": "Camp value: gems + gold"
+  },
+  {
+   "added": "2026-10-21T17:23:47Z",
+   "area": "learning",
+   "id": 50,
+   "notes": "Offline RL on 12 shards; train agreement 0.813.",
+   "results": {},
+   "spec": {
+    "files": {
+     "bots/main/src/weights/router.bin": "ml-data:candidates/router-00014.bin"
+    },
+    "knobs": {
+     "ROUTER": 1
+    }
+   },
+   "status": "queued",
+   "title": "Learned router #14 (1868234 rows, AWR)"
   }
  ]
 }
