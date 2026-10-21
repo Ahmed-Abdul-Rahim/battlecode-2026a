@@ -2159,17 +2159,58 @@
    "added": "2026-10-21T20:16:07Z",
    "area": "farming",
    "claimed": "2026-10-21T20:46:04Z",
+   "finished": "2026-10-21T21:29:58Z",
    "host": "muhammad-usman-Inspiron-14-5410-2-in-1",
    "id": 59,
    "notes": "Skip unless an ally is near/claims it, or clear time x1.5 < survival time (late game).",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.5,
+     "h2h_games": 76,
+     "live": {
+      "deaths": 22.63,
+      "fitness": 0.455,
+      "games": 988,
+      "gem_margin": 0.132,
+      "win": 0.649
+     },
+     "variant": {
+      "deaths": 20.67,
+      "fitness": 0.455,
+      "games": 988,
+      "gem_margin": 0.115,
+      "win": 0.633
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 16.52,
+      "fitness": 0.39,
+      "games": 182,
+      "gem_margin": -0.0,
+      "win": 0.555
+     },
+     "paired": {
+      "mean": 0.1472,
+      "pairs": 182,
+      "se": 0.0422
+     },
+     "variant": {
+      "deaths": 14.27,
+      "fitness": 0.537,
+      "games": 182,
+      "gem_margin": 0.06,
+      "win": 0.665
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "SOLO_CAP": 4
     },
     "ref": "origin/feat/gaps-2"
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "No 4+ monster group alone unless geared"
   },
   {
