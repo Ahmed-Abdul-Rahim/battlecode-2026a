@@ -2685,16 +2685,39 @@
    "added": "2026-10-21T15:12:04Z",
    "area": "economy",
    "claimed": "2026-10-21T23:41:25Z",
+   "finished": "2026-10-21T23:48:28Z",
    "host": "muhammad-usman-Inspiron-14-5410-2-in-1",
    "id": 35,
-   "notes": "",
-   "results": {},
+   "notes": "Screen: win 0.511 vs 0.555, fitness 0.346 vs 0.39 (paired -0.043 +- 0.042).",
+   "results": {
+    "screen": {
+     "live": {
+      "deaths": 16.52,
+      "fitness": 0.39,
+      "games": 182,
+      "gem_margin": -0.0,
+      "win": 0.555
+     },
+     "paired": {
+      "mean": -0.0433,
+      "pairs": 182,
+      "se": 0.0423
+     },
+     "variant": {
+      "deaths": 16.03,
+      "fitness": 0.346,
+      "games": 182,
+      "gem_margin": -0.017,
+      "win": 0.511
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "SHOP_FIRST": 1
     }
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "Shop before banking"
   },
   {
