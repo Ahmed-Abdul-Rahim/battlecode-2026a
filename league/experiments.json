@@ -1359,16 +1359,39 @@
    "added": "2026-10-21T15:12:04Z",
    "area": "teamwork",
    "claimed": "2026-10-21T18:14:49Z",
+   "finished": "2026-10-21T18:28:10Z",
    "host": "muhammad-usman-Inspiron-14-5410-2-in-1",
    "id": 25,
-   "notes": "",
-   "results": {},
+   "notes": "Screen: win 0.473 vs 0.555, fitness 0.31 vs 0.39 (paired -0.080 +- 0.053).",
+   "results": {
+    "screen": {
+     "live": {
+      "deaths": 16.52,
+      "fitness": 0.39,
+      "games": 182,
+      "gem_margin": -0.0,
+      "win": 0.555
+     },
+     "paired": {
+      "mean": -0.0798,
+      "pairs": 182,
+      "se": 0.0532
+     },
+     "variant": {
+      "deaths": 14.5,
+      "fitness": 0.31,
+      "games": 182,
+      "gem_margin": -0.07,
+      "win": 0.473
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "TEAM_FIGHT": 1
     }
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "Team-vs-team fight maths (Lanchester)"
   },
   {
