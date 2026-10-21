@@ -301,6 +301,7 @@
   {
    "added": "2026-10-21T17:19:07Z",
    "claimed": "2026-10-21T17:19:07Z",
+   "finished": "2026-10-21T17:23:03Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 13,
    "kind": "gen",
@@ -308,8 +309,18 @@
     "explore": 10,
     "offset": 33
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "games": 78,
+    "maps": [
+     "01the-farm",
+     "01yellow-brick-road",
+     "00ambush"
+    ],
+    "rows": 164555,
+    "shard": "gen-00013-DESKTOP-QVEMEEE.npz",
+    "win": 0.436
+   },
+   "status": "done"
   }
  ]
 }
