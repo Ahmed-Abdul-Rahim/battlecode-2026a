@@ -1,0 +1,17 @@
+{
+ "jobs": [
+  {
+   "added": "2026-10-21T16:20:08Z",
+   "claimed": "2026-10-21T16:20:08Z",
+   "host": "DESKTOP-QVEMEEE",
+   "id": 1,
+   "kind": "gen",
+   "params": {
+    "explore": 10,
+    "offset": 0
+   },
+   "result": {},
+   "status": "running"
+  }
+ ]
+}
