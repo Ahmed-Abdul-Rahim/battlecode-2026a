@@ -1863,6 +1863,8 @@
   {
    "added": "2026-10-21T15:12:04Z",
    "area": "safety",
+   "claimed": "2026-10-21T19:55:29Z",
+   "host": "muhammad-usman-Inspiron-14-5410-2-in-1",
    "id": 33,
    "notes": "",
    "results": {},
@@ -1871,7 +1873,7 @@
      "RECALL_SAFE": 2
     }
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Recall only when nothing can reach us"
   },
   {
