@@ -763,6 +763,7 @@
   {
    "added": "2026-10-21T18:01:49Z",
    "claimed": "2026-10-21T18:01:49Z",
+   "finished": "2026-10-21T18:07:20Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 31,
    "kind": "gen",
@@ -770,8 +771,18 @@
     "explore": 10,
     "offset": 78
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "games": 78,
+    "maps": [
+     "01boss-battle",
+     "01broken-curve",
+     "00collision"
+    ],
+    "rows": 135731,
+    "shard": "gen-00031-DESKTOP-QVEMEEE.npz",
+    "win": 0.731
+   },
+   "status": "done"
   }
  ]
 }
