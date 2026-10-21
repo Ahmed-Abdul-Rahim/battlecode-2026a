@@ -1512,6 +1512,8 @@
   {
    "added": "2026-10-21T15:12:04Z",
    "area": "endgame",
+   "claimed": "2026-10-21T18:30:22Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 28,
    "notes": "",
    "results": {},
@@ -1520,7 +1522,7 @@
      "HUNT_MODE": 2
     }
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Endgame hunt when behind / enemy near win"
   },
   {
