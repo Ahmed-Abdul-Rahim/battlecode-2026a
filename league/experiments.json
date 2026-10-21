@@ -1513,16 +1513,57 @@
    "added": "2026-10-21T15:12:04Z",
    "area": "endgame",
    "claimed": "2026-10-21T18:30:22Z",
+   "finished": "2026-10-21T18:39:42Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 28,
    "notes": "",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.513,
+     "h2h_games": 76,
+     "live": {
+      "deaths": 23.91,
+      "fitness": 0.395,
+      "games": 988,
+      "gem_margin": 0.094,
+      "win": 0.61
+     },
+     "variant": {
+      "deaths": 23.86,
+      "fitness": 0.397,
+      "games": 988,
+      "gem_margin": 0.095,
+      "win": 0.611
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 16.96,
+      "fitness": 0.364,
+      "games": 182,
+      "gem_margin": 0.003,
+      "win": 0.533
+     },
+     "paired": {
+      "mean": -0.0022,
+      "pairs": 182,
+      "se": 0.0138
+     },
+     "variant": {
+      "deaths": 16.54,
+      "fitness": 0.362,
+      "games": 182,
+      "gem_margin": -0.0,
+      "win": 0.527
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "HUNT_MODE": 2
     }
    },
-   "status": "screening",
+   "status": "passed",
    "title": "Endgame hunt when behind / enemy near win"
   },
   {
