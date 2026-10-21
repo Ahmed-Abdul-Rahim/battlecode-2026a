@@ -229,6 +229,7 @@ def finish(j: dict, reg: dict, push: bool) -> None:
 
 def cmd_run(a: argparse.Namespace) -> int:
     while True:
+        L.ensure_space()
         if a.push and L.git_ready():
             L.integrate(L.h2h_decider(OUT, L.load_champion()["maps"]))
             L.apply_champion(L.load_champion())

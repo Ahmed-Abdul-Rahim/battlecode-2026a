@@ -207,8 +207,24 @@ def full_passes(live: dict, var: dict, h2h: float) -> bool:
     return var["win"] >= live["win"] and var["fitness"] >= live["fitness"] and h2h >= H2H_MIN
 
 
+def clean_outputs() -> None:
+    """Match folders of finished experiments: results are in the registry, the games (~1.6 GB
+    per experiment) are not needed. Also the bot copies built for them."""
+    for p in list(OUT.glob("x*")) + list(OUT.glob("src-*")) if OUT.exists() else []:
+        shutil.rmtree(p, ignore_errors=True)
+    for p in (ROOT / "bots").glob("_x*"):
+        shutil.rmtree(p, ignore_errors=True)
+
+
 def evaluate(e: dict, reg: dict, push: bool) -> dict:
     """Screen, then (if it passes) the full check. Updates `e` in place and saves as it goes."""
+    try:
+        return _evaluate(e, reg, push)
+    finally:
+        clean_outputs()
+
+
+def _evaluate(e: dict, reg: dict, push: bool) -> dict:
     led = L.load_ledger()
     faithful, _ = L.ensure_mimics(led)
     maps = L.trainable_maps(led)
@@ -478,7 +494,9 @@ def cmd_add(a: argparse.Namespace) -> int:
 
 
 def cmd_run(a: argparse.Namespace) -> int:
+    clean_outputs()  # leftovers of an interrupted run
     while True:
+        L.ensure_space()
         if a.push and L.git_ready():
             L.integrate(L.h2h_decider(OUT, L.load_champion()["maps"]))  # test against the latest live bot
             L.apply_champion(L.load_champion())

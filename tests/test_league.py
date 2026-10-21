@@ -313,3 +313,42 @@ def test_empty_queue_trains_where_pressure_is(monkeypatch):
     picks = [league.pick_map(ch, led, _local(rr=r))[0] for r in range(60)]
     assert picks.count("hooks") > 40  # the pressured map dominates...
     assert set(picks) == {"lanes", "hooks", "islands"}  # ...but the others still get turns
+
+
+def test_disk_guard_prunes_oldest_scratch_first(tmp_path):
+    import os
+
+    for i, d in enumerate(["cycles/01", "experiments/x20-a", "experiments/x21-b", "register/keep"]):
+        (tmp_path / d).mkdir(parents=True)
+        os.utime(tmp_path / d, (1000 + i, 1000 + i))
+    gb = {"free": 3.0}
+
+    def free():
+        return gb["free"]
+
+    orig = league.shutil.rmtree
+
+    def rm(p, ignore_errors=False):
+        orig(p, ignore_errors=ignore_errors)
+        gb["free"] += 5.0
+
+    league.shutil.rmtree, waits = rm, []
+    try:
+        league.ensure_space(free=free, sleep=lambda s: waits.append(s), scratch=tmp_path)
+    finally:
+        league.shutil.rmtree = orig
+    left = sorted(str(p.relative_to(tmp_path)).replace("\\", "/") for p in tmp_path.glob("*/*"))
+    assert left == ["register/keep"]  # 3 GB + 3 x 5 GB freed >= 15: the 3 oldest go, register stays
+    assert waits == []
+
+
+def test_disk_guard_waits_when_nothing_left_to_prune(tmp_path):
+    calls = {"n": 0}
+
+    def free():
+        calls["n"] += 1
+        return 1.0 if calls["n"] < 4 else 20.0
+
+    waits = []
+    league.ensure_space(free=free, sleep=lambda s: waits.append(s), scratch=tmp_path)
+    assert waits and waits[0] == 600

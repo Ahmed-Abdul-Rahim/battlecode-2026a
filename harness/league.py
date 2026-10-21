@@ -1463,7 +1463,43 @@ def evolve_mimic(ch: dict, led: dict, local: dict, rng: random.Random, cyc: Path
     return entry
 
 
+#: Scratch that is safe to delete (results live in git), pruned oldest-first when the disk is low.
+PRUNABLE = ("experiments", "ml", "cycles", "bench", "bench-hard", "manual", "replay")
+MIN_FREE_GB, HARD_FREE_GB = 15.0, 5.0
+
+
+def free_gb(path: Path = ROOT) -> float:
+    return shutil.disk_usage(path).free / 1e9
+
+
+def prune_scratch(need_gb: float, free=free_gb, scratch: Path | None = None) -> list[str]:
+    """Delete regenerable scratch folders, oldest first, until `need_gb` is free."""
+    scratch = scratch or SCRATCH
+    entries = [p for d in PRUNABLE if (scratch / d).is_dir() for p in (scratch / d).iterdir() if p.is_dir()]
+    removed = []
+    for p in sorted(entries, key=lambda p: p.stat().st_mtime):
+        if free() >= need_gb:
+            break
+        shutil.rmtree(p, ignore_errors=True)
+        removed.append(p.name)
+    return removed
+
+
+def ensure_space(free=free_gb, sleep=time.sleep, scratch: Path | None = None) -> None:
+    """Keep the disk from filling: prune scratch below MIN_FREE_GB; below HARD_FREE_GB even
+    after pruning, wait (and say so) instead of failing every build and git write."""
+    if free() >= MIN_FREE_GB:
+        return
+    removed = prune_scratch(MIN_FREE_GB, free, scratch)
+    if removed:
+        log(f"disk low: pruned {len(removed)} scratch folders, {free():.1f} GB free")
+    while free() < HARD_FREE_GB:
+        log(f"disk almost full ({free():.1f} GB free): waiting 10 min; free space on the drive")
+        sleep(600)
+
+
 def cycle(a: argparse.Namespace, rng: random.Random) -> None:
+    ensure_space()
     local = load_local()
     local["cycle"] += 1
     cyc = SCRATCH / "cycles" / f"{local['cycle'] % 20:02d}"
