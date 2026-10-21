@@ -2684,6 +2684,8 @@
   {
    "added": "2026-10-21T15:12:04Z",
    "area": "economy",
+   "claimed": "2026-10-21T23:41:25Z",
+   "host": "muhammad-usman-Inspiron-14-5410-2-in-1",
    "id": 35,
    "notes": "",
    "results": {},
@@ -2692,7 +2694,7 @@
      "SHOP_FIRST": 1
     }
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Shop before banking"
   },
   {
