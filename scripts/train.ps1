@@ -4,9 +4,11 @@
 #   scripts\train.ps1 start --lead --auto-submit     # ... and uploads (team-agreed rules, one PC only)
 #   scripts\train.ps1 stop | status | logs | review | sync | bench | submit
 #   scripts\train.ps1 once [--no-push]               # one cycle in the foreground
+#   scripts\train.ps1 experiments [list|stop]         # experiment autopilot (own worktree)
+#   scripts\train.ps1 ml [list|stop]                  # neural-net jobs: data games + training
 param(
     [Parameter(Position = 0)]
-    [ValidateSet("start", "stop", "status", "logs", "review", "sync", "maps", "bench", "submit", "replay", "experiments", "once")]
+    [ValidateSet("start", "stop", "status", "logs", "review", "sync", "maps", "bench", "submit", "replay", "experiments", "ml", "once")]
     [string]$cmd = "status",
     [Parameter(ValueFromRemainingArguments = $true)]
     [string[]]$rest = @()
@@ -69,6 +71,29 @@ switch ($cmd) {
             -RedirectStandardOutput (Join-Path $wt "runs\league\experiments.log") `
             -RedirectStandardError (Join-Path $wt "runs\league\experiments.err")
         Write-Host "experiment autopilot started in $wt (log: runs\league\experiments.log)" -ForegroundColor Green
+    }
+    "ml" {
+        # Data games and training runs (harness/mljobs.py), shared with every PC through git.
+        $wt = Join-Path (Split-Path -Parent $root) "battlecode-ml"
+        if (-not (Test-Path $wt)) {
+            git -C $root fetch -q origin
+            git -C $root worktree add -q -B mlpilot $wt origin/league 2>$null
+        }
+        $x = Join-Path $wt "harness\mljobs.py"
+        if ($rest -contains "list") { & $py -X utf8 $x list; return }
+        if ($rest -contains "stop") {
+            Get-CimInstance Win32_Process -Filter "Name='python.exe'" |
+                Where-Object { $_.CommandLine -match 'mljobs\.py.+run' } |
+                ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue; "stopped pid $($_.ProcessId)" }
+            return
+        }
+        New-Item -ItemType Directory -Force (Join-Path $wt "runs\league") | Out-Null
+        $env:PATH = (Join-Path $root ".venv\Scripts") + ";" + $env:PATH
+        Start-Process -WindowStyle Hidden -FilePath $py -WorkingDirectory $wt `
+            -ArgumentList @("-X", "utf8", "-u", $x, "run", "--forever") `
+            -RedirectStandardOutput (Join-Path $wt "runs\league\ml.log") `
+            -RedirectStandardError (Join-Path $wt "runs\league\ml.err")
+        Write-Host "ml jobs started in $wt (log: runs\league\ml.log; queue: scripts\train.ps1 ml list)" -ForegroundColor Green
     }
     default { & $py -X utf8 $league $cmd @rest }
 }

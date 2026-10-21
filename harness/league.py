@@ -267,6 +267,38 @@ def merge_champion(base: dict, ours: dict, theirs: dict, decide) -> dict:
     }
 
 
+STATUS_RANK = {
+    "queued": 0,
+    "screening": 1,
+    "running": 1,
+    "full": 2,
+    "passed": 3,
+    "rejected": 3,
+    "done": 3,
+    "failed": 3,
+    "merged": 4,
+}
+
+
+def merge_experiments(ours: dict | None, theirs: dict | None, key: str = "experiments") -> dict:
+    """Experiment registry from two PCs: per id the later run, then the further-along entry wins;
+    two claims on the same id keep the earlier one. Order (= queue priority) follows `theirs`, then new ids."""
+    ours, theirs = ours or {key: []}, theirs or {key: []}
+    mine = {e["id"]: e for e in ours.get(key, [])}
+
+    def pick(a: dict, b: dict) -> dict:
+        # A deliberate re-run (run + 1) beats the older run's result; then the further status.
+        if a.get("run", 1) != b.get("run", 1):
+            return a if a.get("run", 1) > b.get("run", 1) else b
+        ra, rb = STATUS_RANK.get(a.get("status"), 0), STATUS_RANK.get(b.get("status"), 0)
+        if ra != rb:
+            return a if ra > rb else b
+        return a if a.get("claimed", "~") <= b.get("claimed", "~") else b
+
+    out = [pick(mine.pop(e["id"]), e) if e["id"] in mine else e for e in theirs.get(key, [])]
+    return {**theirs, key: out + list(mine.values())}
+
+
 def merge_ledger(ours: dict, theirs: dict) -> dict:
     """Union of two ledgers (only the lead writes it, so this is a safety net)."""
     ours, theirs = {**empty_ledger(), **(ours or {})}, {**empty_ledger(), **(theirs or {})}
@@ -500,9 +532,9 @@ def benchmark(bot: str, mimics: list[str], maps: list[Path], out: Path) -> dict:
 
 def git_ready() -> bool:
     """Only commit/push from the league branch with an origin remote."""
-    # The experiment autopilot runs in its own worktree on branch 'autopilot' (league is
-    # checked out by the daemon's clone); it rebases on and pushes to origin/league too.
-    if git("rev-parse", "--abbrev-ref", "HEAD").stdout.strip() not in (BRANCH, "autopilot"):
+    # The experiment autopilot and the ml job runner run in their own worktrees (branches
+    # 'autopilot' / 'mlpilot'; league is the daemon's); they rebase on and push to origin/league.
+    if git("rev-parse", "--abbrev-ref", "HEAD").stdout.strip() not in (BRANCH, "autopilot", "mlpilot"):
         log(f"not on branch '{BRANCH}': git sync disabled")
         return False
     return git("remote", "get-url", "origin").returncode == 0
@@ -535,6 +567,10 @@ def resolve_conflicts(decide) -> bool:
             )
         elif f == "league/ledger.json":
             save_json(LEDGER, merge_ledger(show(":2", f), show(":3", f)))
+        elif f == "league/experiments.json":
+            save_json(ROOT / f, merge_experiments(show(":3", f), show(":2", f)))
+        elif f == "league/ml_jobs.json":
+            save_json(ROOT / f, merge_experiments(show(":3", f), show(":2", f), key="jobs"))
         elif f.startswith("league/review/"):
             ours, up = git("show", f":3:{f}"), git("show", f":2:{f}")
             (ROOT / f).write_text(

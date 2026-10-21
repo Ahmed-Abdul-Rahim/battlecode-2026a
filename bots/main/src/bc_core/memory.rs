@@ -74,9 +74,14 @@ pub mod knob2 {
     /// (kill assist only joins at <= 50%), unless the two of us still clearly lose.
     pub const TEAM_UP: usize = 10;
 
-    pub const DEFAULTS: [(usize, u8); 11] = [
+    /// Use the learned router (weights/router.bin) on complex turns (offline RL, mljobs.py).
+    pub const ROUTER: usize = 11;
+    /// RL data games: explore a random feasible expert on this many percent of logged turns.
+    pub const EXPLORE: usize = 12;
+
+    pub const DEFAULTS: [(usize, u8); 13] = [
         (PASSIVE_AWARE, 0),
-        (FOCUS, 0),
+        (FOCUS, 1),
         (ENDGAME, 0),
         (SPACING, 0),
         (LOS_RETREAT, 0),
@@ -86,6 +91,8 @@ pub mod knob2 {
         (STUN_LOCK, 0),
         (UPGRADE_FIRST, 0),
         (TEAM_UP, 0),
+        (ROUTER, 0),
+        (EXPLORE, 0),
     ];
 }
 
@@ -627,7 +634,8 @@ mod tests {
     #[test]
     fn knobs2_round_trip_and_default_off() {
         let mut t = sample_theta();
-        assert_eq!(t.knob2(knob2::FOCUS), 0);
+        assert_eq!(t.knob2(knob2::SPACING), 0);
+        assert_eq!(t.knob2(knob2::FOCUS), 1, "team focus target is on (experiment 43)");
         t.knobs2[knob2::WARDS] = 3;
         let d = ThetaMatch::decode(&t.encode()).unwrap();
         assert_eq!(d.knob2(knob2::WARDS), 3);

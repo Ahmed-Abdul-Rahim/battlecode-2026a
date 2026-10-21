@@ -97,8 +97,27 @@ def advantages(x: np.ndarray, ret: np.ndarray, ridge: float = 1.0) -> np.ndarray
     return ret - xb @ w
 
 
+def save_rows(data: dict[str, np.ndarray], path: Path) -> int:
+    """A compact training shard (int8 features, expert labels, shaped returns)."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    np.savez_compressed(path, X=data["X"], y=data["y"], R=data["R"])
+    return len(data["y"])
+
+
+def load_shards(paths: list[Path]) -> dict[str, np.ndarray]:
+    parts = [np.load(p) for p in paths]
+    parts = [d for d in parts if len(d["y"])]
+    if not parts:
+        return {"X": np.zeros((0, 0), np.int8), "y": np.zeros(0, int), "R": np.zeros(0)}
+    return {k: np.concatenate([d[k] for d in parts]) for k in ("X", "y", "R")}
+
+
 def train(dirs: list[Path], bot: str, out: Path, hidden: int = 32, epochs: int = 500) -> dict:
-    data = load(dirs, bot)
+    return fit(load(dirs, bot), out, hidden, epochs)
+
+
+def fit(data: dict[str, np.ndarray], out: Path, hidden: int = 32, epochs: int = 500) -> dict:
+    """AWR on rows from `load` / `load_shards`; writes the BCW1 blob and a .json report."""
     n = len(data["y"])
     if n < 200:
         return {"rows": n, "skipped": "too few rows"}

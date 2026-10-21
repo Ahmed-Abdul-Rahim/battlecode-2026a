@@ -4,7 +4,9 @@ An experiment is a knob set (`{"EN_ROUTE": 2}`) applied to a copy of bots/main, 
 whose bots/main is the variant (code changes). Every experiment goes through the same gate:
 
   screen  7 maps x every faithful mimic, both sides, variant and live bot on the same games;
-          passes if fitness >= live and win >= live - SCREEN_SLACK
+          passes unless the variant is worse by more than SCREEN_Z standard errors of the paired
+          per-game fitness difference (any code change reshuffles games through fuel use, so a
+          strict comparison on 182 games is close to a coin flip)
   full    every active map x every mimic + head-to-head against the live bot;
           passes if win >= live, fitness >= live and head-to-head >= H2H_MIN
 
@@ -37,7 +39,9 @@ from bctools import ROOT, runner
 REGISTRY = L.LEAGUE / "experiments.json"
 OUT = L.SCRATCH / "experiments"
 SCREEN_MAPS = ("contest", "lanes", "islands", "hooks", "big-world", "ambush", "expanse")
-SCREEN_SLACK = 0.01
+SCREEN_Z = 1.0
+#: A claim (status screening/full with a host) older than this is free for any PC again.
+CLAIM_TTL = 6 * 3600
 H2H_MIN = 0.45
 STATUSES = ("queued", "screening", "full", "passed", "rejected", "merged")
 
@@ -59,14 +63,16 @@ def add(
     notes: str = "",
     status: str = "queued",
     results: dict | None = None,
+    files: dict | None = None,
 ) -> dict:
+    """`files` = {path under bots/main: "ml-data:<path>"}: files swapped into the variant."""
     assert knobs is not None or ref is not None, "an experiment is a knob set, a git ref, or both"
     n = 1 + max((e["id"] for e in reg["experiments"]), default=0)
     e = {
         "id": n,
         "title": title,
         "area": area,
-        "spec": {k: v for k, v in (("ref", ref), ("knobs", knobs)) if v is not None},
+        "spec": {k: v for k, v in (("ref", ref), ("knobs", knobs), ("files", files)) if v is not None},
         "status": status,
         "results": results or {},
         "added": L.now_iso(),
@@ -100,14 +106,27 @@ def knob_variant(name: str, knobs: dict[str, int], copy: bool = True) -> str:
     return name
 
 
+def merged_tree(ref: str) -> str:
+    """The tree of `ref` merged onto HEAD (the latest live code), so an experiment branch cut
+    before a later merge is not tested against code it never saw. ValueError on conflicts."""
+    subprocess.run(["git", "fetch", "-q", "origin"], cwd=ROOT, capture_output=True)
+    p = subprocess.run(
+        ["git", "merge-tree", "--write-tree", "HEAD", ref], cwd=ROOT, capture_output=True, text=True
+    )
+    if p.returncode != 0:
+        conflicts = [ln for ln in p.stdout.splitlines()[1:] if ln and "\t" in ln][:5]
+        raise ValueError(f"needs rebase: {ref} conflicts with the live code {conflicts}")
+    return p.stdout.split()[0]
+
+
 def ref_variant(name: str, ref: str) -> str:
-    """bots/<name> = bots/main as it is at git `ref` (a branch or commit with code changes)."""
+    """bots/<name> = bots/main of git `ref` merged onto the live code (a branch with code changes)."""
     dst = ROOT / "bots" / name
     tmp = OUT / f"src-{name}"
     shutil.rmtree(tmp, ignore_errors=True)
     tmp.mkdir(parents=True)
     arch = subprocess.run(
-        ["git", "archive", ref, "bots/main"], cwd=ROOT, capture_output=True, check=True
+        ["git", "archive", merged_tree(ref), "bots/main"], cwd=ROOT, capture_output=True, check=True
     ).stdout
     subprocess.run(["tar", "xf", "-", "-C", str(tmp)], input=arch, check=True)
     if dst.exists():
@@ -117,13 +136,29 @@ def ref_variant(name: str, ref: str) -> str:
     return name
 
 
+def fetch_file(src: str) -> bytes:
+    """'ml-data:<path>' = a file on branch ml-data (data shards, candidate router blobs)."""
+    branch, _, path = src.partition(":")
+    subprocess.run(["git", "fetch", "-q", "origin", branch], cwd=ROOT, capture_output=True)
+    return subprocess.run(
+        ["git", "show", f"origin/{branch}:{path}"], cwd=ROOT, capture_output=True, check=True
+    ).stdout
+
+
 def build_variant(e: dict) -> str:
     name = f"_x{e['id']}"
     spec = e["spec"]
     if "ref" in spec:
         ref_variant(name, spec["ref"])
-        return knob_variant(name, spec["knobs"], copy=False) if spec.get("knobs") else name
-    return knob_variant(name, spec["knobs"])
+        if spec.get("knobs"):
+            knob_variant(name, spec["knobs"], copy=False)
+    else:
+        knob_variant(name, spec["knobs"])
+    for dst, src in (spec.get("files") or {}).items():
+        target = ROOT / "bots" / name / Path(dst).relative_to("bots/main")
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(fetch_file(src))
+    return name
 
 
 # ----------------------------------------------------------------- measurement
@@ -145,8 +180,27 @@ def stats(results: list[runner.MatchResult], bot: str) -> dict:
     }
 
 
-def screen_passes(live: dict, var: dict) -> bool:
-    return var["fitness"] >= live["fitness"] and var["win"] >= live["win"] - SCREEN_SLACK
+def game_fitness(r: runner.MatchResult, bot: str) -> float:
+    return L.fitness([r], bot)[0]
+
+
+def paired(results: list[runner.MatchResult], live: str, var: str) -> dict:
+    """Mean and standard error of the per-game fitness difference variant - live, over games
+    with the same map, opponent and side."""
+    key = {}
+    for r in results:
+        for bot, opp, side in ((r.bot_a, r.bot_b, "a"), (r.bot_b, r.bot_a, "b")):
+            if bot in (live, var):
+                key[(bot, r.map, opp, side)] = game_fitness(r, bot)
+    d = [key[(var, m, o, s)] - f for (b, m, o, s), f in key.items() if b == live and (var, m, o, s) in key]
+    n = len(d)
+    mean = sum(d) / n if n else 0.0
+    var_d = sum((x - mean) ** 2 for x in d) / (n - 1) if n > 1 else 0.0
+    return {"pairs": n, "mean": round(mean, 4), "se": round((var_d / n) ** 0.5 if n else 0.0, 4)}
+
+
+def screen_passes(p: dict) -> bool:
+    return p["pairs"] > 0 and p["mean"] >= -SCREEN_Z * p["se"]
 
 
 def full_passes(live: dict, var: dict, h2h: float) -> bool:
@@ -166,12 +220,13 @@ def evaluate(e: dict, reg: dict, push: bool) -> dict:
     screen = [p for n, p in maps.items() if n in SCREEN_MAPS]
     res = L.play(["main", var], faithful, screen, out / "screen")
     live, mine = stats(res, "main"), stats(res, var)
-    e["results"]["screen"] = {"live": live, "variant": mine}
-    if not screen_passes(live, mine):
+    pr = paired(res, "main", var)
+    e["results"]["screen"] = {"live": live, "variant": mine, "paired": pr}
+    if not screen_passes(pr):
         e["status"] = "rejected"
         e["notes"] = (
             e.get("notes", "") + f" Screen: win {mine['win']} vs {live['win']}, "
-            f"fitness {mine['fitness']} vs {live['fitness']}."
+            f"fitness {mine['fitness']} vs {live['fitness']} (paired {pr['mean']:+.3f} +- {pr['se']:.3f})."
         ).strip()
         return finish(e, reg, push)
 
@@ -199,8 +254,42 @@ def finish(e: dict, reg: dict, push: bool) -> dict:
     return e
 
 
-def next_queued(reg: dict) -> dict | None:
-    return next((e for e in reg["experiments"] if e["status"] == "queued"), None)
+def available(e: dict, now: float) -> bool:
+    """Queued, or a claim of ours (interrupted run) or one gone stale on another PC."""
+    if e["status"] == "queued":
+        return True
+    if e["status"] not in ("screening", "full") or "claimed" not in e:
+        return False
+    return e.get("host") == L.HOST or now - L.ts(e["claimed"]) > CLAIM_TTL
+
+
+def requeue(e: dict, note: str) -> None:
+    """Run `e` again (a new run number, so the re-run wins registry merges over the old result)."""
+    e.update(status="queued", results={}, run=e.get("run", 1) + 1)
+    for k in ("host", "claimed", "finished"):
+        e.pop(k, None)
+    e["notes"] = (e.get("notes", "") + " " + note).strip()
+
+
+def next_queued(reg: dict, now: float | None = None) -> dict | None:
+    now = time.time() if now is None else now
+    return next((e for e in reg["experiments"] if available(e, now)), None)
+
+
+def claim(e: dict, reg: dict, push: bool) -> bool:
+    """Mark `e` as ours and publish it; False if another PC claimed it first (seen after the
+    merge), so two autopilots never test the same experiment."""
+    e.update(status="screening", host=L.HOST, claimed=L.now_iso())
+    save(reg)
+    if not (push and L.git_ready()):
+        return True
+    L.publish(
+        [REGISTRY],
+        f"league: experiment {e['id']} claimed by {L.HOST}",
+        L.h2h_decider(OUT, L.load_champion()["maps"]),
+    )
+    now = next((x for x in load()["experiments"] if x["id"] == e["id"]), e)
+    return now.get("host") == L.HOST
 
 
 # ----------------------------------------------------------------- reporting
@@ -263,6 +352,9 @@ def cmd_run(a: argparse.Namespace) -> int:
             L.apply_champion(L.load_champion())
         reg = load()
         e = next_queued(reg)
+        if e and not claim(e, reg, a.push):
+            L.log(f"experiments: {e['id']} was claimed by another PC; next")
+            continue
         if not e:
             L.log("experiments: queue empty")
             if not a.forever:

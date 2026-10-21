@@ -38,8 +38,19 @@ case "$cmd" in
     py="$(pwd)/$PY"
     (cd "$wt" && nohup "$py" -u harness/experiments.py run --forever >> runs/league/experiments.log 2>&1 &)
     echo "experiment autopilot started in $wt (log: runs/league/experiments.log)" ;;
+  ml)
+    wt="$(cd .. && pwd)/battlecode-ml"
+    [ -d "$wt" ] || { git fetch -q origin && git worktree add -q -B mlpilot "$wt" origin/league; }
+    py="$(pwd)/$PY"
+    case "${1:-}" in
+      list) (cd "$wt" && "$py" harness/mljobs.py list); exit 0 ;;
+      stop) pkill -f "mljobs.py run" || true; exit 0 ;;
+    esac
+    mkdir -p "$wt/runs/league"
+    (cd "$wt" && nohup "$py" -u harness/mljobs.py run --forever >> runs/league/ml.log 2>&1 &)
+    echo "ml jobs started in $wt (log: runs/league/ml.log; queue: $0 ml list)" ;;
   status|review|sync|maps|bench|submit|replay)
     "$PY" harness/league.py "$cmd" "$@" ;;
   *)
-    echo "usage: $0 start|stop|status|logs|review|sync|maps|bench|submit|replay|once [args]"; exit 2 ;;
+    echo "usage: $0 start|stop|status|logs|review|sync|maps|bench|submit|replay|experiments|ml|once [args]"; exit 2 ;;
 esac
