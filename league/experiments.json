@@ -1612,16 +1612,57 @@
    "added": "2026-10-21T15:12:04Z",
    "area": "endgame",
    "claimed": "2026-10-21T18:42:18Z",
+   "finished": "2026-10-21T18:53:58Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 29,
    "notes": "",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.539,
+     "h2h_games": 76,
+     "live": {
+      "deaths": 23.91,
+      "fitness": 0.395,
+      "games": 988,
+      "gem_margin": 0.094,
+      "win": 0.61
+     },
+     "variant": {
+      "deaths": 23.85,
+      "fitness": 0.415,
+      "games": 988,
+      "gem_margin": 0.117,
+      "win": 0.624
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 16.96,
+      "fitness": 0.364,
+      "games": 182,
+      "gem_margin": 0.003,
+      "win": 0.533
+     },
+     "paired": {
+      "mean": 0.0033,
+      "pairs": 182,
+      "se": 0.0206
+     },
+     "variant": {
+      "deaths": 16.99,
+      "fitness": 0.368,
+      "games": 182,
+      "gem_margin": -0.004,
+      "win": 0.538
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "ENDGAME_BANK": 1
     }
    },
-   "status": "screening",
+   "status": "passed",
    "title": "Deliver everything from round 1850"
   },
   {
