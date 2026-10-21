@@ -712,9 +712,10 @@
    "added": "2026-10-21T15:30:46Z",
    "area": "economy",
    "claimed": "2026-10-21T16:11:57Z",
+   "finished": "2026-10-21T16:12:01Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 46,
-   "notes": "Recall and buy when about to start a fight with advantage < 1.5 or a camp > 25 rounds to clear. Screen: win 0.451 vs 0.555, fitness 0.275 vs 0.385. Re-run: old strict screen (win 0.451 vs 0.555); now paired screen on top of #43.",
+   "notes": "error: ValueError(\"needs rebase: origin/feat/stun-upgrade conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 033c48b0b4cb7c383c515328e6ee9f",
    "results": {},
    "run": 2,
    "spec": {
@@ -723,7 +724,7 @@
     },
     "ref": "origin/feat/stun-upgrade"
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "Upgrade before a hard fight (60 gold)"
   },
   {
