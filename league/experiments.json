@@ -2371,6 +2371,8 @@
   {
    "added": "2026-10-21T20:16:07Z",
    "area": "economy",
+   "claimed": "2026-10-21T21:05:51Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 64,
    "notes": "Catch-up version of the gold order.",
    "results": {},
@@ -2380,7 +2382,7 @@
     },
     "ref": "origin/feat/gaps-2"
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Gold order: least geared takes gold rewards"
   },
   {
