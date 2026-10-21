@@ -1920,6 +1920,8 @@
   {
    "added": "2026-10-21T20:16:07Z",
    "area": "combat",
+   "claimed": "2026-10-21T20:24:19Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 56,
    "notes": "Damage cancels a recall; only when no other enemy is within 4 of it and we're above 40% HP.",
    "results": {},
@@ -1929,7 +1931,7 @@
     },
     "ref": "origin/feat/gaps-2"
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Hit a lone enemy recalling within 4"
   },
   {
