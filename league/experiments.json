@@ -2176,17 +2176,58 @@
    "added": "2026-10-21T20:16:07Z",
    "area": "farming",
    "claimed": "2026-10-21T20:47:32Z",
+   "finished": "2026-10-21T20:54:53Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 60,
    "notes": "Value / (1 + 0.25 per extra monster) when no ally within 6.",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.474,
+     "h2h_games": 76,
+     "live": {
+      "deaths": 23.75,
+      "fitness": 0.398,
+      "games": 988,
+      "gem_margin": 0.096,
+      "win": 0.611
+     },
+     "variant": {
+      "deaths": 22.79,
+      "fitness": 0.367,
+      "games": 988,
+      "gem_margin": 0.052,
+      "win": 0.582
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 16.96,
+      "fitness": 0.364,
+      "games": 182,
+      "gem_margin": 0.003,
+      "win": 0.533
+     },
+     "paired": {
+      "mean": 0.0075,
+      "pairs": 182,
+      "se": 0.0493
+     },
+     "variant": {
+      "deaths": 15.99,
+      "fitness": 0.372,
+      "games": 182,
+      "gem_margin": -0.027,
+      "win": 0.538
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "EASE_FIRST": 1
     },
     "ref": "origin/feat/gaps-2"
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "Alone: easier groups first (fewer monsters)"
   },
   {
