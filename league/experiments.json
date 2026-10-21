@@ -1302,16 +1302,57 @@
    "added": "2026-10-21T15:12:04Z",
    "area": "combat",
    "claimed": "2026-10-21T18:08:43Z",
+   "finished": "2026-10-21T18:18:16Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 24,
    "notes": "",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.539,
+     "h2h_games": 76,
+     "live": {
+      "deaths": 23.91,
+      "fitness": 0.395,
+      "games": 988,
+      "gem_margin": 0.094,
+      "win": 0.61
+     },
+     "variant": {
+      "deaths": 28.26,
+      "fitness": 0.346,
+      "games": 988,
+      "gem_margin": 0.086,
+      "win": 0.607
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 16.96,
+      "fitness": 0.364,
+      "games": 182,
+      "gem_margin": 0.003,
+      "win": 0.533
+     },
+     "paired": {
+      "mean": 0.0301,
+      "pairs": 182,
+      "se": 0.0408
+     },
+     "variant": {
+      "deaths": 17.99,
+      "fitness": 0.394,
+      "games": 182,
+      "gem_margin": 0.033,
+      "win": 0.566
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "FIGHT_V6": 15
     }
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "All FIGHT_V6 behaviours"
   },
   {
