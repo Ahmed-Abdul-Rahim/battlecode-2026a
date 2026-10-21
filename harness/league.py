@@ -114,7 +114,9 @@ STUCK_TRIES = 6  # ES cycles on a lost map without a fix before a human is asked
 BOOTSTRAP_TRIES = 4  # rounds every never-trained (new) map gets before losses and top-10 work
 SUBMIT_GAP = 3 * 3600
 BENCH_JUMP = 0.05
-REVERT_GAMES, REVERT_DROP = 10, 0.10
+# Revert only on REVERT_GAMES+ ranked games of the new version, against the previous version's
+# latest REVERT_RECENT games, and a drop bigger than both REVERT_DROP and two standard errors.
+REVERT_GAMES, REVERT_DROP, REVERT_RECENT = 30, 0.10, 60
 HEARTBEAT = 1800  # push try counts at least this often, so the lead sees stuck maps
 #: Map pressure (map_pressure): a loss's weight falls to 1/e after a day; every map keeps a
 #: floor of this fraction of the top pressure, so no map is starved.
@@ -908,14 +910,19 @@ def revert_decision(led: dict) -> int | None:
     if len(subs) < 2 or subs[-1].get("reason", "").startswith("revert"):
         return None
 
-    def rate(v: int) -> tuple[float, int]:
-        g = [x["win"] for x in led["ladder"].values() if x.get("live") == v and x.get("kind") == "ranked"]
-        return (sum(g) / len(g) if g else 0.0), len(g)
+    def rate(v: int, recent: int | None = None) -> tuple[float, int]:
+        g = sorted(
+            (x for x in led["ladder"].values() if x.get("live") == v and x.get("kind") == "ranked"),
+            key=lambda x: x.get("time", ""),
+        )
+        w = [x["win"] for x in g[-recent:]] if recent else [x["win"] for x in g]
+        return (sum(w) / len(w) if w else 0.0), len(w)
 
-    (wl, nl), (wp, np_) = rate(subs[-1]["version"]), rate(subs[-2]["version"])
-    if nl >= REVERT_GAMES and np_ >= REVERT_GAMES and wl < wp - REVERT_DROP:
-        return subs[-2]["version"]
-    return None
+    (wl, nl), (wp, np_) = rate(subs[-1]["version"]), rate(subs[-2]["version"], REVERT_RECENT)
+    if nl < REVERT_GAMES or np_ < REVERT_GAMES:
+        return None
+    noise = 2 * math.sqrt(max(wp * (1 - wp), 0.05) / nl)
+    return subs[-2]["version"] if wl < wp - max(REVERT_DROP, noise) else None
 
 
 def submit(led: dict, version: int, reason: str, bot: str | None = None) -> bool:
@@ -1416,6 +1423,7 @@ def cycle(a: argparse.Namespace, rng: random.Random) -> None:
     seeded = seed_maps(ch, led)
     apply_champion(ch)
     maybe_release(a, ch, cyc, use_git)
+    led = load_ledger()  # an upload just now is in the file, not in `led`: don't save over it
     if seeded:
         log(f"new maps get default theta until trained: {', '.join(seeded)}")
         save_json(CHAMPION, ch)

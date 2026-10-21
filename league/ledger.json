@@ -54,6 +54,15 @@
    "time": "2026-10-21T14:40:12.891Z",
    "win": true
   },
+  "04f72b05-faf6-465f-baf0-e435cc91da90": {
+   "kind": "ranked",
+   "live": 10,
+   "map": "broken-curve",
+   "opp": "Hidden Lock Pickers",
+   "oppId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
+   "time": "2026-10-21T15:20:15.263Z",
+   "win": false
+  },
   "06182bbf-364d-4be0-acc4-96215042f247": {
    "kind": "ranked",
    "live": 1,
@@ -97,6 +106,15 @@
    "opp": "WhatIsQuantTrading??????",
    "oppId": "d88df6e3-53c7-44ed-874f-67f3caa0578c",
    "time": "2026-10-20T18:50:08.433Z",
+   "win": false
+  },
+  "08a34fe6-84bd-4b17-9214-be0619aa9503": {
+   "kind": "unranked",
+   "live": 1,
+   "map": "islands",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "time": "2026-10-21T15:30:43.130Z",
    "win": false
   },
   "0913c280-d351-4cf9-b553-ee0bba4fc4e6": {
@@ -270,6 +288,15 @@
    "time": "2026-10-20T17:20:08.637Z",
    "win": true
   },
+  "17fcbb50-be82-42cb-8496-8cc813c3e02b": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "elkring",
+   "opp": "Divide and Conquer",
+   "oppId": "da1c0f93-a0cc-43df-8aca-059e15923cda",
+   "time": "2026-10-21T15:30:12.915Z",
+   "win": true
+  },
   "18fa18fe-707b-48ea-add4-336dd428e73f": {
    "kind": "ranked",
    "live": 1,
@@ -387,6 +414,15 @@
    "time": "2026-10-20T19:20:09.080Z",
    "win": false
   },
+  "249ee835-d2da-48c6-829b-34546410134d": {
+   "kind": "unranked",
+   "live": 1,
+   "map": "islands",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "time": "2026-10-21T15:26:39.458Z",
+   "win": false
+  },
   "24a10b64-aa0e-4579-9731-78e3d251cb75": {
    "kind": "ranked",
    "live": 1,
@@ -421,6 +457,15 @@
    "opp": "Azerbaijan Technologies",
    "oppId": "7218a6a8-8211-4587-bdf8-3bae779e930e",
    "time": "2026-10-20T19:30:09.721Z",
+   "win": true
+  },
+  "25ac7a65-b2f9-4eda-814f-7b1546e081cc": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "swirl",
+   "opp": "Divide and Conquer",
+   "oppId": "da1c0f93-a0cc-43df-8aca-059e15923cda",
+   "time": "2026-10-21T15:30:12.916Z",
    "win": true
   },
   "274b84ee-1784-4176-9be9-a11b7a944612": {
@@ -477,6 +522,15 @@
    "time": "2026-10-20T20:20:12.929Z",
    "win": false
   },
+  "2b17b8bc-d12d-449f-b300-f44ebfb9df7c": {
+   "kind": "unranked",
+   "live": 1,
+   "map": "gold-rush",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "time": "2026-10-21T15:30:43.114Z",
+   "win": false
+  },
   "2b6f1ceb-f55e-42ab-ba76-710fa6ae371d": {
    "kind": "ranked",
    "live": 1,
@@ -497,7 +551,7 @@
   },
   "2d742f10-cbb4-472a-a471-cbcfa18363e0": {
    "kind": "ranked",
-   "live": 1,
+   "live": 9,
    "map": "stampede",
    "opp": "Mousa",
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
@@ -659,7 +713,7 @@
   },
   "3b17b6ab-56b0-41ed-868d-9e1f69ddb583": {
    "kind": "ranked",
-   "live": 1,
+   "live": 9,
    "map": "contest",
    "opp": "another name",
    "oppId": "b095a9ef-91f3-4c4a-b4aa-3ec386286b82",
@@ -686,7 +740,7 @@
   },
   "3bf36a2d-1db8-48bd-9fd2-2752310b6b71": {
    "kind": "ranked",
-   "live": 1,
+   "live": 9,
    "map": "rows",
    "opp": "another name",
    "oppId": "b095a9ef-91f3-4c4a-b4aa-3ec386286b82",
@@ -1386,6 +1440,15 @@
    "time": "2026-10-20T17:10:06.134Z",
    "win": false
   },
+  "7cede8e3-7f49-4e1b-b53e-81a90f529038": {
+   "kind": "unranked",
+   "live": 1,
+   "map": "boss-battle",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "time": "2026-10-21T15:26:39.446Z",
+   "win": true
+  },
   "7df61bb9-02dd-47a1-9a90-bf6732c1d5f6": {
    "kind": "ranked",
    "live": null,
@@ -1394,6 +1457,15 @@
    "oppId": "e89db5d4-c0a7-43eb-9d6d-23732bae07a5",
    "time": "2026-10-20T16:40:04.457Z",
    "win": true
+  },
+  "7e4a0d35-cd33-4177-b04e-616635ac1b51": {
+   "kind": "unranked",
+   "live": 1,
+   "map": "fracture",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "time": "2026-10-21T15:26:39.476Z",
+   "win": false
   },
   "7ed0c68a-6bda-4e38-9508-fd3557413ecb": {
    "kind": "ranked",
@@ -1415,7 +1487,7 @@
   },
   "814978a2-d822-4b08-b25b-e30c3e66ca11": {
    "kind": "ranked",
-   "live": 1,
+   "live": 9,
    "map": "swirl",
    "opp": "Mousa",
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
@@ -1456,6 +1528,15 @@
    "opp": "Hidden Lock Pickers",
    "oppId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
    "time": "2026-10-20T20:00:10.344Z",
+   "win": false
+  },
+  "851f439e-515e-448f-a5a0-88f8ab305900": {
+   "kind": "ranked",
+   "live": 10,
+   "map": "elkring",
+   "opp": "Hidden Lock Pickers",
+   "oppId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
+   "time": "2026-10-21T15:20:15.263Z",
    "win": false
   },
   "86ddfd59-eab4-4080-9b26-0dc149d5c7c5": {
@@ -1501,6 +1582,15 @@
    "opp": "DeepSleep",
    "oppId": "c14b952b-899c-4f25-a4f8-d3a4b06cbf9a",
    "time": "2026-10-20T20:10:09.725Z",
+   "win": true
+  },
+  "8d1fa7c0-1956-4cc6-a132-1015f9d1ba85": {
+   "kind": "ranked",
+   "live": 10,
+   "map": "rushbait-v2",
+   "opp": "Hidden Lock Pickers",
+   "oppId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
+   "time": "2026-10-21T15:20:15.262Z",
    "win": true
   },
   "8d902203-eb97-42b3-8fc0-e00eadf36319": {
@@ -1665,6 +1755,15 @@
    "time": "2026-10-20T20:30:13.466Z",
    "win": false
   },
+  "9c7e22dc-b8c0-42dd-b54a-4829929d9a6c": {
+   "kind": "unranked",
+   "live": 1,
+   "map": "eight",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "time": "2026-10-21T15:30:43.074Z",
+   "win": true
+  },
   "9cb1a85a-1985-4abd-bc26-746061c244c7": {
    "kind": "ranked",
    "live": null,
@@ -1719,6 +1818,15 @@
    "time": "2026-10-20T17:30:07.063Z",
    "win": false
   },
+  "9fc2d5e6-d6b1-4791-b7d1-e595457408c5": {
+   "kind": "unranked",
+   "live": 1,
+   "map": "fracture",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "time": "2026-10-21T15:30:43.147Z",
+   "win": false
+  },
   "a27297b2-a852-4636-9163-3c10c2e887a7": {
    "kind": "unranked",
    "live": 10,
@@ -1730,11 +1838,20 @@
   },
   "a2767920-c5b2-4d7b-b668-7d26ae409e90": {
    "kind": "ranked",
-   "live": 1,
+   "live": 9,
    "map": "starfish",
    "opp": "another name",
    "oppId": "b095a9ef-91f3-4c4a-b4aa-3ec386286b82",
    "time": "2026-10-21T14:50:14.151Z",
+   "win": true
+  },
+  "a3e94d15-3ae1-4d5b-89bb-58687ef5df7e": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "boss-battle",
+   "opp": "Divide and Conquer",
+   "oppId": "da1c0f93-a0cc-43df-8aca-059e15923cda",
+   "time": "2026-10-21T15:30:12.916Z",
    "win": true
   },
   "a4fc810c-facd-4296-998d-0d0133a45623": {
@@ -1754,6 +1871,15 @@
    "oppId": "dc24ee25-0f21-4353-8ebf-1ce5a82e22bb",
    "time": "2026-10-20T21:10:08.566Z",
    "win": false
+  },
+  "a5441a02-28a7-4498-a481-4f05b51ce834": {
+   "kind": "ranked",
+   "live": 10,
+   "map": "expanse",
+   "opp": "Hidden Lock Pickers",
+   "oppId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
+   "time": "2026-10-21T15:20:15.262Z",
+   "win": true
   },
   "a6292051-d12d-4066-8718-fad21da0fb6b": {
    "kind": "ranked",
@@ -2061,6 +2187,15 @@
    "time": "2026-10-21T15:10:10.877Z",
    "win": false
   },
+  "bfcaea2e-4674-4b75-8ebb-ef615831b37a": {
+   "kind": "unranked",
+   "live": 1,
+   "map": "boss-battle",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "time": "2026-10-21T15:30:43.099Z",
+   "win": true
+  },
   "c02655c5-5f6b-42d3-ac79-f145309dacde": {
    "kind": "ranked",
    "live": 10,
@@ -2115,6 +2250,24 @@
    "time": "2026-10-21T14:40:12.891Z",
    "win": true
   },
+  "c7c2c438-b220-4451-9985-249af95d28b2": {
+   "kind": "ranked",
+   "live": 10,
+   "map": "hooks",
+   "opp": "Hidden Lock Pickers",
+   "oppId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
+   "time": "2026-10-21T15:20:15.263Z",
+   "win": false
+  },
+  "c8f782f5-346f-4286-b900-fcb75bc17ff2": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "the-farm",
+   "opp": "Divide and Conquer",
+   "oppId": "da1c0f93-a0cc-43df-8aca-059e15923cda",
+   "time": "2026-10-21T15:30:12.915Z",
+   "win": true
+  },
   "c9c01652-6530-4663-bece-73cb9e329e36": {
    "kind": "ranked",
    "live": null,
@@ -2151,6 +2304,15 @@
    "time": "2026-10-20T16:20:07.815Z",
    "win": true
   },
+  "ce2c63ce-7df9-432a-998e-ccbd4917a4fc": {
+   "kind": "unranked",
+   "live": 1,
+   "map": "gold-rush",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "time": "2026-10-21T15:26:39.452Z",
+   "win": false
+  },
   "ce9ca75f-ffc9-4866-a95d-1d60a7f2123b": {
    "kind": "ranked",
    "live": 1,
@@ -2171,7 +2333,7 @@
   },
   "cfbbb9c7-4c03-46f1-8b6a-d82433ffcc6a": {
    "kind": "ranked",
-   "live": 1,
+   "live": 9,
    "map": "hooks",
    "opp": "Mousa",
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
@@ -2207,7 +2369,7 @@
   },
   "d0fa64c4-1d47-4629-b1d9-17eb6e86cf31": {
    "kind": "ranked",
-   "live": 1,
+   "live": 9,
    "map": "reverse-spiral",
    "opp": "Mousa",
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
@@ -2394,6 +2556,15 @@
    "time": "2026-10-20T18:10:10.515Z",
    "win": false
   },
+  "e5641c81-dc05-4150-8caa-64efc13e765e": {
+   "kind": "unranked",
+   "live": 1,
+   "map": "eight",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "time": "2026-10-21T15:26:39.437Z",
+   "win": true
+  },
   "e5b510b4-982c-4e10-8823-ac701ac58656": {
    "kind": "ranked",
    "live": 1,
@@ -2486,7 +2657,7 @@
   },
   "ecd3fe0c-a91d-41cd-b4da-f3e98ba73a33": {
    "kind": "ranked",
-   "live": 1,
+   "live": 9,
    "map": "eight",
    "opp": "Mousa",
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
@@ -2576,7 +2747,7 @@
   },
   "f120bc92-c762-4455-9ebe-0ad43678658d": {
    "kind": "ranked",
-   "live": 1,
+   "live": 9,
    "map": "fragment",
    "opp": "another name",
    "oppId": "b095a9ef-91f3-4c4a-b4aa-3ec386286b82",
@@ -2655,6 +2826,15 @@
    "time": "2026-10-20T17:50:06.264Z",
    "win": true
   },
+  "fac53974-8eb7-4760-b824-6ab79d29b193": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "quadrants",
+   "opp": "Divide and Conquer",
+   "oppId": "da1c0f93-a0cc-43df-8aca-059e15923cda",
+   "time": "2026-10-21T15:30:12.915Z",
+   "win": true
+  },
   "fb1f1523-04fb-44d5-8aaf-c5df462c9f24": {
    "kind": "ranked",
    "live": 1,
@@ -2675,7 +2855,7 @@
   },
   "fdb961ae-9766-4749-886b-8fe8b8333b60": {
    "kind": "ranked",
-   "live": 1,
+   "live": 9,
    "map": "corridors",
    "opp": "another name",
    "oppId": "b095a9ef-91f3-4c4a-b4aa-3ec386286b82",
@@ -5223,7 +5403,8 @@
    "map": "swirl",
    "opp": "Mousa",
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 1,
    "time": "2026-10-21T15:00:13.926Z",
    "tries_at": 1
   },
@@ -5239,7 +5420,8 @@
    "map": "hooks",
    "opp": "Mousa",
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 1,
    "time": "2026-10-21T15:00:13.926Z",
    "tries_at": 2
   },
@@ -5255,7 +5437,8 @@
    "map": "eight",
    "opp": "Mousa",
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 1,
    "time": "2026-10-21T15:00:13.926Z",
    "tries_at": 3
   },
@@ -5272,7 +5455,8 @@
    "map": "fragment",
    "opp": "another name",
    "oppId": "b095a9ef-91f3-4c4a-b4aa-3ec386286b82",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 1,
    "time": "2026-10-21T14:50:14.152Z",
    "tries_at": 3
   },
@@ -5289,7 +5473,8 @@
    "map": "contest",
    "opp": "another name",
    "oppId": "b095a9ef-91f3-4c4a-b4aa-3ec386286b82",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 1,
    "time": "2026-10-21T14:50:14.152Z",
    "tries_at": 0
   },
@@ -5306,7 +5491,8 @@
    "map": "fracture",
    "opp": "ggez",
    "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 1,
    "time": "2026-10-21T15:10:26.236Z",
    "tries_at": 3
   },
@@ -5323,7 +5509,8 @@
    "map": "gold-rush",
    "opp": "ggez",
    "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 1,
    "time": "2026-10-21T15:10:26.210Z",
    "tries_at": 1
   },
@@ -5340,7 +5527,8 @@
    "map": "fracture",
    "opp": "Lucky Stunner",
    "oppId": "d48d65ef-625c-4966-b2cc-a7b1b02fafec",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 1,
    "time": "2026-10-21T15:10:10.877Z",
    "tries_at": 3
   },
@@ -5356,7 +5544,8 @@
    "map": "collision",
    "opp": "Lucky Stunner",
    "oppId": "d48d65ef-625c-4966-b2cc-a7b1b02fafec",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 1,
    "time": "2026-10-21T15:10:10.876Z",
    "tries_at": 6
   },
@@ -5367,13 +5556,14 @@
    },
    "deaths_them": 5,
    "deaths_us": 76,
+   "fixed_in": 11,
    "gems_them": "541",
    "gems_us": "15",
    "id": "e3e5575b-55ba-4b60-b2ef-980b637c7991",
    "map": "pilgrimage",
    "opp": "Lucky Stunner",
    "oppId": "d48d65ef-625c-4966-b2cc-a7b1b02fafec",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-21T15:10:10.876Z",
    "tries_at": 1
   },
@@ -5390,8 +5580,165 @@
    "map": "starfish",
    "opp": "Lucky Stunner",
    "oppId": "d48d65ef-625c-4966-b2cc-a7b1b02fafec",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 1,
    "time": "2026-10-21T15:10:10.876Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 34,
+    "Unknown entity kind (2)": 2
+   },
+   "deaths_them": 22,
+   "deaths_us": 36,
+   "gems_them": "1012",
+   "gems_us": "88",
+   "id": "c7c2c438-b220-4451-9985-249af95d28b2",
+   "map": "hooks",
+   "opp": "Hidden Lock Pickers",
+   "oppId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
+   "status": "superseded",
+   "superseded_by": 1,
+   "time": "2026-10-21T15:20:15.263Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 3,
+    "Unknown entity kind (2)": 8
+   },
+   "deaths_them": 11,
+   "deaths_us": 11,
+   "gems_them": "1012",
+   "gems_us": "458",
+   "id": "04f72b05-faf6-465f-baf0-e435cc91da90",
+   "map": "broken-curve",
+   "opp": "Hidden Lock Pickers",
+   "oppId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
+   "status": "superseded",
+   "superseded_by": 1,
+   "time": "2026-10-21T15:20:15.263Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 6,
+    "Unknown entity kind (2)": 27
+   },
+   "deaths_them": 24,
+   "deaths_us": 33,
+   "gems_them": "1012",
+   "gems_us": "418",
+   "id": "851f439e-515e-448f-a5a0-88f8ab305900",
+   "map": "elkring",
+   "opp": "Hidden Lock Pickers",
+   "oppId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
+   "status": "superseded",
+   "superseded_by": 1,
+   "time": "2026-10-21T15:20:15.263Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 1,
+    "Unknown entity kind (2)": 26
+   },
+   "deaths_them": 5,
+   "deaths_us": 27,
+   "gems_them": "350",
+   "gems_us": "215",
+   "id": "9fc2d5e6-d6b1-4791-b7d1-e595457408c5",
+   "map": "fracture",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "status": "open",
+   "time": "2026-10-21T15:30:43.147Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 9,
+    "Unknown entity kind (2)": 8
+   },
+   "deaths_them": 18,
+   "deaths_us": 17,
+   "gems_them": "1017",
+   "gems_us": "988",
+   "id": "08a34fe6-84bd-4b17-9214-be0619aa9503",
+   "map": "islands",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "status": "open",
+   "time": "2026-10-21T15:30:43.130Z",
+   "tries_at": 5
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 27,
+    "Unknown entity kind (2)": 22
+   },
+   "deaths_them": 21,
+   "deaths_us": 49,
+   "gems_them": "597",
+   "gems_us": "127",
+   "id": "2b17b8bc-d12d-449f-b300-f44ebfb9df7c",
+   "map": "gold-rush",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "status": "open",
+   "time": "2026-10-21T15:30:43.114Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 1,
+    "Unknown entity kind (2)": 26
+   },
+   "deaths_them": 5,
+   "deaths_us": 27,
+   "gems_them": "350",
+   "gems_us": "215",
+   "id": "7e4a0d35-cd33-4177-b04e-616635ac1b51",
+   "map": "fracture",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "status": "open",
+   "time": "2026-10-21T15:26:39.476Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 9,
+    "Unknown entity kind (2)": 8
+   },
+   "deaths_them": 18,
+   "deaths_us": 17,
+   "gems_them": "1017",
+   "gems_us": "988",
+   "id": "249ee835-d2da-48c6-829b-34546410134d",
+   "map": "islands",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "status": "open",
+   "time": "2026-10-21T15:26:39.458Z",
+   "tries_at": 5
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 27,
+    "Unknown entity kind (2)": 22
+   },
+   "deaths_them": 21,
+   "deaths_us": 49,
+   "gems_them": "597",
+   "gems_us": "127",
+   "id": "ce2c63ce-7df9-432a-998e-ccbd4917a4fc",
+   "map": "gold-rush",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "status": "open",
+   "time": "2026-10-21T15:26:39.452Z",
    "tries_at": 1
   }
  ],
@@ -5612,6 +5959,15 @@
    "version": 1
   },
   {
+   "bot": "lg-v9",
+   "host": "DESKTOP-QVEMEEE",
+   "ok": true,
+   "output": "Uploading D:\\Code\\battlecode\\bots\\lg-v9 (136787 bytes)...\nSubmitted bot version 12. View submissions at https://2026a.battlecode.co.uk/game/submissions\nA newer version of cambc is available for windows-x64. Download: https://2026a.battlecode.co.uk/game/download\nIf installed with pip, run `python -m ",
+   "reason": "ladder loss since the last upload",
+   "time": "2026-10-21T14:47:07Z",
+   "version": 9
+  },
+  {
    "bot": "lg-v10",
    "host": "DESKTOP-QVEMEEE",
    "ok": true,
@@ -5619,6 +5975,15 @@
    "reason": "ladder loss since the last upload",
    "time": "2026-10-21T15:02:36Z",
    "version": 10
+  },
+  {
+   "bot": "lg-v1",
+   "host": "DESKTOP-QVEMEEE",
+   "ok": true,
+   "output": "Uploading D:\\Code\\battlecode\\bots\\lg-v1 (118639 bytes)...\nSubmitted bot version 14. View submissions at https://2026a.battlecode.co.uk/game/submissions\nA newer version of cambc is available for windows-x64. Download: https://2026a.battlecode.co.uk/game/download\nIf installed with pip, run `python -m ",
+   "reason": "revert: v10 did worse on the ladder",
+   "time": "2026-10-21T15:25:47Z",
+   "version": 1
   }
  ],
  "top": [

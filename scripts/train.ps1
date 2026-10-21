@@ -52,7 +52,7 @@ switch ($cmd) {
         $wt = Join-Path (Split-Path -Parent $root) "battlecode-autopilot"
         if (-not (Test-Path $wt)) {
             git -C $root fetch -q origin
-            git -C $root worktree add -B autopilot $wt origin/league
+            git -C $root worktree add -q -B autopilot $wt origin/league 2>$null
         }
         $x = Join-Path $wt "harness\experiments.py"
         if ($rest -contains "list") { & $py -X utf8 $x list; return }

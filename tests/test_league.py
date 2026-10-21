@@ -109,11 +109,16 @@ def test_first_upload_waits_for_a_reason():
 
 def test_revert_when_live_version_does_worse():
     subs = [{"version": 1, "time": "a", "ok": True}, {"version": 2, "time": "b", "ok": True}]
-    games = {f"p{i}": {"live": 1, "kind": "ranked", "win": i < 7} for i in range(10)}
-    games |= {f"l{i}": {"live": 2, "kind": "ranked", "win": i < 4} for i in range(10)}
+    games = {f"p{i}": {"live": 1, "kind": "ranked", "win": i % 10 < 7} for i in range(30)}
+    games |= {f"l{i}": {"live": 2, "kind": "ranked", "win": i % 10 < 3} for i in range(30)}
     assert league.revert_decision(ledger(subs, ladder=games)) == 1
-    few = {k: v for k, v in games.items() if not k.startswith("l") or int(k[1:]) < 5}
+    # 10 games is noise (v10 went back to v1 on 3/10 in October): no revert.
+    few = {k: v for k, v in games.items() if not k.startswith("l") or int(k[1:]) < 10}
     assert league.revert_decision(ledger(subs, ladder=few)) is None
+    # A small drop on 30 games is within noise too.
+    close = {k: v for k, v in games.items() if k.startswith("p")}
+    close |= {f"l{i}": {"live": 2, "kind": "ranked", "win": i % 10 < 6} for i in range(30)}
+    assert league.revert_decision(ledger(subs, ladder=close)) is None
     reverted = [*subs, {"version": 1, "time": "c", "ok": True, "reason": "revert: v2 did worse"}]
     assert league.revert_decision(ledger(reverted, ladder=games)) is None
 
