@@ -1086,10 +1086,51 @@
    "added": "2026-10-21T15:30:46Z",
    "area": "teamwork",
    "claimed": "2026-10-21T20:32:03Z",
+   "finished": "2026-10-21T20:39:51Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 48,
    "notes": "error: ValueError(\"needs rebase: origin/feat/stun-upgrade conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 033c48b0b4cb7c383c515328e6ee9f Re-run: the branch conflicted with the live code after #43 (fixed: #42/#44 are now plain switches on live, the stun-upgrade branch is merged with live). Claim released: Abdul-Rahim's PC stopped (no result after 3+ hours).",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.658,
+     "h2h_games": 76,
+     "live": {
+      "deaths": 23.75,
+      "fitness": 0.398,
+      "games": 988,
+      "gem_margin": 0.096,
+      "win": 0.611
+     },
+     "variant": {
+      "deaths": 22.18,
+      "fitness": 0.521,
+      "games": 988,
+      "gem_margin": 0.182,
+      "win": 0.697
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 16.96,
+      "fitness": 0.364,
+      "games": 182,
+      "gem_margin": 0.003,
+      "win": 0.533
+     },
+     "paired": {
+      "mean": 0.1343,
+      "pairs": 182,
+      "se": 0.0488
+     },
+     "variant": {
+      "deaths": 14.95,
+      "fitness": 0.499,
+      "games": 182,
+      "gem_margin": 0.13,
+      "win": 0.615
+     }
+    }
+   },
    "run": 3,
    "spec": {
     "knobs": {
@@ -1097,7 +1138,7 @@
     },
     "ref": "origin/feat/stun-upgrade"
    },
-   "status": "screening",
+   "status": "passed",
    "title": "Team up: join ally fights within 6"
   },
   {
