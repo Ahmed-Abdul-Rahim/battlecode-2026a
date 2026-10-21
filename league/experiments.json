@@ -2331,6 +2331,8 @@
   {
    "added": "2026-10-21T20:16:07Z",
    "area": "economy",
+   "claimed": "2026-10-21T21:04:21Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 63,
    "notes": "Gold can't be passed; rewards split among allies on the tile, so others step off for the highest-damage kit until 15 gear.",
    "results": {},
@@ -2340,7 +2342,7 @@
     },
     "ref": "origin/feat/gaps-2"
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Gold order: carry takes gold rewards"
   },
   {
