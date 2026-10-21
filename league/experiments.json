@@ -2469,6 +2469,8 @@
   {
    "added": "2026-10-21T20:16:07Z",
    "area": "movement",
+   "claimed": "2026-10-21T21:14:47Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 66,
    "notes": "No healing outside spawn, so: break the chasers' line of sight first so the recall isn't cancelled.",
    "results": {},
@@ -2478,7 +2480,7 @@
     },
     "ref": "origin/feat/gaps-2"
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Hide out of sight, then recall"
   },
   {
