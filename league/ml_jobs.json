@@ -1293,6 +1293,19 @@
     "win": 0.628
    },
    "status": "done"
+  },
+  {
+   "added": "2026-10-21T18:55:51Z",
+   "claimed": "2026-10-21T18:55:51Z",
+   "host": "DESKTOP-QVEMEEE",
+   "id": 52,
+   "kind": "gen",
+   "params": {
+    "explore": 10,
+    "offset": 132
+   },
+   "result": {},
+   "status": "running"
   }
  ]
 }
