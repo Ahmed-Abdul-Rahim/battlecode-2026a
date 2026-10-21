@@ -2510,6 +2510,8 @@
   {
    "added": "2026-10-21T20:16:07Z",
    "area": "movement",
+   "claimed": "2026-10-21T21:30:06Z",
+   "host": "muhammad-usman-Inspiron-14-5410-2-in-1",
    "id": 66,
    "notes": "No healing outside spawn, so: break the chasers' line of sight first so the recall isn't cancelled. Claim released: DESKTOP-QVEMEEE stopped before finishing.",
    "results": {},
@@ -2520,7 +2522,7 @@
     },
     "ref": "origin/feat/gaps-2"
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Hide out of sight, then recall"
   },
   {
