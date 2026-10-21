@@ -1357,6 +1357,19 @@
     "error": "OSError(28, 'No space left on device')"
    },
    "status": "failed"
+  },
+  {
+   "added": "2026-10-21T19:04:12Z",
+   "claimed": "2026-10-21T19:04:12Z",
+   "host": "DESKTOP-QVEMEEE",
+   "id": 55,
+   "kind": "gen",
+   "params": {
+    "explore": 10,
+    "offset": 141
+   },
+   "result": {},
+   "status": "running"
   }
  ]
 }
