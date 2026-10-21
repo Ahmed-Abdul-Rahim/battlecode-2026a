@@ -637,9 +637,10 @@
    "added": "2026-10-21T15:30:46Z",
    "area": "teamwork",
    "claimed": "2026-10-21T16:11:23Z",
+   "finished": "2026-10-21T16:11:28Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 47,
-   "notes": "Any enemy HP (kill assist needs <= 50%); skipped when joint advantage < 0.7. If it passes, radius / advantage move into the learned E block.",
+   "notes": "error: ValueError(\"needs rebase: origin/feat/stun-upgrade conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 033c48b0b4cb7c383c515328e6ee9f",
    "results": {},
    "spec": {
     "knobs": {
@@ -647,7 +648,7 @@
     },
     "ref": "origin/feat/stun-upgrade"
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "Team up: join ally fights within 4"
   },
   {
