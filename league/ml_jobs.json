@@ -537,6 +537,7 @@
   {
    "added": "2026-10-21T17:40:56Z",
    "claimed": "2026-10-21T17:40:56Z",
+   "finished": "2026-10-21T17:43:09Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 22,
    "kind": "gen",
@@ -544,8 +545,18 @@
     "explore": 10,
     "offset": 54
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "games": 78,
+    "maps": [
+     "00lanes",
+     "00monolith",
+     "00packs"
+    ],
+    "rows": 135426,
+    "shard": "gen-00022-DESKTOP-QVEMEEE.npz",
+    "win": 0.513
+   },
+   "status": "done"
   }
  ]
 }
