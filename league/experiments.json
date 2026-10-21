@@ -2117,6 +2117,8 @@
   {
    "added": "2026-10-21T20:16:07Z",
    "area": "farming",
+   "claimed": "2026-10-21T20:46:04Z",
+   "host": "muhammad-usman-Inspiron-14-5410-2-in-1",
    "id": 59,
    "notes": "Skip unless an ally is near/claims it, or clear time x1.5 < survival time (late game).",
    "results": {},
@@ -2126,7 +2128,7 @@
     },
     "ref": "origin/feat/gaps-2"
    },
-   "status": "queued",
+   "status": "screening",
    "title": "No 4+ monster group alone unless geared"
   },
   {
