@@ -88,4 +88,4 @@ def test_next_queued_and_tex_escaping():
     q = X.add(reg, "bags 6/42 & en_route", "economy", knobs={"EN_ROUTE": 2})
     assert X.next_queued(reg) is q
     out = X.tex(reg)
-    assert r"bags 6/42 \& en\_route" in out and r"\begin{tabularx}" in out
+    assert r"bags 6/42 \& en\_route" in out and r"\begin{xltabular}" in out

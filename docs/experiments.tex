@@ -1,0 +1,55 @@
+\begin{xltabular}{\linewidth}{@{}rp{3.2cm}lp{1.3cm}p{4.3cm}X@{}}
+\toprule
+\# & Experiment & Area & Status & Result (live$\to$variant) & Notes\\
+\midrule
+\endhead
+1 & Full combat state machine & combat & rejected & win 0.52$\to$0.43, fit 0.24$\to$0.19, h2h 0.24 & 40\% fewer deaths but farmed far less.\\
+2 & FSM + step back instead of walking home & combat & rejected & win 0.57$\to$0.43, fit 0.33$\to$0.17 & More deaths and fewer gems.\\
+3 & FSM + help only within 4 turns & teamwork & rejected & win 0.57$\to$0.51, fit 0.33$\to$0.29 & Travelling to help abandons camps.\\
+4 & Hysteresis on fight-or-flee & combat & merged & win 0.51$\to$0.52, fit 0.23$\to$0.24, h2h 0.62 & \\
+5 & Help calls only on my way & teamwork & merged & win 0.50$\to$0.53, fit 0.22$\to$0.25, h2h 0.62 & \\
+6 & Engine 1.0 rules: Heart of Ruin, Golem, live stats, live own damage & rules & merged & win 0.57$\to$0.59, fit 0.36$\to$0.36, h2h 0.52 & \\
+7 & Help-call intents without the state machine & teamwork & rejected & win 0.54$\to$0.52, fit 0.35$\to$0.31 & Removed from the 8 bytes (layout v3).\\
+8 & Kill assist: finish hurt enemies a teammate reports within 4 & teamwork & merged & win 0.55$\to$0.56, fit 0.30$\to$0.31, h2h 0.47 & Tie on the full pool; merged by decision (cleaner layout v3).\\
+9 & Stun-then-burst combo order & combat & rejected & win 0.58$\to$0.57, fit 0.41$\to$0.38 & Fewer gems.\\
+10 & Melee dash-in & combat & rejected & win 0.58$\to$0.58, fit 0.41$\to$0.41 & No effect: rarely triggers.\\
+11 & Marcella delivers smaller bags & passives & rejected & win 0.58$\to$0.58, fit 0.41$\to$0.41 & No effect: Marcella is never drafted.\\
+12 & PASSIVE\_ROLES (Prism/Vesper play to passive) & passives & rejected & win 0.58$\to$0.48, fit 0.41$\to$0.29 & \\
+13 & Camp survival check & farming & rejected & win 0.54$\to$0.35, fit 0.37$\to$0.16 & Being picky about camps starves the economy.\\
+14 & Early-game camp ramp (quick camps first) & farming & rejected & win 0.54$\to$0.34, fit 0.37$\to$0.12 & \\
+15 & Bags 10/60 & economy & rejected & win 0.54$\to$0.51, fit 0.37$\to$0.33 & \\
+16 & Bags 6/42 + wide en-route and free money & economy & rejected & win 0.59$\to$0.59, fit 0.35$\to$0.35, h2h 0.51 & Screen passed (0.549 -> 0.582); full pool: win 0.586 < live 0.592 (fitness 0.353 vs 0.351, h2h 0.514, fewer deaths). Fails the win rule; not merged.\\
+17 & Live camp HP for clear time & farming & rejected & win 0.59$\to$0.54, fit 0.41$\to$0.37 & Re-screen after the bit fix: worse.\\
+18 & PvE assist within 4 tiles & farming & merged & win 0.59$\to$0.70, fit 0.35$\to$0.50, h2h 0.56 & Merged together with \#19 as CAMP\_FEASIBLE 24 (default on).\\
+19 & Deliver when an altar is on the way & economy & merged & win 0.59$\to$0.72, fit 0.35$\to$0.52, h2h 0.54 & Measured with PvE assist (CAMP\_FEASIBLE 24): best of the batch; merged as the default.\\
+41 & theta 169 + knob2 block, all off (must equal live) & infra & merged & win 0.56$\to$0.54, fit 0.39$\to$0.36 & Merged as part of \#43 (theta 169 + knob2 block were in the gated build; not separately neutral: any change reshuffles games through fuel use).\\
+43 & Team focus target (channel bit 39) & teamwork & merged & win 0.61$\to$0.63, fit 0.40$\to$0.42, h2h 0.59 & Attacker calls a hurt enemy (<=60\% HP, ally within 6); allies in reach take it first. Re-queued: first run used the branch as cut (before PvE assist), screen 0.473 vs 0.555; refs are now merged onto live first. Merged: knob2 FOCUS on by default (with theta 169 and the knob2 block, all other switches off).\\
+20 & Focus the weakest enemy and call it & teamwork & rejected & win 0.55$\to$0.51, fit 0.37$\to$0.33 & Screen: win 0.505 vs 0.549, fitness 0.329 vs 0.372 (paired -0.043 +- 0.039).\\
+21 & Join team fights from 50\% hp & teamwork & screening & -- & \\
+42 & Passive-aware play (per passive / kind) & passives & queued & -- & error: ValueError("needs rebase: origin/feat/passive-aware conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\tbots/main/src/bc\_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\tbots/main/src/bc\_core/memory.rs', '100644 e7367465603fe08dc0b0385ebeed2 Re-run: the branch conflicted with the live code after \#43 (fixed: \#42/\#44 are now plain switches on live, the stun-upgrade branch is merged with live).\\
+44 & Endgame mode near a win or tie & teamwork & queued & -- & error: ValueError("needs rebase: origin/feat/team-endgame conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\tbots/main/src/bc\_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\tbots/main/src/bc\_core/memory.rs', '100644 e104209eb453a182007c31e8d53097 Re-run: the branch conflicted with the live code after \#43 (fixed: \#42/\#44 are now plain switches on live, the stun-upgrade branch is merged with live).\\
+45 & Stun lock (no stun on a stunned unit) & combat & queued & -- & error: ValueError("needs rebase: origin/feat/stun-upgrade conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\tbots/main/src/bc\_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\tbots/main/src/bc\_core/memory.rs', '100644 033c48b0b4cb7c383c515328e6ee9f Re-run: the branch conflicted with the live code after \#43 (fixed: \#42/\#44 are now plain switches on live, the stun-upgrade branch is merged with live).\\
+46 & Upgrade before a hard fight (60 gold) & economy & queued & -- & error: ValueError("needs rebase: origin/feat/stun-upgrade conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\tbots/main/src/bc\_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\tbots/main/src/bc\_core/memory.rs', '100644 033c48b0b4cb7c383c515328e6ee9f Re-run: the branch conflicted with the live code after \#43 (fixed: \#42/\#44 are now plain switches on live, the stun-upgrade branch is merged with live).\\
+47 & Team up: join ally fights within 4 & teamwork & queued & -- & error: ValueError("needs rebase: origin/feat/stun-upgrade conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\tbots/main/src/bc\_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\tbots/main/src/bc\_core/memory.rs', '100644 033c48b0b4cb7c383c515328e6ee9f Re-run: the branch conflicted with the live code after \#43 (fixed: \#42/\#44 are now plain switches on live, the stun-upgrade branch is merged with live).\\
+48 & Team up: join ally fights within 6 & teamwork & queued & -- & error: ValueError("needs rebase: origin/feat/stun-upgrade conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\tbots/main/src/bc\_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\tbots/main/src/bc\_core/memory.rs', '100644 033c48b0b4cb7c383c515328e6ee9f Re-run: the branch conflicted with the live code after \#43 (fixed: \#42/\#44 are now plain switches on live, the stun-upgrade branch is merged with live).\\
+22 & Finish kills / fight when outnumbering & combat & queued & -- & \\
+23 & Last stand instead of a doomed retreat & combat & queued & -- & \\
+24 & All FIGHT\_V6 behaviours & combat & queued & -- & \\
+25 & Team-vs-team fight maths (Lanchester) & teamwork & queued & -- & \\
+26 & Combat search (simulate fight plans) & combat & queued & -- & \\
+27 & Value stun kits on a 6-round horizon & combat & queued & -- & \\
+28 & Endgame hunt when behind / enemy near win & endgame & queued & -- & \\
+29 & Deliver everything from round 1850 & endgame & queued & -- & \\
+30 & Leave awake camps while escape works & farming & queued & -- & \\
+31 & Don't wake a group alone that kills you & farming & queued & -- & \\
+32 & Both camp-safety rules & farming & queued & -- & \\
+33 & Recall only when nothing can reach us & safety & queued & -- & \\
+34 & Carry and place altar locks & economy & queued & -- & \\
+35 & Shop before banking & economy & queued & -- & \\
+36 & Draft like the best ladder bot & draft & queued & -- & \\
+37 & Map-scorer draft instead of the fixed meta & draft & queued & -- & \\
+38 & Last slot farms far, quiet camps & farming & queued & -- & \\
+39 & Camp value: gems + gold/10 & farming & queued & -- & \\
+40 & Camp value: gems + gold & farming & queued & -- & \\
+\bottomrule
+\end{xltabular}

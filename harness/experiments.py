@@ -315,13 +315,14 @@ def tex(reg: dict) -> str:
     ]
     return "\n".join(
         [
-            "\\begin{tabularx}{\\linewidth}{@{}rp{3.2cm}lp{1.3cm}p{4.3cm}X@{}}",
+            "\\begin{xltabular}{\\linewidth}{@{}rp{3.2cm}lp{1.3cm}p{4.3cm}X@{}}",
             "\\toprule",
             "\\# & Experiment & Area & Status & Result (live$\\to$variant) & Notes\\\\",
             "\\midrule",
+            "\\endhead",
             *rows,
             "\\bottomrule",
-            "\\end{tabularx}",
+            "\\end{xltabular}",
         ]
     )
 

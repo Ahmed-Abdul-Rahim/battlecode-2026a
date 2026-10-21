@@ -7,6 +7,7 @@
 \usepackage{xcolor}
 \usepackage{booktabs}
 \usepackage{tabularx}
+\usepackage{xltabular}
 \usepackage{enumitem}
 \usepackage{listings}
 \usepackage{tikz}
@@ -116,9 +117,10 @@ because the bot couldn't load its numbers, and \f{status} reports it as OUT OF S
 \subsection*{Code vs numbers}
 Our bot is hand-written Rust code. The code decides \emph{how} to do things: find a path, attack,
 buy an item, deliver gems. Many of its decisions compare options with a formula, and those formulas
-contain numbers. Training never touches the code. It only changes these \textbf{102 numbers}.
+contain numbers. Training never touches the code. It only changes these \textbf{169 numbers}
+(67 of them belong to features that are still switched off, so training leaves them alone).
 
-Each map has its own set of 102 numbers. On a small map with camps close together, walking distance
+Each map has its own set of 169 numbers. On a small map with camps close together, walking distance
 matters less than on a big map. On a map where fights happen early, retreating sooner may be better.
 A map we never trained on uses the default numbers in \f{bots/main/src/learned.rs}.
 
@@ -198,7 +200,7 @@ See all 102 names and their current defaults: \f{python harness\textbackslash pa
 \subsection*{How training changes the numbers}
 One round works on one map:
 \begin{enumerate}
-\item Take the current best 102 numbers for that map.
+\item Take the current best numbers for that map.
 \item Make 8 copies, each nudged by a small random amount. They come in 4 mirrored pairs: one copy
   goes $+$ and its partner goes $-$, which makes the comparison fairer.
 \item Every copy and the current best play the same opponents (4 mimics + 1 anchor bot) on that map,
@@ -341,10 +343,65 @@ Watch their replays.
 \textbf{Losses training couldn't fix} (after 6 tries on that map) are listed with a hint:
 \begin{itemize}
 \item \emph{``mimic can't express it''}: we beat their mimic but lost to the real team. Fix the mimic.
-\item \emph{``model can't express it''}: we keep losing even to the mimic. None of the 102 numbers can fix
+\item \emph{``model can't express it''}: we keep losing even to the mimic. None of the numbers can fix
   it, so the bot needs a new feature in the code. Do it on a \f{feat/} branch, test it, and merge it
   into \f{league}. Every PC picks it up on its next round.
 \end{itemize}
+
+\section{Trying new ideas: the experiment autopilot}\label{sec:exp}
+Training tunes numbers; new \emph{behaviour} needs code. Every idea goes into a shared queue,
+\f{league/experiments.json}, and the autopilot tests it against the live bot without anyone watching:
+\begin{enumerate}[nosep]
+\item \textbf{Screen:} 7 maps against every mimic, both sides (182 games). The variant and the live bot
+  play the \emph{same} games, and each variant game is compared with the matching live game.
+\item \textbf{Full check:} every map against every mimic (910 games) plus 70 head-to-head games.
+\item \textbf{Merge rule} (unchanged): win $\ge$ live, fitness $\ge$ live and head-to-head $\ge 0.45$.
+  A human then switches the default on and merges.
+\end{enumerate}
+\textbf{Why the screen allows some noise.} Any code change, even one that does nothing, uses a little
+more or less fuel. The bot adjusts its work to the fuel left, so a few decisions flip and the game
+snowballs differently: a do-nothing change played 2 of 3 maps differently. On 182 games, a strict
+``at least as good'' screen is close to a coin flip, so the screen passes unless the variant is worse
+by more than one standard error of the paired difference. The full check still decides.
+
+An idea is a set of switches (\f{knob}/\f{knob2} values), a git branch with code, or both. Branches are
+merged onto the live code before testing; one that conflicts is rejected with ``needs rebase''. A
+re-run gets a new run number, so its result replaces the old one. Every result, good or bad, stays in
+the registry: Appendix~\ref{sec:registry} is generated from it.
+
+\section{The neural net}\label{sec:nn}
+The bot has a small neural network (109 inputs, 32 hidden, 9 outputs, int8) that can choose the
+expert (farm, fight, retreat, \dots) on hard turns. It is off until a trained one passes the gate.
+\begin{itemize}[nosep]
+\item \textbf{Data:} \emph{data jobs} play logged games of the live bot against the mimics. On 10\% of
+  logged turns the bot tries a random sensible expert instead of its rule (switch \f{EXPLORE}), so
+  the data shows what other choices lead to. Each job stores a small file of (inputs, choice,
+  what happened over the next 40 rounds) on the git branch \f{ml-data}.
+\item \textbf{Training:} after 6 new data files, a \emph{training job} fits the network by offline
+  reinforcement learning (advantage-weighted regression, \f{ml/rl/awr.py}): choices that turned out
+  better than expected are copied more strongly. It takes minutes on a CPU, so no GPU is needed.
+\item \textbf{Testing:} each trained network is added to the experiment queue as ``switch
+  \f{ROUTER} on with this network'' and goes through the same gate as every other idea.
+\end{itemize}
+\textbf{Why not copy the top teams?} We tried. Their full replays record only actions (moves,
+attacks, spells, purchases); health, gems and gold are not stored, and monsters take turns without an
+ID. Rebuilding the game state would mean re-writing the game's rules. The top teams stay in training
+as mimics (Section~\ref{sec:opp}).
+
+\section{Two or more PCs}\label{sec:pcs}
+Games are the slow part, and they run on the CPU (a GPU cannot run them). Every extra PC adds games.
+All coordination goes through git: each PC \emph{claims} an experiment or job (its name and the time,
+pushed) before starting, so two PCs never do the same one. A claim older than 6 hours is free again.
+\begin{lstlisting}
+git clone -b league https://github.com/Ahmed-Abdul-Rahim/battlecode-2026a.git
+cd battlecode-2026a
+powershell -ExecutionPolicy Bypass -File scripts\setup.ps1
+scripts\train.ps1 start          train the numbers (worker: no --lead, no --auto-submit)
+scripts\train.ps1 experiments    test queued ideas
+scripts\train.ps1 ml             data games + training for the network
+\end{lstlisting}
+Run whichever fit the PC; all three together use every core. \f{experiments list} and \f{ml list}
+show the queues, \f{experiments stop} and \f{ml stop} stop them.
 
 \section{Maps}
 The lead follows the platform's current map pool (21 maps in October 2026). New maps are downloaded
@@ -387,6 +444,8 @@ scripts\train.ps1 once --no-push                one round, no git (for testing)
 scripts\train.ps1 sync | maps | bench | review  run one lead step now
 scripts\train.ps1 replay [team] [map] [--evolved]   watch the latest model play
 scripts\train.ps1 submit                        upload by hand (agree with the team first)
+scripts\train.ps1 experiments [list|stop]       the experiment autopilot (Section 7)
+scripts\train.ps1 ml [list|stop]                neural-net data games and training (Section 8)
 \end{lstlisting}
 \textbf{Look at games:}
 \begin{lstlisting}
@@ -413,6 +472,14 @@ An evolved mimic looks broken & Delete \f{league/mimics/<team>.json} and push. I
 
 \appendix
 \lstset{basicstyle=\ttfamily\footnotesize}
+\section{Every experiment so far}\label{sec:registry}
+Generated from \f{league/experiments.json} by \f{python harness/experiments.py tex}. Numbers are
+live$\to$variant on the full pool when it got that far, otherwise on the screen.
+
+{\footnotesize
+\input{experiments.tex}
+}
+
 \section{Technical reference}\label{sec:tech}
 This appendix is for reviewing the design. Code is quoted from \f{league} (21 October 2026); file paths
 are given so you can check the current version.
