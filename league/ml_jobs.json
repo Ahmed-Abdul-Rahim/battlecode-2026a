@@ -479,6 +479,7 @@
   {
    "added": "2026-10-21T17:36:55Z",
    "claimed": "2026-10-21T17:36:55Z",
+   "finished": "2026-10-21T17:40:08Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 20,
    "kind": "gen",
@@ -486,8 +487,18 @@
     "explore": 10,
     "offset": 51
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "games": 78,
+    "maps": [
+     "01hooks",
+     "00interlock",
+     "01islands"
+    ],
+    "rows": 156379,
+    "shard": "gen-00020-DESKTOP-QVEMEEE.npz",
+    "win": 0.423
+   },
+   "status": "done"
   }
  ]
 }
