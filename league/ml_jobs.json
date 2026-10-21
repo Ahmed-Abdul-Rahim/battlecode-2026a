@@ -561,6 +561,7 @@
   {
    "added": "2026-10-21T17:43:16Z",
    "claimed": "2026-10-21T17:43:16Z",
+   "finished": "2026-10-21T17:45:29Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 23,
    "kind": "gen",
@@ -568,8 +569,18 @@
     "explore": 10,
     "offset": 57
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "games": 78,
+    "maps": [
+     "00pilgrimage",
+     "00quadrants",
+     "00reverse-spiral"
+    ],
+    "rows": 157304,
+    "shard": "gen-00023-DESKTOP-QVEMEEE.npz",
+    "win": 0.603
+   },
+   "status": "done"
   }
  ]
 }
