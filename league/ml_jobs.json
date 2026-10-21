@@ -889,6 +889,19 @@
     "val_agreement": 0.804
    },
    "status": "done"
+  },
+  {
+   "added": "2026-10-21T18:15:58Z",
+   "claimed": "2026-10-21T18:15:58Z",
+   "host": "DESKTOP-QVEMEEE",
+   "id": 36,
+   "kind": "gen",
+   "params": {
+    "explore": 10,
+    "offset": 90
+   },
+   "result": {},
+   "status": "running"
   }
  ]
 }
