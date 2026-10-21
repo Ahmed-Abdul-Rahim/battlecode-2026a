@@ -1145,6 +1145,8 @@
   {
    "added": "2026-10-21T15:12:04Z",
    "area": "combat",
+   "claimed": "2026-10-21T17:45:49Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 22,
    "notes": "",
    "results": {},
@@ -1153,7 +1155,7 @@
      "FIGHT_V6": 4
     }
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Finish kills / fight when outnumbering"
   },
   {
