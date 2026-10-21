@@ -805,6 +805,23 @@
    "title": "Endgame mode near a win or tie"
   },
   {
+   "added": "2026-10-21T17:03:37Z",
+   "area": "learning",
+   "id": 49,
+   "notes": "Offline RL on 6 shards; train agreement 0.826.",
+   "results": {},
+   "spec": {
+    "files": {
+     "bots/main/src/weights/router.bin": "ml-data:candidates/router-00007.bin"
+    },
+    "knobs": {
+     "ROUTER": 1
+    }
+   },
+   "status": "queued",
+   "title": "Learned router #7 (933738 rows, AWR)"
+  },
+  {
    "added": "2026-10-21T15:30:46Z",
    "area": "combat",
    "id": 45,
@@ -1133,23 +1150,6 @@
    },
    "status": "queued",
    "title": "Camp value: gems + gold"
-  },
-  {
-   "added": "2026-10-21T17:03:37Z",
-   "area": "learning",
-   "id": 49,
-   "notes": "Offline RL on 6 shards; train agreement 0.826.",
-   "results": {},
-   "spec": {
-    "files": {
-     "bots/main/src/weights/router.bin": "ml-data:candidates/router-00007.bin"
-    },
-    "knobs": {
-     "ROUTER": 1
-    }
-   },
-   "status": "queued",
-   "title": "Learned router #7 (933738 rows, AWR)"
   }
  ]
 }

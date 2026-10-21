@@ -208,6 +208,12 @@ def run_train(j: dict, push: bool) -> dict:
         files={"bots/main/src/weights/router.bin": f"ml-data:candidates/{out.name}"},
         notes=f"Offline RL on {len(shards)} shards; train agreement {rep['train_agreement']}.",
     )
+    # Test it next: a new network matters more than the old switch ideas waiting in the queue.
+    xreg["experiments"].remove(e)
+    i = next(
+        (k for k, x in enumerate(xreg["experiments"]) if x["status"] == "queued"), len(xreg["experiments"])
+    )
+    xreg["experiments"].insert(i, e)
     X.save(xreg)
     rep["experiment"] = e["id"]
     return rep
