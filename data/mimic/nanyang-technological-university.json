@@ -1,0 +1,32 @@
+{
+ "build": {},
+ "cadence": {
+  "bag": 43.1,
+  "first_emblem": null,
+  "shops_per_100r": null
+ },
+ "draft": {
+  "3": [
+   2,
+   1,
+   11
+  ],
+  "4": [
+   2,
+   1,
+   11,
+   6
+  ],
+  "5": [
+   2,
+   1,
+   11,
+   6,
+   0
+  ]
+ },
+ "games": 10,
+ "opening": {},
+ "team": "Nanyang Technological University",
+ "win_rate": 1.0
+}

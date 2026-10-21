@@ -1,32 +1,32 @@
 {
  "build": {},
  "cadence": {
-  "bag": 17.8,
+  "bag": 23.2,
   "first_emblem": null,
   "shops_per_100r": null
  },
  "draft": {
   "3": [
-   3,
-   4,
-   8
+   11,
+   6,
+   1
   ],
   "4": [
-   3,
-   4,
-   8,
+   11,
+   6,
+   1,
    0
   ],
   "5": [
-   3,
-   4,
-   8,
+   11,
+   6,
+   1,
    0,
-   9
+   4
   ]
  },
- "games": 10,
+ "games": 20,
  "opening": {},
- "team": "Pikachu",
- "win_rate": 0.9
+ "team": "Pantheon",
+ "win_rate": 0.55
 }
