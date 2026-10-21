@@ -1013,6 +1013,7 @@
   {
    "added": "2026-10-21T18:28:41Z",
    "claimed": "2026-10-21T18:28:41Z",
+   "finished": "2026-10-21T18:30:36Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 41,
    "kind": "gen",
@@ -1020,8 +1021,18 @@
     "explore": 10,
     "offset": 105
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "games": 78,
+    "maps": [
+     "00rushbait-v2",
+     "01shortcut",
+     "00split"
+    ],
+    "rows": 148773,
+    "shard": "gen-00041-DESKTOP-QVEMEEE.npz",
+    "win": 0.256
+   },
+   "status": "done"
   }
  ]
 }
