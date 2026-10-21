@@ -376,7 +376,7 @@ const CLAIM_BITS: u32 = 21;
 /// | 3–7 | bits 0–20 | camp claims, 6 slots packed base 11: priority index + 1, 0 = none |
 /// | 3–7 | bits 21–36 | sighting x:7, y:7, r:2 (round mod 4); (0,0) = none |
 /// | 3–7 | bits 37–38 | sighted enemy health in quarters (0 < 25 % … 3 ≥ 75 % or unknown) |
-/// | 3–7 | bit 39 | spare |
+/// | 3–7 | bit 39 | the sighting is the team's focus target (knob2 FOCUS) |
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub struct TeamChannel {
     pub version: u8,
@@ -391,6 +391,8 @@ pub struct TeamChannel {
     sighting: Option<(Pos, u8)>,
     /// Sighted enemy health, quarters (3 = unknown or healthy).
     enemy_hp_q: u8,
+    /// The sighting is the team's focus target (knob2 FOCUS).
+    focus: bool,
 }
 
 impl TeamChannel {
@@ -420,6 +422,7 @@ impl TeamChannel {
             claims,
             sighting: (x != 0 || y != 0).then_some((Pos::new(x, y), r)),
             enemy_hp_q: ((s >> 16) & 0b11) as u8,
+            focus: (s >> 18) & 1 == 1,
         }
     }
 
@@ -444,7 +447,7 @@ impl TeamChannel {
                 | (p.y.clamp(0, 127) as u64) << 7
                 | u64::from(r & 0b11) << 14;
         }
-        s |= u64::from(self.enemy_hp_q & 0b11) << 16;
+        s |= u64::from(self.enemy_hp_q & 0b11) << 16 | u64::from(self.focus) << 18;
         let v = packed | s << CLAIM_BITS;
         b[3..8].copy_from_slice(&v.to_le_bytes()[..5]);
         b
@@ -466,6 +469,7 @@ impl TeamChannel {
                 if (round.wrapping_sub(u32::from(r)) & 0b11) == 3 {
                     self.sighting = None;
                     self.enemy_tributing = false;
+                    self.focus = false;
                 }
             }
         }
@@ -478,19 +482,41 @@ impl TeamChannel {
 
     /// An enemy at `p` with this health fraction (shared so allies can finish hurt enemies).
     pub fn post_sighting_hp(&mut self, p: Pos, round: u32, hp_frac: f32) {
-        // A fresh tributer alert outranks an ordinary sighting.
-        if self.enemy_tributing && self.sighting(round).is_some_and(|(_, age)| age <= 1) {
+        // A fresh tributer alert or focus call outranks an ordinary sighting.
+        let fresh = self.sighting(round).is_some_and(|(_, age)| age <= 1);
+        if fresh && (self.enemy_tributing || self.focus) {
             return;
         }
         self.sighting = Some((p, (round & 0b11) as u8));
         self.enemy_hp_q = hp_quarter(hp_frac);
         self.enemy_tributing = false;
+        self.focus = false;
+    }
+
+    /// Call the team's focus target: an enemy at `p` we are attacking (knob2 FOCUS).
+    pub fn post_focus(&mut self, p: Pos, round: u32, hp_frac: f32) {
+        if self.enemy_tributing && self.sighting(round).is_some_and(|(_, age)| age <= 1) {
+            return; // stopping a delivery matters more
+        }
+        self.sighting = Some((p, (round & 0b11) as u8));
+        self.enemy_hp_q = hp_quarter(hp_frac);
+        self.focus = true;
+    }
+
+    /// The team's focus target, if one was called in the last round.
+    #[must_use]
+    pub fn focus(&self, round: u32) -> Option<Pos> {
+        if !self.focus {
+            return None;
+        }
+        self.sighting(round).filter(|&(_, age)| age <= 1).map(|(p, _)| p)
     }
 
     /// An enemy is channelling a tribute at `p`: a stun, kill or lock cancels the bag.
     pub fn post_tributer(&mut self, p: Pos, round: u32) {
         self.sighting = Some((p, (round & 0b11) as u8));
         self.enemy_tributing = true;
+        self.focus = false;
     }
 
     /// Health fraction of the shared sighting's enemy (quarter midpoints; 0.875 if unknown).
@@ -566,6 +592,22 @@ mod tests {
         wrong[2] = 9;
         assert_eq!(ThetaMatch::decode(&wrong), Err(DecodeError::UnsupportedVersion(9)));
         assert_eq!(ThetaMatch::decode(b"hello world"), Err(DecodeError::TooShort));
+    }
+
+    #[test]
+    fn focus_call_round_trips_and_outranks_sightings() {
+        let mut c = TeamChannel::default();
+        c.begin_turn(10, 0);
+        c.set_claim(5, Some(9));
+        c.post_focus(Pos::new(30, 40), 10, 0.4);
+        let mut d = TeamChannel::decode(c.encode());
+        assert_eq!(d.focus(10), Some(Pos::new(30, 40)));
+        assert_eq!(d.claims[5], Some(9));
+        d.post_sighting_hp(Pos::new(5, 5), 10, 1.0); // an ordinary sighting doesn't replace it
+        assert_eq!(d.focus(11), Some(Pos::new(30, 40)));
+        assert_eq!(d.focus(12), None, "too old");
+        d.post_tributer(Pos::new(7, 7), 12); // a delivery alert does
+        assert_eq!(d.focus(12), None);
     }
 
     #[test]

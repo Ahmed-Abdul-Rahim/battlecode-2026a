@@ -123,6 +123,20 @@ const KILL_ASSIST_MIN_HP: f32 = 0.4;
 const PASSIVE_BONUS_GOLD: usize = 1;
 const PASSIVE_SPLASH: usize = 4;
 const PASSIVE_MISSING_HEALTH: usize = 10;
+/// knob2 FOCUS: call our target for the team once it is at or below this health fraction.
+const FOCUS_CALL_HP: f32 = 0.6;
+/// knob2 ENDGAME: from this round (or when a team has 80% of the winning gems); bank bags from
+/// this size when ahead.
+const ENDGAME_START: u32 = 1700;
+const ENDGAME_BANK_MIN: u32 = 3;
+
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum Endgame {
+    Off,
+    Ahead,
+    Behind,
+}
+
 /// FIGHT_V6: join fights from this health fraction.
 const ASSIST_MIN_HP_V6: f32 = 0.5;
 /// TAVI_META: Tavi's field build (shop.rs profile) and when it starts hunting.
@@ -395,6 +409,11 @@ impl Bot {
             mark = self.charge(Stage::Precompute, mark);
 
             let mut ctx = self.context(round, my_pos, hp, max_hp, &vis, &chan, state, me)?;
+            let endgame = self.endgame(&ctx);
+            if endgame == Endgame::Ahead {
+                // Ahead late: take only clearly winning fights (dying hands them gems and time).
+                ctx.knobs.fight_margin_pct = ctx.knobs.fight_margin_pct.saturating_mul(2).max(40);
+            }
             // knob2 PASSIVE_AWARE: play to the live passive, without champion names. Fight
             // margin, retreat health and bag sizes scale per passive type (learned PS block)
             // and margin / aggression per champion kind (KD block); priors in learned.rs.
@@ -421,7 +440,7 @@ impl Bot {
                 ctx.knobs.tribute_min /= 2;
                 ctx.knobs.tribute_max = (ctx.knobs.tribute_max / 2).max(ctx.knobs.tribute_min + 1);
             }
-            let hunting = self.hunting(&ctx);
+            let hunting = self.hunting(&ctx) || endgame == Endgame::Behind;
             if hunting {
                 // All-in: no fight margin (the router then fights at advantage >= 1).
                 ctx.knobs.aggression = 255;
@@ -653,6 +672,25 @@ impl Bot {
                 if helping.is_some() {
                     assist = helping;
                 }
+            }
+            // knob2 FOCUS: call the enemy we're attacking once it is hurt and an ally can help.
+            if self.theta.knob2(knob2::FOCUS) > 0 {
+                if let Intent::Engage(p) = intent {
+                    let hurt =
+                        vis.enemies.iter().find(|e| e.pos == p && e.hp <= FOCUS_CALL_HP * e.max_hp);
+                    if let (Some(e), true) = (hurt, vis.allies.iter().any(|a| a.dist <= 6)) {
+                        chan.post_focus(p, round, e.hp / e.max_hp.max(1.0));
+                    }
+                }
+            }
+            // knob2 ENDGAME, ahead late: bank whatever we carry when nothing threatens us.
+            if endgame == Endgame::Ahead
+                && ctx.gems >= ENDGAME_BANK_MIN
+                && !matches!(mode, Mode::Override(_))
+                && vis.enemies.iter().all(|e| e.on_spawn || e.dist > 5)
+                && !matches!(intent, Intent::Capture(_))
+            {
+                intent = Intent::Tribute;
             }
             // Endgame: at round 2000 tributed gems decide; never finish holding gems.
             if self.theta.knob(knob::ENDGAME_BANK) > 0
@@ -1034,6 +1072,26 @@ impl Bot {
                 behind_late || they_close
             }
             _ => false,
+        }
+    }
+
+    /// knob2 ENDGAME: late (round ENDGAME_START+) or when either team is close to winning.
+    /// Behind = the enemy leads and is near the win (or far ahead late): hunt. Ahead: bank.
+    fn endgame(&self, ctx: &Context) -> Endgame {
+        if self.theta.knob2(knob2::ENDGAME) == 0 {
+            return Endgame::Off;
+        }
+        let (us, them, win) = (ctx.ally_tributed, ctx.enemy_tributed, ctx.winning_gems.max(1));
+        let close = |x: u32| x * 10 >= win * 8;
+        if ctx.round < ENDGAME_START && !close(us) && !close(them) {
+            return Endgame::Off;
+        }
+        if them > us && (close(them) || them >= us + HUNT_BEHIND_GEMS) {
+            Endgame::Behind
+        } else if us >= them {
+            Endgame::Ahead
+        } else {
+            Endgame::Off
         }
     }
 
@@ -1650,7 +1708,17 @@ impl Bot {
         let ignored =
             |k: ChampionKind| self.ignore_until.get(k as usize).is_some_and(|&until| round < until);
         let nearest = || vis.enemies.iter().find(|e| !e.on_spawn && !ignored(e.kind));
-        let enemy = if self.theta.knob(knob::FIGHT_V6) & 1 != 0 {
+        // knob2 FOCUS: the team's called target, if it is in reach (it may have moved a tile).
+        let focused = (self.theta.knob2(knob2::FOCUS) > 0)
+            .then(|| chan.focus(round))
+            .flatten()
+            .and_then(|f| {
+                let reach = self.kit.attack_range + 2;
+                vis.enemies.iter().find(|e| !e.on_spawn && e.pos.cheb(f) <= 1 && e.dist <= reach)
+            });
+        let enemy = if let Some(e) = focused {
+            Some(e)
+        } else if self.theta.knob(knob::FIGHT_V6) & 1 != 0 {
             // Weakest enemy in reach, the team's called target first.
             let reach = self.kit.attack_range + 2;
             let called = chan.sighting(round).filter(|&(_, age)| age == 0).map(|(p, _)| p);
