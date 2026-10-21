@@ -634,118 +634,6 @@
    "title": "Team focus target (channel bit 39)"
   },
   {
-   "added": "2026-10-21T15:30:46Z",
-   "area": "teamwork",
-   "claimed": "2026-10-21T16:11:23Z",
-   "finished": "2026-10-21T16:11:28Z",
-   "host": "DESKTOP-QVEMEEE",
-   "id": 47,
-   "notes": "error: ValueError(\"needs rebase: origin/feat/stun-upgrade conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 033c48b0b4cb7c383c515328e6ee9f",
-   "results": {},
-   "spec": {
-    "knobs": {
-     "TEAM_UP": 4
-    },
-    "ref": "origin/feat/stun-upgrade"
-   },
-   "status": "rejected",
-   "title": "Team up: join ally fights within 4"
-  },
-  {
-   "added": "2026-10-21T15:20:12Z",
-   "area": "passives",
-   "claimed": "2026-10-21T16:11:32Z",
-   "finished": "2026-10-21T16:11:36Z",
-   "host": "DESKTOP-QVEMEEE",
-   "id": 42,
-   "notes": "error: ValueError(\"needs rebase: origin/feat/passive-aware conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 e7367465603fe08dc0b0385ebeed2",
-   "results": {},
-   "run": 2,
-   "spec": {
-    "knobs": {
-     "PASSIVE_AWARE": 1
-    },
-    "ref": "origin/feat/passive-aware"
-   },
-   "status": "rejected",
-   "title": "Passive-aware play (per passive / kind)"
-  },
-  {
-   "added": "2026-10-21T15:30:46Z",
-   "area": "teamwork",
-   "claimed": "2026-10-21T16:11:40Z",
-   "finished": "2026-10-21T16:11:44Z",
-   "host": "DESKTOP-QVEMEEE",
-   "id": 44,
-   "notes": "error: ValueError(\"needs rebase: origin/feat/team-endgame conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 e104209eb453a182007c31e8d53097",
-   "results": {},
-   "run": 2,
-   "spec": {
-    "knobs": {
-     "ENDGAME": 1
-    },
-    "ref": "origin/feat/team-endgame"
-   },
-   "status": "rejected",
-   "title": "Endgame mode near a win or tie"
-  },
-  {
-   "added": "2026-10-21T15:30:46Z",
-   "area": "combat",
-   "claimed": "2026-10-21T16:11:48Z",
-   "finished": "2026-10-21T16:11:53Z",
-   "host": "DESKTOP-QVEMEEE",
-   "id": 45,
-   "notes": "error: ValueError(\"needs rebase: origin/feat/stun-upgrade conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 033c48b0b4cb7c383c515328e6ee9f",
-   "results": {},
-   "run": 2,
-   "spec": {
-    "knobs": {
-     "STUN_LOCK": 1
-    },
-    "ref": "origin/feat/stun-upgrade"
-   },
-   "status": "rejected",
-   "title": "Stun lock (no stun on a stunned unit)"
-  },
-  {
-   "added": "2026-10-21T15:30:46Z",
-   "area": "economy",
-   "claimed": "2026-10-21T16:11:57Z",
-   "finished": "2026-10-21T16:12:01Z",
-   "host": "DESKTOP-QVEMEEE",
-   "id": 46,
-   "notes": "error: ValueError(\"needs rebase: origin/feat/stun-upgrade conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 033c48b0b4cb7c383c515328e6ee9f",
-   "results": {},
-   "run": 2,
-   "spec": {
-    "knobs": {
-     "UPGRADE_FIRST": 6
-    },
-    "ref": "origin/feat/stun-upgrade"
-   },
-   "status": "rejected",
-   "title": "Upgrade before a hard fight (60 gold)"
-  },
-  {
-   "added": "2026-10-21T15:30:46Z",
-   "area": "teamwork",
-   "claimed": "2026-10-21T16:12:06Z",
-   "finished": "2026-10-21T16:12:10Z",
-   "host": "DESKTOP-QVEMEEE",
-   "id": 48,
-   "notes": "error: ValueError(\"needs rebase: origin/feat/stun-upgrade conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 033c48b0b4cb7c383c515328e6ee9f",
-   "results": {},
-   "spec": {
-    "knobs": {
-     "TEAM_UP": 6
-    },
-    "ref": "origin/feat/stun-upgrade"
-   },
-   "status": "rejected",
-   "title": "Team up: join ally fights within 6"
-  },
-  {
    "added": "2026-10-21T15:12:04Z",
    "area": "teamwork",
    "claimed": "2026-10-21T16:12:14Z",
@@ -799,6 +687,100 @@
    },
    "status": "screening",
    "title": "Join team fights from 50% hp"
+  },
+  {
+   "added": "2026-10-21T15:20:12Z",
+   "area": "passives",
+   "id": 42,
+   "notes": "error: ValueError(\"needs rebase: origin/feat/passive-aware conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 e7367465603fe08dc0b0385ebeed2 Re-run: the branch conflicted with the live code after #43 (fixed: #42/#44 are now plain switches on live, the stun-upgrade branch is merged with live).",
+   "results": {},
+   "run": 3,
+   "spec": {
+    "knobs": {
+     "PASSIVE_AWARE": 1
+    }
+   },
+   "status": "queued",
+   "title": "Passive-aware play (per passive / kind)"
+  },
+  {
+   "added": "2026-10-21T15:30:46Z",
+   "area": "teamwork",
+   "id": 44,
+   "notes": "error: ValueError(\"needs rebase: origin/feat/team-endgame conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 e104209eb453a182007c31e8d53097 Re-run: the branch conflicted with the live code after #43 (fixed: #42/#44 are now plain switches on live, the stun-upgrade branch is merged with live).",
+   "results": {},
+   "run": 3,
+   "spec": {
+    "knobs": {
+     "ENDGAME": 1
+    }
+   },
+   "status": "queued",
+   "title": "Endgame mode near a win or tie"
+  },
+  {
+   "added": "2026-10-21T15:30:46Z",
+   "area": "combat",
+   "id": 45,
+   "notes": "error: ValueError(\"needs rebase: origin/feat/stun-upgrade conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 033c48b0b4cb7c383c515328e6ee9f Re-run: the branch conflicted with the live code after #43 (fixed: #42/#44 are now plain switches on live, the stun-upgrade branch is merged with live).",
+   "results": {},
+   "run": 3,
+   "spec": {
+    "knobs": {
+     "STUN_LOCK": 1
+    },
+    "ref": "origin/feat/stun-upgrade"
+   },
+   "status": "queued",
+   "title": "Stun lock (no stun on a stunned unit)"
+  },
+  {
+   "added": "2026-10-21T15:30:46Z",
+   "area": "economy",
+   "id": 46,
+   "notes": "error: ValueError(\"needs rebase: origin/feat/stun-upgrade conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 033c48b0b4cb7c383c515328e6ee9f Re-run: the branch conflicted with the live code after #43 (fixed: #42/#44 are now plain switches on live, the stun-upgrade branch is merged with live).",
+   "results": {},
+   "run": 3,
+   "spec": {
+    "knobs": {
+     "UPGRADE_FIRST": 6
+    },
+    "ref": "origin/feat/stun-upgrade"
+   },
+   "status": "queued",
+   "title": "Upgrade before a hard fight (60 gold)"
+  },
+  {
+   "added": "2026-10-21T15:30:46Z",
+   "area": "teamwork",
+   "id": 47,
+   "notes": "error: ValueError(\"needs rebase: origin/feat/stun-upgrade conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 033c48b0b4cb7c383c515328e6ee9f Re-run: the branch conflicted with the live code after #43 (fixed: #42/#44 are now plain switches on live, the stun-upgrade branch is merged with live).",
+   "results": {},
+   "run": 2,
+   "spec": {
+    "knobs": {
+     "TEAM_UP": 4
+    },
+    "ref": "origin/feat/stun-upgrade"
+   },
+   "status": "queued",
+   "title": "Team up: join ally fights within 4"
+  },
+  {
+   "added": "2026-10-21T15:30:46Z",
+   "area": "teamwork",
+   "id": 48,
+   "notes": "error: ValueError(\"needs rebase: origin/feat/stun-upgrade conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 033c48b0b4cb7c383c515328e6ee9f Re-run: the branch conflicted with the live code after #43 (fixed: #42/#44 are now plain switches on live, the stun-upgrade branch is merged with live).",
+   "results": {},
+   "run": 2,
+   "spec": {
+    "knobs": {
+     "TEAM_UP": 6
+    },
+    "ref": "origin/feat/stun-upgrade"
+   },
+   "status": "queued",
+   "title": "Team up: join ally fights within 6"
   },
   {
    "added": "2026-10-21T15:12:04Z",
