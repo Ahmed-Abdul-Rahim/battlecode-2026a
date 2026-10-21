@@ -791,17 +791,58 @@
    "added": "2026-10-21T15:30:46Z",
    "area": "teamwork",
    "claimed": "2026-10-21T16:42:02Z",
+   "finished": "2026-10-21T16:52:14Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 44,
    "notes": "error: ValueError(\"needs rebase: origin/feat/team-endgame conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 e104209eb453a182007c31e8d53097 Re-run: the branch conflicted with the live code after #43 (fixed: #42/#44 are now plain switches on live, the stun-upgrade branch is merged with live).",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.5,
+     "h2h_games": 70,
+     "live": {
+      "deaths": 24.77,
+      "fitness": 0.372,
+      "games": 910,
+      "gem_margin": 0.08,
+      "win": 0.6
+     },
+     "variant": {
+      "deaths": 24.71,
+      "fitness": 0.384,
+      "games": 910,
+      "gem_margin": 0.098,
+      "win": 0.607
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 18.05,
+      "fitness": 0.316,
+      "games": 182,
+      "gem_margin": -0.013,
+      "win": 0.5
+     },
+     "paired": {
+      "mean": 0.0187,
+      "pairs": 182,
+      "se": 0.0203
+     },
+     "variant": {
+      "deaths": 17.98,
+      "fitness": 0.335,
+      "games": 182,
+      "gem_margin": -0.007,
+      "win": 0.516
+     }
+    }
+   },
    "run": 3,
    "spec": {
     "knobs": {
      "ENDGAME": 1
     }
    },
-   "status": "screening",
+   "status": "passed",
    "title": "Endgame mode near a win or tie"
   },
   {
