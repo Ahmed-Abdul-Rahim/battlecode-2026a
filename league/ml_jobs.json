@@ -123,6 +123,7 @@
   {
    "added": "2026-10-21T16:42:15Z",
    "claimed": "2026-10-21T16:42:15Z",
+   "finished": "2026-10-21T16:44:36Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 6,
    "kind": "gen",
@@ -130,8 +131,18 @@
     "explore": 10,
     "offset": 15
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "games": 78,
+    "maps": [
+     "01gold-rush",
+     "01hooks",
+     "00interlock"
+    ],
+    "rows": 151882,
+    "shard": "gen-00006-DESKTOP-QVEMEEE.npz",
+    "win": 0.308
+   },
+   "status": "done"
   }
  ]
 }
