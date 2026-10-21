@@ -180,6 +180,15 @@
    "time": "2026-10-20T22:10:10.068Z",
    "win": true
   },
+  "0f74cd8d-30e5-407a-8d79-79528e2142ba": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "starfish",
+   "opp": "knownasjason",
+   "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
+   "time": "2026-10-21T15:40:12.911Z",
+   "win": false
+  },
   "1133fd03-7974-4468-9408-1a601df6a0f9": {
    "kind": "ranked",
    "live": 1,
@@ -909,6 +918,15 @@
    "time": "2026-10-20T19:40:10.999Z",
    "win": false
   },
+  "502ebce3-3d80-4ee7-9620-1497f1cb7e72": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "elk-arena",
+   "opp": "knownasjason",
+   "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
+   "time": "2026-10-21T15:40:12.911Z",
+   "win": true
+  },
   "50a9d760-9ae5-4fd9-8b00-658d5be3fe46": {
    "kind": "ranked",
    "live": 1,
@@ -1159,6 +1177,15 @@
    "opp": "Lone Oski",
    "oppId": "554677ee-3b56-4fb8-a5df-28b476bfa8c1",
    "time": "2026-10-20T20:20:12.928Z",
+   "win": false
+  },
+  "66073cf6-a8ed-4d8f-9c56-94b073a8fb9a": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "hooks",
+   "opp": "knownasjason",
+   "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
+   "time": "2026-10-21T15:40:12.911Z",
    "win": false
   },
   "6624bfda-b0e1-44c2-a11b-82d724e37231": {
@@ -1989,6 +2016,15 @@
    "time": "2026-10-21T13:30:11.453Z",
    "win": true
   },
+  "b0c85ad7-b1cb-4c07-83a5-87645cd1a055": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "islands",
+   "opp": "knownasjason",
+   "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
+   "time": "2026-10-21T15:40:12.911Z",
+   "win": true
+  },
   "b0d28412-ebe3-4499-8a4d-625663b78cdc": {
    "kind": "ranked",
    "live": 1,
@@ -2149,6 +2185,15 @@
    "opp": "Hidden Gem Thieves",
    "oppId": "c8773982-afe9-4f64-99ba-0cc1fb3fe3c2",
    "time": "2026-10-21T14:20:15.008Z",
+   "win": false
+  },
+  "bb2d8698-b535-4bfb-b21e-c6425a1c1ea2": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "elkring",
+   "opp": "knownasjason",
+   "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
+   "time": "2026-10-21T15:40:12.911Z",
    "win": false
   },
   "bcf070ed-1de5-4e11-9ab3-6a4918368a95": {
@@ -5739,6 +5784,57 @@
    "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
    "status": "open",
    "time": "2026-10-21T15:26:39.452Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 59,
+    "Unknown entity kind (2)": 4
+   },
+   "deaths_them": 17,
+   "deaths_us": 63,
+   "gems_them": "1012",
+   "gems_us": "22",
+   "id": "66073cf6-a8ed-4d8f-9c56-94b073a8fb9a",
+   "map": "hooks",
+   "opp": "knownasjason",
+   "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
+   "status": "open",
+   "time": "2026-10-21T15:40:12.911Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 27,
+    "Unknown entity kind (2)": 72
+   },
+   "deaths_them": 96,
+   "deaths_us": 99,
+   "gems_them": "510",
+   "gems_us": "36",
+   "id": "0f74cd8d-30e5-407a-8d79-79528e2142ba",
+   "map": "starfish",
+   "opp": "knownasjason",
+   "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
+   "status": "open",
+   "time": "2026-10-21T15:40:12.911Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 37,
+    "Unknown entity kind (2)": 5
+   },
+   "deaths_them": 9,
+   "deaths_us": 42,
+   "gems_them": "1001",
+   "gems_us": "308",
+   "id": "bb2d8698-b535-4bfb-b21e-c6425a1c1ea2",
+   "map": "elkring",
+   "opp": "knownasjason",
+   "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
+   "status": "open",
+   "time": "2026-10-21T15:40:12.911Z",
    "tries_at": 1
   }
  ],
