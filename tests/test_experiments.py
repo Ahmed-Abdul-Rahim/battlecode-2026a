@@ -82,6 +82,13 @@ def test_paired_difference_matches_games():
     assert p["pairs"] == 2 and p["mean"] < 0 and p["se"] > 0
 
 
+def test_tex_escapes_backslashes_and_braces():
+    reg = {"experiments": []}
+    X.add(reg, "err", "x", knobs={"A": 1}, notes="error: ValueError('a\\tb {c}')")
+    out = X.tex(reg)
+    assert r"a\textbackslash{}tb \{c\}" in out  # a raw '\\' would end the table row
+
+
 def test_next_queued_and_tex_escaping():
     reg = {"experiments": []}
     X.add(reg, "done", "x", knobs={"A": 1}, status="rejected")
