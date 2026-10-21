@@ -676,16 +676,57 @@
    "added": "2026-10-21T15:12:04Z",
    "area": "teamwork",
    "claimed": "2026-10-21T16:19:05Z",
+   "finished": "2026-10-21T16:30:32Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 21,
    "notes": "",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.486,
+     "h2h_games": 70,
+     "live": {
+      "deaths": 24.77,
+      "fitness": 0.372,
+      "games": 910,
+      "gem_margin": 0.08,
+      "win": 0.6
+     },
+     "variant": {
+      "deaths": 24.8,
+      "fitness": 0.36,
+      "games": 910,
+      "gem_margin": 0.065,
+      "win": 0.591
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 18.05,
+      "fitness": 0.316,
+      "games": 182,
+      "gem_margin": -0.013,
+      "win": 0.5
+     },
+     "paired": {
+      "mean": -0.0116,
+      "pairs": 182,
+      "se": 0.0351
+     },
+     "variant": {
+      "deaths": 18.01,
+      "fitness": 0.305,
+      "games": 182,
+      "gem_margin": -0.039,
+      "win": 0.495
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "FIGHT_V6": 2
     }
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "Join team fights from 50% hp"
   },
   {
