@@ -893,6 +893,7 @@
   {
    "added": "2026-10-21T18:15:58Z",
    "claimed": "2026-10-21T18:15:58Z",
+   "finished": "2026-10-21T18:18:03Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 36,
    "kind": "gen",
@@ -900,8 +901,18 @@
     "explore": 10,
     "offset": 90
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "games": 78,
+    "maps": [
+     "00fragment",
+     "00gem-fields",
+     "00gemfight"
+    ],
+    "rows": 108291,
+    "shard": "gen-00036-DESKTOP-QVEMEEE.npz",
+    "win": 0.603
+   },
+   "status": "done"
   }
  ]
 }
