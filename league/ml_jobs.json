@@ -1071,6 +1071,7 @@
   {
    "added": "2026-10-21T18:31:18Z",
    "claimed": "2026-10-21T18:31:18Z",
+   "finished": "2026-10-21T18:34:30Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 43,
    "kind": "gen",
@@ -1078,8 +1079,18 @@
     "explore": 10,
     "offset": 108
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "games": 78,
+    "maps": [
+     "00stampede",
+     "01starfish",
+     "01starvation"
+    ],
+    "rows": 191180,
+    "shard": "gen-00043-DESKTOP-QVEMEEE.npz",
+    "win": 0.372
+   },
+   "status": "done"
   }
  ]
 }
