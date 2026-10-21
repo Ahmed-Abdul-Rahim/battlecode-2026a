@@ -504,6 +504,15 @@
    "time": "2026-10-21T17:40:16.367Z",
    "win": false
   },
+  "249558dc-e5f5-4c6d-880a-448936f5cc06": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "collision",
+   "opp": "CHERI Blossom",
+   "oppId": "7d07c0f3-d4ef-4722-aad2-2531397e3be9",
+   "time": "2026-10-21T18:40:17.384Z",
+   "win": true
+  },
   "249ee835-d2da-48c6-829b-34546410134d": {
    "kind": "unranked",
    "live": 1,
@@ -638,6 +647,15 @@
    "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
    "time": "2026-10-21T15:30:43.114Z",
    "win": false
+  },
+  "2b55a3d6-37bb-43be-bbde-d13e8935bf04": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "concentrated-wealth",
+   "opp": "CHERI Blossom",
+   "oppId": "7d07c0f3-d4ef-4722-aad2-2531397e3be9",
+   "time": "2026-10-21T18:40:17.384Z",
+   "win": true
   },
   "2b6f1ceb-f55e-42ab-ba76-710fa6ae371d": {
    "kind": "ranked",
@@ -1628,6 +1646,15 @@
    "oppId": "96b0be30-6a0e-45b3-8d4b-cd2a910d6bf8",
    "time": "2026-10-21T17:00:20.987Z",
    "win": false
+  },
+  "6e7ac568-395b-41c7-bfe7-4fb31e2a26cd": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "stampede",
+   "opp": "CHERI Blossom",
+   "oppId": "7d07c0f3-d4ef-4722-aad2-2531397e3be9",
+   "time": "2026-10-21T18:40:17.383Z",
+   "win": true
   },
   "6e93c353-39db-4597-bdac-7018eec5a482": {
    "kind": "ranked",
@@ -3159,6 +3186,15 @@
    "time": "2026-10-20T20:50:10.904Z",
    "win": true
   },
+  "dd0fd8c1-2c37-488f-8fe1-c89855dd568b": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "lanes",
+   "opp": "CHERI Blossom",
+   "oppId": "7d07c0f3-d4ef-4722-aad2-2531397e3be9",
+   "time": "2026-10-21T18:40:17.384Z",
+   "win": true
+  },
   "ddc4e992-d884-45ea-a59e-07739bc3be96": {
    "kind": "ranked",
    "live": null,
@@ -3283,6 +3319,15 @@
    "opp": "ggez",
    "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
    "time": "2026-10-21T15:26:39.437Z",
+   "win": true
+  },
+  "e57972e9-def6-4c68-9e30-3be2b3cf8a71": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "boss-battle",
+   "opp": "CHERI Blossom",
+   "oppId": "7d07c0f3-d4ef-4722-aad2-2531397e3be9",
+   "time": "2026-10-21T18:40:17.384Z",
    "win": true
   },
   "e5b510b4-982c-4e10-8823-ac701ac58656": {
@@ -7312,13 +7357,14 @@
    },
    "deaths_them": 23,
    "deaths_us": 29,
+   "fixed_in": 16,
    "gems_them": "14",
    "gems_us": "0",
    "id": "e02a8a75-b304-489f-8ec8-4038b4436fda",
    "map": "the-farm",
    "opp": "The Onkeys",
    "oppId": "aa795cbd-97f0-489d-868b-2988d7b2e394",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-21T18:20:17.186Z",
    "tries_at": 3
   },
