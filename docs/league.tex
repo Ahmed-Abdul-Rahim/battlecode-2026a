@@ -443,6 +443,22 @@ All coordination goes through git: each PC \emph{claims} an experiment or job (i
 pushed) before starting, so two PCs never do the same one. A claim older than 6 hours is free again.
 Setup and commands are in the Quick start. \f{experiments list} and \f{ml list} show the queues.
 
+\subsection*{Kaggle (free cloud CPU)}
+A free Kaggle CPU notebook (4 cores, up to 12 hours a session) can run the experiment queue while
+your PCs are off. TPUs and GPUs don't help: games run on the CPU.
+\begin{enumerate}[nosep]
+\item GitHub: Settings $\to$ Developer settings $\to$ Fine-grained tokens. Repository access: this
+  repo only; permission \emph{Contents: Read and write}. Copy the token.
+\item Kaggle: New Notebook $\to$ File $\to$ Import Notebook $\to$ upload
+  \f{scripts/kaggle\_worker.ipynb}.
+\item Right panel: \emph{Internet} on (verify your phone once), \emph{Accelerator} None.
+  Add-ons $\to$ Secrets $\to$ add \f{GITHUB\_TOKEN} with the token and tick it.
+\item Save Version $\to$ \emph{Save \& Run All (Commit)}. It runs for 11 hours with the browser
+  closed, starts no new experiment in its last hour, and hands back any unfinished one.
+\end{enumerate}
+It shows up in \f{exp-status} as \f{kaggle-1}. For a second session at the same time, change
+\f{NAME} in the first code cell. Start a new version when one ends.
+
 \section{Maps}
 The lead follows the platform's current map pool (21 maps in October 2026). New maps are downloaded
 into \f{maps/}, and one test game per map records its ID and layout. Maps that leave the pool move to
