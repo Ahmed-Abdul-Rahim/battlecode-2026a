@@ -60,13 +60,13 @@ def add(
     status: str = "queued",
     results: dict | None = None,
 ) -> dict:
-    assert (knobs is None) != (ref is None), "an experiment is a knob set or a git ref"
+    assert knobs is not None or ref is not None, "an experiment is a knob set, a git ref, or both"
     n = 1 + max((e["id"] for e in reg["experiments"]), default=0)
     e = {
         "id": n,
         "title": title,
         "area": area,
-        "spec": {"knobs": knobs} if knobs else {"ref": ref},
+        "spec": {k: v for k, v in (("ref", ref), ("knobs", knobs)) if v is not None},
         "status": status,
         "results": results or {},
         "added": L.now_iso(),
@@ -79,10 +79,13 @@ def add(
 # ----------------------------------------------------------------- variants
 
 
-def knob_variant(name: str, knobs: dict[str, int]) -> str:
-    """bots/<name> = bots/main with these knob defaults (crates' vendored memory.rs)."""
+def knob_variant(name: str, knobs: dict[str, int], copy: bool = True) -> str:
+    """bots/<name> = bots/main with these knob defaults (knob and knob2 names, in the bot's
+    vendored memory.rs). copy=False only patches an existing bots/<name> (a ref variant)."""
     src, dst = ROOT / "bots" / "main", ROOT / "bots" / name
-    if dst.exists():
+    if not copy:
+        pass
+    elif dst.exists():
         shutil.rmtree(dst / "src", ignore_errors=True)
         shutil.copytree(src / "src", dst / "src")
     else:
@@ -117,7 +120,10 @@ def ref_variant(name: str, ref: str) -> str:
 def build_variant(e: dict) -> str:
     name = f"_x{e['id']}"
     spec = e["spec"]
-    return knob_variant(name, spec["knobs"]) if "knobs" in spec else ref_variant(name, spec["ref"])
+    if "ref" in spec:
+        ref_variant(name, spec["ref"])
+        return knob_variant(name, spec["knobs"], copy=False) if spec.get("knobs") else name
+    return knob_variant(name, spec["knobs"])
 
 
 # ----------------------------------------------------------------- measurement

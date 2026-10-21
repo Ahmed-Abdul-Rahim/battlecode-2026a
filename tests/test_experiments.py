@@ -18,8 +18,8 @@ def test_add_needs_exactly_one_spec_and_numbers_ids():
     assert a["spec"] == {"knobs": {"FIGHT_V6": 1}} and a["status"] == "queued"
     with pytest.raises(AssertionError):
         X.add(reg, "c", "x")
-    with pytest.raises(AssertionError):
-        X.add(reg, "c", "x", knobs={"A": 1}, ref="r")
+    both = X.add(reg, "c", "x", knobs={"PASSIVE_AWARE": 1}, ref="feat/p")
+    assert both["spec"] == {"ref": "feat/p", "knobs": {"PASSIVE_AWARE": 1}}
 
 
 def test_gates():
