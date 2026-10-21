@@ -614,16 +614,34 @@
   {
    "added": "2026-10-21T15:30:46Z",
    "area": "teamwork",
+   "finished": "2026-10-21T15:50:40Z",
    "id": 43,
-   "notes": "Attacker calls a hurt enemy (<=60% HP, ally within 6); allies in reach take it first.",
-   "results": {},
+   "notes": "Attacker calls a hurt enemy (<=60% HP, ally within 6); allies in reach take it first. Screen: win 0.473 vs 0.555, fitness 0.278 vs 0.385.",
+   "results": {
+    "screen": {
+     "live": {
+      "deaths": 16.91,
+      "fitness": 0.385,
+      "games": 182,
+      "gem_margin": -0.001,
+      "win": 0.555
+     },
+     "variant": {
+      "deaths": 17.14,
+      "fitness": 0.278,
+      "games": 182,
+      "gem_margin": -0.091,
+      "win": 0.473
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "FOCUS": 1
     },
     "ref": "origin/feat/team-endgame"
    },
-   "status": "queued",
+   "status": "rejected",
    "title": "Team focus target (channel bit 39)"
   },
   {
