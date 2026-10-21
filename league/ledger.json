@@ -540,6 +540,15 @@
    "time": "2026-10-20T15:20:09.962Z",
    "win": false
   },
+  "2891d51e-266c-4bf0-a630-6309f1af83c2": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "the-farm",
+   "opp": "Lucky Stunner",
+   "oppId": "d48d65ef-625c-4966-b2cc-a7b1b02fafec",
+   "time": "2026-10-21T17:20:14.251Z",
+   "win": true
+  },
   "29d81a03-07a7-4b11-8dc3-6c4d6ee31063": {
    "kind": "ranked",
    "live": 1,
@@ -1431,6 +1440,15 @@
    "time": "2026-10-20T17:50:06.264Z",
    "win": true
   },
+  "6b5c0a35-2105-4819-9c75-fc9da686bb7f": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "fracture",
+   "opp": "Lucky Stunner",
+   "oppId": "d48d65ef-625c-4966-b2cc-a7b1b02fafec",
+   "time": "2026-10-21T17:20:14.251Z",
+   "win": false
+  },
   "6b9055a4-1f21-44bc-a185-6de0411bb069": {
    "kind": "ranked",
    "live": 1,
@@ -1809,6 +1827,15 @@
    "time": "2026-10-21T14:10:17.167Z",
    "win": true
   },
+  "88f2bdd4-00ac-4043-9364-139b68e7ba33": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "concentrated-wealth",
+   "opp": "Lucky Stunner",
+   "oppId": "d48d65ef-625c-4966-b2cc-a7b1b02fafec",
+   "time": "2026-10-21T17:20:14.251Z",
+   "win": true
+  },
   "894d51d7-c35a-432b-8759-4fbd06581025": {
    "kind": "ranked",
    "live": 1,
@@ -1952,6 +1979,15 @@
    "oppId": "e39c3d57-1813-4a18-a7e7-2b1df6bb3594",
    "time": "2026-10-21T14:10:17.167Z",
    "win": true
+  },
+  "94e9e58f-4c0f-4b1c-ab0a-ab7314473c3c": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "rows",
+   "opp": "Lucky Stunner",
+   "oppId": "d48d65ef-625c-4966-b2cc-a7b1b02fafec",
+   "time": "2026-10-21T17:20:14.251Z",
+   "win": false
   },
   "95b871cf-f18e-4468-8f3b-dc4b68e8c639": {
    "kind": "ranked",
@@ -3050,6 +3086,15 @@
    "oppId": "5e0c725a-b9b4-4523-8739-4427f20b9ce5",
    "time": "2026-10-21T16:10:12.194Z",
    "win": true
+  },
+  "ecd0fd60-3c99-41d9-9603-445cf3b71a3b": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "corners",
+   "opp": "Lucky Stunner",
+   "oppId": "d48d65ef-625c-4966-b2cc-a7b1b02fafec",
+   "time": "2026-10-21T17:20:14.251Z",
+   "win": false
   },
   "ecd3fe0c-a91d-41cd-b4da-f3e98ba73a33": {
    "kind": "ranked",
@@ -6603,15 +6648,65 @@
    },
    "deaths_them": 5,
    "deaths_us": 53,
+   "fixed_in": 15,
    "gems_them": "396",
    "gems_us": "260",
    "id": "d7d884e2-e66d-4c63-a184-6c7ea27faa7f",
    "map": "starvation",
    "opp": "jazz",
    "oppId": "96b0be30-6a0e-45b3-8d4b-cd2a910d6bf8",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-21T17:00:20.987Z",
    "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 7
+   },
+   "deaths_them": 0,
+   "deaths_us": 7,
+   "gems_them": "1008",
+   "gems_us": "745",
+   "id": "94e9e58f-4c0f-4b1c-ab0a-ab7314473c3c",
+   "map": "rows",
+   "opp": "Lucky Stunner",
+   "oppId": "d48d65ef-625c-4966-b2cc-a7b1b02fafec",
+   "status": "open",
+   "time": "2026-10-21T17:20:14.251Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (2)": 27
+   },
+   "deaths_them": 0,
+   "deaths_us": 27,
+   "gems_them": "1000",
+   "gems_us": "362",
+   "id": "6b5c0a35-2105-4819-9c75-fc9da686bb7f",
+   "map": "fracture",
+   "opp": "Lucky Stunner",
+   "oppId": "d48d65ef-625c-4966-b2cc-a7b1b02fafec",
+   "status": "open",
+   "time": "2026-10-21T17:20:14.251Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 19,
+    "Unknown entity kind (2)": 6
+   },
+   "deaths_them": 1,
+   "deaths_us": 25,
+   "gems_them": "1044",
+   "gems_us": "657",
+   "id": "ecd0fd60-3c99-41d9-9603-445cf3b71a3b",
+   "map": "corners",
+   "opp": "Lucky Stunner",
+   "oppId": "d48d65ef-625c-4966-b2cc-a7b1b02fafec",
+   "status": "open",
+   "time": "2026-10-21T17:20:14.251Z",
+   "tries_at": 4
   }
  ],
  "map_files": {
