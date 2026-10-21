@@ -2274,17 +2274,58 @@
    "added": "2026-10-21T20:16:07Z",
    "area": "economy",
    "claimed": "2026-10-21T20:56:32Z",
+   "finished": "2026-10-21T21:04:16Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 62,
    "notes": "+0.5 value per gold on groups cleared in <= 20 turns before 2 emblems.",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.487,
+     "h2h_games": 76,
+     "live": {
+      "deaths": 23.75,
+      "fitness": 0.398,
+      "games": 988,
+      "gem_margin": 0.096,
+      "win": 0.611
+     },
+     "variant": {
+      "deaths": 22.41,
+      "fitness": 0.386,
+      "games": 988,
+      "gem_margin": 0.067,
+      "win": 0.593
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 16.96,
+      "fitness": 0.364,
+      "games": 182,
+      "gem_margin": 0.003,
+      "win": 0.533
+     },
+     "paired": {
+      "mean": -0.0217,
+      "pairs": 182,
+      "se": 0.054
+     },
+     "variant": {
+      "deaths": 16.6,
+      "fitness": 0.343,
+      "games": 182,
+      "gem_margin": -0.053,
+      "win": 0.522
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "EARLY_GOLD": 1
     },
     "ref": "origin/feat/gaps-2"
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "Quick gold first until 2 emblems"
   },
   {
