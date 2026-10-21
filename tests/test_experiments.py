@@ -75,11 +75,54 @@ def test_paired_difference_matches_games():
         return R(m, a, b, a if win_a else b, ga, gb, 100, 0, 0, "", "")
 
     res = [
-        g("m1", "main", "opp", True, 10, 0), g("m1", "opp", "main", False, 0, 10),
-        g("m1", "v", "opp", True, 10, 0), g("m1", "opp", "v", True, 10, 0),  # v loses side b
+        g("m1", "main", "opp", True, 10, 0),
+        g("m1", "opp", "main", False, 0, 10),
+        g("m1", "v", "opp", True, 10, 0),
+        g("m1", "opp", "v", True, 10, 0),  # v loses side b
     ]
     p = X.paired(res, "main", "v")
     assert p["pairs"] == 2 and p["mean"] < 0 and p["se"] > 0
+
+
+def test_two_pcs_adding_the_same_new_id_keep_both():
+    import copy
+
+    base = {"experiments": []}
+    X.add(base, "old", "x", knobs={"A": 1})
+    ours, up = copy.deepcopy(base), copy.deepcopy(base)
+    X.add(ours, "mine", "x", knobs={"B": 1})
+    X.add(up, "theirs", "x", knobs={"C": 1})
+    m = X.L.merge_experiments(ours, up)["experiments"]
+    assert [(e["id"], e["title"]) for e in m] == [(1, "old"), (2, "theirs"), (3, "mine")]
+
+
+def test_status_report_groups_and_explains():
+    reg = {"experiments": []}
+    m = X.add(reg, "Hysteresis", "combat", knobs={"A": 1}, status="merged")
+    m["results"] = {
+        "full": {"live": {"win": 0.5, "fitness": 0.3}, "variant": {"win": 0.52, "fitness": 0.31}, "h2h": 0.6}
+    }
+    r = X.add(reg, "Bad idea", "combat", knobs={"B": 1}, status="rejected")
+    r["results"] = {
+        "screen": {
+            "live": {"win": 0.55, "fitness": 0.38},
+            "variant": {"win": 0.5, "fitness": 0.33},
+            "paired": {"pairs": 182, "mean": -0.05, "se": 0.02},
+        }
+    }
+    X.add(reg, "Next one", "teamwork", knobs={"C": 1})
+    out = X.status_report(reg)
+    assert "1 in the bot" in out and "1 rejected" in out and "1 waiting" in out
+    assert "win 0.50 -> 0.52, h2h 0.60" in out
+    assert "screen: worse by 0.050 per game (noise 0.020)" in out
+    assert out.index("IN THE BOT") < out.index("REJECTED") < out.index("UP NEXT")
+
+
+def test_tex_escapes_backslashes_and_braces():
+    reg = {"experiments": []}
+    X.add(reg, "err", "x", knobs={"A": 1}, notes="error: ValueError('a\\tb {c}')")
+    out = X.tex(reg)
+    assert r"a\textbackslash{}tb \{c\}" in out  # a raw '\\' would end the table row
 
 
 def test_next_queued_and_tex_escaping():
@@ -88,4 +131,4 @@ def test_next_queued_and_tex_escaping():
     q = X.add(reg, "bags 6/42 & en_route", "economy", knobs={"EN_ROUTE": 2})
     assert X.next_queued(reg) is q
     out = X.tex(reg)
-    assert r"bags 6/42 \& en\_route" in out and r"\begin{tabularx}" in out
+    assert r"bags 6/42 \& en\_route" in out and r"\begin{xltabular}" in out

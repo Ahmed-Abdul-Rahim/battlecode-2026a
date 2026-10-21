@@ -295,8 +295,32 @@ def merge_experiments(ours: dict | None, theirs: dict | None, key: str = "experi
             return a if ra > rb else b
         return a if a.get("claimed", "~") <= b.get("claimed", "~") else b
 
-    out = [pick(mine.pop(e["id"]), e) if e["id"] in mine else e for e in theirs.get(key, [])]
-    return {**theirs, key: out + list(mine.values())}
+    def same(a: dict, b: dict) -> bool:  # the same entry, not two PCs adding the same new id
+        return (a.get("title"), a.get("kind"), a.get("added")) == (
+            b.get("title"),
+            b.get("kind"),
+            b.get("added"),
+        )
+
+    out, extra = [], []
+    for e in theirs.get(key, []):
+        m = mine.pop(e["id"], None)
+        if m is None:
+            out.append(e)
+        elif same(m, e):
+            out.append(pick(m, e))
+        else:
+            out.append(e)
+            extra.append(m)
+    extra += list(mine.values())
+    top = max((e["id"] for e in out), default=0)
+    for m in extra:
+        if any(e["id"] == m["id"] for e in out):
+            top += 1
+            m = {**m, "id": top}
+        top = max(top, m["id"])
+        out.append(m)
+    return {**theirs, key: out}
 
 
 def merge_ledger(ours: dict, theirs: dict) -> dict:
@@ -602,6 +626,11 @@ def integrate(decide) -> bool:
     if git("fetch", "-q", "origin", BRANCH).returncode != 0:
         log("git fetch failed (offline?)")
         return False
+    # pack.bin is regenerated from champion.json after every pull (apply_champion), so the local
+    # copy never needs keeping; stashing it was what left 'unmerged pack.bin' behind.
+    if not rebasing():
+        git("reset", "-q", "--", PACK.relative_to(ROOT).as_posix())
+        git("checkout", "-q", "--", PACK.relative_to(ROOT).as_posix())
     p = git("rebase", "--autostash", f"origin/{BRANCH}")
     env = {**os.environ, "GIT_EDITOR": "true"}
     for _ in range(50):
@@ -1434,7 +1463,43 @@ def evolve_mimic(ch: dict, led: dict, local: dict, rng: random.Random, cyc: Path
     return entry
 
 
+#: Scratch that is safe to delete (results live in git), pruned oldest-first when the disk is low.
+PRUNABLE = ("experiments", "ml", "cycles", "bench", "bench-hard", "manual", "replay")
+MIN_FREE_GB, HARD_FREE_GB = 15.0, 5.0
+
+
+def free_gb(path: Path = ROOT) -> float:
+    return shutil.disk_usage(path).free / 1e9
+
+
+def prune_scratch(need_gb: float, free=free_gb, scratch: Path | None = None) -> list[str]:
+    """Delete regenerable scratch folders, oldest first, until `need_gb` is free."""
+    scratch = scratch or SCRATCH
+    entries = [p for d in PRUNABLE if (scratch / d).is_dir() for p in (scratch / d).iterdir() if p.is_dir()]
+    removed = []
+    for p in sorted(entries, key=lambda p: p.stat().st_mtime):
+        if free() >= need_gb:
+            break
+        shutil.rmtree(p, ignore_errors=True)
+        removed.append(p.name)
+    return removed
+
+
+def ensure_space(free=free_gb, sleep=time.sleep, scratch: Path | None = None) -> None:
+    """Keep the disk from filling: prune scratch below MIN_FREE_GB; below HARD_FREE_GB even
+    after pruning, wait (and say so) instead of failing every build and git write."""
+    if free() >= MIN_FREE_GB:
+        return
+    removed = prune_scratch(MIN_FREE_GB, free, scratch)
+    if removed:
+        log(f"disk low: pruned {len(removed)} scratch folders, {free():.1f} GB free")
+    while free() < HARD_FREE_GB:
+        log(f"disk almost full ({free():.1f} GB free): waiting 10 min; free space on the drive")
+        sleep(600)
+
+
 def cycle(a: argparse.Namespace, rng: random.Random) -> None:
+    ensure_space()
     local = load_local()
     local["cycle"] += 1
     cyc = SCRATCH / "cycles" / f"{local['cycle'] % 20:02d}"

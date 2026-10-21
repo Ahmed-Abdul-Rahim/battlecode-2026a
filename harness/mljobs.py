@@ -87,7 +87,7 @@ def plan_next(reg: dict) -> tuple[str, dict]:
     last = max(trains, default=0)
     fresh = [j for j in reg["jobs"] if j["kind"] == "gen" and j["status"] == "done" and j["id"] > last]
     if len(fresh) >= TRAIN_EVERY:
-        return "train", {"hidden": 32, "epochs": 500}
+        return "train", {"hidden": 32, "epochs": 8}
     n_gen = sum(1 for j in reg["jobs"] if j["kind"] == "gen")
     return "gen", {"explore": GEN_EXPLORE, "offset": n_gen * GEN_MAPS}
 
@@ -208,6 +208,12 @@ def run_train(j: dict, push: bool) -> dict:
         files={"bots/main/src/weights/router.bin": f"ml-data:candidates/{out.name}"},
         notes=f"Offline RL on {len(shards)} shards; train agreement {rep['train_agreement']}.",
     )
+    # Test it next: a new network matters more than the old switch ideas waiting in the queue.
+    xreg["experiments"].remove(e)
+    i = next(
+        (k for k, x in enumerate(xreg["experiments"]) if x["status"] == "queued"), len(xreg["experiments"])
+    )
+    xreg["experiments"].insert(i, e)
     X.save(xreg)
     rep["experiment"] = e["id"]
     return rep
@@ -223,6 +229,7 @@ def finish(j: dict, reg: dict, push: bool) -> None:
 
 def cmd_run(a: argparse.Namespace) -> int:
     while True:
+        L.ensure_space()
         if a.push and L.git_ready():
             L.integrate(L.h2h_decider(OUT, L.load_champion()["maps"]))
             L.apply_champion(L.load_champion())
@@ -246,6 +253,87 @@ def cmd_run(a: argparse.Namespace) -> int:
             return 0
 
 
+def shared(path: str, default: dict) -> dict:
+    """A registry file as on GitHub (every PC's work), falling back to the local copy."""
+    import json
+
+    subprocess.run(["git", "fetch", "-q", "origin", L.BRANCH], cwd=ROOT, capture_output=True)
+    p = subprocess.run(
+        ["git", "show", f"origin/{L.BRANCH}:{path}"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+    )
+    return {**default, **json.loads(p.stdout)} if p.returncode == 0 and p.stdout.strip() else default
+
+
+def status_report(reg: dict, xreg: dict) -> str:
+    jobs = reg["jobs"]
+    gens = [j for j in jobs if j["kind"] == "gen" and j["status"] == "done"]
+    trains = [
+        j for j in jobs if j["kind"] == "train" and j["status"] == "done" and "experiment" in j["result"]
+    ]
+    running = [j for j in jobs if j["status"] == "running"]
+    failed = [j for j in jobs if j["status"] == "failed"]
+    rows = sum(j["result"].get("rows", 0) for j in gens)
+    games = sum(j["result"].get("games", 0) for j in gens)
+    last = max((j["id"] for j in jobs if j["kind"] == "train" and j["status"] == "done"), default=0)
+    fresh = sum(1 for j in gens if j["id"] > last)
+    lines = [
+        f"NEURAL NET: {games} data games, {rows:,} training rows in {len(gens)} shards | "
+        f"{len(trains)} networks trained | {len(running)} running | {len(failed)} failed",
+        "",
+    ]
+    if running:
+        lines.append("RUNNING NOW")
+        for j in running:
+            what = "data games" if j["kind"] == "gen" else "training"
+            when = time.strftime("%d %b %H:%M", time.localtime(L.ts(j.get("claimed"))))
+            lines.append(f"  job {j['id']:<4} {what:11s} on {j.get('host', '?')}, since {when}")
+        lines.append("")
+    by_id = {e["id"]: e for e in xreg.get("experiments", [])}
+    if trains:
+        lines.append("TRAINED NETWORKS (each is tested by the experiment autopilot)")
+        for j in trains:
+            r, e = j["result"], by_id.get(j["result"]["experiment"], {})
+            res = e.get("results", {}).get("full") or e.get("results", {}).get("screen") or {}
+            score = (
+                f", win {res['live']['win']:.2f} -> {res['variant']['win']:.2f}" if "variant" in res else ""
+            )
+            agree = r.get("val_agreement", r.get("train_agreement"))
+            lines.append(
+                f"  job {j['id']:<4} {r.get('rows', 0):>9,} rows, copies the rules {agree:.0%} | "
+                f"experiment #{e.get('id', '?')}: {e.get('status', '?')}{score}"
+            )
+        lines.append("")
+    else:
+        lines.append(f"No network trained yet: the first one trains after {TRAIN_EVERY} data jobs.")
+        lines.append("")
+    lines.append(
+        f"NEXT TRAINING after {max(TRAIN_EVERY - fresh, 0)} more data jobs ({fresh} of {TRAIN_EVERY} new shards)"
+    )
+    if gens:
+        lines.append("")
+        lines.append("RECENT DATA JOBS (win = the exploring bot vs the mimics, lower than live on purpose)")
+        for j in gens[-6:]:
+            r = j["result"]
+            lines.append(
+                f"  job {j['id']:<4} {r.get('games', 0):>3} games, {r.get('rows', 0):>8,} rows, "
+                f"win {r.get('win', 0):.2f}  {', '.join(r.get('maps', []))}"
+            )
+    for j in failed[-5:]:
+        lines.append(f"  FAILED job {j['id']} ({j['kind']}): {j['result'].get('error', '')[:90]}")
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def cmd_status(_: argparse.Namespace) -> int:
+    reg = shared("league/ml_jobs.json", {"jobs": []})
+    xreg = shared("league/experiments.json", {"experiments": []})
+    print(status_report(reg, xreg), end="")
+    return 0
+
+
 def cmd_list(_: argparse.Namespace) -> int:
     reg = load()
     for j in reg["jobs"]:
@@ -261,11 +349,12 @@ def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = p.add_subparsers(dest="cmd", required=True)
     sub.add_parser("list")
+    sub.add_parser("status", help="human-readable report")
     rn = sub.add_parser("run")
     rn.add_argument("--forever", action="store_true")
     rn.add_argument("--no-push", dest="push", action="store_false")
     a = p.parse_args(argv)
-    return {"list": cmd_list, "run": cmd_run}[a.cmd](a)
+    return {"list": cmd_list, "status": cmd_status, "run": cmd_run}[a.cmd](a)
 
 
 if __name__ == "__main__":

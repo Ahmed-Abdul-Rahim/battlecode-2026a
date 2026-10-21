@@ -634,118 +634,6 @@
    "title": "Team focus target (channel bit 39)"
   },
   {
-   "added": "2026-10-21T15:30:46Z",
-   "area": "teamwork",
-   "claimed": "2026-10-21T16:11:23Z",
-   "finished": "2026-10-21T16:11:28Z",
-   "host": "DESKTOP-QVEMEEE",
-   "id": 47,
-   "notes": "error: ValueError(\"needs rebase: origin/feat/stun-upgrade conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 033c48b0b4cb7c383c515328e6ee9f",
-   "results": {},
-   "spec": {
-    "knobs": {
-     "TEAM_UP": 4
-    },
-    "ref": "origin/feat/stun-upgrade"
-   },
-   "status": "rejected",
-   "title": "Team up: join ally fights within 4"
-  },
-  {
-   "added": "2026-10-21T15:20:12Z",
-   "area": "passives",
-   "claimed": "2026-10-21T16:11:32Z",
-   "finished": "2026-10-21T16:11:36Z",
-   "host": "DESKTOP-QVEMEEE",
-   "id": 42,
-   "notes": "error: ValueError(\"needs rebase: origin/feat/passive-aware conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 e7367465603fe08dc0b0385ebeed2",
-   "results": {},
-   "run": 2,
-   "spec": {
-    "knobs": {
-     "PASSIVE_AWARE": 1
-    },
-    "ref": "origin/feat/passive-aware"
-   },
-   "status": "rejected",
-   "title": "Passive-aware play (per passive / kind)"
-  },
-  {
-   "added": "2026-10-21T15:30:46Z",
-   "area": "teamwork",
-   "claimed": "2026-10-21T16:11:40Z",
-   "finished": "2026-10-21T16:11:44Z",
-   "host": "DESKTOP-QVEMEEE",
-   "id": 44,
-   "notes": "error: ValueError(\"needs rebase: origin/feat/team-endgame conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 e104209eb453a182007c31e8d53097",
-   "results": {},
-   "run": 2,
-   "spec": {
-    "knobs": {
-     "ENDGAME": 1
-    },
-    "ref": "origin/feat/team-endgame"
-   },
-   "status": "rejected",
-   "title": "Endgame mode near a win or tie"
-  },
-  {
-   "added": "2026-10-21T15:30:46Z",
-   "area": "combat",
-   "claimed": "2026-10-21T16:11:48Z",
-   "finished": "2026-10-21T16:11:53Z",
-   "host": "DESKTOP-QVEMEEE",
-   "id": 45,
-   "notes": "error: ValueError(\"needs rebase: origin/feat/stun-upgrade conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 033c48b0b4cb7c383c515328e6ee9f",
-   "results": {},
-   "run": 2,
-   "spec": {
-    "knobs": {
-     "STUN_LOCK": 1
-    },
-    "ref": "origin/feat/stun-upgrade"
-   },
-   "status": "rejected",
-   "title": "Stun lock (no stun on a stunned unit)"
-  },
-  {
-   "added": "2026-10-21T15:30:46Z",
-   "area": "economy",
-   "claimed": "2026-10-21T16:11:57Z",
-   "finished": "2026-10-21T16:12:01Z",
-   "host": "DESKTOP-QVEMEEE",
-   "id": 46,
-   "notes": "error: ValueError(\"needs rebase: origin/feat/stun-upgrade conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 033c48b0b4cb7c383c515328e6ee9f",
-   "results": {},
-   "run": 2,
-   "spec": {
-    "knobs": {
-     "UPGRADE_FIRST": 6
-    },
-    "ref": "origin/feat/stun-upgrade"
-   },
-   "status": "rejected",
-   "title": "Upgrade before a hard fight (60 gold)"
-  },
-  {
-   "added": "2026-10-21T15:30:46Z",
-   "area": "teamwork",
-   "claimed": "2026-10-21T16:12:06Z",
-   "finished": "2026-10-21T16:12:10Z",
-   "host": "DESKTOP-QVEMEEE",
-   "id": 48,
-   "notes": "error: ValueError(\"needs rebase: origin/feat/stun-upgrade conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 033c48b0b4cb7c383c515328e6ee9f",
-   "results": {},
-   "spec": {
-    "knobs": {
-     "TEAM_UP": 6
-    },
-    "ref": "origin/feat/stun-upgrade"
-   },
-   "status": "rejected",
-   "title": "Team up: join ally fights within 6"
-  },
-  {
    "added": "2026-10-21T15:12:04Z",
    "area": "teamwork",
    "claimed": "2026-10-21T16:12:14Z",
@@ -787,148 +675,1123 @@
   {
    "added": "2026-10-21T15:12:04Z",
    "area": "teamwork",
-   "claimed": "2026-10-21T16:17:42Z",
+   "claimed": "2026-10-21T16:19:05Z",
+   "finished": "2026-10-21T16:30:32Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 21,
    "notes": "",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.486,
+     "h2h_games": 70,
+     "live": {
+      "deaths": 24.77,
+      "fitness": 0.372,
+      "games": 910,
+      "gem_margin": 0.08,
+      "win": 0.6
+     },
+     "variant": {
+      "deaths": 24.8,
+      "fitness": 0.36,
+      "games": 910,
+      "gem_margin": 0.065,
+      "win": 0.591
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 18.05,
+      "fitness": 0.316,
+      "games": 182,
+      "gem_margin": -0.013,
+      "win": 0.5
+     },
+     "paired": {
+      "mean": -0.0116,
+      "pairs": 182,
+      "se": 0.0351
+     },
+     "variant": {
+      "deaths": 18.01,
+      "fitness": 0.305,
+      "games": 182,
+      "gem_margin": -0.039,
+      "win": 0.495
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "FIGHT_V6": 2
     }
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "Join team fights from 50% hp"
+  },
+  {
+   "added": "2026-10-21T15:20:12Z",
+   "area": "passives",
+   "claimed": "2026-10-21T16:30:40Z",
+   "finished": "2026-10-21T16:41:46Z",
+   "host": "DESKTOP-QVEMEEE",
+   "id": 42,
+   "notes": "error: ValueError(\"needs rebase: origin/feat/passive-aware conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 e7367465603fe08dc0b0385ebeed2 Re-run: the branch conflicted with the live code after #43 (fixed: #42/#44 are now plain switches on live, the stun-upgrade branch is merged with live).",
+   "results": {
+    "full": {
+     "h2h": 0.457,
+     "h2h_games": 70,
+     "live": {
+      "deaths": 24.77,
+      "fitness": 0.372,
+      "games": 910,
+      "gem_margin": 0.08,
+      "win": 0.6
+     },
+     "variant": {
+      "deaths": 23.9,
+      "fitness": 0.371,
+      "games": 910,
+      "gem_margin": 0.061,
+      "win": 0.595
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 18.05,
+      "fitness": 0.316,
+      "games": 182,
+      "gem_margin": -0.013,
+      "win": 0.5
+     },
+     "paired": {
+      "mean": 0.0555,
+      "pairs": 182,
+      "se": 0.0564
+     },
+     "variant": {
+      "deaths": 16.97,
+      "fitness": 0.372,
+      "games": 182,
+      "gem_margin": -0.01,
+      "win": 0.544
+     }
+    }
+   },
+   "run": 3,
+   "spec": {
+    "knobs": {
+     "PASSIVE_AWARE": 1
+    }
+   },
+   "status": "rejected",
+   "title": "Passive-aware play (per passive / kind)"
+  },
+  {
+   "added": "2026-10-21T15:30:46Z",
+   "area": "teamwork",
+   "claimed": "2026-10-21T17:03:37Z",
+   "finished": "2026-10-21T17:13:23Z",
+   "host": "DESKTOP-QVEMEEE",
+   "id": 44,
+   "notes": "error: ValueError(\"needs rebase: origin/feat/team-endgame conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 e104209eb453a182007c31e8d53097 Re-run: the branch conflicted with the live code after #43 (fixed: #42/#44 are now plain switches on live, the stun-upgrade branch is merged with live).",
+   "results": {
+    "full": {
+     "h2h": 0.5,
+     "h2h_games": 70,
+     "live": {
+      "deaths": 25.12,
+      "fitness": 0.379,
+      "games": 910,
+      "gem_margin": 0.087,
+      "win": 0.609
+     },
+     "variant": {
+      "deaths": 25.1,
+      "fitness": 0.39,
+      "games": 910,
+      "gem_margin": 0.104,
+      "win": 0.615
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 18.02,
+      "fitness": 0.319,
+      "games": 182,
+      "gem_margin": -0.013,
+      "win": 0.503
+     },
+     "paired": {
+      "mean": 0.0156,
+      "pairs": 182,
+      "se": 0.0206
+     },
+     "variant": {
+      "deaths": 17.98,
+      "fitness": 0.335,
+      "games": 182,
+      "gem_margin": -0.007,
+      "win": 0.516
+     }
+    }
+   },
+   "run": 3,
+   "spec": {
+    "knobs": {
+     "ENDGAME": 1
+    }
+   },
+   "status": "passed",
+   "title": "Endgame mode near a win or tie"
+  },
+  {
+   "added": "2026-10-21T17:03:37Z",
+   "area": "learning",
+   "claimed": "2026-10-21T17:10:49Z",
+   "finished": "2026-10-21T17:35:34Z",
+   "host": "Abdul-Rahim",
+   "id": 49,
+   "notes": "Offline RL on 6 shards; train agreement 0.826.",
+   "results": {
+    "full": {
+     "h2h": 0.429,
+     "h2h_games": 70,
+     "live": {
+      "deaths": 23.72,
+      "fitness": 0.437,
+      "games": 910,
+      "gem_margin": 0.116,
+      "win": 0.645
+     },
+     "variant": {
+      "deaths": 23.23,
+      "fitness": 0.404,
+      "games": 910,
+      "gem_margin": 0.082,
+      "win": 0.615
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 16.73,
+      "fitness": 0.388,
+      "games": 182,
+      "gem_margin": 0.023,
+      "win": 0.549
+     },
+     "paired": {
+      "mean": -0.0157,
+      "pairs": 182,
+      "se": 0.0518
+     },
+     "variant": {
+      "deaths": 15.39,
+      "fitness": 0.372,
+      "games": 182,
+      "gem_margin": 0.017,
+      "win": 0.522
+     }
+    }
+   },
+   "spec": {
+    "files": {
+     "bots/main/src/weights/router.bin": "ml-data:candidates/router-00007.bin"
+    },
+    "knobs": {
+     "ROUTER": 1
+    }
+   },
+   "status": "rejected",
+   "title": "Learned router #7 (933738 rows, AWR)"
+  },
+  {
+   "added": "2026-10-21T15:30:46Z",
+   "area": "combat",
+   "claimed": "2026-10-21T17:13:30Z",
+   "finished": "2026-10-21T17:23:30Z",
+   "host": "DESKTOP-QVEMEEE",
+   "id": 45,
+   "notes": "error: ValueError(\"needs rebase: origin/feat/stun-upgrade conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 033c48b0b4cb7c383c515328e6ee9f Re-run: the branch conflicted with the live code after #43 (fixed: #42/#44 are now plain switches on live, the stun-upgrade branch is merged with live).",
+   "results": {
+    "full": {
+     "h2h": 0.514,
+     "h2h_games": 70,
+     "live": {
+      "deaths": 25.12,
+      "fitness": 0.379,
+      "games": 910,
+      "gem_margin": 0.087,
+      "win": 0.609
+     },
+     "variant": {
+      "deaths": 25.15,
+      "fitness": 0.374,
+      "games": 910,
+      "gem_margin": 0.087,
+      "win": 0.603
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 18.05,
+      "fitness": 0.316,
+      "games": 182,
+      "gem_margin": -0.013,
+      "win": 0.5
+     },
+     "paired": {
+      "mean": 0.061,
+      "pairs": 182,
+      "se": 0.0416
+     },
+     "variant": {
+      "deaths": 17.86,
+      "fitness": 0.377,
+      "games": 182,
+      "gem_margin": 0.004,
+      "win": 0.555
+     }
+    }
+   },
+   "run": 3,
+   "spec": {
+    "knobs": {
+     "STUN_LOCK": 1
+    },
+    "ref": "origin/feat/stun-upgrade"
+   },
+   "status": "rejected",
+   "title": "Stun lock (no stun on a stunned unit)"
+  },
+  {
+   "added": "2026-10-21T15:30:46Z",
+   "area": "economy",
+   "claimed": "2026-10-21T17:23:43Z",
+   "finished": "2026-10-21T17:33:49Z",
+   "host": "DESKTOP-QVEMEEE",
+   "id": 46,
+   "notes": "error: ValueError(\"needs rebase: origin/feat/stun-upgrade conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 033c48b0b4cb7c383c515328e6ee9f Re-run: the branch conflicted with the live code after #43 (fixed: #42/#44 are now plain switches on live, the stun-upgrade branch is merged with live).",
+   "results": {
+    "full": {
+     "h2h": 0.486,
+     "h2h_games": 70,
+     "live": {
+      "deaths": 25.12,
+      "fitness": 0.379,
+      "games": 910,
+      "gem_margin": 0.087,
+      "win": 0.609
+     },
+     "variant": {
+      "deaths": 23.49,
+      "fitness": 0.371,
+      "games": 910,
+      "gem_margin": 0.076,
+      "win": 0.587
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 18.05,
+      "fitness": 0.316,
+      "games": 182,
+      "gem_margin": -0.013,
+      "win": 0.5
+     },
+     "paired": {
+      "mean": -0.0026,
+      "pairs": 182,
+      "se": 0.041
+     },
+     "variant": {
+      "deaths": 17.29,
+      "fitness": 0.314,
+      "games": 182,
+      "gem_margin": -0.01,
+      "win": 0.489
+     }
+    }
+   },
+   "run": 3,
+   "spec": {
+    "knobs": {
+     "UPGRADE_FIRST": 6
+    },
+    "ref": "origin/feat/stun-upgrade"
+   },
+   "status": "rejected",
+   "title": "Upgrade before a hard fight (60 gold)"
+  },
+  {
+   "added": "2026-10-21T15:30:46Z",
+   "area": "teamwork",
+   "claimed": "2026-10-21T17:34:00Z",
+   "finished": "2026-10-21T17:43:23Z",
+   "host": "DESKTOP-QVEMEEE",
+   "id": 47,
+   "notes": "error: ValueError(\"needs rebase: origin/feat/stun-upgrade conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 033c48b0b4cb7c383c515328e6ee9f Re-run: the branch conflicted with the live code after #43 (fixed: #42/#44 are now plain switches on live, the stun-upgrade branch is merged with live).",
+   "results": {
+    "full": {
+     "h2h": 0.529,
+     "h2h_games": 70,
+     "live": {
+      "deaths": 24.16,
+      "fitness": 0.397,
+      "games": 910,
+      "gem_margin": 0.092,
+      "win": 0.615
+     },
+     "variant": {
+      "deaths": 22.59,
+      "fitness": 0.479,
+      "games": 910,
+      "gem_margin": 0.16,
+      "win": 0.665
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 18.05,
+      "fitness": 0.316,
+      "games": 182,
+      "gem_margin": -0.013,
+      "win": 0.5
+     },
+     "paired": {
+      "mean": 0.1779,
+      "pairs": 182,
+      "se": 0.05
+     },
+     "variant": {
+      "deaths": 15.37,
+      "fitness": 0.494,
+      "games": 182,
+      "gem_margin": 0.13,
+      "win": 0.615
+     }
+    }
+   },
+   "run": 2,
+   "spec": {
+    "knobs": {
+     "TEAM_UP": 4
+    },
+    "ref": "origin/feat/stun-upgrade"
+   },
+   "status": "passed",
+   "title": "Team up: join ally fights within 4"
+  },
+  {
+   "added": "2026-10-21T15:30:46Z",
+   "area": "teamwork",
+   "claimed": "2026-10-21T17:35:55Z",
+   "host": "Abdul-Rahim",
+   "id": 48,
+   "notes": "error: ValueError(\"needs rebase: origin/feat/stun-upgrade conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 033c48b0b4cb7c383c515328e6ee9f Re-run: the branch conflicted with the live code after #43 (fixed: #42/#44 are now plain switches on live, the stun-upgrade branch is merged with live).",
+   "results": {},
+   "run": 2,
+   "spec": {
+    "knobs": {
+     "TEAM_UP": 6
+    },
+    "ref": "origin/feat/stun-upgrade"
+   },
+   "status": "screening",
+   "title": "Team up: join ally fights within 6"
+  },
+  {
+   "added": "2026-10-21T17:40:42Z",
+   "area": "learning",
+   "claimed": "2026-10-21T17:43:31Z",
+   "finished": "2026-10-21T17:45:43Z",
+   "host": "DESKTOP-QVEMEEE",
+   "id": 51,
+   "notes": "Offline RL on 18 shards; train agreement 0.806. Screen: win 0.434 vs 0.5, fitness 0.093 vs 0.316 (paired -0.223 +- 0.060).",
+   "results": {
+    "screen": {
+     "live": {
+      "deaths": 18.05,
+      "fitness": 0.316,
+      "games": 182,
+      "gem_margin": -0.013,
+      "win": 0.5
+     },
+     "paired": {
+      "mean": -0.223,
+      "pairs": 182,
+      "se": 0.0599
+     },
+     "variant": {
+      "deaths": 33.23,
+      "fitness": 0.093,
+      "games": 182,
+      "gem_margin": -0.035,
+      "win": 0.434
+     }
+    }
+   },
+   "spec": {
+    "files": {
+     "bots/main/src/weights/router.bin": "ml-data:candidates/router-00021.bin"
+    },
+    "knobs": {
+     "ROUTER": 1
+    }
+   },
+   "status": "rejected",
+   "title": "Learned router #21 (2790392 rows, AWR)"
   },
   {
    "added": "2026-10-21T15:12:04Z",
    "area": "combat",
+   "claimed": "2026-10-21T17:45:49Z",
+   "finished": "2026-10-21T17:54:38Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 22,
    "notes": "",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.443,
+     "h2h_games": 70,
+     "live": {
+      "deaths": 24.16,
+      "fitness": 0.397,
+      "games": 910,
+      "gem_margin": 0.092,
+      "win": 0.615
+     },
+     "variant": {
+      "deaths": 24.17,
+      "fitness": 0.421,
+      "games": 910,
+      "gem_margin": 0.093,
+      "win": 0.64
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 18.05,
+      "fitness": 0.316,
+      "games": 182,
+      "gem_margin": -0.013,
+      "win": 0.5
+     },
+     "paired": {
+      "mean": 0.0991,
+      "pairs": 182,
+      "se": 0.0402
+     },
+     "variant": {
+      "deaths": 16.87,
+      "fitness": 0.415,
+      "games": 182,
+      "gem_margin": 0.05,
+      "win": 0.571
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "FIGHT_V6": 4
     }
    },
-   "status": "queued",
+   "status": "rejected",
    "title": "Finish kills / fight when outnumbering"
   },
   {
    "added": "2026-10-21T15:12:04Z",
    "area": "combat",
+   "claimed": "2026-10-21T17:54:49Z",
+   "finished": "2026-10-21T18:02:52Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 23,
    "notes": "",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.486,
+     "h2h_games": 70,
+     "live": {
+      "deaths": 24.16,
+      "fitness": 0.397,
+      "games": 910,
+      "gem_margin": 0.092,
+      "win": 0.615
+     },
+     "variant": {
+      "deaths": 28.09,
+      "fitness": 0.369,
+      "games": 910,
+      "gem_margin": 0.082,
+      "win": 0.63
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 18.05,
+      "fitness": 0.316,
+      "games": 182,
+      "gem_margin": -0.013,
+      "win": 0.5
+     },
+     "paired": {
+      "mean": -0.0307,
+      "pairs": 182,
+      "se": 0.0454
+     },
+     "variant": {
+      "deaths": 20.13,
+      "fitness": 0.285,
+      "games": 182,
+      "gem_margin": -0.031,
+      "win": 0.495
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "FIGHT_V6": 8
     }
    },
-   "status": "queued",
+   "status": "rejected",
    "title": "Last stand instead of a doomed retreat"
+  },
+  {
+   "added": "2026-10-21T17:56:09Z",
+   "area": "learning",
+   "claimed": "2026-10-21T18:02:59Z",
+   "finished": "2026-10-21T18:08:32Z",
+   "host": "DESKTOP-QVEMEEE",
+   "id": 52,
+   "notes": "Offline RL on 24 shards; train agreement 0.811. Screen: win 0.407 vs 0.522, fitness 0.074 vs 0.349 (paired -0.275 +- 0.059).",
+   "results": {
+    "screen": {
+     "live": {
+      "deaths": 17.21,
+      "fitness": 0.349,
+      "games": 182,
+      "gem_margin": -0.004,
+      "win": 0.522
+     },
+     "paired": {
+      "mean": -0.2751,
+      "pairs": 182,
+      "se": 0.0593
+     },
+     "variant": {
+      "deaths": 30.94,
+      "fitness": 0.074,
+      "games": 182,
+      "gem_margin": -0.094,
+      "win": 0.407
+     }
+    }
+   },
+   "spec": {
+    "files": {
+     "bots/main/src/weights/router.bin": "ml-data:candidates/router-00028.bin"
+    },
+    "knobs": {
+     "ROUTER": 1
+    }
+   },
+   "status": "rejected",
+   "title": "Learned router #28 (3743419 rows, AWR)"
   },
   {
    "added": "2026-10-21T15:12:04Z",
    "area": "combat",
+   "claimed": "2026-10-21T18:08:43Z",
+   "finished": "2026-10-21T18:18:16Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 24,
    "notes": "",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.539,
+     "h2h_games": 76,
+     "live": {
+      "deaths": 23.91,
+      "fitness": 0.395,
+      "games": 988,
+      "gem_margin": 0.094,
+      "win": 0.61
+     },
+     "variant": {
+      "deaths": 28.26,
+      "fitness": 0.346,
+      "games": 988,
+      "gem_margin": 0.086,
+      "win": 0.607
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 16.96,
+      "fitness": 0.364,
+      "games": 182,
+      "gem_margin": 0.003,
+      "win": 0.533
+     },
+     "paired": {
+      "mean": 0.0301,
+      "pairs": 182,
+      "se": 0.0408
+     },
+     "variant": {
+      "deaths": 17.99,
+      "fitness": 0.394,
+      "games": 182,
+      "gem_margin": 0.033,
+      "win": 0.566
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "FIGHT_V6": 15
     }
    },
-   "status": "queued",
+   "status": "rejected",
    "title": "All FIGHT_V6 behaviours"
   },
   {
    "added": "2026-10-21T15:12:04Z",
    "area": "teamwork",
+   "claimed": "2026-10-21T18:14:49Z",
+   "finished": "2026-10-21T18:28:10Z",
+   "host": "muhammad-usman-Inspiron-14-5410-2-in-1",
    "id": 25,
-   "notes": "",
-   "results": {},
+   "notes": "Screen: win 0.473 vs 0.555, fitness 0.31 vs 0.39 (paired -0.080 +- 0.053).",
+   "results": {
+    "screen": {
+     "live": {
+      "deaths": 16.52,
+      "fitness": 0.39,
+      "games": 182,
+      "gem_margin": -0.0,
+      "win": 0.555
+     },
+     "paired": {
+      "mean": -0.0798,
+      "pairs": 182,
+      "se": 0.0532
+     },
+     "variant": {
+      "deaths": 14.5,
+      "fitness": 0.31,
+      "games": 182,
+      "gem_margin": -0.07,
+      "win": 0.473
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "TEAM_FIGHT": 1
     }
    },
-   "status": "queued",
+   "status": "rejected",
    "title": "Team-vs-team fight maths (Lanchester)"
+  },
+  {
+   "added": "2026-10-21T18:15:49Z",
+   "area": "learning",
+   "claimed": "2026-10-21T18:18:23Z",
+   "finished": "2026-10-21T18:28:16Z",
+   "host": "DESKTOP-QVEMEEE",
+   "id": 53,
+   "notes": "Offline RL on 30 shards; train agreement 0.806.",
+   "results": {
+    "full": {
+     "h2h": 0.5,
+     "h2h_games": 76,
+     "live": {
+      "deaths": 23.91,
+      "fitness": 0.395,
+      "games": 988,
+      "gem_margin": 0.094,
+      "win": 0.61
+     },
+     "variant": {
+      "deaths": 23.89,
+      "fitness": 0.37,
+      "games": 988,
+      "gem_margin": 0.073,
+      "win": 0.591
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 16.96,
+      "fitness": 0.364,
+      "games": 182,
+      "gem_margin": 0.003,
+      "win": 0.533
+     },
+     "paired": {
+      "mean": 0.0027,
+      "pairs": 182,
+      "se": 0.0522
+     },
+     "variant": {
+      "deaths": 18.11,
+      "fitness": 0.367,
+      "games": 182,
+      "gem_margin": 0.016,
+      "win": 0.544
+     }
+    }
+   },
+   "spec": {
+    "files": {
+     "bots/main/src/weights/router.bin": "ml-data:candidates/router-00035.bin"
+    },
+    "knobs": {
+     "ROUTER": 1
+    }
+   },
+   "status": "rejected",
+   "title": "Learned router #35 (4673008 rows, AWR)"
   },
   {
    "added": "2026-10-21T15:12:04Z",
    "area": "combat",
+   "claimed": "2026-10-21T18:28:20Z",
+   "finished": "2026-10-21T19:11:41Z",
+   "host": "muhammad-usman-Inspiron-14-5410-2-in-1",
    "id": 26,
    "notes": "",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.5,
+     "h2h_games": 76,
+     "live": {
+      "deaths": 22.73,
+      "fitness": 0.456,
+      "games": 988,
+      "gem_margin": 0.131,
+      "win": 0.651
+     },
+     "variant": {
+      "deaths": 22.8,
+      "fitness": 0.444,
+      "games": 988,
+      "gem_margin": 0.117,
+      "win": 0.643
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 16.52,
+      "fitness": 0.39,
+      "games": 182,
+      "gem_margin": -0.0,
+      "win": 0.555
+     },
+     "paired": {
+      "mean": -0.0003,
+      "pairs": 182,
+      "se": 0.0426
+     },
+     "variant": {
+      "deaths": 15.96,
+      "fitness": 0.389,
+      "games": 182,
+      "gem_margin": 0.021,
+      "win": 0.544
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "COMBAT_SEARCH": 1
     }
    },
-   "status": "queued",
+   "status": "rejected",
    "title": "Combat search (simulate fight plans)"
   },
   {
    "added": "2026-10-21T15:12:04Z",
    "area": "combat",
+   "claimed": "2026-10-21T18:28:24Z",
+   "finished": "2026-10-21T18:30:15Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 27,
-   "notes": "",
-   "results": {},
+   "notes": "Screen: win 0.467 vs 0.533, fitness 0.271 vs 0.364 (paired -0.093 +- 0.046).",
+   "results": {
+    "screen": {
+     "live": {
+      "deaths": 16.96,
+      "fitness": 0.364,
+      "games": 182,
+      "gem_margin": 0.003,
+      "win": 0.533
+     },
+     "paired": {
+      "mean": -0.0935,
+      "pairs": 182,
+      "se": 0.046
+     },
+     "variant": {
+      "deaths": 17.53,
+      "fitness": 0.271,
+      "games": 182,
+      "gem_margin": -0.084,
+      "win": 0.467
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "STUN_THREAT": 1
     }
    },
-   "status": "queued",
+   "status": "rejected",
    "title": "Value stun kits on a 6-round horizon"
   },
   {
    "added": "2026-10-21T15:12:04Z",
    "area": "endgame",
+   "claimed": "2026-10-21T18:30:22Z",
+   "finished": "2026-10-21T18:39:42Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 28,
    "notes": "",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.513,
+     "h2h_games": 76,
+     "live": {
+      "deaths": 23.91,
+      "fitness": 0.395,
+      "games": 988,
+      "gem_margin": 0.094,
+      "win": 0.61
+     },
+     "variant": {
+      "deaths": 23.86,
+      "fitness": 0.397,
+      "games": 988,
+      "gem_margin": 0.095,
+      "win": 0.611
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 16.96,
+      "fitness": 0.364,
+      "games": 182,
+      "gem_margin": 0.003,
+      "win": 0.533
+     },
+     "paired": {
+      "mean": -0.0022,
+      "pairs": 182,
+      "se": 0.0138
+     },
+     "variant": {
+      "deaths": 16.54,
+      "fitness": 0.362,
+      "games": 182,
+      "gem_margin": -0.0,
+      "win": 0.527
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "HUNT_MODE": 2
     }
    },
-   "status": "queued",
+   "status": "passed",
    "title": "Endgame hunt when behind / enemy near win"
+  },
+  {
+   "added": "2026-10-21T18:31:11Z",
+   "area": "learning",
+   "claimed": "2026-10-21T18:39:49Z",
+   "finished": "2026-10-21T18:42:11Z",
+   "host": "DESKTOP-QVEMEEE",
+   "id": 54,
+   "notes": "Offline RL on 36 shards; train agreement 0.804. Screen: win 0.462 vs 0.533, fitness 0.268 vs 0.364 (paired -0.097 +- 0.053).",
+   "results": {
+    "screen": {
+     "live": {
+      "deaths": 16.96,
+      "fitness": 0.364,
+      "games": 182,
+      "gem_margin": 0.003,
+      "win": 0.533
+     },
+     "paired": {
+      "mean": -0.0965,
+      "pairs": 182,
+      "se": 0.0533
+     },
+     "variant": {
+      "deaths": 18.55,
+      "fitness": 0.268,
+      "games": 182,
+      "gem_margin": -0.033,
+      "win": 0.462
+     }
+    }
+   },
+   "spec": {
+    "files": {
+     "bots/main/src/weights/router.bin": "ml-data:candidates/router-00042.bin"
+    },
+    "knobs": {
+     "ROUTER": 1
+    }
+   },
+   "status": "rejected",
+   "title": "Learned router #42 (5538225 rows, AWR)"
   },
   {
    "added": "2026-10-21T15:12:04Z",
    "area": "endgame",
+   "claimed": "2026-10-21T18:42:18Z",
+   "finished": "2026-10-21T18:53:58Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 29,
    "notes": "",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.539,
+     "h2h_games": 76,
+     "live": {
+      "deaths": 23.91,
+      "fitness": 0.395,
+      "games": 988,
+      "gem_margin": 0.094,
+      "win": 0.61
+     },
+     "variant": {
+      "deaths": 23.85,
+      "fitness": 0.415,
+      "games": 988,
+      "gem_margin": 0.117,
+      "win": 0.624
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 16.96,
+      "fitness": 0.364,
+      "games": 182,
+      "gem_margin": 0.003,
+      "win": 0.533
+     },
+     "paired": {
+      "mean": 0.0033,
+      "pairs": 182,
+      "se": 0.0206
+     },
+     "variant": {
+      "deaths": 16.99,
+      "fitness": 0.368,
+      "games": 182,
+      "gem_margin": -0.004,
+      "win": 0.538
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "ENDGAME_BANK": 1
     }
    },
-   "status": "queued",
+   "status": "passed",
    "title": "Deliver everything from round 1850"
+  },
+  {
+   "added": "2026-10-21T18:51:14Z",
+   "area": "learning",
+   "claimed": "2026-10-21T18:54:06Z",
+   "finished": "2026-10-21T18:56:35Z",
+   "host": "DESKTOP-QVEMEEE",
+   "id": 55,
+   "notes": "Offline RL on 42 shards; train agreement 0.808. Screen: win 0.33 vs 0.533, fitness -0.045 vs 0.364 (paired -0.409 +- 0.058).",
+   "results": {
+    "screen": {
+     "live": {
+      "deaths": 16.96,
+      "fitness": 0.364,
+      "games": 182,
+      "gem_margin": 0.003,
+      "win": 0.533
+     },
+     "paired": {
+      "mean": -0.4088,
+      "pairs": 182,
+      "se": 0.0576
+     },
+     "variant": {
+      "deaths": 32.23,
+      "fitness": -0.045,
+      "games": 182,
+      "gem_margin": -0.208,
+      "win": 0.33
+     }
+    }
+   },
+   "spec": {
+    "files": {
+     "bots/main/src/weights/router.bin": "ml-data:candidates/router-00049.bin"
+    },
+    "knobs": {
+     "ROUTER": 1
+    }
+   },
+   "status": "rejected",
+   "title": "Learned router #49 (6493818 rows, AWR)"
   },
   {
    "added": "2026-10-21T15:12:04Z",
    "area": "farming",
+   "claimed": "2026-10-21T18:56:45Z",
+   "finished": "2026-10-21T19:04:11Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 30,
-   "notes": "",
-   "results": {},
+   "notes": "error: OSError(28, 'No space left on device')",
+   "results": {
+    "screen": {
+     "live": {
+      "deaths": 16.96,
+      "fitness": 0.364,
+      "games": 182,
+      "gem_margin": 0.003,
+      "win": 0.533
+     },
+     "paired": {
+      "mean": 0.0658,
+      "pairs": 182,
+      "se": 0.0465
+     },
+     "variant": {
+      "deaths": 15.52,
+      "fitness": 0.43,
+      "games": 182,
+      "gem_margin": 0.011,
+      "win": 0.582
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "CAMP_SAFE": 1
     }
    },
-   "status": "queued",
+   "status": "rejected",
    "title": "Leave awake camps while escape works"
   },
   {
    "added": "2026-10-21T15:12:04Z",
    "area": "farming",
+   "claimed": "2026-10-21T19:04:21Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 31,
    "notes": "",
    "results": {},
@@ -937,26 +1800,71 @@
      "CAMP_SAFE": 2
     }
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Don't wake a group alone that kills you"
   },
   {
    "added": "2026-10-21T15:12:04Z",
    "area": "farming",
+   "claimed": "2026-10-21T19:11:51Z",
+   "finished": "2026-10-21T19:55:24Z",
+   "host": "muhammad-usman-Inspiron-14-5410-2-in-1",
    "id": 32,
    "notes": "",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.487,
+     "h2h_games": 76,
+     "live": {
+      "deaths": 22.63,
+      "fitness": 0.455,
+      "games": 988,
+      "gem_margin": 0.132,
+      "win": 0.649
+     },
+     "variant": {
+      "deaths": 20.61,
+      "fitness": 0.479,
+      "games": 988,
+      "gem_margin": 0.148,
+      "win": 0.648
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 16.52,
+      "fitness": 0.39,
+      "games": 182,
+      "gem_margin": -0.0,
+      "win": 0.555
+     },
+     "paired": {
+      "mean": 0.0433,
+      "pairs": 182,
+      "se": 0.0471
+     },
+     "variant": {
+      "deaths": 14.65,
+      "fitness": 0.433,
+      "games": 182,
+      "gem_margin": 0.011,
+      "win": 0.577
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "CAMP_SAFE": 3
     }
    },
-   "status": "queued",
+   "status": "rejected",
    "title": "Both camp-safety rules"
   },
   {
    "added": "2026-10-21T15:12:04Z",
    "area": "safety",
+   "claimed": "2026-10-21T19:55:29Z",
+   "host": "muhammad-usman-Inspiron-14-5410-2-in-1",
    "id": 33,
    "notes": "",
    "results": {},
@@ -965,7 +1873,7 @@
      "RECALL_SAFE": 2
     }
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Recall only when nothing can reach us"
   },
   {
@@ -1065,6 +1973,23 @@
    },
    "status": "queued",
    "title": "Camp value: gems + gold"
+  },
+  {
+   "added": "2026-10-21T17:23:47Z",
+   "area": "learning",
+   "id": 50,
+   "notes": "Offline RL on 12 shards; train agreement 0.813.",
+   "results": {},
+   "spec": {
+    "files": {
+     "bots/main/src/weights/router.bin": "ml-data:candidates/router-00014.bin"
+    },
+    "knobs": {
+     "ROUTER": 1
+    }
+   },
+   "status": "queued",
+   "title": "Learned router #14 (1868234 rows, AWR)"
   }
  ]
 }

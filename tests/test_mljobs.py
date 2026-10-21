@@ -42,14 +42,43 @@ def test_job_registry_merge():
     assert [x["status"] for x in m] == ["done", "queued"]
 
 
+def test_status_report():
+    reg = {"jobs": []}
+    for _ in range(2):
+        g = M.add(reg, "gen")
+        g.update(status="done", result={"games": 78, "rows": 1000, "win": 0.3, "maps": ["a"]})
+    t = M.add(reg, "train")
+    t.update(status="done", result={"rows": 2000, "val_agreement": 0.81, "experiment": 50})
+    xreg = {"experiments": [{"id": 50, "status": "rejected", "results": {}}]}
+    out = M.status_report(reg, xreg)
+    assert "156 data games, 2,000 training rows in 2 shards" in out
+    assert "copies the rules 81% | experiment #50: rejected" in out
+    assert f"after {M.TRAIN_EVERY} more data jobs" in out
+
+
+def test_fit_is_fast_and_reports_held_out_agreement(tmp_path):
+    import numpy as np
+
+    rng = np.random.default_rng(1)
+    x = rng.integers(-127, 127, (5000, 109)).astype(np.int8)
+    y = (x[:, 0] > 0).astype(int)  # learnable
+    rep = M.awr.fit({"X": x, "y": y, "R": rng.normal(size=5000)}, tmp_path / "r.bin", hidden=16, epochs=8)
+    assert rep["val_agreement"] > 0.8 and (tmp_path / "r.bin").exists()
+
+
 def test_variant_files_swap_in(monkeypatch, tmp_path):
     monkeypatch.setattr(X, "ROOT", tmp_path)
     (tmp_path / "bots" / "_x7" / "src" / "weights").mkdir(parents=True)
     monkeypatch.setattr(X, "knob_variant", lambda name, knobs, copy=True: name)
-    monkeypatch.setattr(X, "fetch_file", lambda src: b"BCW1blob" if src == "ml-data:candidates/r.bin" else b"")
+    monkeypatch.setattr(
+        X, "fetch_file", lambda src: b"BCW1blob" if src == "ml-data:candidates/r.bin" else b""
+    )
     e = {
         "id": 7,
-        "spec": {"knobs": {"ROUTER": 1}, "files": {"bots/main/src/weights/router.bin": "ml-data:candidates/r.bin"}},
+        "spec": {
+            "knobs": {"ROUTER": 1},
+            "files": {"bots/main/src/weights/router.bin": "ml-data:candidates/r.bin"},
+        },
     }
     assert X.build_variant(e) == "_x7"
     assert (tmp_path / "bots" / "_x7" / "src" / "weights" / "router.bin").read_bytes() == b"BCW1blob"

@@ -207,8 +207,24 @@ def full_passes(live: dict, var: dict, h2h: float) -> bool:
     return var["win"] >= live["win"] and var["fitness"] >= live["fitness"] and h2h >= H2H_MIN
 
 
+def clean_outputs() -> None:
+    """Match folders of finished experiments: results are in the registry, the games (~1.6 GB
+    per experiment) are not needed. Also the bot copies built for them."""
+    for p in list(OUT.glob("x*")) + list(OUT.glob("src-*")) if OUT.exists() else []:
+        shutil.rmtree(p, ignore_errors=True)
+    for p in (ROOT / "bots").glob("_x*"):
+        shutil.rmtree(p, ignore_errors=True)
+
+
 def evaluate(e: dict, reg: dict, push: bool) -> dict:
     """Screen, then (if it passes) the full check. Updates `e` in place and saves as it goes."""
+    try:
+        return _evaluate(e, reg, push)
+    finally:
+        clean_outputs()
+
+
+def _evaluate(e: dict, reg: dict, push: bool) -> dict:
     led = L.load_ledger()
     faithful, _ = L.ensure_mimics(led)
     maps = L.trainable_maps(led)
@@ -299,7 +315,18 @@ def tex(reg: dict) -> str:
     """A LaTeX table of every experiment (\\input from docs/league.tex)."""
 
     def esc(s: str) -> str:
-        return re.sub(r"([_&%#$])", r"\\\1", s)
+        # Notes may hold error text with backslashes and braces; '\\' would end a table row.
+        out = []
+        for ch in s:
+            if ch == "\\":
+                out.append(r"\textbackslash{}")
+            elif ch in "_&%#${}":
+                out.append("\\" + ch)
+            elif ch in "^~":
+                out.append(r"\textasciicircum{}" if ch == "^" else r"\textasciitilde{}")
+            else:
+                out.append(ch)
+        return "".join(out)
 
     def nums(e: dict) -> str:
         r = e["results"].get("full") or e["results"].get("screen")
@@ -315,15 +342,123 @@ def tex(reg: dict) -> str:
     ]
     return "\n".join(
         [
-            "\\begin{tabularx}{\\linewidth}{@{}rp{3.2cm}lp{1.3cm}p{4.3cm}X@{}}",
+            "\\begin{xltabular}{\\linewidth}{@{}rp{3.2cm}lp{1.3cm}p{4.3cm}X@{}}",
             "\\toprule",
             "\\# & Experiment & Area & Status & Result (live$\\to$variant) & Notes\\\\",
             "\\midrule",
+            "\\endhead",
             *rows,
             "\\bottomrule",
-            "\\end{tabularx}",
+            "\\end{xltabular}",
         ]
     )
+
+
+def shared_registry() -> dict:
+    """The registry as on GitHub (every PC's results), falling back to the local file."""
+    subprocess.run(["git", "fetch", "-q", "origin", L.BRANCH], cwd=ROOT, capture_output=True)
+    p = subprocess.run(
+        ["git", "show", f"origin/{L.BRANCH}:league/experiments.json"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+    )
+    if p.returncode == 0 and p.stdout.strip():
+        import json
+
+        return {"experiments": [], **json.loads(p.stdout)}
+    return load()
+
+
+def why(e: dict) -> str:
+    """One short reason for a result."""
+    notes = e.get("notes", "")
+    r = e.get("results", {})
+    if not r and "error:" in notes:  # an old error note stays after a successful re-run
+        msg = notes.rsplit("error:", 1)[1].strip()
+        return "error: " + msg.replace("ValueError(", "").strip("\"'")[:80]
+    if "full" in r:
+        f = r["full"]
+        v, live = f["variant"], f["live"]
+        bits = []
+        if v["win"] < live["win"]:
+            bits.append(f"fewer wins ({v['win']:.3f} vs {live['win']:.3f})")
+        if v["fitness"] < live["fitness"]:
+            bits.append(f"less fit ({v['fitness']:.3f} vs {live['fitness']:.3f})")
+        if f.get("h2h", 1) < H2H_MIN:
+            bits.append(f"lost head-to-head ({f['h2h']:.2f})")
+        return "full check: " + (", ".join(bits) or "passed")
+    if "screen" in r and "paired" in r["screen"]:
+        p = r["screen"]["paired"]
+        return f"screen: worse by {-p['mean']:.3f} per game (noise {p['se']:.3f})"
+    first = notes.split(". ")[0].strip()
+    return first[:90]
+
+
+def result_line(e: dict) -> str:
+    r = e.get("results", {})
+    s = r.get("full") or r.get("screen")
+    if not s or "variant" not in s:
+        return ""
+    v, live = s["variant"], s["live"]
+    out = f"win {live['win']:.2f} -> {v['win']:.2f}"
+    if "h2h" in s:
+        out += f", h2h {s['h2h']:.2f}"
+    return out
+
+
+def local_time(iso: str | None) -> str:
+    return time.strftime("%d %b %H:%M", time.localtime(L.ts(iso))) if iso else "?"
+
+
+def status_report(reg: dict) -> str:
+    ex = reg["experiments"]
+    by = {s: [e for e in ex if e["status"] == s] for s in STATUSES}
+    running = by["screening"] + by["full"]
+    lines = [
+        f"EXPERIMENTS: {len(ex)} ideas | {len(by['merged'])} in the bot | {len(by['passed'])} passed, "
+        f"waiting to merge | {len(by['rejected'])} rejected | {len(running)} running | "
+        f"{len(by['queued'])} waiting",
+        "",
+    ]
+
+    def row(e: dict, extra: str = "") -> str:
+        return f"  #{e['id']:<3} {e['title'][:46]:46s} {e['area'][:9]:9s} {extra}".rstrip()
+
+    def section(title: str, items: list[dict], fn) -> None:
+        if items:
+            lines.append(title)
+            lines.extend(fn(e) for e in items)
+            lines.append("")
+
+    section(
+        "RUNNING NOW",
+        running,
+        lambda e: row(
+            e,
+            f"{'full check' if e['status'] == 'full' else 'screen'} on {e.get('host', '?')}, "
+            f"since {local_time(e.get('claimed'))}",
+        ),
+    )
+    section(
+        "PASSED - waiting for someone to merge (see the PDF, Quick start)",
+        by["passed"],
+        lambda e: row(e, result_line(e)),
+    )
+    section("IN THE BOT (merged)", by["merged"], lambda e: row(e, result_line(e)))
+    section("REJECTED - tried, did not help", by["rejected"], lambda e: row(e, why(e)))
+    section(
+        "UP NEXT (in order)", by["queued"][:12], lambda e: row(e, "re-run" if e.get("run", 1) > 1 else "")
+    )
+    if len(by["queued"]) > 12:
+        lines.append(f"  ... and {len(by['queued']) - 12} more (experiments list)")
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def cmd_status(_: argparse.Namespace) -> int:
+    print(status_report(shared_registry()), end="")
+    return 0
 
 
 def cmd_list(_: argparse.Namespace) -> int:
@@ -335,18 +470,33 @@ def cmd_list(_: argparse.Namespace) -> int:
 
 
 def cmd_add(a: argparse.Namespace) -> int:
+    use_git = a.push and L.git_ready()
+    if use_git:
+        L.integrate(L.h2h_decider(OUT, L.load_champion()["maps"]))  # number it after the latest
     reg = load()
     knobs = dict(kv.split("=") for kv in a.knobs) if a.knobs else None
     if knobs:
         knobs = {k: int(v) for k, v in knobs.items()}
+    if a.ref:
+        merged_tree(a.ref)  # fails now ('needs rebase') rather than hours later in the queue
     e = add(reg, a.title, a.area, knobs=knobs, ref=a.ref, notes=a.notes or "")
+    if a.first:  # test it next: before the other queued experiments
+        reg["experiments"].remove(e)
+        i = next(
+            (k for k, x in enumerate(reg["experiments"]) if x["status"] == "queued"), len(reg["experiments"])
+        )
+        reg["experiments"].insert(i, e)
     save(reg)
-    print(f"queued experiment {e['id']}: {e['title']}")
+    if use_git:
+        L.publish([REGISTRY], f"league: queue experiment {e['id']} {e['title']}", L.h2h_decider(OUT, {}))
+    print(f"queued experiment {e['id']}: {e['title']}" + (" (pushed)" if use_git else " (local only)"))
     return 0
 
 
 def cmd_run(a: argparse.Namespace) -> int:
+    clean_outputs()  # leftovers of an interrupted run
     while True:
+        L.ensure_space()
         if a.push and L.git_ready():
             L.integrate(L.h2h_decider(OUT, L.load_champion()["maps"]))  # test against the latest live bot
             L.apply_champion(L.load_champion())
@@ -380,18 +530,21 @@ def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = p.add_subparsers(dest="cmd", required=True)
     sub.add_parser("list")
+    sub.add_parser("status", help="human-readable report of everything tried")
     ad = sub.add_parser("add")
     ad.add_argument("--title", required=True)
     ad.add_argument("--area", required=True)
     ad.add_argument("--knobs", nargs="*", help="KNOB=value ...")
     ad.add_argument("--ref", help="git ref whose bots/main is the variant")
     ad.add_argument("--notes")
+    ad.add_argument("--first", action="store_true", help="test it before the other queued ones")
+    ad.add_argument("--no-push", dest="push", action="store_false")
     rn = sub.add_parser("run")
     rn.add_argument("--forever", action="store_true")
     rn.add_argument("--no-push", dest="push", action="store_false")
     sub.add_parser("tex")
     a = p.parse_args(argv)
-    return {"list": cmd_list, "add": cmd_add, "run": cmd_run, "tex": cmd_tex}[a.cmd](a)
+    return {"list": cmd_list, "status": cmd_status, "add": cmd_add, "run": cmd_run, "tex": cmd_tex}[a.cmd](a)
 
 
 if __name__ == "__main__":

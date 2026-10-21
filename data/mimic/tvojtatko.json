@@ -1,32 +1,32 @@
 {
  "build": {},
  "cadence": {
-  "bag": 16.6,
+  "bag": 13.6,
   "first_emblem": null,
   "shops_per_100r": null
  },
  "draft": {
   "3": [
    4,
-   0,
-   3
+   3,
+   0
   ],
   "4": [
-   8,
    4,
+   3,
    0,
-   3
+   9
   ],
   "5": [
    4,
    3,
-   6,
    0,
-   8
+   9,
+   10
   ]
  },
- "games": 57,
+ "games": 15,
  "opening": {},
- "team": "Rataturing",
- "win_rate": 0.0
+ "team": "tvojtatko",
+ "win_rate": 0.533
 }

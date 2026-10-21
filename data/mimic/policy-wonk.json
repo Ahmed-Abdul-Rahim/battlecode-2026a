@@ -1,7 +1,7 @@
 {
  "build": {},
  "cadence": {
-  "bag": 44.9,
+  "bag": 45.3,
   "first_emblem": null,
   "shops_per_100r": null
  },
@@ -25,8 +25,8 @@
    0
   ]
  },
- "games": 25,
+ "games": 35,
  "opening": {},
  "team": "policy wonk",
- "win_rate": 0.68
+ "win_rate": 0.657
 }

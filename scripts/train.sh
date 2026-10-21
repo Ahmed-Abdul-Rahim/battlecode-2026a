@@ -36,8 +36,17 @@ case "$cmd" in
     [ -d "$wt" ] || { git fetch -q origin && git worktree add -B autopilot "$wt" origin/league; }
     mkdir -p "$wt/runs/league"
     py="$(pwd)/$PY"
+    case "${1:-}" in
+      list) (cd "$wt" && "$py" harness/experiments.py list); exit 0 ;;
+      add) (cd "$wt" && "$py" harness/experiments.py "$@"); exit 0 ;;
+      stop) pkill -f "experiments.py run" || true; exit 0 ;;
+    esac
     (cd "$wt" && nohup "$py" -u harness/experiments.py run --forever >> runs/league/experiments.log 2>&1 &)
     echo "experiment autopilot started in $wt (log: runs/league/experiments.log)" ;;
+  exp-status)
+    "$PY" harness/experiments.py status ;;
+  ml-status)
+    "$PY" harness/mljobs.py status ;;
   ml)
     wt="$(cd .. && pwd)/battlecode-ml"
     [ -d "$wt" ] || { git fetch -q origin && git worktree add -q -B mlpilot "$wt" origin/league; }
@@ -52,5 +61,5 @@ case "$cmd" in
   status|review|sync|maps|bench|submit|replay)
     "$PY" harness/league.py "$cmd" "$@" ;;
   *)
-    echo "usage: $0 start|stop|status|logs|review|sync|maps|bench|submit|replay|experiments|ml|once [args]"; exit 2 ;;
+    echo "usage: $0 start|stop|status|logs|review|sync|maps|bench|submit|replay|experiments|exp-status|ml|ml-status|once [args]"; exit 2 ;;
 esac
