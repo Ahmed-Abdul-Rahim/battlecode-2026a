@@ -636,7 +636,7 @@
   {
    "added": "2026-10-21T15:30:46Z",
    "area": "teamwork",
-   "claimed": "2026-10-21T16:10:05Z",
+   "claimed": "2026-10-21T16:11:23Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 47,
    "notes": "Any enemy HP (kill assist needs <= 50%); skipped when joint advantage < 0.7. If it passes, radius / advantage move into the learned E block.",
