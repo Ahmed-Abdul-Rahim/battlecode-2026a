@@ -2570,17 +2570,58 @@
    "added": "2026-10-21T20:16:07Z",
    "area": "movement",
    "claimed": "2026-10-21T22:13:57Z",
+   "finished": "2026-10-21T22:57:50Z",
    "host": "muhammad-usman-Inspiron-14-5410-2-in-1",
    "id": 67,
    "notes": "Carry one; teleport (3 tiles over walls/holes) when it saves 7+ steps and no enemy within 6.",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.566,
+     "h2h_games": 76,
+     "live": {
+      "deaths": 22.63,
+      "fitness": 0.455,
+      "games": 988,
+      "gem_margin": 0.132,
+      "win": 0.649
+     },
+     "variant": {
+      "deaths": 22.81,
+      "fitness": 0.435,
+      "games": 988,
+      "gem_margin": 0.124,
+      "win": 0.632
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 16.52,
+      "fitness": 0.39,
+      "games": 182,
+      "gem_margin": -0.0,
+      "win": 0.555
+     },
+     "paired": {
+      "mean": 0.0361,
+      "pairs": 182,
+      "se": 0.0356
+     },
+     "variant": {
+      "deaths": 16.41,
+      "fitness": 0.426,
+      "games": 182,
+      "gem_margin": 0.03,
+      "win": 0.582
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "TP_CRYSTAL": 1
     },
     "ref": "origin/feat/gaps-2"
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "Teleport crystal shortcuts"
   },
   {
