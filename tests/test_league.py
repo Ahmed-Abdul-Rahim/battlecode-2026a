@@ -266,3 +266,45 @@ def test_mimic_target_rotates_teams_and_maps(monkeypatch):
         picks.append((team["slug"], mp))
     assert {t for t, _ in picks[:3]} == {"a", "b", "c"}  # the 3 we beat most, in turn; never d
     assert picks[0][0] == picks[3][0] and picks[0][1] != picks[3][1]  # next visit: another map
+
+
+def test_upload_supersedes_open_losses_only():
+    losses = [
+        {"id": "a", "time": "2026-10-21T01:00:00Z", "map": "lanes", "status": "open"},
+        {"id": "b", "time": "2026-10-21T02:00:00Z", "map": "hooks", "status": "needs-human"},
+        {"id": "c", "time": "2026-10-21T03:00:00Z", "map": "lanes", "status": "fixed"},
+    ]
+    led = ledger(losses=losses)
+    assert league.supersede_losses(led, 9) == 1
+    assert [x["status"] for x in led["losses"]] == ["superseded", "needs-human", "fixed"]
+    assert led["losses"][0]["superseded_by"] == 9
+
+
+def test_map_pressure_decays_and_weights_the_live_version():
+    now = 1_800_000_000.0
+    losses = [
+        {"id": "old", "time": iso(now - 48 * H), "map": "lanes", "status": "superseded"},
+        {"id": "new", "time": iso(now - 1 * H), "map": "hooks", "status": "open"},
+        {"id": "stuck", "time": iso(now - 1 * H), "map": "swirl", "status": "needs-human"},
+    ]
+    subs = [{"version": 9, "time": iso(now - 2 * H), "ok": True}]
+    led = ledger(subs, losses, ladder={"new": {"live": 9}, "old": {"live": 1}})
+    p = league.map_pressure(led, now)
+    assert "swirl" not in p  # humans have it
+    assert p["hooks"] > 1.9  # fresh and against the live version: ~2
+    assert p["lanes"] < 0.2  # two days old
+
+
+def test_empty_queue_trains_where_pressure_is(monkeypatch):
+    _maps(monkeypatch, ["lanes", "hooks", "islands"])
+    th = league.full_theta(None)
+    th[0] += 0.5
+    ch = champ({"lanes": th, "hooks": th, "islands": th})
+    now = league.time.time()
+    losses = [
+        {"id": f"l{i}", "time": iso(now - 600), "map": "hooks", "status": "superseded"} for i in range(5)
+    ]
+    led = ledger(losses=losses)
+    picks = [league.pick_map(ch, led, _local(rr=r))[0] for r in range(60)]
+    assert picks.count("hooks") > 40  # the pressured map dominates...
+    assert set(picks) == {"lanes", "hooks", "islands"}  # ...but the others still get turns

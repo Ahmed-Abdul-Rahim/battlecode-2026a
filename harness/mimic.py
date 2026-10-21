@@ -34,7 +34,9 @@ sys.path.insert(0, str(ROOT / "harness"))
 
 from bctools import replay  # noqa: E402
 
-SUMMARY_DIRS = ["runs/ladder_top", "runs/ladder_v10", "runs/ladder_v8", "runs/ladder_live"]
+# Engine 1.0.0 games only (ladder_v8/v10 hold old-engine games: other stats, maps and meta).
+SUMMARY_DIRS = ["runs/ladder_top", "runs/ladder_live"]
+MIN_ENGINE_MAJOR = 1
 MAP_DUMPS = "runs/speedrun/*/main-v7/*__main-v7-vs-idle.repl26a"
 #: Committed cache of map_geometry(): the debug dumps it is built from are not in git.
 GEOMETRY = ROOT / "data" / "map_geometry.json"
@@ -121,8 +123,20 @@ def load_games(team: str) -> list[tuple[dict, dict]]:
             if not any(t["name"] == team for t in m["teams"]):
                 continue
             seen.add(mid)
-            out.append((m, json.loads(Path(f).read_text(encoding="utf-8"))))
+            summary = json.loads(Path(f).read_text(encoding="utf-8"))
+            if engine_major(summary) < MIN_ENGINE_MAJOR:
+                continue
+            out.append((m, summary))
     return out
+
+
+def engine_major(summary: dict) -> int:
+    """Engine major version a summary was played on (0 if unknown: treated as old)."""
+    v = str((summary.get("match") or {}).get("engineVersion") or "0")
+    try:
+        return int(v.split(".")[0])
+    except ValueError:
+        return 0
 
 
 def nearest_group(centres: list[list[int]], x: int, y: int) -> int:

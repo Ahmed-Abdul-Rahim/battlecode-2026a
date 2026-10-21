@@ -40,6 +40,7 @@ import contextlib
 import datetime as dt
 import hashlib
 import json
+import math
 import os
 import random
 import shutil
@@ -115,6 +116,10 @@ SUBMIT_GAP = 3 * 3600
 BENCH_JUMP = 0.05
 REVERT_GAMES, REVERT_DROP = 10, 0.10
 HEARTBEAT = 1800  # push try counts at least this often, so the lead sees stuck maps
+#: Map pressure (map_pressure): a loss's weight falls to 1/e after a day; every map keeps a
+#: floor of this fraction of the top pressure, so no map is starved.
+PRESSURE_TAU = 24 * 3600
+PRESSURE_FLOOR = 0.1
 # Evolved mimics: every MIMIC_EVERY-th cycle trains an opponent instead of the champion.
 MIMIC_EVERY = int(os.environ.get("LEAGUE_MIMIC_EVERY", "3"))
 #: θ entries an evolved mimic may not change: the team's observed cadence (W recall_gold,
@@ -138,7 +143,10 @@ def ts(iso: str | None) -> float:
     """ISO time (ours or the platform's '...816Z') -> epoch seconds; 0 if missing."""
     if not iso:
         return 0.0
-    return dt.datetime.fromisoformat(iso.replace("Z", "+00:00")).timestamp()
+    try:
+        return dt.datetime.fromisoformat(iso.replace("Z", "+00:00")).timestamp()
+    except ValueError:
+        return 0.0  # malformed platform data: treat as very old
 
 
 def load_json(p: Path, default):
@@ -933,7 +941,38 @@ def submit(led: dict, version: int, reason: str, bot: str | None = None) -> bool
         }
     )
     log(f"submit v{version} ({reason}): {'ok' if ok else 'FAILED ' + p.stderr.strip()[:200]}")
+    if ok:
+        n = supersede_losses(led, version)
+        log(f"loss queue: {n} open losses superseded by v{version} (they still weigh in map pressure)")
     return ok
+
+
+def supersede_losses(led: dict, version: int) -> int:
+    """A new upload starts a fresh queue: open losses (of older versions) leave it but stay in
+    the ledger and the review, and keep steering training through map_pressure."""
+    n = 0
+    for x in led["losses"]:
+        if x["status"] == "open":
+            x.update(status="superseded", superseded_by=version)
+            n += 1
+    return n
+
+
+def map_pressure(led: dict, now: float) -> dict[str, float]:
+    """Recent ladder losses per map, decaying with time constant PRESSURE_TAU; losses
+    of the version live now count double."""
+    subs = [s for s in led["submissions"] if s.get("ok")]
+    live = subs[-1]["version"] if subs else None
+    out: dict[str, float] = {}
+    for x in led["losses"]:
+        if x["status"] == "needs-human":
+            continue
+        age = max(0.0, now - ts(x["time"]))
+        w = math.exp(-age / PRESSURE_TAU)
+        if live is not None and (led["ladder"].get(x["id"]) or {}).get("live") == live:
+            w *= 2.0
+        out[x["map"]] = out.get(x["map"], 0.0) + w
+    return out
 
 
 # ----------------------------------------------------------------- review report
@@ -1153,6 +1192,14 @@ def pick_map(ch: dict, led: dict, local: dict) -> tuple[str, dict | None]:
         for m, v in ((ch["bench"].get(str(ch["version"])) or {}).get("per_map") or {}).items()
         if m in maps
     }
+    # Queue empty (e.g. just after an upload): train where we recently lost on the ladder and
+    # still lose locally; every map keeps a small chance.
+    pressure = {m: v for m, v in map_pressure(led, time.time()).items() if m in maps}
+    if pressure:
+        names = sorted(maps)
+        floor = PRESSURE_FLOOR * max(pressure.values()) + 0.05
+        weights = [(pressure.get(m, 0.0) + floor) * (1.1 - per_map.get(m, 0.5)) for m in names]
+        return random.Random(local["rr"]).choices(names, weights=weights)[0], None
     if per_map and local["rr"] % 2 == 0:
         return min(per_map, key=per_map.get), None
     names = sorted(maps)
@@ -1366,6 +1413,7 @@ def cycle(a: argparse.Namespace, rng: random.Random) -> None:
             local["last_sync"] = 0  # register them now, not in up to 3 h
     seeded = seed_maps(ch, led)
     apply_champion(ch)
+    maybe_release(a, ch, cyc, use_git)
     if seeded:
         log(f"new maps get default theta until trained: {', '.join(seeded)}")
         save_json(CHAMPION, ch)
@@ -1424,18 +1472,38 @@ def cycle(a: argparse.Namespace, rng: random.Random) -> None:
             )
             publish([CHAMPION, PACK], msg, h2h_decider(cyc, ch["maps"]))
             ch = load_champion()  # a merge may have renumbered the version
-    if a.lead and a.auto_submit:
-        led = load_ledger()
-        dec = release_decision(ch, led, time.time())
-        if dec:
-            submit(led, *dec)
-            save_json(LEDGER, led)
-            write_review(ch, led)
-            if use_git:
-                publish(
-                    [LEDGER, REVIEW], f"league: uploaded v{dec[0]} ({dec[1]})", h2h_decider(cyc, ch["maps"])
-                )
+    maybe_release(a, ch, cyc, use_git)
     save_json(LOCAL, local)
+
+
+def maybe_release(a: argparse.Namespace, ch: dict, cyc: Path, use_git: bool) -> None:
+    """Lead with --auto-submit: upload if due. Runs at the start and the end of every cycle, so a
+    restarted daemon uploads at once instead of after a full (first: slow) round."""
+    if not (a.lead and a.auto_submit):
+        return
+    led = load_ledger()
+    dec = release_decision(ch, led, time.time())
+    if dec:
+        submit(led, *dec)
+        save_json(LEDGER, led)
+        write_review(ch, led)
+        if use_git:
+            publish([LEDGER, REVIEW], f"league: uploaded v{dec[0]} ({dec[1]})", h2h_decider(cyc, ch["maps"]))
+
+
+def next_upload(ch: dict, led: dict, now: float) -> str:
+    """When auto-submit will upload next (from the ledger, the same on every PC)."""
+    dec = release_decision(ch, led, now)
+    if dec:
+        return f"due now: v{dec[0]} ({dec[1]})"
+    subs = [s for s in led["submissions"] if s.get("ok")]
+    live = subs[-1]["version"] if subs else 0
+    if ch["version"] <= live:
+        return f"waiting for a version newer than v{live}"
+    wait = SUBMIT_GAP - (now - ts(subs[-1]["time"])) if subs else 0
+    if wait > 0:
+        return f"v{ch['version']} in {int(wait // 3600)}h {int(wait % 3600 // 60)}m (if a loss or +{BENCH_JUMP:.2f} benchmark by then)"
+    return f"v{ch['version']}: waiting for a ladder loss or a +{BENCH_JUMP:.2f} benchmark gain"
 
 
 # ----------------------------------------------------------------- commands
@@ -1477,6 +1545,13 @@ def cmd_run(a: argparse.Namespace) -> int:
         return 1
     SCRATCH.mkdir(parents=True, exist_ok=True)
     LOCK.write_text(str(os.getpid()))
+    if os.name == "nt":
+        # Keep Windows from idle-sleeping while the league runs (2026-10-21: the PC slept 4
+        # minutes after a restart and the daemon was dead for 16 h). ES_CONTINUOUS |
+        # ES_SYSTEM_REQUIRED; ends with the process, manual sleep still works.
+        import ctypes
+
+        ctypes.windll.kernel32.SetThreadExecutionState(0x80000000 | 0x00000001)
     log(
         f"league on {HOST}: {'lead' if a.lead else 'worker'}, auto-submit {'ON' if a.auto_submit else 'off'}, "
         f"git {'on' if a.git else 'off'}"
@@ -1540,7 +1615,13 @@ def cmd_status(_: argparse.Namespace) -> int:
         if mx["version"]:
             print(f"  evolved   mimx-{p['slug']}: g{mx['version']} on {', '.join(sorted(mx['maps']))}")
     c = Counter(x["status"] for x in led["losses"])
-    print(f"losses      open {c['open']}, fixed {c['fixed']}, needs-human {c['needs-human']}")
+    print(
+        f"losses      open {c['open']}, fixed {c['fixed']}, needs-human {c['needs-human']}, "
+        f"superseded {c['superseded']}"
+    )
+    top = sorted(map_pressure(led, time.time()).items(), key=lambda kv: -kv[1])[:5]
+    if top:
+        print("  pressure  " + ", ".join(f"{m} {v:.1f}" for m, v in top))
     for x in [x for x in led["losses"] if x["status"] == "open"][:5]:
         print(
             f"  open: {x['map']} vs {x['opp']} ({x['time'][:16]}), tries {total_tries(ch, x['map']) - x.get('tries_at', 0)}/{STUCK_TRIES}"
@@ -1551,6 +1632,8 @@ def cmd_status(_: argparse.Namespace) -> int:
         )
     for h in ch["history"][-5:]:
         print(f"promotion   v{h['version']} {h['time']} {h['map']} {h['gain']:+.3f} ({h['host']})")
+    if led["submissions"] or ch["version"]:
+        print(f"next upload {next_upload(ch, led, time.time())}")
     rev = sorted(REVIEW.glob("*.md"))
     print(f"review      {rev[-1].relative_to(ROOT) if rev else '-'}")
     return 0
