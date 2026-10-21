@@ -162,6 +162,15 @@
    "time": "2026-10-20T15:50:11.039Z",
    "win": false
   },
+  "0b379936-fce4-4dd9-a829-1df244af3975": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "expanse",
+   "opp": "FF 15 pls",
+   "oppId": "168564c3-2b32-4032-bb6c-b29b95ee61cd",
+   "time": "2026-10-21T17:50:18.948Z",
+   "win": true
+  },
   "0c41b204-1e4e-42a3-a88b-61479ac2ecc4": {
    "kind": "ranked",
    "live": null,
@@ -619,6 +628,15 @@
    "opp": "preachers of ttts",
    "oppId": "2173d644-f134-4b10-8cd8-2f6d9bfc0696",
    "time": "2026-10-21T14:00:16.613Z",
+   "win": false
+  },
+  "2c8f990b-7f77-48d8-ae09-a706ffcd2706": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "starfish",
+   "opp": "University of Wroclaw",
+   "oppId": "23f1309e-917f-4666-8747-a5898a677aa2",
+   "time": "2026-10-21T18:00:19.738Z",
    "win": false
   },
   "2d2668f0-940b-4838-8a6b-f829100e6fee": {
@@ -1107,6 +1125,15 @@
    "time": "2026-10-21T13:10:15.673Z",
    "win": true
   },
+  "5144f662-5b04-4a91-87d7-638d84f9112e": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "starvation",
+   "opp": "University of Wroclaw",
+   "oppId": "23f1309e-917f-4666-8747-a5898a677aa2",
+   "time": "2026-10-21T18:00:19.739Z",
+   "win": true
+  },
   "51ebf24e-504b-4868-be92-aec19cf67ced": {
    "kind": "ranked",
    "live": 1,
@@ -1438,6 +1465,15 @@
    "opp": ":blauerdrache:",
    "oppId": "56492446-eca6-4557-9a40-559bd4c318dc",
    "time": "2026-10-20T16:30:26.059Z",
+   "win": false
+  },
+  "687e38ff-2d90-4a5c-9bd7-8ff36d5bf7f9": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "elk-arena",
+   "opp": "FF 15 pls",
+   "oppId": "168564c3-2b32-4032-bb6c-b29b95ee61cd",
+   "time": "2026-10-21T17:50:18.948Z",
    "win": false
   },
   "68af59f5-f6dc-447f-a7e4-e42328ecb7a1": {
@@ -1863,6 +1899,15 @@
    "time": "2026-10-21T15:20:15.263Z",
    "win": false
   },
+  "86b6cc95-0eb3-45ba-954f-af8e95e42af3": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "monolith",
+   "opp": "University of Wroclaw",
+   "oppId": "23f1309e-917f-4666-8747-a5898a677aa2",
+   "time": "2026-10-21T18:00:19.738Z",
+   "win": false
+  },
   "86ddfd59-eab4-4080-9b26-0dc149d5c7c5": {
    "kind": "ranked",
    "live": null,
@@ -2214,6 +2259,15 @@
    "time": "2026-10-21T15:30:43.147Z",
    "win": false
   },
+  "a11aaca8-28b5-403c-8109-e30d6e74bb48": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "boss-battle",
+   "opp": "FF 15 pls",
+   "oppId": "168564c3-2b32-4032-bb6c-b29b95ee61cd",
+   "time": "2026-10-21T17:50:18.948Z",
+   "win": true
+  },
   "a27297b2-a852-4636-9163-3c10c2e887a7": {
    "kind": "unranked",
    "live": 10,
@@ -2320,6 +2374,15 @@
    "opp": "Prime Bot 007",
    "oppId": "4b09b8ff-b429-43dc-9be1-180565784e87",
    "time": "2026-10-20T19:50:11.277Z",
+   "win": false
+  },
+  "aa8695de-a1cb-453d-9d96-075ecef6026a": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "collision",
+   "opp": "University of Wroclaw",
+   "oppId": "23f1309e-917f-4666-8747-a5898a677aa2",
+   "time": "2026-10-21T18:00:19.739Z",
    "win": false
   },
   "aaaee705-a8e4-4b87-a28a-3cedc4d8215f": {
@@ -2565,6 +2628,15 @@
    "time": "2026-10-20T20:50:10.904Z",
    "win": false
   },
+  "b9d6940a-9658-4de6-8ed0-e421cf45a859": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "gem-fields",
+   "opp": "FF 15 pls",
+   "oppId": "168564c3-2b32-4032-bb6c-b29b95ee61cd",
+   "time": "2026-10-21T17:50:18.948Z",
+   "win": false
+  },
   "ba06228f-789c-400d-b18e-3e5ceaf8167b": {
    "kind": "ranked",
    "live": 1,
@@ -2718,6 +2790,15 @@
    "time": "2026-10-21T15:20:15.263Z",
    "win": false
   },
+  "c86b9962-812e-4bdd-a625-4e9458602cbe": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "starfish",
+   "opp": "FF 15 pls",
+   "oppId": "168564c3-2b32-4032-bb6c-b29b95ee61cd",
+   "time": "2026-10-21T17:50:18.948Z",
+   "win": false
+  },
   "c8f782f5-346f-4286-b900-fcb75bc17ff2": {
    "kind": "ranked",
    "live": 1,
@@ -2762,6 +2843,15 @@
    "oppId": "0e2abba9-e657-4025-a4e6-a1eed7c5dea0",
    "time": "2026-10-20T16:20:07.815Z",
    "win": true
+  },
+  "cd2beb3d-227d-4feb-834d-0014289c966a": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "hooks",
+   "opp": "University of Wroclaw",
+   "oppId": "23f1309e-917f-4666-8747-a5898a677aa2",
+   "time": "2026-10-21T18:00:19.739Z",
+   "win": false
   },
   "ce2c63ce-7df9-432a-998e-ccbd4917a4fc": {
    "kind": "unranked",
@@ -6882,6 +6972,123 @@
    "status": "open",
    "time": "2026-10-21T17:40:16.367Z",
    "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 25
+   },
+   "deaths_them": 9,
+   "deaths_us": 25,
+   "gems_them": "1012",
+   "gems_us": "145",
+   "id": "aa8695de-a1cb-453d-9d96-075ecef6026a",
+   "map": "collision",
+   "opp": "University of Wroclaw",
+   "oppId": "23f1309e-917f-4666-8747-a5898a677aa2",
+   "status": "open",
+   "time": "2026-10-21T18:00:19.739Z",
+   "tries_at": 6
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 44,
+    "Unknown entity kind (2)": 7
+   },
+   "deaths_them": 2,
+   "deaths_us": 51,
+   "gems_them": "1012",
+   "gems_us": "44",
+   "id": "cd2beb3d-227d-4feb-834d-0014289c966a",
+   "map": "hooks",
+   "opp": "University of Wroclaw",
+   "oppId": "23f1309e-917f-4666-8747-a5898a677aa2",
+   "status": "open",
+   "time": "2026-10-21T18:00:19.739Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 18,
+    "Unknown entity kind (2)": 44
+   },
+   "deaths_them": 11,
+   "deaths_us": 62,
+   "gems_them": "1035",
+   "gems_us": "178",
+   "id": "2c8f990b-7f77-48d8-ae09-a706ffcd2706",
+   "map": "starfish",
+   "opp": "University of Wroclaw",
+   "oppId": "23f1309e-917f-4666-8747-a5898a677aa2",
+   "status": "open",
+   "time": "2026-10-21T18:00:19.738Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 23
+   },
+   "deaths_them": 9,
+   "deaths_us": 23,
+   "gems_them": "1017",
+   "gems_us": "801",
+   "id": "86b6cc95-0eb3-45ba-954f-af8e95e42af3",
+   "map": "monolith",
+   "opp": "University of Wroclaw",
+   "oppId": "23f1309e-917f-4666-8747-a5898a677aa2",
+   "status": "open",
+   "time": "2026-10-21T18:00:19.738Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 83,
+    "Unknown entity kind (2)": 5
+   },
+   "deaths_them": 46,
+   "deaths_us": 88,
+   "gems_them": "1004",
+   "gems_us": "192",
+   "id": "687e38ff-2d90-4a5c-9bd7-8ff36d5bf7f9",
+   "map": "elk-arena",
+   "opp": "FF 15 pls",
+   "oppId": "168564c3-2b32-4032-bb6c-b29b95ee61cd",
+   "status": "open",
+   "time": "2026-10-21T17:50:18.948Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 6,
+    "Unknown entity kind (2)": 9
+   },
+   "deaths_them": 15,
+   "deaths_us": 15,
+   "gems_them": "1004",
+   "gems_us": "650",
+   "id": "b9d6940a-9658-4de6-8ed0-e421cf45a859",
+   "map": "gem-fields",
+   "opp": "FF 15 pls",
+   "oppId": "168564c3-2b32-4032-bb6c-b29b95ee61cd",
+   "status": "open",
+   "time": "2026-10-21T17:50:18.948Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 31,
+    "Unknown entity kind (2)": 63
+   },
+   "deaths_them": 75,
+   "deaths_us": 94,
+   "gems_them": "727",
+   "gems_us": "249",
+   "id": "c86b9962-812e-4bdd-a625-4e9458602cbe",
+   "map": "starfish",
+   "opp": "FF 15 pls",
+   "oppId": "168564c3-2b32-4032-bb6c-b29b95ee61cd",
+   "status": "open",
+   "time": "2026-10-21T17:50:18.948Z",
+   "tries_at": 1
   }
  ],
  "map_files": {
