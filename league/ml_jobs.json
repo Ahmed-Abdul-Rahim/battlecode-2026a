@@ -27,6 +27,7 @@
   {
    "added": "2026-10-21T16:30:08Z",
    "claimed": "2026-10-21T16:30:08Z",
+   "finished": "2026-10-21T16:31:23Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 2,
    "kind": "gen",
@@ -34,8 +35,18 @@
     "explore": 10,
     "offset": 3
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "games": 78,
+    "maps": [
+     "01broken-curve",
+     "00collision",
+     "01concentrated-wealth"
+    ],
+    "rows": 139407,
+    "shard": "gen-00002-DESKTOP-QVEMEEE.npz",
+    "win": 0.462
+   },
+   "status": "done"
   }
  ]
 }
