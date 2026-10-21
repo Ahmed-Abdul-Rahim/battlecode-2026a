@@ -1331,6 +1331,23 @@
    "title": "Team-vs-team fight maths (Lanchester)"
   },
   {
+   "added": "2026-10-21T18:15:49Z",
+   "area": "learning",
+   "id": 53,
+   "notes": "Offline RL on 30 shards; train agreement 0.806.",
+   "results": {},
+   "spec": {
+    "files": {
+     "bots/main/src/weights/router.bin": "ml-data:candidates/router-00035.bin"
+    },
+    "knobs": {
+     "ROUTER": 1
+    }
+   },
+   "status": "queued",
+   "title": "Learned router #35 (4673008 rows, AWR)"
+  },
+  {
    "added": "2026-10-21T15:12:04Z",
    "area": "combat",
    "id": 26,
