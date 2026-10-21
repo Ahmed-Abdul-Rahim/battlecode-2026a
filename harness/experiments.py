@@ -63,14 +63,16 @@ def add(
     notes: str = "",
     status: str = "queued",
     results: dict | None = None,
+    files: dict | None = None,
 ) -> dict:
+    """`files` = {path under bots/main: "ml-data:<path>"}: files swapped into the variant."""
     assert knobs is not None or ref is not None, "an experiment is a knob set, a git ref, or both"
     n = 1 + max((e["id"] for e in reg["experiments"]), default=0)
     e = {
         "id": n,
         "title": title,
         "area": area,
-        "spec": {k: v for k, v in (("ref", ref), ("knobs", knobs)) if v is not None},
+        "spec": {k: v for k, v in (("ref", ref), ("knobs", knobs), ("files", files)) if v is not None},
         "status": status,
         "results": results or {},
         "added": L.now_iso(),
@@ -134,13 +136,29 @@ def ref_variant(name: str, ref: str) -> str:
     return name
 
 
+def fetch_file(src: str) -> bytes:
+    """'ml-data:<path>' = a file on branch ml-data (data shards, candidate router blobs)."""
+    branch, _, path = src.partition(":")
+    subprocess.run(["git", "fetch", "-q", "origin", branch], cwd=ROOT, capture_output=True)
+    return subprocess.run(
+        ["git", "show", f"origin/{branch}:{path}"], cwd=ROOT, capture_output=True, check=True
+    ).stdout
+
+
 def build_variant(e: dict) -> str:
     name = f"_x{e['id']}"
     spec = e["spec"]
     if "ref" in spec:
         ref_variant(name, spec["ref"])
-        return knob_variant(name, spec["knobs"], copy=False) if spec.get("knobs") else name
-    return knob_variant(name, spec["knobs"])
+        if spec.get("knobs"):
+            knob_variant(name, spec["knobs"], copy=False)
+    else:
+        knob_variant(name, spec["knobs"])
+    for dst, src in (spec.get("files") or {}).items():
+        target = ROOT / "bots" / name / Path(dst).relative_to("bots/main")
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(fetch_file(src))
+    return name
 
 
 # ----------------------------------------------------------------- measurement

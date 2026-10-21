@@ -65,8 +65,12 @@ pub mod knob2 {
     pub const PREDICT: usize = 6;
     /// Place the free ward on likely approach paths.
     pub const WARDS: usize = 7;
+    /// Use the learned router (weights/router.bin) on complex turns (offline RL, mljobs.py).
+    pub const ROUTER: usize = 11;
+    /// RL data games: explore a random feasible expert on this many percent of logged turns.
+    pub const EXPLORE: usize = 12;
 
-    pub const DEFAULTS: [(usize, u8); 8] = [
+    pub const DEFAULTS: [(usize, u8); 10] = [
         (PASSIVE_AWARE, 0),
         (FOCUS, 1),
         (ENDGAME, 0),
@@ -75,6 +79,8 @@ pub mod knob2 {
         (CAMP_DIVERT, 0),
         (PREDICT, 0),
         (WARDS, 0),
+        (ROUTER, 0),
+        (EXPLORE, 0),
     ];
 }
 

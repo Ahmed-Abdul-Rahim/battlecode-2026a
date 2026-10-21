@@ -1200,14 +1200,14 @@ impl Bot {
     /// Expert for this turn: exploration (RL data builds), the learned router (offline RL),
     /// else the rules.
     fn pick_expert(&self, mode: Mode, ctx: &Context, me: &Champion) -> Expert {
-        use crate::learned::{EPSILON, ROUTER};
-        if EPSILON > 0.0 && !matches!(mode, Mode::Override(_)) && self.turns.is_multiple_of(4) {
+        let epsilon = f32::from(self.theta.knob2(knob2::EXPLORE)) / 100.0;
+        if epsilon > 0.0 && !matches!(mode, Mode::Override(_)) && self.turns.is_multiple_of(4) {
             // Deterministic hash: the engine has no RNG and runs must stay reproducible.
             let h = (self.turns.wrapping_mul(2_654_435_761)
                 ^ u32::from(self.slot).wrapping_mul(40_503))
             .rotate_left(13)
             .wrapping_mul(2_246_822_519);
-            if (h % 10_000) as f32 / 10_000.0 < EPSILON {
+            if (h % 10_000) as f32 / 10_000.0 < epsilon {
                 let options: Vec<Expert> = (0..N_EXPERTS)
                     .filter_map(Expert::from_index)
                     .filter(|&e| feasible(e, ctx))
@@ -1217,7 +1217,10 @@ impl Bot {
                 }
             }
         }
-        if ROUTER && !matches!(mode, Mode::Override(_)) && fuel() > LEARNED_MIN_FUEL {
+        if self.theta.knob2(knob2::ROUTER) > 0
+            && !matches!(mode, Mode::Override(_))
+            && fuel() > LEARNED_MIN_FUEL
+        {
             if let Some(e) = self.learned_expert(ctx, me) {
                 return e;
             }
