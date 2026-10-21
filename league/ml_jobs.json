@@ -811,6 +811,7 @@
   {
    "added": "2026-10-21T18:09:30Z",
    "claimed": "2026-10-21T18:09:30Z",
+   "finished": "2026-10-21T18:12:21Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 33,
    "kind": "gen",
@@ -818,8 +819,18 @@
     "explore": 10,
     "offset": 84
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "games": 78,
+    "maps": [
+     "01corridors",
+     "00eight",
+     "01elk-arena"
+    ],
+    "rows": 159658,
+    "shard": "gen-00033-DESKTOP-QVEMEEE.npz",
+    "win": 0.538
+   },
+   "status": "done"
   }
  ]
 }
