@@ -2084,7 +2084,8 @@
    "map": "monolith",
    "opp": ":blauerdrache:",
    "oppId": "56492446-eca6-4557-9a40-559bd4c318dc",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T16:30:26.059Z",
    "tries_at": 0
   },
@@ -2119,7 +2120,8 @@
    "map": "contest",
    "opp": ":blauerdrache:",
    "oppId": "56492446-eca6-4557-9a40-559bd4c318dc",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T16:30:26.059Z",
    "tries_at": 0
   },
@@ -2136,7 +2138,8 @@
    "map": "contest",
    "opp": "Silent Fog Walkers",
    "oppId": "0e2abba9-e657-4025-a4e6-a1eed7c5dea0",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T16:20:07.816Z",
    "tries_at": 0
   },
@@ -2153,7 +2156,8 @@
    "map": "big-world",
    "opp": "Silent Fog Walkers",
    "oppId": "0e2abba9-e657-4025-a4e6-a1eed7c5dea0",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T16:20:07.816Z",
    "tries_at": 0
   },
@@ -2169,7 +2173,8 @@
    "map": "monolith",
    "opp": "Silent Fog Walkers",
    "oppId": "0e2abba9-e657-4025-a4e6-a1eed7c5dea0",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T16:20:07.815Z",
    "tries_at": 0
   },
@@ -2186,7 +2191,8 @@
    "map": "boss-battle",
    "opp": "Hungry Hungry Hungry",
    "oppId": "88c01e3a-ac73-431d-8fb8-5dd482a5418b",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T16:10:05.811Z",
    "tries_at": 0
   },
@@ -2239,7 +2245,8 @@
    "map": "fragment",
    "opp": "Mousa",
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T16:00:07.664Z",
    "tries_at": 0
   },
@@ -2273,7 +2280,8 @@
    "map": "fracture",
    "opp": "Mousa",
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T16:00:07.664Z",
    "tries_at": 0
   },
@@ -2289,7 +2297,8 @@
    "map": "monolith",
    "opp": "Aviators",
    "oppId": "0948671e-bedc-4ca1-8dde-2526adff3d0e",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T15:50:11.039Z",
    "tries_at": 0
   },
@@ -2342,7 +2351,8 @@
    "map": "lanes",
    "opp": "Sigma Coder",
    "oppId": "db94d858-5170-41ef-ad90-b2faf85dd5e8",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T15:40:12.934Z",
    "tries_at": 0
   },
@@ -2359,7 +2369,8 @@
    "map": "elk-arena",
    "opp": "Midnight Recallers",
    "oppId": "8d8f5160-f68e-4660-916f-6729a42537e3",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T15:32:13.243Z",
    "tries_at": 0
   },
@@ -2376,7 +2387,8 @@
    "map": "monolith",
    "opp": "Patient Stunners",
    "oppId": "3edd1441-9f24-4e2c-9645-d8f1e489a2c0",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T15:20:09.962Z",
    "tries_at": 0
   },
@@ -2393,7 +2405,8 @@
    "map": "elk-arena",
    "opp": "Patient Stunners",
    "oppId": "3edd1441-9f24-4e2c-9645-d8f1e489a2c0",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T15:20:09.962Z",
    "tries_at": 0
   },
@@ -2428,7 +2441,8 @@
    "map": "ambush",
    "opp": "Patient Stunners",
    "oppId": "3edd1441-9f24-4e2c-9645-d8f1e489a2c0",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T15:20:09.962Z",
    "tries_at": 0
   },
@@ -2445,7 +2459,8 @@
    "map": "contest",
    "opp": "Slough Reps",
    "oppId": "fd3a404c-954b-4628-a418-7a8e57fb3783",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T15:10:13.185Z",
    "tries_at": 0
   },
@@ -2480,7 +2495,8 @@
    "map": "broken-curve",
    "opp": "knownasjason",
    "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T15:00:17.844Z",
    "tries_at": 0
   },
@@ -2532,7 +2548,8 @@
    "map": "big-world",
    "opp": "knownasjason",
    "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T17:00:08.372Z",
    "tries_at": 0
   },
@@ -2548,7 +2565,8 @@
    "map": "monolith",
    "opp": "knownasjason",
    "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T17:00:08.371Z",
    "tries_at": 0
   },
@@ -2565,7 +2583,8 @@
    "map": "interlock",
    "opp": "knownasjason",
    "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T17:00:08.371Z",
    "tries_at": 0
   },
@@ -2599,7 +2618,8 @@
    "map": "fragment",
    "opp": "Crimson Bush Campers",
    "oppId": "2451bf9d-9782-4060-b8b4-fc2e7a69ef9a",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T16:50:05.756Z",
    "tries_at": 0
   },
@@ -2634,7 +2654,8 @@
    "map": "lanes",
    "opp": "test_2580",
    "oppId": "e89db5d4-c0a7-43eb-9d6d-23732bae07a5",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T16:40:04.457Z",
    "tries_at": 0
   },
@@ -2705,7 +2726,8 @@
    "map": "corners",
    "opp": "ggez",
    "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T17:10:06.134Z",
    "tries_at": 0
   },
@@ -2739,7 +2761,8 @@
    "map": "monolith",
    "opp": "ggez",
    "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T17:10:06.134Z",
    "tries_at": 0
   },
@@ -2756,7 +2779,8 @@
    "map": "eight",
    "opp": "MicroStella",
    "oppId": "f0415fa5-b2aa-4958-a47a-4422f74d9ede",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T17:30:07.064Z",
    "tries_at": 0
   },
@@ -2773,7 +2797,8 @@
    "map": "corners",
    "opp": "MicroStella",
    "oppId": "f0415fa5-b2aa-4958-a47a-4422f74d9ede",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T17:30:07.063Z",
    "tries_at": 0
   },
@@ -2807,7 +2832,8 @@
    "map": "corners",
    "opp": "Stubborn Altar Keepers",
    "oppId": "625bb51a-8d9e-4035-a16e-ce4eea8eb739",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T17:40:07.589Z",
    "tries_at": 0
   },
@@ -2824,7 +2850,8 @@
    "map": "broken-curve",
    "opp": "Intercontinental Fish",
    "oppId": "1890540d-1ffc-4847-adbf-d0d08772f268",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T17:51:26.777Z",
    "tries_at": 0
   },
@@ -2840,7 +2867,8 @@
    "map": "eight",
    "opp": "Intercontinental Fish",
    "oppId": "1890540d-1ffc-4847-adbf-d0d08772f268",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T17:51:26.764Z",
    "tries_at": 0
   },
@@ -2856,7 +2884,8 @@
    "map": "elk-arena",
    "opp": "Intercontinental Fish",
    "oppId": "1890540d-1ffc-4847-adbf-d0d08772f268",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T17:51:26.756Z",
    "tries_at": 0
   },
@@ -2890,7 +2919,8 @@
    "map": "fragment",
    "opp": "Intercontinental Fish",
    "oppId": "1890540d-1ffc-4847-adbf-d0d08772f268",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T17:51:26.716Z",
    "tries_at": 0
   },
@@ -2907,7 +2937,8 @@
    "map": "corners",
    "opp": "Slough Reps",
    "oppId": "fd3a404c-954b-4628-a418-7a8e57fb3783",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T17:50:06.264Z",
    "tries_at": 0
   },
@@ -2924,7 +2955,8 @@
    "map": "the-farm",
    "opp": "Slough Reps",
    "oppId": "fd3a404c-954b-4628-a418-7a8e57fb3783",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T17:50:06.264Z",
    "tries_at": 0
   },
@@ -2959,7 +2991,8 @@
    "map": "fragment",
    "opp": "Mousa",
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T18:00:13.679Z",
    "tries_at": 0
   },
@@ -2975,7 +3008,8 @@
    "map": "fracture",
    "opp": "Mousa",
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T18:00:13.679Z",
    "tries_at": 0
   },
@@ -2992,7 +3026,8 @@
    "map": "swirl",
    "opp": "Mousa",
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T18:00:13.679Z",
    "tries_at": 0
   },
@@ -3026,7 +3061,8 @@
    "map": "lanes",
    "opp": "Rogue Lock Pickers",
    "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T18:10:10.514Z",
    "tries_at": 0
   },
@@ -3042,7 +3078,8 @@
    "map": "fracture",
    "opp": "range rover",
    "oppId": "184a3866-fec8-4f0a-8221-6691e1abfdc2",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T18:30:06.487Z",
    "tries_at": 0
   },
@@ -3077,7 +3114,8 @@
    "map": "contest",
    "opp": "range rover",
    "oppId": "184a3866-fec8-4f0a-8221-6691e1abfdc2",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T18:30:06.486Z",
    "tries_at": 0
   },
@@ -3094,7 +3132,8 @@
    "map": "reverse-spiral",
    "opp": "range rover",
    "oppId": "184a3866-fec8-4f0a-8221-6691e1abfdc2",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T18:30:06.484Z",
    "tries_at": 0
   },
@@ -3147,7 +3186,8 @@
    "map": "lanes",
    "opp": "dominos",
    "oppId": "f437e066-15f3-4a27-8ec3-9687cb68696b",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T18:40:10.897Z",
    "tries_at": 0
   },
@@ -3200,7 +3240,8 @@
    "map": "fracture",
    "opp": "WhatIsQuantTrading??????",
    "oppId": "d88df6e3-53c7-44ed-874f-67f3caa0578c",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T18:50:08.433Z",
    "tries_at": 1
   },
@@ -3217,7 +3258,8 @@
    "map": "contest",
    "opp": "Stubborn Altar Keepers",
    "oppId": "625bb51a-8d9e-4035-a16e-ce4eea8eb739",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T19:00:08.517Z",
    "tries_at": 0
   },
@@ -3234,7 +3276,8 @@
    "map": "eight",
    "opp": "tvojtatko",
    "oppId": "0263b3aa-28cf-469f-abd3-e07327c6e757",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T19:10:09.463Z",
    "tries_at": 1
   },
@@ -3251,7 +3294,8 @@
    "map": "yellow-brick-road",
    "opp": "tvojtatko",
    "oppId": "0263b3aa-28cf-469f-abd3-e07327c6e757",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T19:10:09.463Z",
    "tries_at": 0
   },
@@ -3268,7 +3312,8 @@
    "map": "elkring",
    "opp": "tvojtatko",
    "oppId": "0263b3aa-28cf-469f-abd3-e07327c6e757",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T19:10:09.463Z",
    "tries_at": 1
   },
@@ -3285,7 +3330,8 @@
    "map": "corners",
    "opp": "Rataturing",
    "oppId": "0a7f58a2-84f8-4c83-abdc-82d7fe4d4558",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T19:20:09.080Z",
    "tries_at": 1
   },
@@ -3338,7 +3384,8 @@
    "map": "contest",
    "opp": "Azerbaijan Technologies",
    "oppId": "7218a6a8-8211-4587-bdf8-3bae779e930e",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T19:30:09.721Z",
    "tries_at": 0
   },
@@ -3354,7 +3401,8 @@
    "map": "fracture",
    "opp": "Azerbaijan Technologies",
    "oppId": "7218a6a8-8211-4587-bdf8-3bae779e930e",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T19:30:09.721Z",
    "tries_at": 1
   },
@@ -3371,7 +3419,8 @@
    "map": "interlock",
    "opp": "Azerbaijan Technologies",
    "oppId": "7218a6a8-8211-4587-bdf8-3bae779e930e",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T19:30:09.721Z",
    "tries_at": 1
   },
@@ -3388,7 +3437,8 @@
    "map": "islands",
    "opp": "Rogue Lock Pickers",
    "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T19:40:10.999Z",
    "tries_at": 5
   },
@@ -3405,7 +3455,8 @@
    "map": "shortcut",
    "opp": "Prime Bot 007",
    "oppId": "4b09b8ff-b429-43dc-9be1-180565784e87",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T19:50:11.277Z",
    "tries_at": 0
   },
@@ -3422,7 +3473,8 @@
    "map": "gold-rush",
    "opp": "Prime Bot 007",
    "oppId": "4b09b8ff-b429-43dc-9be1-180565784e87",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T19:50:11.277Z",
    "tries_at": 1
   },
@@ -3439,7 +3491,8 @@
    "map": "pilgrimage",
    "opp": "Prime Bot 007",
    "oppId": "4b09b8ff-b429-43dc-9be1-180565784e87",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T19:50:11.277Z",
    "tries_at": 0
   },
@@ -3455,7 +3508,8 @@
    "map": "collision",
    "opp": "Hidden Lock Pickers",
    "oppId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T20:00:10.344Z",
    "tries_at": 6
   },
@@ -3472,7 +3526,8 @@
    "map": "fragment",
    "opp": "Hidden Lock Pickers",
    "oppId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T20:00:10.344Z",
    "tries_at": 2
   },
@@ -3489,7 +3544,8 @@
    "map": "stampede",
    "opp": "Hidden Lock Pickers",
    "oppId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T20:00:10.344Z",
    "tries_at": 0
   },
@@ -3506,7 +3562,8 @@
    "map": "interlock",
    "opp": "Hidden Lock Pickers",
    "oppId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T20:00:10.344Z",
    "tries_at": 2
   },
@@ -3523,7 +3580,8 @@
    "map": "fracture",
    "opp": "Hidden Lock Pickers",
    "oppId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T20:00:10.344Z",
    "tries_at": 2
   },
@@ -3540,7 +3598,8 @@
    "map": "gold-rush",
    "opp": "Lone Oski",
    "oppId": "554677ee-3b56-4fb8-a5df-28b476bfa8c1",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T20:20:12.929Z",
    "tries_at": 1
   },
@@ -3557,7 +3616,8 @@
    "map": "quadrants",
    "opp": "Lone Oski",
    "oppId": "554677ee-3b56-4fb8-a5df-28b476bfa8c1",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T20:20:12.929Z",
    "tries_at": 0
   },
@@ -3591,7 +3651,8 @@
    "map": "corners",
    "opp": "DeepSleep",
    "oppId": "c14b952b-899c-4f25-a4f8-d3a4b06cbf9a",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T20:10:09.725Z",
    "tries_at": 2
   },
@@ -3607,7 +3668,8 @@
    "map": "lanes",
    "opp": "DeepSleep",
    "oppId": "c14b952b-899c-4f25-a4f8-d3a4b06cbf9a",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T20:10:09.725Z",
    "tries_at": 2
   },
@@ -3624,7 +3686,8 @@
    "map": "gold-rush",
    "opp": "DeepSleep",
    "oppId": "c14b952b-899c-4f25-a4f8-d3a4b06cbf9a",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T20:10:09.725Z",
    "tries_at": 1
   },
@@ -3640,7 +3703,8 @@
    "map": "yellow-brick-road",
    "opp": "eclipsed Sunlight",
    "oppId": "dba8d35f-fd1d-432d-8ba5-9f076cb3dcac",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T20:40:10.182Z",
    "tries_at": 0
   },
@@ -3657,7 +3721,8 @@
    "map": "fragment",
    "opp": "Patient Gem Thieves",
    "oppId": "cfd44d0a-4d7b-42db-a1e6-e04ff397f391",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T20:30:13.466Z",
    "tries_at": 3
   },
@@ -3674,7 +3739,8 @@
    "map": "the-farm",
    "opp": "Patient Gem Thieves",
    "oppId": "cfd44d0a-4d7b-42db-a1e6-e04ff397f391",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T20:30:13.466Z",
    "tries_at": 0
   },
@@ -3691,7 +3757,8 @@
    "map": "gold-rush",
    "opp": "Patient Gem Thieves",
    "oppId": "cfd44d0a-4d7b-42db-a1e6-e04ff397f391",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T20:30:13.466Z",
    "tries_at": 1
   },
@@ -3708,7 +3775,8 @@
    "map": "quadrants",
    "opp": "Kvantai",
    "oppId": "0580c098-a7c9-46d7-b414-bf39c02c3dcc",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T20:50:10.904Z",
    "tries_at": 0
   },
@@ -3724,7 +3792,8 @@
    "map": "pilgrimage",
    "opp": "777",
    "oppId": "1158c8e5-3ab7-47da-9a7a-344e175243d0",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T21:00:10.929Z",
    "tries_at": 1
   },
@@ -3741,7 +3810,8 @@
    "map": "fracture",
    "opp": "meowest",
    "oppId": "2aa08e1e-f986-4c2a-a15f-e10b10f159ba",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T21:20:10.858Z",
    "tries_at": 3
   },
@@ -3758,7 +3828,8 @@
    "map": "interlock",
    "opp": "meowest",
    "oppId": "2aa08e1e-f986-4c2a-a15f-e10b10f159ba",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T21:20:10.858Z",
    "tries_at": 2
   },
@@ -3774,7 +3845,8 @@
    "map": "concentrated-wealth",
    "opp": "Pikachu",
    "oppId": "dc24ee25-0f21-4353-8ebf-1ce5a82e22bb",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T21:10:08.566Z",
    "tries_at": 3
   },
@@ -3791,7 +3863,8 @@
    "map": "the-farm",
    "opp": "Pikachu",
    "oppId": "dc24ee25-0f21-4353-8ebf-1ce5a82e22bb",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T21:10:08.566Z",
    "tries_at": 0
   },
@@ -3807,7 +3880,8 @@
    "map": "fracture",
    "opp": "Pikachu",
    "oppId": "dc24ee25-0f21-4353-8ebf-1ce5a82e22bb",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T21:10:08.566Z",
    "tries_at": 3
   },
@@ -3824,7 +3898,8 @@
    "map": "yellow-brick-road",
    "opp": "Pikachu",
    "oppId": "dc24ee25-0f21-4353-8ebf-1ce5a82e22bb",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T21:10:08.566Z",
    "tries_at": 0
   },
@@ -3841,7 +3916,8 @@
    "map": "gold-rush",
    "opp": "Rogue Lock Pickers",
    "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T22:30:11.149Z",
    "tries_at": 1
   },
@@ -3857,7 +3933,8 @@
    "map": "rows",
    "opp": "Turbo Bush Campers",
    "oppId": "b2981f3c-2006-4307-b745-45086626336b",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T22:20:11.555Z",
    "tries_at": 0
   },
@@ -3874,7 +3951,8 @@
    "map": "gold-rush",
    "opp": "Turbo Bush Campers",
    "oppId": "b2981f3c-2006-4307-b745-45086626336b",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T22:20:11.555Z",
    "tries_at": 1
   },
@@ -3891,7 +3969,8 @@
    "map": "corners",
    "opp": "Turbo Bush Campers",
    "oppId": "b2981f3c-2006-4307-b745-45086626336b",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T22:20:11.555Z",
    "tries_at": 3
   },
@@ -3907,7 +3986,8 @@
    "map": "fracture",
    "opp": "What Are We Doing",
    "oppId": "1a73e547-36f0-42df-aba5-698de2d22685",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T22:10:10.068Z",
    "tries_at": 3
   },
@@ -3923,7 +4003,8 @@
    "map": "concentrated-wealth",
    "opp": "B-Team",
    "oppId": "e39c3d57-1813-4a18-a7e7-2b1df6bb3594",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T22:00:11.532Z",
    "tries_at": 3
   },
@@ -3939,7 +4020,8 @@
    "map": "fracture",
    "opp": "B-Team",
    "oppId": "e39c3d57-1813-4a18-a7e7-2b1df6bb3594",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T22:00:11.532Z",
    "tries_at": 3
   },
@@ -3956,7 +4038,8 @@
    "map": "packs",
    "opp": "vc?",
    "oppId": "910ccbab-531b-4efa-a223-0335a686ad83",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T21:50:14.541Z",
    "tries_at": 1
   },
@@ -3973,7 +4056,8 @@
    "map": "contest",
    "opp": "vc?",
    "oppId": "910ccbab-531b-4efa-a223-0335a686ad83",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T21:50:14.541Z",
    "tries_at": 0
   },
@@ -3989,7 +4073,8 @@
    "map": "ambush",
    "opp": "SilverBullet",
    "oppId": "58e98a11-6404-4f00-83f2-3943c3b72e94",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T21:30:09.967Z",
    "tries_at": 3
   },
@@ -4006,7 +4091,8 @@
    "map": "lanes",
    "opp": "SilverBullet",
    "oppId": "58e98a11-6404-4f00-83f2-3943c3b72e94",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T21:30:09.967Z",
    "tries_at": 2
   },
@@ -4023,7 +4109,8 @@
    "map": "starfish",
    "opp": "SilverBullet",
    "oppId": "58e98a11-6404-4f00-83f2-3943c3b72e94",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T21:30:09.967Z",
    "tries_at": 1
   },
@@ -4040,7 +4127,8 @@
    "map": "contest",
    "opp": "SilverBullet",
    "oppId": "58e98a11-6404-4f00-83f2-3943c3b72e94",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T21:30:09.967Z",
    "tries_at": 0
   },
@@ -4057,7 +4145,8 @@
    "map": "split",
    "opp": "SilverBullet",
    "oppId": "58e98a11-6404-4f00-83f2-3943c3b72e94",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 9,
    "time": "2026-10-20T21:30:09.966Z",
    "tries_at": 0
   }
@@ -4274,6 +4363,15 @@
    "reason": "ladder loss since the last upload",
    "time": "2026-10-20T17:44:40Z",
    "version": 1
+  },
+  {
+   "bot": "lg-v9",
+   "host": "DESKTOP-QVEMEEE",
+   "ok": true,
+   "output": "Uploading D:\\Code\\battlecode\\bots\\lg-v9 (136787 bytes)...\nSubmitted bot version 12. View submissions at https://2026a.battlecode.co.uk/game/submissions\nA newer version of cambc is available for windows-x64. Download: https://2026a.battlecode.co.uk/game/download\nIf installed with pip, run `python -m ",
+   "reason": "ladder loss since the last upload",
+   "time": "2026-10-21T14:47:07Z",
+   "version": 9
   }
  ],
  "top": [
