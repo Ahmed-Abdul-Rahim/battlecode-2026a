@@ -760,6 +760,33 @@
    },
    "status": "queued",
    "title": "Camp value: gems + gold"
+  },
+  {
+   "added": "2026-10-21T15:20:12Z",
+   "area": "infra",
+   "id": 41,
+   "notes": "Neutrality check for the bigger theta and second knob block.",
+   "results": {},
+   "spec": {
+    "ref": "origin/feat/passive-aware"
+   },
+   "status": "queued",
+   "title": "theta 169 + knob2 block, all off (must equal live)"
+  },
+  {
+   "added": "2026-10-21T15:20:12Z",
+   "area": "passives",
+   "id": 42,
+   "notes": "",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "PASSIVE_AWARE": 1
+    },
+    "ref": "origin/feat/passive-aware"
+   },
+   "status": "queued",
+   "title": "Passive-aware play (per passive / kind)"
   }
  ]
 }
