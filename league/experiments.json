@@ -467,10 +467,24 @@
   {
    "added": "2026-10-21T15:12:04Z",
    "area": "farming",
-   "finished": null,
+   "finished": "2026-10-21T15:36:54Z",
    "id": 18,
-   "notes": "Re-screen passed; full pool + h2h running by hand in battlecode-combat.",
+   "notes": "Merged together with #19 as CAMP_FEASIBLE 24 (default on).",
    "results": {
+    "full": {
+     "h2h": 0.557,
+     "h2h_games": 70,
+     "live": {
+      "fitness": 0.351,
+      "games": 910,
+      "win": 0.592
+     },
+     "variant": {
+      "fitness": 0.504,
+      "games": 910,
+      "win": 0.705
+     }
+    },
     "screen": {
      "live": {
       "fitness": 0.411,
@@ -489,16 +503,30 @@
      "CAMP_FEASIBLE": 8
     }
    },
-   "status": "full",
+   "status": "merged",
    "title": "PvE assist within 4 tiles"
   },
   {
    "added": "2026-10-21T15:12:04Z",
    "area": "economy",
-   "finished": null,
+   "finished": "2026-10-21T15:36:54Z",
    "id": 19,
-   "notes": "Re-screen passed; full check of PvE + altar (CAMP_FEASIBLE 24) running.",
+   "notes": "Measured with PvE assist (CAMP_FEASIBLE 24): best of the batch; merged as the default.",
    "results": {
+    "full": {
+     "h2h": 0.543,
+     "h2h_games": 70,
+     "live": {
+      "fitness": 0.351,
+      "games": 910,
+      "win": 0.592
+     },
+     "variant": {
+      "fitness": 0.518,
+      "games": 910,
+      "win": 0.719
+     }
+    },
     "screen": {
      "live": {
       "fitness": 0.411,
@@ -517,7 +545,7 @@
      "CAMP_FEASIBLE": 16
     }
    },
-   "status": "full",
+   "status": "merged",
    "title": "Deliver when an altar is on the way"
   },
   {
