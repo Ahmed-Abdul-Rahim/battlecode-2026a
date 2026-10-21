@@ -11309,6 +11309,9 @@
   "fragment": {
    "DESKTOP-QVEMEEE": 4
   },
+  "gem-fields": {
+   "DESKTOP-QVEMEEE": 3
+  },
   "gold-rush": {
    "DESKTOP-QVEMEEE": 1
   },
@@ -11364,7 +11367,7 @@
    "DESKTOP-QVEMEEE": 3
   },
   "the-farm": {
-   "DESKTOP-QVEMEEE": 2
+   "DESKTOP-QVEMEEE": 3
   },
   "yellow-brick-road": {
    "DESKTOP-QVEMEEE": 1
