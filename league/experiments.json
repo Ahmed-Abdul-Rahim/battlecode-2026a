@@ -867,6 +867,8 @@
   {
    "added": "2026-10-21T15:30:46Z",
    "area": "combat",
+   "claimed": "2026-10-21T17:13:30Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 45,
    "notes": "error: ValueError(\"needs rebase: origin/feat/stun-upgrade conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 033c48b0b4cb7c383c515328e6ee9f Re-run: the branch conflicted with the live code after #43 (fixed: #42/#44 are now plain switches on live, the stun-upgrade branch is merged with live).",
    "results": {},
@@ -877,7 +879,7 @@
     },
     "ref": "origin/feat/stun-upgrade"
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Stun lock (no stun on a stunned unit)"
   },
   {
