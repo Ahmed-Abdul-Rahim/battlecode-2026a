@@ -787,6 +787,8 @@
   {
    "added": "2026-10-21T15:12:04Z",
    "area": "teamwork",
+   "claimed": "2026-10-21T16:17:42Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 21,
    "notes": "",
    "results": {},
@@ -795,7 +797,7 @@
      "FIGHT_V6": 2
     }
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Join team fights from 50% hp"
   },
   {
