@@ -31,6 +31,13 @@ case "$cmd" in
     tail -F runs/league/league.log ;;
   once)
     "$PY" -u harness/league.py run --cycles 1 "$@" ;;
+  experiments)
+    wt="$(cd .. && pwd)/battlecode-autopilot"
+    [ -d "$wt" ] || { git fetch -q origin && git worktree add -B autopilot "$wt" origin/league; }
+    mkdir -p "$wt/runs/league"
+    py="$(pwd)/$PY"
+    (cd "$wt" && nohup "$py" -u harness/experiments.py run --forever >> runs/league/experiments.log 2>&1 &)
+    echo "experiment autopilot started in $wt (log: runs/league/experiments.log)" ;;
   status|review|sync|maps|bench|submit|replay)
     "$PY" harness/league.py "$cmd" "$@" ;;
   *)

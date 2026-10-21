@@ -1,0 +1,765 @@
+{
+ "experiments": [
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "combat",
+   "finished": "2026-10-21T00:00:00Z",
+   "id": 1,
+   "notes": "40% fewer deaths but farmed far less.",
+   "results": {
+    "full": {
+     "h2h": 0.238,
+     "live": {
+      "fitness": 0.238,
+      "win": 0.516
+     },
+     "variant": {
+      "fitness": 0.188,
+      "win": 0.434
+     }
+    }
+   },
+   "spec": {
+    "knobs": {
+     "COMBAT_FSM": 15
+    }
+   },
+   "status": "rejected",
+   "title": "Full combat state machine"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "combat",
+   "finished": "2026-10-21T00:00:00Z",
+   "id": 2,
+   "notes": "More deaths and fewer gems.",
+   "results": {
+    "screen": {
+     "live": {
+      "fitness": 0.333,
+      "win": 0.571
+     },
+     "variant": {
+      "fitness": 0.173,
+      "win": 0.434
+     }
+    }
+   },
+   "spec": {
+    "knobs": {
+     "COMBAT_FSM": 47
+    }
+   },
+   "status": "rejected",
+   "title": "FSM + step back instead of walking home"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "teamwork",
+   "finished": "2026-10-21T00:00:00Z",
+   "id": 3,
+   "notes": "Travelling to help abandons camps.",
+   "results": {
+    "screen": {
+     "live": {
+      "fitness": 0.333,
+      "win": 0.571
+     },
+     "variant": {
+      "fitness": 0.293,
+      "win": 0.511
+     }
+    }
+   },
+   "spec": {
+    "knobs": {
+     "COMBAT_FSM": 23
+    }
+   },
+   "status": "rejected",
+   "title": "FSM + help only within 4 turns"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "combat",
+   "finished": "2026-10-21T00:00:00Z",
+   "id": 4,
+   "notes": "",
+   "results": {
+    "full": {
+     "h2h": 0.619,
+     "live": {
+      "fitness": 0.229,
+      "win": 0.507
+     },
+     "variant": {
+      "fitness": 0.239,
+      "win": 0.518
+     }
+    }
+   },
+   "spec": {
+    "knobs": {
+     "COMBAT_FSM": 65
+    }
+   },
+   "status": "merged",
+   "title": "Hysteresis on fight-or-flee"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "teamwork",
+   "finished": "2026-10-21T00:00:00Z",
+   "id": 5,
+   "notes": "",
+   "results": {
+    "full": {
+     "h2h": 0.619,
+     "live": {
+      "fitness": 0.224,
+      "win": 0.504
+     },
+     "variant": {
+      "fitness": 0.248,
+      "win": 0.526
+     }
+    }
+   },
+   "spec": {
+    "knobs": {
+     "COMBAT_FSM": 193
+    }
+   },
+   "status": "merged",
+   "title": "Help calls only on my way"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "rules",
+   "finished": "2026-10-21T00:00:00Z",
+   "id": 6,
+   "notes": "",
+   "results": {
+    "full": {
+     "h2h": 0.524,
+     "live": {
+      "fitness": 0.359,
+      "win": 0.573
+     },
+     "variant": {
+      "fitness": 0.359,
+      "win": 0.592
+     }
+    }
+   },
+   "spec": {
+    "ref": "3aa7599"
+   },
+   "status": "merged",
+   "title": "Engine 1.0 rules: Heart of Ruin, Golem, live stats, live own damage"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "teamwork",
+   "finished": "2026-10-21T00:00:00Z",
+   "id": 7,
+   "notes": "Removed from the 8 bytes (layout v3).",
+   "results": {
+    "screen": {
+     "live": {
+      "fitness": 0.347,
+      "win": 0.538
+     },
+     "variant": {
+      "fitness": 0.313,
+      "win": 0.516
+     }
+    }
+   },
+   "spec": {
+    "knobs": {
+     "COMBAT_FSM": 197
+    }
+   },
+   "status": "rejected",
+   "title": "Help-call intents without the state machine"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "teamwork",
+   "finished": "2026-10-21T00:00:00Z",
+   "id": 8,
+   "notes": "Tie on the full pool; merged by decision (cleaner layout v3).",
+   "results": {
+    "full": {
+     "h2h": 0.469,
+     "live": {
+      "fitness": 0.298,
+      "win": 0.552
+     },
+     "variant": {
+      "fitness": 0.307,
+      "win": 0.562
+     }
+    }
+   },
+   "spec": {
+    "knobs": {
+     "COMBAT_FSM": 195
+    }
+   },
+   "status": "merged",
+   "title": "Kill assist: finish hurt enemies a teammate reports within 4"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "combat",
+   "finished": "2026-10-21T00:00:00Z",
+   "id": 9,
+   "notes": "Fewer gems.",
+   "results": {
+    "screen": {
+     "live": {
+      "fitness": 0.409,
+      "win": 0.577
+     },
+     "variant": {
+      "fitness": 0.38,
+      "win": 0.571
+     }
+    }
+   },
+   "spec": {
+    "knobs": {
+     "COMBAT_FSM": 203
+    }
+   },
+   "status": "rejected",
+   "title": "Stun-then-burst combo order"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "combat",
+   "finished": "2026-10-21T00:00:00Z",
+   "id": 10,
+   "notes": "No effect: rarely triggers.",
+   "results": {
+    "screen": {
+     "live": {
+      "fitness": 0.409,
+      "win": 0.577
+     },
+     "variant": {
+      "fitness": 0.408,
+      "win": 0.577
+     }
+    }
+   },
+   "spec": {
+    "knobs": {
+     "COMBAT_FSM": 211
+    }
+   },
+   "status": "rejected",
+   "title": "Melee dash-in"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "passives",
+   "finished": "2026-10-21T00:00:00Z",
+   "id": 11,
+   "notes": "No effect: Marcella is never drafted.",
+   "results": {
+    "screen": {
+     "live": {
+      "fitness": 0.409,
+      "win": 0.577
+     },
+     "variant": {
+      "fitness": 0.409,
+      "win": 0.577
+     }
+    }
+   },
+   "spec": {
+    "knobs": {
+     "COMBAT_FSM": 227
+    }
+   },
+   "status": "rejected",
+   "title": "Marcella delivers smaller bags"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "passives",
+   "finished": "2026-10-21T00:00:00Z",
+   "id": 12,
+   "notes": "",
+   "results": {
+    "screen": {
+     "live": {
+      "fitness": 0.409,
+      "win": 0.577
+     },
+     "variant": {
+      "fitness": 0.289,
+      "win": 0.478
+     }
+    }
+   },
+   "spec": {
+    "knobs": {
+     "PASSIVE_ROLES": 1
+    }
+   },
+   "status": "rejected",
+   "title": "PASSIVE_ROLES (Prism/Vesper play to passive)"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "farming",
+   "finished": "2026-10-21T00:00:00Z",
+   "id": 13,
+   "notes": "Being picky about camps starves the economy.",
+   "results": {
+    "screen": {
+     "live": {
+      "fitness": 0.374,
+      "win": 0.544
+     },
+     "variant": {
+      "fitness": 0.162,
+      "win": 0.346
+     }
+    }
+   },
+   "spec": {
+    "knobs": {
+     "CAMP_FEASIBLE": 1
+    }
+   },
+   "status": "rejected",
+   "title": "Camp survival check"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "farming",
+   "finished": "2026-10-21T00:00:00Z",
+   "id": 14,
+   "notes": "",
+   "results": {
+    "screen": {
+     "live": {
+      "fitness": 0.374,
+      "win": 0.544
+     },
+     "variant": {
+      "fitness": 0.123,
+      "win": 0.341
+     }
+    }
+   },
+   "spec": {
+    "knobs": {
+     "CAMP_FEASIBLE": 2
+    }
+   },
+   "status": "rejected",
+   "title": "Early-game camp ramp (quick camps first)"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "economy",
+   "finished": "2026-10-21T00:00:00Z",
+   "id": 15,
+   "notes": "",
+   "results": {
+    "screen": {
+     "live": {
+      "fitness": 0.374,
+      "win": 0.544
+     },
+     "variant": {
+      "fitness": 0.325,
+      "win": 0.505
+     }
+    }
+   },
+   "spec": {
+    "knobs": {
+     "TRIBUTE_MAX_GEMS": 60,
+     "TRIBUTE_MIN_GEMS": 10
+    }
+   },
+   "status": "rejected",
+   "title": "Bags 10/60"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "economy",
+   "finished": null,
+   "id": 16,
+   "notes": "Screens: bags 6/42 alone 0.571/0.560, en-route alone 0.582. Full check running.",
+   "results": {
+    "screen": {
+     "live": {
+      "fitness": 0.369,
+      "win": 0.549
+     },
+     "variant": {
+      "fitness": 0.415,
+      "win": 0.582
+     }
+    }
+   },
+   "spec": {
+    "knobs": {
+     "EN_ROUTE": 2,
+     "TRIBUTE_MAX_GEMS": 42,
+     "TRIBUTE_MIN_GEMS": 6
+    }
+   },
+   "status": "full",
+   "title": "Bags 6/42 + wide en-route and free money"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "farming",
+   "finished": null,
+   "id": 17,
+   "notes": "First screen invalid (survival check was on too); re-screening.",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "CAMP_FEASIBLE": 4
+    }
+   },
+   "status": "screening",
+   "title": "Live camp HP for clear time"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "farming",
+   "finished": null,
+   "id": 18,
+   "notes": "Re-screening.",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "CAMP_FEASIBLE": 8
+    }
+   },
+   "status": "screening",
+   "title": "PvE assist within 4 tiles"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "economy",
+   "finished": null,
+   "id": 19,
+   "notes": "Re-screening.",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "CAMP_FEASIBLE": 16
+    }
+   },
+   "status": "screening",
+   "title": "Deliver when an altar is on the way"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "teamwork",
+   "id": 20,
+   "notes": "",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "FIGHT_V6": 1
+    }
+   },
+   "status": "queued",
+   "title": "Focus the weakest enemy and call it"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "teamwork",
+   "id": 21,
+   "notes": "",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "FIGHT_V6": 2
+    }
+   },
+   "status": "queued",
+   "title": "Join team fights from 50% hp"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "combat",
+   "id": 22,
+   "notes": "",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "FIGHT_V6": 4
+    }
+   },
+   "status": "queued",
+   "title": "Finish kills / fight when outnumbering"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "combat",
+   "id": 23,
+   "notes": "",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "FIGHT_V6": 8
+    }
+   },
+   "status": "queued",
+   "title": "Last stand instead of a doomed retreat"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "combat",
+   "id": 24,
+   "notes": "",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "FIGHT_V6": 15
+    }
+   },
+   "status": "queued",
+   "title": "All FIGHT_V6 behaviours"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "teamwork",
+   "id": 25,
+   "notes": "",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "TEAM_FIGHT": 1
+    }
+   },
+   "status": "queued",
+   "title": "Team-vs-team fight maths (Lanchester)"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "combat",
+   "id": 26,
+   "notes": "",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "COMBAT_SEARCH": 1
+    }
+   },
+   "status": "queued",
+   "title": "Combat search (simulate fight plans)"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "combat",
+   "id": 27,
+   "notes": "",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "STUN_THREAT": 1
+    }
+   },
+   "status": "queued",
+   "title": "Value stun kits on a 6-round horizon"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "endgame",
+   "id": 28,
+   "notes": "",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "HUNT_MODE": 2
+    }
+   },
+   "status": "queued",
+   "title": "Endgame hunt when behind / enemy near win"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "endgame",
+   "id": 29,
+   "notes": "",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "ENDGAME_BANK": 1
+    }
+   },
+   "status": "queued",
+   "title": "Deliver everything from round 1850"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "farming",
+   "id": 30,
+   "notes": "",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "CAMP_SAFE": 1
+    }
+   },
+   "status": "queued",
+   "title": "Leave awake camps while escape works"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "farming",
+   "id": 31,
+   "notes": "",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "CAMP_SAFE": 2
+    }
+   },
+   "status": "queued",
+   "title": "Don't wake a group alone that kills you"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "farming",
+   "id": 32,
+   "notes": "",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "CAMP_SAFE": 3
+    }
+   },
+   "status": "queued",
+   "title": "Both camp-safety rules"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "safety",
+   "id": 33,
+   "notes": "",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "RECALL_SAFE": 2
+    }
+   },
+   "status": "queued",
+   "title": "Recall only when nothing can reach us"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "economy",
+   "id": 34,
+   "notes": "",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "ALTAR_LOCK": 1
+    }
+   },
+   "status": "queued",
+   "title": "Carry and place altar locks"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "economy",
+   "id": 35,
+   "notes": "",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "SHOP_FIRST": 1
+    }
+   },
+   "status": "queued",
+   "title": "Shop before banking"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "draft",
+   "id": 36,
+   "notes": "",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "DRAFT_BEST": 1
+    }
+   },
+   "status": "queued",
+   "title": "Draft like the best ladder bot"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "draft",
+   "id": 37,
+   "notes": "",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "TAVI_META": 0
+    }
+   },
+   "status": "queued",
+   "title": "Map-scorer draft instead of the fixed meta"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "farming",
+   "id": 38,
+   "notes": "",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "REMOTE_FARMER": 1
+    }
+   },
+   "status": "queued",
+   "title": "Last slot farms far, quiet camps"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "farming",
+   "id": 39,
+   "notes": "",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "VALUE_PROFILE": 1
+    }
+   },
+   "status": "queued",
+   "title": "Camp value: gems + gold/10"
+  },
+  {
+   "added": "2026-10-21T15:12:04Z",
+   "area": "farming",
+   "id": 40,
+   "notes": "",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "VALUE_PROFILE": 5
+    }
+   },
+   "status": "queued",
+   "title": "Camp value: gems + gold"
+  }
+ ]
+}

@@ -6,7 +6,7 @@
 #   scripts\train.ps1 once [--no-push]               # one cycle in the foreground
 param(
     [Parameter(Position = 0)]
-    [ValidateSet("start", "stop", "status", "logs", "review", "sync", "maps", "bench", "submit", "replay", "once")]
+    [ValidateSet("start", "stop", "status", "logs", "review", "sync", "maps", "bench", "submit", "replay", "experiments", "once")]
     [string]$cmd = "status",
     [Parameter(ValueFromRemainingArguments = $true)]
     [string[]]$rest = @()
@@ -47,5 +47,28 @@ switch ($cmd) {
         if (Test-Path $log) { Get-Content $log -Wait -Tail 40 } else { Write-Host "no log yet: start the league first" }
     }
     "once" { & $py -X utf8 -u $league run --cycles 1 @rest }
+    "experiments" {
+        # The autopilot needs its own checkout: the daemon rewrites bots/main and pulls mid-run.
+        $wt = Join-Path (Split-Path -Parent $root) "battlecode-autopilot"
+        if (-not (Test-Path $wt)) {
+            git -C $root fetch -q origin
+            git -C $root worktree add -B autopilot $wt origin/league
+        }
+        $x = Join-Path $wt "harness\experiments.py"
+        if ($rest -contains "list") { & $py -X utf8 $x list; return }
+        if ($rest -contains "stop") {
+            Get-CimInstance Win32_Process -Filter "Name='python.exe'" |
+                Where-Object { $_.CommandLine -match 'experiments\.py.+run' } |
+                ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue; "stopped pid $($_.ProcessId)" }
+            return
+        }
+        New-Item -ItemType Directory -Force (Join-Path $wt "runs\league") | Out-Null
+        $env:PATH = (Join-Path $root ".venv\Scripts") + ";" + $env:PATH
+        Start-Process -WindowStyle Hidden -FilePath $py -WorkingDirectory $wt `
+            -ArgumentList @("-X", "utf8", "-u", $x, "run", "--forever") `
+            -RedirectStandardOutput (Join-Path $wt "runs\league\experiments.log") `
+            -RedirectStandardError (Join-Path $wt "runs\league\experiments.err")
+        Write-Host "experiment autopilot started in $wt (log: runs\league\experiments.log)" -ForegroundColor Green
+    }
     default { & $py -X utf8 $league $cmd @rest }
 }
