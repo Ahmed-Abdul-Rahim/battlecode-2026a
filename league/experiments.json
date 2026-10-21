@@ -849,10 +849,51 @@
    "added": "2026-10-21T17:03:37Z",
    "area": "learning",
    "claimed": "2026-10-21T17:10:49Z",
+   "finished": "2026-10-21T17:35:34Z",
    "host": "Abdul-Rahim",
    "id": 49,
    "notes": "Offline RL on 6 shards; train agreement 0.826.",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.429,
+     "h2h_games": 70,
+     "live": {
+      "deaths": 23.72,
+      "fitness": 0.437,
+      "games": 910,
+      "gem_margin": 0.116,
+      "win": 0.645
+     },
+     "variant": {
+      "deaths": 23.23,
+      "fitness": 0.404,
+      "games": 910,
+      "gem_margin": 0.082,
+      "win": 0.615
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 16.73,
+      "fitness": 0.388,
+      "games": 182,
+      "gem_margin": 0.023,
+      "win": 0.549
+     },
+     "paired": {
+      "mean": -0.0157,
+      "pairs": 182,
+      "se": 0.0518
+     },
+     "variant": {
+      "deaths": 15.39,
+      "fitness": 0.372,
+      "games": 182,
+      "gem_margin": 0.017,
+      "win": 0.522
+     }
+    }
+   },
    "spec": {
     "files": {
      "bots/main/src/weights/router.bin": "ml-data:candidates/router-00007.bin"
@@ -861,7 +902,7 @@
      "ROUTER": 1
     }
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "Learned router #7 (933738 rows, AWR)"
   },
   {
