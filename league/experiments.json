@@ -1458,16 +1458,57 @@
    "added": "2026-10-21T15:12:04Z",
    "area": "combat",
    "claimed": "2026-10-21T18:28:20Z",
+   "finished": "2026-10-21T19:11:41Z",
    "host": "muhammad-usman-Inspiron-14-5410-2-in-1",
    "id": 26,
    "notes": "",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.5,
+     "h2h_games": 76,
+     "live": {
+      "deaths": 22.73,
+      "fitness": 0.456,
+      "games": 988,
+      "gem_margin": 0.131,
+      "win": 0.651
+     },
+     "variant": {
+      "deaths": 22.8,
+      "fitness": 0.444,
+      "games": 988,
+      "gem_margin": 0.117,
+      "win": 0.643
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 16.52,
+      "fitness": 0.39,
+      "games": 182,
+      "gem_margin": -0.0,
+      "win": 0.555
+     },
+     "paired": {
+      "mean": -0.0003,
+      "pairs": 182,
+      "se": 0.0426
+     },
+     "variant": {
+      "deaths": 15.96,
+      "fitness": 0.389,
+      "games": 182,
+      "gem_margin": 0.021,
+      "win": 0.544
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "COMBAT_SEARCH": 1
     }
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "Combat search (simulate fight plans)"
   },
   {
