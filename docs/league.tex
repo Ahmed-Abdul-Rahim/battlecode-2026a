@@ -74,6 +74,27 @@ starting. \textbf{After a change to \f{harness/}} (the Python), restart: \f{stop
 \textbf{More PCs = faster, not linearly:} an 8-core laptop adds about half of what a 16-core desktop
 does, and each experiment still runs whole on one PC; the queue just drains faster.
 
+\textbf{Try an idea you found} (a gap in a replay, a new rule). Queue it; every PC's autopilot picks
+it up, and the result lands in the registry (Appendix~\ref{sec:registry}):
+\begin{lstlisting}
+# an existing switch: just a value
+scripts\train.ps1 experiments add --title "Hunt carriers late" --area teamwork --knobs HUNT_MODE=2
+
+# new code: write it behind a new knob2 switch on a branch, push the branch, then
+git switch -c feat/my-idea      (code, cargo test, then: git push -u origin feat/my-idea)
+scripts\train.ps1 experiments add --title "My idea" --area combat --ref origin/feat/my-idea --knobs MY_IDEA=1
+
+scripts\train.ps1 experiments add ... --first   # test it before everything else in the queue
+scripts\train.ps1 experiments list              # queue and results
+\end{lstlisting}
+The branch is merged onto the live code before every test, so keep it small; if it conflicts, the
+command says ``needs rebase'' (run \f{git merge origin/league} on the branch, push, add again).
+
+\textbf{Experiments run by themselves but do not merge by themselves.} A winner shows
+\f{passed} in \f{experiments list}. To ship it: set its switch's default in
+\f{crates/bc-core/src/memory.rs} (and merge its branch if it has one), run \f{python -m bctools.sync},
+\f{cargo test}, commit and push to \f{league}. Every PC picks it up; the next upload carries it.
+
 \textbf{2. See how the latest model is doing:}
 \begin{lstlisting}
 scripts\train.ps1 status        # version, win rate per top team, losses

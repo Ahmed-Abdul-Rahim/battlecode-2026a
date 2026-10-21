@@ -75,11 +75,25 @@ def test_paired_difference_matches_games():
         return R(m, a, b, a if win_a else b, ga, gb, 100, 0, 0, "", "")
 
     res = [
-        g("m1", "main", "opp", True, 10, 0), g("m1", "opp", "main", False, 0, 10),
-        g("m1", "v", "opp", True, 10, 0), g("m1", "opp", "v", True, 10, 0),  # v loses side b
+        g("m1", "main", "opp", True, 10, 0),
+        g("m1", "opp", "main", False, 0, 10),
+        g("m1", "v", "opp", True, 10, 0),
+        g("m1", "opp", "v", True, 10, 0),  # v loses side b
     ]
     p = X.paired(res, "main", "v")
     assert p["pairs"] == 2 and p["mean"] < 0 and p["se"] > 0
+
+
+def test_two_pcs_adding_the_same_new_id_keep_both():
+    import copy
+
+    base = {"experiments": []}
+    X.add(base, "old", "x", knobs={"A": 1})
+    ours, up = copy.deepcopy(base), copy.deepcopy(base)
+    X.add(ours, "mine", "x", knobs={"B": 1})
+    X.add(up, "theirs", "x", knobs={"C": 1})
+    m = X.L.merge_experiments(ours, up)["experiments"]
+    assert [(e["id"], e["title"]) for e in m] == [(1, "old"), (2, "theirs"), (3, "mine")]
 
 
 def test_tex_escapes_backslashes_and_braces():

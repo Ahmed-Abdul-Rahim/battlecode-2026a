@@ -58,6 +58,10 @@ switch ($cmd) {
         }
         $x = Join-Path $wt "harness\experiments.py"
         if ($rest -contains "list") { & $py -X utf8 $x list; return }
+        if ($rest.Count -gt 0 -and $rest[0] -eq "add") {
+            # Queue an idea (pushed, so every PC's autopilot sees it). See docs/league.pdf.
+            Push-Location $wt; & $py -X utf8 $x @rest; Pop-Location; return
+        }
         if ($rest -contains "stop") {
             Get-CimInstance Win32_Process -Filter "Name='python.exe'" |
                 Where-Object { $_.CommandLine -match 'experiments\.py.+run' } |

@@ -36,6 +36,11 @@ case "$cmd" in
     [ -d "$wt" ] || { git fetch -q origin && git worktree add -B autopilot "$wt" origin/league; }
     mkdir -p "$wt/runs/league"
     py="$(pwd)/$PY"
+    case "${1:-}" in
+      list) (cd "$wt" && "$py" harness/experiments.py list); exit 0 ;;
+      add) (cd "$wt" && "$py" harness/experiments.py "$@"); exit 0 ;;
+      stop) pkill -f "experiments.py run" || true; exit 0 ;;
+    esac
     (cd "$wt" && nohup "$py" -u harness/experiments.py run --forever >> runs/league/experiments.log 2>&1 &)
     echo "experiment autopilot started in $wt (log: runs/league/experiments.log)" ;;
   ml)

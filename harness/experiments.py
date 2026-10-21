@@ -347,13 +347,26 @@ def cmd_list(_: argparse.Namespace) -> int:
 
 
 def cmd_add(a: argparse.Namespace) -> int:
+    use_git = a.push and L.git_ready()
+    if use_git:
+        L.integrate(L.h2h_decider(OUT, L.load_champion()["maps"]))  # number it after the latest
     reg = load()
     knobs = dict(kv.split("=") for kv in a.knobs) if a.knobs else None
     if knobs:
         knobs = {k: int(v) for k, v in knobs.items()}
+    if a.ref:
+        merged_tree(a.ref)  # fails now ('needs rebase') rather than hours later in the queue
     e = add(reg, a.title, a.area, knobs=knobs, ref=a.ref, notes=a.notes or "")
+    if a.first:  # test it next: before the other queued experiments
+        reg["experiments"].remove(e)
+        i = next(
+            (k for k, x in enumerate(reg["experiments"]) if x["status"] == "queued"), len(reg["experiments"])
+        )
+        reg["experiments"].insert(i, e)
     save(reg)
-    print(f"queued experiment {e['id']}: {e['title']}")
+    if use_git:
+        L.publish([REGISTRY], f"league: queue experiment {e['id']} {e['title']}", L.h2h_decider(OUT, {}))
+    print(f"queued experiment {e['id']}: {e['title']}" + (" (pushed)" if use_git else " (local only)"))
     return 0
 
 
@@ -398,6 +411,8 @@ def main(argv: list[str] | None = None) -> int:
     ad.add_argument("--knobs", nargs="*", help="KNOB=value ...")
     ad.add_argument("--ref", help="git ref whose bots/main is the variant")
     ad.add_argument("--notes")
+    ad.add_argument("--first", action="store_true", help="test it before the other queued ones")
+    ad.add_argument("--no-push", dest="push", action="store_false")
     rn = sub.add_parser("run")
     rn.add_argument("--forever", action="store_true")
     rn.add_argument("--no-push", dest="push", action="store_false")

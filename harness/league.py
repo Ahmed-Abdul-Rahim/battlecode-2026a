@@ -295,8 +295,32 @@ def merge_experiments(ours: dict | None, theirs: dict | None, key: str = "experi
             return a if ra > rb else b
         return a if a.get("claimed", "~") <= b.get("claimed", "~") else b
 
-    out = [pick(mine.pop(e["id"]), e) if e["id"] in mine else e for e in theirs.get(key, [])]
-    return {**theirs, key: out + list(mine.values())}
+    def same(a: dict, b: dict) -> bool:  # the same entry, not two PCs adding the same new id
+        return (a.get("title"), a.get("kind"), a.get("added")) == (
+            b.get("title"),
+            b.get("kind"),
+            b.get("added"),
+        )
+
+    out, extra = [], []
+    for e in theirs.get(key, []):
+        m = mine.pop(e["id"], None)
+        if m is None:
+            out.append(e)
+        elif same(m, e):
+            out.append(pick(m, e))
+        else:
+            out.append(e)
+            extra.append(m)
+    extra += list(mine.values())
+    top = max((e["id"] for e in out), default=0)
+    for m in extra:
+        if any(e["id"] == m["id"] for e in out):
+            top += 1
+            m = {**m, "id": top}
+        top = max(top, m["id"])
+        out.append(m)
+    return {**theirs, key: out}
 
 
 def merge_ledger(ours: dict, theirs: dict) -> dict:
