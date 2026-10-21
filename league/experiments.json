@@ -1317,6 +1317,8 @@
   {
    "added": "2026-10-21T15:12:04Z",
    "area": "teamwork",
+   "claimed": "2026-10-21T18:14:49Z",
+   "host": "muhammad-usman-Inspiron-14-5410-2-in-1",
    "id": 25,
    "notes": "",
    "results": {},
@@ -1325,7 +1327,7 @@
      "TEAM_FIGHT": 1
     }
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Team-vs-team fight maths (Lanchester)"
   },
   {
