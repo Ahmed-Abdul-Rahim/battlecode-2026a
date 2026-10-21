@@ -24,8 +24,9 @@ def test_add_needs_exactly_one_spec_and_numbers_ids():
 
 def test_gates():
     live = {"win": 0.55, "fitness": 0.37}
-    assert X.screen_passes(live, {"win": 0.545, "fitness": 0.38})  # within slack, fitter
-    assert not X.screen_passes(live, {"win": 0.60, "fitness": 0.36})  # less fit
+    assert X.screen_passes({"pairs": 182, "mean": -0.01, "se": 0.02})  # within noise
+    assert not X.screen_passes({"pairs": 182, "mean": -0.05, "se": 0.02})  # clearly worse
+    assert not X.screen_passes({"pairs": 0, "mean": 0.0, "se": 0.0})
     assert X.full_passes(live, {"win": 0.56, "fitness": 0.38}, 0.5)
     assert not X.full_passes(live, {"win": 0.56, "fitness": 0.38}, 0.40)  # loses head-to-head
     assert not X.full_passes(live, {"win": 0.54, "fitness": 0.40}, 0.6)  # fewer wins
@@ -61,6 +62,20 @@ def test_registry_merge_keeps_progress_and_first_claim():
     assert [e["id"] for e in m] == [a["id"], b["id"], 3]
     assert m[0]["status"] == "rejected"  # finished beats claimed
     assert m[1]["host"] == "pc2"  # the earlier claim wins
+
+
+def test_paired_difference_matches_games():
+    R = X.runner.MatchResult
+
+    def g(m, a, b, win_a, ga, gb):
+        return R(m, a, b, a if win_a else b, ga, gb, 100, 0, 0, "", "")
+
+    res = [
+        g("m1", "main", "opp", True, 10, 0), g("m1", "opp", "main", False, 0, 10),
+        g("m1", "v", "opp", True, 10, 0), g("m1", "opp", "v", True, 10, 0),  # v loses side b
+    ]
+    p = X.paired(res, "main", "v")
+    assert p["pairs"] == 2 and p["mean"] < 0 and p["se"] > 0
 
 
 def test_next_queued_and_tex_escaping():

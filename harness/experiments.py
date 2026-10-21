@@ -4,7 +4,9 @@ An experiment is a knob set (`{"EN_ROUTE": 2}`) applied to a copy of bots/main, 
 whose bots/main is the variant (code changes). Every experiment goes through the same gate:
 
   screen  7 maps x every faithful mimic, both sides, variant and live bot on the same games;
-          passes if fitness >= live and win >= live - SCREEN_SLACK
+          passes unless the variant is worse by more than SCREEN_Z standard errors of the paired
+          per-game fitness difference (any code change reshuffles games through fuel use, so a
+          strict comparison on 182 games is close to a coin flip)
   full    every active map x every mimic + head-to-head against the live bot;
           passes if win >= live, fitness >= live and head-to-head >= H2H_MIN
 
@@ -37,7 +39,7 @@ from bctools import ROOT, runner
 REGISTRY = L.LEAGUE / "experiments.json"
 OUT = L.SCRATCH / "experiments"
 SCREEN_MAPS = ("contest", "lanes", "islands", "hooks", "big-world", "ambush", "expanse")
-SCREEN_SLACK = 0.01
+SCREEN_Z = 1.0
 #: A claim (status screening/full with a host) older than this is free for any PC again.
 CLAIM_TTL = 6 * 3600
 H2H_MIN = 0.45
@@ -160,8 +162,27 @@ def stats(results: list[runner.MatchResult], bot: str) -> dict:
     }
 
 
-def screen_passes(live: dict, var: dict) -> bool:
-    return var["fitness"] >= live["fitness"] and var["win"] >= live["win"] - SCREEN_SLACK
+def game_fitness(r: runner.MatchResult, bot: str) -> float:
+    return L.fitness([r], bot)[0]
+
+
+def paired(results: list[runner.MatchResult], live: str, var: str) -> dict:
+    """Mean and standard error of the per-game fitness difference variant - live, over games
+    with the same map, opponent and side."""
+    key = {}
+    for r in results:
+        for bot, opp, side in ((r.bot_a, r.bot_b, "a"), (r.bot_b, r.bot_a, "b")):
+            if bot in (live, var):
+                key[(bot, r.map, opp, side)] = game_fitness(r, bot)
+    d = [key[(var, m, o, s)] - f for (b, m, o, s), f in key.items() if b == live and (var, m, o, s) in key]
+    n = len(d)
+    mean = sum(d) / n if n else 0.0
+    var_d = sum((x - mean) ** 2 for x in d) / (n - 1) if n > 1 else 0.0
+    return {"pairs": n, "mean": round(mean, 4), "se": round((var_d / n) ** 0.5 if n else 0.0, 4)}
+
+
+def screen_passes(p: dict) -> bool:
+    return p["pairs"] > 0 and p["mean"] >= -SCREEN_Z * p["se"]
 
 
 def full_passes(live: dict, var: dict, h2h: float) -> bool:
@@ -181,12 +202,13 @@ def evaluate(e: dict, reg: dict, push: bool) -> dict:
     screen = [p for n, p in maps.items() if n in SCREEN_MAPS]
     res = L.play(["main", var], faithful, screen, out / "screen")
     live, mine = stats(res, "main"), stats(res, var)
-    e["results"]["screen"] = {"live": live, "variant": mine}
-    if not screen_passes(live, mine):
+    pr = paired(res, "main", var)
+    e["results"]["screen"] = {"live": live, "variant": mine, "paired": pr}
+    if not screen_passes(pr):
         e["status"] = "rejected"
         e["notes"] = (
             e.get("notes", "") + f" Screen: win {mine['win']} vs {live['win']}, "
-            f"fitness {mine['fitness']} vs {live['fitness']}."
+            f"fitness {mine['fitness']} vs {live['fitness']} (paired {pr['mean']:+.3f} +- {pr['se']:.3f})."
         ).strip()
         return finish(e, reg, push)
 
