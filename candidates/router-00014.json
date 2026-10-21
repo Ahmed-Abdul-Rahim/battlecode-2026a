@@ -1,0 +1,19 @@
+{
+ "rows": 1868234,
+ "rows_used": 300000,
+ "val_agreement": 0.812,
+ "beta": 128.55,
+ "mean_return": 85.8,
+ "label_counts": {
+  "farm": 183887,
+  "capture": 34896,
+  "tribute": 20266,
+  "fight": 15726,
+  "kite": 6975,
+  "retreat": 16214,
+  "recall_shop": 22036
+ },
+ "train_agreement": 0.813,
+ "blob_bytes": 3966,
+ "out": "D:\\Code\\battlecode-ml-mldata\\candidates\\router-00014.bin"
+}
