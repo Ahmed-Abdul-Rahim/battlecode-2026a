@@ -2019,6 +2019,8 @@
   {
    "added": "2026-10-21T20:16:07Z",
    "area": "movement",
+   "claimed": "2026-10-21T20:38:43Z",
+   "host": "muhammad-usman-Inspiron-14-5410-2-in-1",
    "id": 57,
    "notes": "12 idle turns over two tiles (not waiting, capturing or delivering) -> recall.",
    "results": {},
@@ -2028,7 +2030,7 @@
     },
     "ref": "origin/feat/gaps-2"
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Escape two-tile loops (recall)"
   },
   {
