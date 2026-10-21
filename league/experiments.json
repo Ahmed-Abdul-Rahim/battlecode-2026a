@@ -733,17 +733,58 @@
    "added": "2026-10-21T15:20:12Z",
    "area": "passives",
    "claimed": "2026-10-21T16:30:40Z",
+   "finished": "2026-10-21T16:41:46Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 42,
    "notes": "error: ValueError(\"needs rebase: origin/feat/passive-aware conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 e7367465603fe08dc0b0385ebeed2 Re-run: the branch conflicted with the live code after #43 (fixed: #42/#44 are now plain switches on live, the stun-upgrade branch is merged with live).",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.457,
+     "h2h_games": 70,
+     "live": {
+      "deaths": 24.77,
+      "fitness": 0.372,
+      "games": 910,
+      "gem_margin": 0.08,
+      "win": 0.6
+     },
+     "variant": {
+      "deaths": 23.9,
+      "fitness": 0.371,
+      "games": 910,
+      "gem_margin": 0.061,
+      "win": 0.595
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 18.05,
+      "fitness": 0.316,
+      "games": 182,
+      "gem_margin": -0.013,
+      "win": 0.5
+     },
+     "paired": {
+      "mean": 0.0555,
+      "pairs": 182,
+      "se": 0.0564
+     },
+     "variant": {
+      "deaths": 16.97,
+      "fitness": 0.372,
+      "games": 182,
+      "gem_margin": -0.01,
+      "win": 0.544
+     }
+    }
+   },
    "run": 3,
    "spec": {
     "knobs": {
      "PASSIVE_AWARE": 1
     }
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "Passive-aware play (per passive / kind)"
   },
   {
