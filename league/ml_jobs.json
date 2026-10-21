@@ -681,6 +681,7 @@
   {
    "added": "2026-10-21T17:55:46Z",
    "claimed": "2026-10-21T17:55:46Z",
+   "finished": "2026-10-21T17:56:09Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 28,
    "kind": "train",
@@ -688,8 +689,28 @@
     "epochs": 8,
     "hidden": 32
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "beta": 129.21,
+    "blob_bytes": 3966,
+    "experiment": 52,
+    "label_counts": {
+     "capture": 35132,
+     "farm": 183407,
+     "fight": 15946,
+     "kite": 7081,
+     "recall_shop": 22237,
+     "retreat": 15942,
+     "tribute": 20255
+    },
+    "mean_return": 86.5,
+    "out": "D:\\Code\\battlecode-ml-mldata\\candidates\\router-00028.bin",
+    "rows": 3743419,
+    "rows_used": 300000,
+    "shards": 24,
+    "train_agreement": 0.811,
+    "val_agreement": 0.811
+   },
+   "status": "done"
   }
  ]
 }

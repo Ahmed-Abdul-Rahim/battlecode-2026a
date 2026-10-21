@@ -1216,6 +1216,23 @@
    "title": "Last stand instead of a doomed retreat"
   },
   {
+   "added": "2026-10-21T17:56:09Z",
+   "area": "learning",
+   "id": 52,
+   "notes": "Offline RL on 24 shards; train agreement 0.811.",
+   "results": {},
+   "spec": {
+    "files": {
+     "bots/main/src/weights/router.bin": "ml-data:candidates/router-00028.bin"
+    },
+    "knobs": {
+     "ROUTER": 1
+    }
+   },
+   "status": "queued",
+   "title": "Learned router #28 (3743419 rows, AWR)"
+  },
+  {
    "added": "2026-10-21T15:12:04Z",
    "area": "combat",
    "id": 24,
