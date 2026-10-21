@@ -162,6 +162,15 @@
    "time": "2026-10-20T16:10:05.811Z",
    "win": false
   },
+  "0ca251c6-ad8e-4e8b-8c07-6a8d452f619a": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "packs",
+   "opp": "gargantua",
+   "oppId": "61e5f5c0-3ba9-4c48-ba68-bf125f0fdfc0",
+   "time": "2026-10-21T17:30:26.108Z",
+   "win": false
+  },
   "0dd47975-429a-4559-a358-537b0afe2da1": {
    "kind": "ranked",
    "live": 1,
@@ -846,6 +855,15 @@
    "time": "2026-10-20T18:00:13.679Z",
    "win": false
   },
+  "3db84e5e-6fc4-4b5e-80ef-3ed572740389": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "the-farm",
+   "opp": "gargantua",
+   "oppId": "61e5f5c0-3ba9-4c48-ba68-bf125f0fdfc0",
+   "time": "2026-10-21T17:30:26.108Z",
+   "win": false
+  },
   "3dc40c96-da21-4f59-bdfb-3b4adf595519": {
    "kind": "ranked",
    "live": 1,
@@ -1024,6 +1042,15 @@
    "opp": "Rogue Lock Pickers",
    "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
    "time": "2026-10-20T19:40:10.999Z",
+   "win": false
+  },
+  "4fde5987-15b0-4f5b-bc4a-f12be8a1ab56": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "interlock",
+   "opp": "gargantua",
+   "oppId": "61e5f5c0-3ba9-4c48-ba68-bf125f0fdfc0",
+   "time": "2026-10-21T17:30:26.108Z",
    "win": false
   },
   "502ebce3-3d80-4ee7-9620-1497f1cb7e72": {
@@ -1357,6 +1384,15 @@
    "opp": "Rogue Lock Pickers",
    "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
    "time": "2026-10-20T22:30:11.149Z",
+   "win": true
+  },
+  "66ba6ec4-92a4-41f3-90d4-8ba7af7e3c31": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "ambush",
+   "opp": "gargantua",
+   "oppId": "61e5f5c0-3ba9-4c48-ba68-bf125f0fdfc0",
+   "time": "2026-10-21T17:30:26.108Z",
    "win": true
   },
   "66c15e88-d817-4c0b-ada1-1623de390b9f": {
@@ -2599,6 +2635,15 @@
    "opp": "Mousa",
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
    "time": "2026-10-20T16:00:07.665Z",
+   "win": true
+  },
+  "c5aba51e-604f-4c18-8505-b91d6cf55685": {
+   "kind": "ranked",
+   "live": 1,
+   "map": "starfish",
+   "opp": "gargantua",
+   "oppId": "61e5f5c0-3ba9-4c48-ba68-bf125f0fdfc0",
+   "time": "2026-10-21T17:30:26.108Z",
    "win": true
   },
   "c6b69406-0eb4-461d-9a99-92343f108688": {
@@ -6707,6 +6752,57 @@
    "status": "open",
    "time": "2026-10-21T17:20:14.251Z",
    "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 37,
+    "Unknown entity kind (2)": 5
+   },
+   "deaths_them": 9,
+   "deaths_us": 42,
+   "gems_them": "732",
+   "gems_us": "728",
+   "id": "4fde5987-15b0-4f5b-bc4a-f12be8a1ab56",
+   "map": "interlock",
+   "opp": "gargantua",
+   "oppId": "61e5f5c0-3ba9-4c48-ba68-bf125f0fdfc0",
+   "status": "open",
+   "time": "2026-10-21T17:30:26.108Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 30,
+    "Unknown entity kind (2)": 4
+   },
+   "deaths_them": 13,
+   "deaths_us": 34,
+   "gems_them": "998",
+   "gems_us": "960",
+   "id": "0ca251c6-ad8e-4e8b-8c07-6a8d452f619a",
+   "map": "packs",
+   "opp": "gargantua",
+   "oppId": "61e5f5c0-3ba9-4c48-ba68-bf125f0fdfc0",
+   "status": "open",
+   "time": "2026-10-21T17:30:26.108Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 13,
+    "Unknown entity kind (2)": 16
+   },
+   "deaths_them": 27,
+   "deaths_us": 29,
+   "gems_them": "459",
+   "gems_us": "74",
+   "id": "3db84e5e-6fc4-4b5e-80ef-3ed572740389",
+   "map": "the-farm",
+   "opp": "gargantua",
+   "oppId": "61e5f5c0-3ba9-4c48-ba68-bf125f0fdfc0",
+   "status": "open",
+   "time": "2026-10-21T17:30:26.108Z",
+   "tries_at": 1
   }
  ],
  "map_files": {
