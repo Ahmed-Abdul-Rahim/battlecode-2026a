@@ -1710,6 +1710,8 @@
   {
    "added": "2026-10-21T15:12:04Z",
    "area": "farming",
+   "claimed": "2026-10-21T18:56:45Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 30,
    "notes": "",
    "results": {},
@@ -1718,7 +1720,7 @@
      "CAMP_SAFE": 1
     }
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Leave awake camps while escape works"
   },
   {
