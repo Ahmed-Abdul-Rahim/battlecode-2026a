@@ -1625,6 +1625,23 @@
    "title": "Deliver everything from round 1850"
   },
   {
+   "added": "2026-10-21T18:51:14Z",
+   "area": "learning",
+   "id": 55,
+   "notes": "Offline RL on 42 shards; train agreement 0.808.",
+   "results": {},
+   "spec": {
+    "files": {
+     "bots/main/src/weights/router.bin": "ml-data:candidates/router-00049.bin"
+    },
+    "knobs": {
+     "ROUTER": 1
+    }
+   },
+   "status": "queued",
+   "title": "Learned router #49 (6493818 rows, AWR)"
+  },
+  {
    "added": "2026-10-21T15:12:04Z",
    "area": "farming",
    "id": 30,
