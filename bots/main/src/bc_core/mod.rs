@@ -14,6 +14,7 @@ pub mod geom;
 pub mod grid;
 pub mod ledger;
 pub mod memory;
+pub mod tactics;
 
 pub use geom::Pos;
 pub use grid::{BitGrid, Terrain};

@@ -68,6 +68,10 @@ pub struct Bot {
     saw_down: Option<(usize, u32)>,
     /// Our passive (engine PassiveType value), read live at start-up (knob2 PASSIVE_AWARE).
     passive: usize,
+    /// knob2 UNSTICK: our last positions (ring) and turns since we last hit or got hit.
+    recent: [Pos; UNSTICK_TURNS],
+    recent_n: usize,
+    idle_turns: usize,
     /// COMBAT_FSM: combat state machine with history (bc_core::combat).
     fsm: Fsm,
     /// COMBAT_FSM: the enemy we watched last turn (kind, hp), to measure damage dealt.
@@ -128,6 +132,16 @@ const KILL_ASSIST_MIN_HP: f32 = 0.4;
 const PASSIVE_BONUS_GOLD: usize = 1;
 const PASSIVE_SPLASH: usize = 4;
 const PASSIVE_MISSING_HEALTH: usize = 10;
+/// knob2 PUNISH_RECALL: chase a lone recaller only above this health fraction.
+const PUNISH_MIN_HP: f32 = 0.4;
+/// knob2 UNSTICK: positions remembered; a loop needs this many idle turns over two tiles.
+const UNSTICK_TURNS: usize = 12;
+/// knob2 SOLO_CAP: solo a big group only if clearing it takes this much less than surviving it.
+const SOLO_GEARED_MARGIN: f32 = 1.5;
+/// knob2 EASE_FIRST: each extra monster divides a group's value by this much more.
+const EASE_PER_MONSTER: f32 = 0.25;
+/// knob2 EARLY_GOLD: extra value per gold on quick groups before 2 emblems.
+const EARLY_GOLD_BONUS: f32 = 0.5;
 /// knob2 TEAM_UP: join only above this health fraction, and unless the joint fight advantage
 /// (allies' damage included) is below this.
 const TEAM_UP_MIN_HP: f32 = 0.4;
@@ -273,6 +287,9 @@ impl Bot {
             cur_dps: 0.0,
             cur_max_hp: 0.0,
             saw_down: None,
+            recent: [Pos::new(-1, -1); UNSTICK_TURNS],
+            recent_n: 0,
+            idle_turns: 0,
             passive,
             fsm: Fsm::default(),
             fsm_seen: None,
@@ -523,6 +540,19 @@ impl Bot {
                             telemetry::event(round, champ_name(self.kind), "team_deny", 1);
                         }
                     }
+                }
+            }
+            // knob2 PUNISH_RECALL: an enemy recalling alone nearby; one hit cancels the recall.
+            let punish = i32::from(self.theta.knob2(knob2::PUNISH_RECALL));
+            if punish > 0 && !matches!(mode, Mode::Override(_)) && ctx.hp_frac() > PUNISH_MIN_HP {
+                let lone = |p: Pos| vis.enemies.iter().filter(|o| o.pos.cheb(p) <= 4).count() <= 1;
+                if let Some(e) = vis
+                    .enemies
+                    .iter()
+                    .find(|e| e.recalling && !e.on_spawn && e.dist <= punish && lone(e.pos))
+                {
+                    intent = Intent::Engage(e.pos);
+                    telemetry::event(round, champ_name(self.kind), "punish_recall", 1);
                 }
             }
             // Tavi (ladder meta): once geared, hunt carriers, tributers and weak enemies in reach.
@@ -814,6 +844,38 @@ impl Bot {
             {
                 intent = Intent::Tribute;
             }
+            // knob2 UNSTICK: back and forth over two tiles for a while without fighting: reset.
+            if self.theta.knob2(knob2::UNSTICK) > 0
+                && !matches!(mode, Mode::Override(_))
+                && !ctx.at_spawn
+                && !matches!(
+                    intent,
+                    Intent::Capture(_)
+                        | Intent::Approach(_)
+                        | Intent::Tribute
+                        | Intent::Hold
+                        | Intent::Shop
+                        | Intent::Retreat
+                        | Intent::WalkHome
+                )
+                && self.recent_n >= UNSTICK_TURNS
+                && self.idle_turns >= UNSTICK_TURNS
+                && crate::bc_core::tactics::two_tile_loop(&self.recent)
+            {
+                intent = Intent::Shop;
+                self.recent_n = 0;
+                telemetry::event(round, champ_name(self.kind), "unstick", 1);
+            }
+            // knob2 WALK_HOME: close to spawn, walking is as fast as a recall and can't be cancelled.
+            let walk_home = self.theta.knob2(knob2::WALK_HOME);
+            if walk_home > 0
+                && matches!(intent, Intent::Retreat | Intent::Shop)
+                && !ctx.at_spawn
+                && ctx.dist_spawn.is_some_and(|d| d <= u16::from(walk_home))
+            {
+                intent = Intent::WalkHome;
+                telemetry::event(round, champ_name(self.kind), "walk_home", 1);
+            }
             self.charge(Stage::Brain, mark);
             let claim = match intent {
                 Intent::ClearCamp(g) | Intent::Capture(g) | Intent::Approach(g) => {
@@ -855,7 +917,17 @@ impl Bot {
                 let tavi_respec = self.kind == ChampionKind::Tavi
                     && crate::learned::extra(crate::learned::X_TAVI_RESPEC) > 0.5;
                 let stun_lock = self.theta.knob2(knob2::STUN_LOCK) > 0;
+                let gold_order = self.theta.knob2(knob2::GOLD_ORDER);
+                let lock_contested_only = self.theta.knob(knob::ALTAR_LOCK) == 2;
+                let los_retreat = self.theta.knob2(knob2::LOS_RETREAT) > 0;
+                let tp_crystal = self.theta.knob2(knob2::TP_CRYSTAL) > 0;
+                let weak_first = self.theta.knob2(knob2::WEAK_CAMP_FIRST) > 0;
                 let mut exec = self.exec(me, &vis, my_pos, hurt_this_round);
+                exec.gold_order = gold_order;
+                exec.lock_contested_only = lock_contested_only;
+                exec.los_retreat = los_retreat;
+                exec.tp_crystal = tp_crystal;
+                exec.weak_first = weak_first;
                 exec.field_shop = field_shop;
                 exec.recall_safe = recall_safe;
                 exec.recall_ticks = recall_ticks;
@@ -876,6 +948,15 @@ impl Bot {
             if exec_out.moved {
                 self.last_pos = pos(me.position()?);
             }
+            // knob2 UNSTICK bookkeeping: where we ended the turn, and whether anything happened.
+            self.recent[self.recent_n % UNSTICK_TURNS] =
+                if exec_out.moved { self.last_pos } else { my_pos };
+            self.recent_n += 1;
+            self.idle_turns = if exec_out.attacked || exec_out.cast || hurt_this_round {
+                0
+            } else {
+                self.idle_turns + 1
+            };
             // Give up on enemies we keep chasing without landing anything.
             if let Intent::Engage(target) = intent {
                 if exec_out.attacked || exec_out.cast {
@@ -1181,6 +1262,11 @@ impl Bot {
             altar_lock: false,
             combo: false,
             stun_lock: false,
+            gold_order: 0,
+            lock_contested_only: false,
+            los_retreat: false,
+            tp_crystal: false,
+            weak_first: false,
             dash_in: false,
             field_shop: false,
             recall_safe: false,
@@ -1429,6 +1515,8 @@ impl Bot {
                 on_spawn: self.world.terrain.enemy_spawn.get(p),
                 tributing: self.theta.knob(knob::DENY_TRIBUTE) > 0
                     && e.state().is_ok_and(|s| s.contains(ChampionState::SUBMITTING_GEMS)),
+                recalling: self.theta.knob2(knob2::PUNISH_RECALL) > 0
+                    && e.state().is_ok_and(|s| s.contains(ChampionState::RECALLING)),
                 kind,
                 handle: e,
             };
@@ -1476,6 +1564,7 @@ impl Bot {
                 hp: a.health().unwrap_or(0.0),
                 max_hp: a.max_health().unwrap_or(1.0),
                 dps: sdk::dps(kit.base_strength, kit.base_focus, &kit),
+                kind,
                 handle: a,
             });
         }
@@ -1696,6 +1785,38 @@ impl Bot {
                 if kill > survive * CAMP_FEASIBLE_SLACK {
                     value *= CAMP_INFEASIBLE_VALUE;
                 }
+            }
+            let ally_near = vis.allies.iter().any(|a| a.dist <= 6);
+            let monsters = g.tiles.len();
+            // knob2 SOLO_CAP: a big group alone only once we're geared enough to outlast it.
+            let solo_cap = usize::from(self.theta.knob2(knob2::SOLO_CAP));
+            if solo_cap > 0
+                && monsters >= solo_cap
+                && !ally_near
+                && state != GroupState::RewardAvailable
+                && !self
+                    .priority_index(i)
+                    .is_some_and(|pi| chan.claimants(pi, self.slot as usize) > 0)
+            {
+                let survive = self.last_hp.max(1.0) / (g.total_strength * CAMP_DMG_FLOOR).max(1.0);
+                let kill = group_hp / self.cur_dps.max(my_dps).max(1.0);
+                if kill * SOLO_GEARED_MARGIN > survive {
+                    value *= CAMP_INFEASIBLE_VALUE;
+                }
+            }
+            // knob2 EASE_FIRST: alone, fewer monsters first (two-monster groups before packs).
+            if self.theta.knob2(knob2::EASE_FIRST) > 0
+                && !ally_near
+                && state != GroupState::RewardAvailable
+            {
+                value /= 1.0 + EASE_PER_MONSTER * monsters.saturating_sub(1) as f32;
+            }
+            // knob2 EARLY_GOLD: before 2 emblems, gold from quick groups buys the first upgrades.
+            if self.theta.knob2(knob2::EARLY_GOLD) > 0
+                && self.emblems() < 2
+                && clear <= EARLY_RAMP_KNEE
+            {
+                value += g.gold as f32 * EARLY_GOLD_BONUS;
             }
             // CAMP_FEASIBLE bit 2, early ramp: before EARLY_RAMP_ROUNDS or our 2nd emblem, quick
             // camps first; value falls with clear time past EARLY_RAMP_KNEE turns, so guarded
