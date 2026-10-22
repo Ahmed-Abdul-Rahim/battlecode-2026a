@@ -12274,13 +12274,13 @@
  "seed": "coA-v2 (coevo lineage A, exp/v6-features)",
  "tries": {
   "ambush": {
-   "DESKTOP-QVEMEEE": 3
+   "DESKTOP-QVEMEEE": 4
   },
   "big-world": {
    "DESKTOP-QVEMEEE": 3
   },
   "boss-battle": {
-   "DESKTOP-QVEMEEE": 3
+   "DESKTOP-QVEMEEE": 4
   },
   "broken-curve": {
    "DESKTOP-QVEMEEE": 3
@@ -12359,16 +12359,16 @@
    "DESKTOP-QVEMEEE": 2
   },
   "rushbait-v2": {
-   "DESKTOP-QVEMEEE": 2
+   "DESKTOP-QVEMEEE": 3
   },
   "shortcut": {
-   "DESKTOP-QVEMEEE": 1
+   "DESKTOP-QVEMEEE": 2
   },
   "split": {
    "DESKTOP-QVEMEEE": 3
   },
   "stampede": {
-   "DESKTOP-QVEMEEE": 2
+   "DESKTOP-QVEMEEE": 3
   },
   "starfish": {
    "DESKTOP-QVEMEEE": 1
