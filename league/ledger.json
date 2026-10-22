@@ -918,6 +918,15 @@
    "time": "2026-10-20T20:40:10.182Z",
    "win": false
   },
+  "24f70f09-1004-4b77-8bda-95bdd88eb0f9": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "rushbait-v2",
+   "opp": "TrueCoders",
+   "oppId": "e1f192db-587e-4602-b11e-dc91877f599d",
+   "time": "2026-10-22T12:50:24.574Z",
+   "win": true
+  },
   "250227f6-cefa-4267-b0db-b0ccdc7accb5": {
    "kind": "ranked",
    "live": 1,
@@ -3393,6 +3402,15 @@
    "time": "2026-10-20T18:10:10.514Z",
    "win": true
   },
+  "8db4bb07-6fa2-44f2-b710-393cb22ceb47": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "boss-battle",
+   "opp": "TrueCoders",
+   "oppId": "e1f192db-587e-4602-b11e-dc91877f599d",
+   "time": "2026-10-22T12:50:24.574Z",
+   "win": true
+  },
   "8df737fe-c8d0-4a4f-b6ad-665f48e41e30": {
    "kind": "ranked",
    "live": null,
@@ -3671,6 +3689,15 @@
    "oppId": "ee461d0b-afa8-4943-ae64-d0605ffa01a4",
    "time": "2026-10-22T09:30:19.246Z",
    "win": false
+  },
+  "989435c6-a111-460a-9e2c-fa05cdc525a2": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "great-wall",
+   "opp": "TrueCoders",
+   "oppId": "e1f192db-587e-4602-b11e-dc91877f599d",
+   "time": "2026-10-22T12:50:24.575Z",
+   "win": true
   },
   "98b71f91-2b29-4b10-8552-88597c7b8f8e": {
    "kind": "ranked",
@@ -4553,6 +4580,15 @@
    "oppId": "7218a6a8-8211-4587-bdf8-3bae779e930e",
    "time": "2026-10-20T19:30:09.721Z",
    "win": false
+  },
+  "b92f8e90-75fc-4265-b5f5-d0bb9661524b": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "contest",
+   "opp": "TrueCoders",
+   "oppId": "e1f192db-587e-4602-b11e-dc91877f599d",
+   "time": "2026-10-22T12:50:24.574Z",
+   "win": true
   },
   "b9420d13-b212-46c1-abb3-20c3c3745853": {
    "kind": "ranked",
@@ -5623,6 +5659,15 @@
    "opp": "Lucky Stunner",
    "oppId": "d48d65ef-625c-4966-b2cc-a7b1b02fafec",
    "time": "2026-10-21T15:10:10.876Z",
+   "win": false
+  },
+  "e41b8304-ddde-42df-9669-59ed3506dec8": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "broken-curve",
+   "opp": "TrueCoders",
+   "oppId": "e1f192db-587e-4602-b11e-dc91877f599d",
+   "time": "2026-10-22T12:50:24.575Z",
    "win": false
   },
   "e4bd7274-a182-4428-a32e-7972f59e79db": {
@@ -12604,6 +12649,23 @@
    "status": "open",
    "time": "2026-10-22T12:30:23.031Z",
    "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 3,
+    "champion": 5
+   },
+   "deaths_them": 24,
+   "deaths_us": 8,
+   "gems_them": "1018",
+   "gems_us": "667",
+   "id": "e41b8304-ddde-42df-9669-59ed3506dec8",
+   "map": "broken-curve",
+   "opp": "TrueCoders",
+   "oppId": "e1f192db-587e-4602-b11e-dc91877f599d",
+   "status": "open",
+   "time": "2026-10-22T12:50:24.575Z",
+   "tries_at": 4
   }
  ],
  "map_files": {
