@@ -1,67 +1,74 @@
 # Architecture
 
-```
-crates/ (SDK-free, host-tested)                     bots/main (cambc bot, wasm32-wasip1)
-┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐   ┌───────────────────────────────────────┐
-│ bc-core  │ │ bc-path  │ │ bc-brain │ │ bc-draft │   │ src/bc_*/  ← vendored by `bctools sync` │
-│ geometry │ │ fields   │ │ features │ │ map desc │   │ sdk.rs     SDK ⇄ our types            │
-│ terrain  │ │ greedy   │ │ gate     │ │ scorer   │   │ world.rs   terrain, groups, fields    │
-│ kits     │ │ A* window│ │ router   │ │ θ_match  │   │ bot.rs     observe → decide → log     │
-│ ledger   │ │ planner  │ │ experts  │ │          │   │ act.rs     intents → SDK actions      │
-│ belief   │ │          │ │ int8+FiLM│ │          │   │ draft.rs   picks + θ_match            │
-│ memory   │ │          │ │ champvec │ │          │   │ telemetry  debug_block JSON lines     │
-│ fuel     │ │          │ │ shop     │ │          │   └───────────────────────────────────────┘
-└──────────┘ └──────────┘ └──────────┘ └──────────┘
-```
+One page: what runs where, what learns what, and the commands. Branch: `nn` (archived history: tags `archive/*`).
 
-**Why vendoring:** cambc requires every bot's `Cargo.toml` to match its template, so a bot can't depend on our crates. `crates/` is canonical; `bots/main/src/bc_*/` are generated copies; CI fails if they drift.
-
-## One champion turn
+## Commands
 
 ```
-observe (self, vision, camp groups, team channel)          ~13k fuel
-  → belief + ledger update; leader writes team params (8-byte shared memory)
-  → choose target group: value / (walk + clear time + respawn wait), claims, hysteresis
-  → Context
-  → meta-gate:  hard overrides (dead, low HP in danger, low fuel) │ routine │ complex
-  → router:     routine heuristic, or rule router (v0) / learned int8 head with FiLM (later)
-  → top-1 expert → Intent (ClearCamp / Capture / Approach / Tribute / Engage / Kite / Retreat / Shop)
-  → executor:   casts before moves (exclude-walking rule), ranged move-or-attack, attack resets, buy order
-  → telemetry (debug only): T/E/X/M lines, features every 4th turn
+scripts\train.ps1 start | stop | status | logs   # loop 1: per-map tuning daemon (harness/league.py)
+scripts\train.ps1 experiments [list|add|stop]    # loop 2: experiment autopilot (harness/experiments.py)
+scripts\train.ps1 ml [status|stop]               # loop 3: nn pipeline (nn/run.py, this PC only)
 ```
 
-## Pathing ensemble (bc-path)
+## The three loops
 
-| Tier | When | Cost |
-| --- | --- | --- |
-| Static | cached host `DistanceField`, free optimal step | ~2k |
-| Local repair | optimal steps blocked → best non-worsening neighbour | ~4k |
-| Greedy | threat nearby → neighbour minimising distance·10 + danger | ~2k |
-| Weighted A* | threat nearby **and** spare fuel → 11×11 window, field as heuristic, ≤ 8 expansions | ≤ 25k |
-| Fallback | field not computed yet → straight line | <1k |
+| Loop | Learns | Against | Output | Shared via |
+|---|---|---|---|---|
+| 1. Per-map tuning | θ: 102 numbers per map (multipliers on the rules' constants) | Mimics of the live top 10 | `league/champion.json` → `pack.bin` | git (branch `league`) |
+| 2. Experiments | Yes/no on queued code ideas (paired screen, then gate) | Mimics | Merged or rejected branches | git |
+| 3. nn pipeline | A policy that chooses the actual actions | Current bot, mimics, frozen baselines | `nn/baselines/<patch>/…`, `bots/main/src/weights/` | This PC; only frozen baselines are committed |
 
-Fields (ally spawn, altars, every camp group) cost about 19k each on 100×100. They're computed on the first turn (200k budget), then from spare fuel, with the current target first.
+Loops 1 and 2 tune the rule-based bot. Loop 3 is meant to replace its decisions.
 
-## Decision layer (bc-brain)
+## The bot (bots/main, wasm, 100k fuel per turn)
 
-- **Meta-gate:** chooses, ahead of time, between the cheap heuristic and the MoE. Rule-based in v0; a `LearnedGate` slot is ready behind the same hard overrides.
-- **Sparse MoE:** nine heuristic experts, and the top-1 router runs only one of them (P-050). `LearnedRouter` is an int8 MLP whose hidden units are FiLM-modulated by θ_match (P-032).
-- **int8 kernel:** `BCW1` blobs with the schema hash and a CRC. Bit-exact with `ml/distill/quant.py`, checked by a shared fixture.
-- **Policies:** tribute control (bag size vs. distance, danger, endgame) and leader team parameters.
+```
+crates/ (SDK-free, host-tested, vendored into bots/main/src/bc_*/ by `bctools sync`)
+  bc-core   geometry, terrain, champion kits, belief (unseen enemies), shared memory, fuel governor
+  bc-path   distance fields, greedy / windowed A* steps
+  bc-brain  features, gate, router, 9 experts, int8 kernel, shop
+  bc-draft  map descriptor, draft scorer
 
-## Learned layer (2026-10-19)
+one turn:  observe → belief → choose target → gate → expert → intent → SDK actions
+map id:    world::fingerprint (exact; the draft sees the whole map) → per-map pack entry
+```
 
-The rules above are the engine; learned data sits on top and defaults to a no-op:
+Fuel facts: [fuel-budget.md](fuel-budget.md). Local matches can raise the limit with `cambc run --fuel N`; the ladder can't.
 
-- **θ** (`bots/main/src/learned.rs`, 102 floats, layout in `harness/params.py`): multipliers on hand-set constants, a camp-target scorer, a fight-advantage bias and the **utility arbiter** (`utility.rs`), which scores keep / step back (aggro swap) / support / fight / walk home / recall together each turn.
-- **Policy pack** (`pack.rs`, `pack/pack.bin`): per map (by fingerprint) a θ override, draft, emblem builds per champion kind and opening routes. Size is cheap (data segment), lookups are O(1).
-- **Router** (`weights/router.bin`, `weights/micro.bin`): int8 MLPs trained by playing (PPO, `ml/rl/`), off unless enabled.
-- **Fuel tiers**: learned parts run only above their fuel floors; below `gate::LOW_FUEL` the cheapest rules always decide.
+## Loop 3: teacher → student (plan: docs in `nn/`, status below)
 
-Training daemons and how to extend them: [training.md](training.md).
+```
+              GPU (no fuel limit)                                  bot (100k fuel)
+inputs ─► big teacher (512/1024 MLP, GRU, LSTM, SSM, transformer) ─► distil ─► small int8 student
+ │            trained by imitation, then PPO vs frozen baselines          (MLP/GRU, or trees)
+ │                                                                         gate on official cambc
+ └ entity tokens (champion IDs, HP, cooldowns, buffs), 15×15 local grid,
+   precomputed map channels per fingerprint (chokepoints, openness, distances), last 4 turns
+```
 
-## Status (2026-10-18)
+1. **Proof:** the teacher plays inside the bot on the official engine with a raised `--fuel`. It's trained to a plateau (several seeds, both sizes) before any verdict.
+2. **Simulator** (only after the proof): `crates/bc-sim`, a clean-room engine written from GameRules + SDK constants that runs the same wasm bots. It's checked against cambc, then batched and moved to the GPU.
+3. **Freeze-and-grow:** the best model is frozen into the pool and the next, bigger or different, model trains against the pool. Each winner is distilled. The loop stops when the student stops gaining.
+4. **Patches:** `nn/patch.py` diffs the SDK constants, the rules and the map pool. Changed maps get recomputed; changed champions get a fine-tune from the current best plus a new baseline folder.
 
-- Against the starter bot: **34/34 wins** over 17 maps × 2 sides. Mean fuel about 27k per turn; 0 exhausted turns.
-- Learned heads, champion fine-tuning, feature selection and DANN are scaffolded and tested; they're waiting on self-play data and the GPU box.
-- See the GitHub backlog for what's next.
+| Step | Status (2026-10-23) |
+|---|---|
+| Cleanup, `nn` branch | done |
+| Inputs/actions spec, logging | next |
+| Teacher proof | – |
+| Simulator | – |
+| Zoo / freeze-and-grow | – |
+| Patch watcher | – |
+
+## Where things live
+
+| Path | What |
+|---|---|
+| `bots/main` | The shipped bot |
+| `bots/baseline`, `claude-*`, `exploit-qwen-*` | Fixed sparring anchors (loop 1) |
+| `bots/mimic-*` | Rebuilt from `data/mimic` + `runs/ladder_*` (gitignored) |
+| `harness/` | Loops 1 and 2 |
+| `ml/` | Old learned router (arm 1, still in the bot), int8 export, feature schema; replaced by `nn/` in Phase 1 |
+| `nn/` | Loop 3 |
+| `tools/bctools` | Match runner, gate, replay tools, MCP server |
+| `runs/` | Local output (ladder downloads are kept; everything else can be deleted) |

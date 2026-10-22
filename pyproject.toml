@@ -26,7 +26,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 package-dir = { "bctools" = "tools/bctools", "mcp_server" = "tools/mcp_server", "ml" = "ml" }
-packages = ["bctools", "mcp_server", "ml", "ml.features", "ml.champions", "ml.distill", "ml.uda"]
+packages = ["bctools", "mcp_server", "ml", "ml.features", "ml.champions", "ml.distill", "ml.rl"]
 
 [tool.ruff]
 line-length = 110

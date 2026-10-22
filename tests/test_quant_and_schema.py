@@ -9,7 +9,6 @@ import numpy as np
 from bctools import replay
 from ml.distill import quant
 from ml.features import gen, schema_gen
-from ml.uda.dann import invariant_mask, lambda_schedule
 from ml.util import crc16, q
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -40,12 +39,7 @@ def test_generated_schema_is_current():
     assert gen.main(["--check"]) == 0
     s = gen.load()
     assert s["hash"] == schema_gen.SCHEMA_HASH
-    assert len(schema_gen.FEATURE_NAMES) == schema_gen.N_FEATURES == len(invariant_mask())
-
-
-def test_dann_lambda_ramp():
-    assert lambda_schedule(0.0) == 0.0
-    assert 0.99 < lambda_schedule(1.0) <= 1.0
+    assert len(schema_gen.FEATURE_NAMES) == schema_gen.N_FEATURES
 
 
 def test_parse_stdout_strips_nul_padding_and_tags():

@@ -6,11 +6,10 @@
 #   scripts\train.ps1 once [--no-push]               # one cycle in the foreground
 #   scripts\train.ps1 experiments [list|add|stop]     # experiment autopilot (own worktree)
 #   scripts\train.ps1 exp-status                       # what was tried, merged, rejected, next
-#   scripts\train.ps1 ml-status                        # neural net: data, trained networks, results
-#   scripts\train.ps1 ml [list|stop]                  # neural-net jobs: data games + training
+#   scripts\train.ps1 ml [status|stop]               # nn pipeline: teacher/student training (this PC only)
 param(
     [Parameter(Position = 0)]
-    [ValidateSet("start", "stop", "status", "logs", "review", "sync", "maps", "bench", "submit", "replay", "experiments", "exp-status", "ml", "ml-status", "once")]
+    [ValidateSet("start", "stop", "status", "logs", "review", "sync", "maps", "bench", "submit", "replay", "experiments", "exp-status", "ml", "once")]
     [string]$cmd = "status",
     [Parameter(ValueFromRemainingArguments = $true)]
     [string[]]$rest = @()
@@ -79,29 +78,23 @@ switch ($cmd) {
         Write-Host "experiment autopilot started in $wt (log: runs\league\experiments.log)" -ForegroundColor Green
     }
     "exp-status" { & $py -X utf8 (Join-Path $root "harness\experiments.py") status }
-    "ml-status" { & $py -X utf8 (Join-Path $root "harness\mljobs.py") status }
     "ml" {
-        # Data games and training runs (harness/mljobs.py), shared with every PC through git.
-        $wt = Join-Path (Split-Path -Parent $root) "battlecode-ml"
-        if (-not (Test-Path $wt)) {
-            git -C $root fetch -q origin
-            git -C $root worktree add -q -B mlpilot $wt origin/league 2>$null
-        }
-        $x = Join-Path $wt "harness\mljobs.py"
-        if ($rest -contains "list") { & $py -X utf8 $x list; return }
+        # The nn pipeline (nn/run.py): this PC only, writes runs\nn\. No git job queue.
+        $x = Join-Path $root "nn\run.py"
+        if (-not (Test-Path $x)) { Write-Host "nn pipeline not built yet (Phase 1)." -ForegroundColor Yellow; return }
         if ($rest -contains "stop") {
             Get-CimInstance Win32_Process -Filter "Name='python.exe'" |
-                Where-Object { $_.CommandLine -match 'mljobs\.py.+run' } |
+                Where-Object { $_.CommandLine -match 'nn\\run\.py.+run' } |
                 ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue; "stopped pid $($_.ProcessId)" }
             return
         }
-        New-Item -ItemType Directory -Force (Join-Path $wt "runs\league") | Out-Null
-        $env:PATH = (Join-Path $root ".venv\Scripts") + ";" + $env:PATH
-        Start-Process -WindowStyle Hidden -FilePath $py -WorkingDirectory $wt `
-            -ArgumentList @("-X", "utf8", "-u", $x, "run", "--forever") `
-            -RedirectStandardOutput (Join-Path $wt "runs\league\ml.log") `
-            -RedirectStandardError (Join-Path $wt "runs\league\ml.err")
-        Write-Host "ml jobs started in $wt (log: runs\league\ml.log; queue: scripts\train.ps1 ml list)" -ForegroundColor Green
+        if ($rest -contains "status") { & $py -X utf8 $x status; return }
+        $out = Join-Path $root "runs\nn"
+        New-Item -ItemType Directory -Force $out | Out-Null
+        Start-Process -WindowStyle Hidden -FilePath $py -WorkingDirectory $root `
+            -ArgumentList @("-X", "utf8", "-u", $x, "run") `
+            -RedirectStandardOutput (Join-Path $out "nn.log") -RedirectStandardError (Join-Path $out "nn.err")
+        Write-Host "nn pipeline started (log: runs\nn\nn.log; status: scripts\train.ps1 ml status)" -ForegroundColor Green
     }
     default { & $py -X utf8 $league $cmd @rest }
 }
