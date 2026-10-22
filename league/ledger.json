@@ -2151,6 +2151,15 @@
    "time": "2026-10-22T09:40:19.254Z",
    "win": false
   },
+  "604f9714-df42-4b9b-b6b7-89be08eb4c27": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "the-farm",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-22T10:50:13.670Z",
+   "win": false
+  },
   "60c05fbf-cc4a-4e4b-a8a9-c61a12e94724": {
    "kind": "ranked",
    "live": 17,
@@ -2231,6 +2240,15 @@
    "oppId": "c8773982-afe9-4f64-99ba-0cc1fb3fe3c2",
    "time": "2026-10-21T14:20:15.009Z",
    "win": false
+  },
+  "645d13c7-7668-4cb7-972c-f14638706ab8": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "corners",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-22T10:50:13.670Z",
+   "win": true
   },
   "652ed4c7-b412-46a5-b134-3cb80a193b91": {
    "kind": "ranked",
@@ -2456,6 +2474,15 @@
    "oppId": "d1cb1906-76ed-46c7-b005-90fac23a59cd",
    "time": "2026-10-22T10:22:12.991Z",
    "win": false
+  },
+  "6d7e4d6f-e942-40ea-a88f-99a65d2b3f57": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "lanes",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-22T10:50:13.670Z",
+   "win": true
   },
   "6dfe4487-639f-4bcb-b868-21da68ba68bd": {
    "kind": "ranked",
@@ -4806,6 +4833,15 @@
    "time": "2026-10-22T09:40:19.254Z",
    "win": true
   },
+  "d78e372b-dd77-442e-bef6-c546f611df6a": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "contest",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-22T10:50:13.670Z",
+   "win": true
+  },
   "d7d67518-a48b-48fd-a650-f3a08a4c2351": {
    "kind": "ranked",
    "live": 1,
@@ -5893,6 +5929,15 @@
    "opp": "\u200e",
    "oppId": "b58c08d8-498a-4fc7-9585-f4fafaefa688",
    "time": "2026-10-22T05:30:14.379Z",
+   "win": true
+  },
+  "ff7fbcd9-a025-40da-9ba2-4d773a6e693a": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "rushbait-v2",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-22T10:50:13.670Z",
    "win": true
   }
  },
@@ -11605,6 +11650,23 @@
    "oppId": "5bfa785b-3a15-4398-96b7-624e1a1e103c",
    "status": "open",
    "time": "2026-10-22T10:40:12.612Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 2,
+    "Unknown entity kind (2)": 13
+   },
+   "deaths_them": 5,
+   "deaths_us": 15,
+   "gems_them": "1024",
+   "gems_us": "0",
+   "id": "604f9714-df42-4b9b-b6b7-89be08eb4c27",
+   "map": "the-farm",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "status": "open",
+   "time": "2026-10-22T10:50:13.670Z",
    "tries_at": 4
   }
  ],
