@@ -13,7 +13,7 @@ One loop, run on every teammate's PC (architecture and commands: docs/league.pdf
            beat our champion, so training goes on when the real teams stop updating
   promote  accepted θ -> champion.json + pack.bin, benchmark vs every mimic, commit, push
   release  lead with --auto-submit only: `cambc submit` after a ladder loss or a benchmark jump,
-           at most once per SUBMIT_GAP, reverted if the ladder says the new version is worse
+           at most once per SUBMIT_GAP (FAST_GAP when the live version loses beyond chance; never reverts)
   review   lead only: league/review/<date>.md for humans (epistemic gaps, losses ES can't fix)
 
 Shared state lives in git on branch `league`:
@@ -115,9 +115,11 @@ STUCK_TRIES = 6  # ES cycles on a lost map without a fix before a human is asked
 BOOTSTRAP_TRIES = 4  # rounds every never-trained (new) map gets before losses and top-10 work
 SUBMIT_GAP = 3 * 3600
 BENCH_JUMP = 0.05
-# Revert only on REVERT_GAMES+ ranked games of the new version, against the previous version's
-# latest REVERT_RECENT games, and a drop bigger than both REVERT_DROP and two standard errors.
-REVERT_GAMES, REVERT_DROP, REVERT_RECENT = 30, 0.10, 60
+# Never revert to an older version. If the live version loses more than chance explains (its
+# ranked games since upload vs our previous versions' last REF_GAMES ranked games: a losing
+# streak or a binomial test at ALPHA), the next version uploads after FAST_GAP instead.
+REF_GAMES, ALPHA, MIN_TEST_GAMES = 60, 0.05, 10
+FAST_GAP = 30 * 60
 HEARTBEAT = 1800  # push try counts at least this often, so the lead sees stuck maps
 #: Map pressure (map_pressure): a loss's weight falls to 1/e after a day; every map keeps a
 #: floor of this fraction of the top pressure, so no map is starved.
@@ -1014,7 +1016,12 @@ def release_decision(ch: dict, led: dict, now: float) -> tuple[int, str] | None:
     cur = ch["version"]
     # Before the league's first upload, compare against v0 (the seed champion).
     last = subs[-1] if subs else {"version": 0, "time": "1970-01-01T00:00:00Z"}
-    if cur <= last["version"] or now - ts(last["time"]) < SUBMIT_GAP:
+    if cur <= last["version"]:
+        return None
+    bad = struggling(led)
+    if bad and now - ts(last["time"]) >= FAST_GAP:
+        return cur, f"fast upload: {bad}"
+    if now - ts(last["time"]) < SUBMIT_GAP:
         return None
     if any(ts(x["time"]) > ts(last["time"]) for x in led["losses"]):
         return cur, "ladder loss since the last upload"
@@ -1024,25 +1031,38 @@ def release_decision(ch: dict, led: dict, now: float) -> tuple[int, str] | None:
     return None
 
 
-def revert_decision(led: dict) -> int | None:
-    """The previous version, if the live one has REVERT_GAMES ranked games and does worse."""
+def binom_cdf(k: int, n: int, p: float) -> float:
+    """P(X <= k) for X ~ Binomial(n, p)."""
+    return sum(math.comb(n, i) * p**i * (1 - p) ** (n - i) for i in range(k + 1))
+
+
+def struggling(led: dict) -> str | None:
+    """Why the live version is losing more than chance explains, or None. Its ranked games since
+    upload are compared with our earlier versions' last REF_GAMES ranked games (0.5 if fewer than
+    MIN_TEST_GAMES): a closing losing streak, or the whole record, must be under ALPHA likely."""
     subs = [s for s in led["submissions"] if s.get("ok")]
-    if len(subs) < 2 or subs[-1].get("reason", "").startswith("revert"):
+    if not subs:
         return None
-
-    def rate(v: int, recent: int | None = None) -> tuple[float, int]:
-        g = sorted(
-            (x for x in led["ladder"].values() if x.get("live") == v and x.get("kind") == "ranked"),
-            key=lambda x: x.get("time", ""),
-        )
-        w = [x["win"] for x in g[-recent:]] if recent else [x["win"] for x in g]
-        return (sum(w) / len(w) if w else 0.0), len(w)
-
-    (wl, nl), (wp, np_) = rate(subs[-1]["version"]), rate(subs[-2]["version"], REVERT_RECENT)
-    if nl < REVERT_GAMES or np_ < REVERT_GAMES:
-        return None
-    noise = 2 * math.sqrt(max(wp * (1 - wp), 0.05) / nl)
-    return subs[-2]["version"] if wl < wp - max(REVERT_DROP, noise) else None
+    live, since = subs[-1]["version"], subs[-1]["time"]
+    ranked = sorted(
+        (x for x in led["ladder"].values() if x.get("kind") == "ranked" and x.get("time")),
+        key=lambda x: x["time"],
+    )
+    mine = [x["win"] for x in ranked if x.get("live") == live and x["time"] >= since]
+    before = [x["win"] for x in ranked if x.get("live") != live and x["time"] < since][-REF_GAMES:]
+    p = sum(before) / len(before) if len(before) >= MIN_TEST_GAMES else 0.5
+    p = min(max(p, 0.05), 0.95)
+    streak = 0
+    for w in reversed(mine):
+        if w:
+            break
+        streak += 1
+    if streak and (1 - p) ** streak < ALPHA:
+        return f"v{live} lost {streak} ranked games in a row (expected win rate {p:.2f})"
+    wins = sum(mine)
+    if len(mine) >= MIN_TEST_GAMES and binom_cdf(int(wins), len(mine), p) < ALPHA:
+        return f"v{live} won {int(wins)}/{len(mine)} ranked games (expected {p:.2f})"
+    return None
 
 
 def submit(led: dict, version: int, reason: str, bot: str | None = None) -> bool:
@@ -1648,9 +1668,6 @@ def cycle(a: argparse.Namespace, rng: random.Random) -> None:
         if msgs:
             fold_tries(ch, local)
             reconcile(led, ch)
-            rv = revert_decision(led) if a.auto_submit else None
-            if rv is not None:
-                submit(led, rv, f"revert: v{led['submissions'][-1]['version']} did worse on the ladder")
             write_review(ch, led)
             save_json(LEDGER, led)
             log("; ".join(msgs))

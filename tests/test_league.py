@@ -107,20 +107,55 @@ def test_first_upload_waits_for_a_reason():
     assert league.release_decision(ch, ledger([], [loss]), now) == (1, "ladder loss since the last upload")
 
 
-def test_revert_when_live_version_does_worse():
-    subs = [{"version": 1, "time": "a", "ok": True}, {"version": 2, "time": "b", "ok": True}]
-    games = {f"p{i}": {"live": 1, "kind": "ranked", "win": i % 10 < 7} for i in range(30)}
-    games |= {f"l{i}": {"live": 2, "kind": "ranked", "win": i % 10 < 3} for i in range(30)}
-    assert league.revert_decision(ledger(subs, ladder=games)) == 1
-    # 10 games is noise (v10 went back to v1 on 3/10 in October): no revert.
-    few = {k: v for k, v in games.items() if not k.startswith("l") or int(k[1:]) < 10}
-    assert league.revert_decision(ledger(subs, ladder=few)) is None
-    # A small drop on 30 games is within noise too.
-    close = {k: v for k, v in games.items() if k.startswith("p")}
-    close |= {f"l{i}": {"live": 2, "kind": "ranked", "win": i % 10 < 6} for i in range(30)}
-    assert league.revert_decision(ledger(subs, ladder=close)) is None
-    reverted = [*subs, {"version": 1, "time": "c", "ok": True, "reason": "revert: v2 did worse"}]
-    assert league.revert_decision(ledger(reverted, ladder=games)) is None
+def _games(live: int, wins: list[bool], start: int) -> dict:
+    return {
+        f"g{live}-{i}": {"live": live, "kind": "ranked", "win": w, "time": iso(start + i * 60)}
+        for i, w in enumerate(wins)
+    }
+
+
+def test_struggling_needs_more_than_noise():
+    t0 = 1_800_000_000
+    subs = [
+        {"version": 1, "time": iso(t0), "ok": True},
+        {"version": 2, "time": iso(t0 + 100_000), "ok": True},
+    ]
+    old = _games(1, [i % 2 == 0 for i in range(60)], t0 + 10)  # 50% before
+    # 4 losses in a row is 6% likely at 50%: noise.
+    assert (
+        league.struggling(
+            ledger(subs, ladder=old | _games(2, [True, False, False, False, False], t0 + 100_100))
+        )
+        is None
+    )
+    # 5 in a row is 3%: losing beyond chance.
+    assert "5 ranked games in a row" in league.struggling(
+        ledger(subs, ladder=old | _games(2, [False] * 5, t0 + 100_100))
+    )
+    # 2 of 14 wins (ending on a win) fails the binomial test.
+    rec = [True, False, False, False, False, True] + [False, False, False] + [False] * 5
+    rec[-1] = True
+    assert "won 3/14" in league.struggling(ledger(subs, ladder=old | _games(2, rec, t0 + 100_100)))
+    # When we usually lose (30%), a 5-loss streak is normal.
+    weak = _games(1, [i % 10 < 3 for i in range(60)], t0 + 10)
+    assert league.struggling(ledger(subs, ladder=weak | _games(2, [False] * 5, t0 + 100_100))) is None
+
+
+def test_fast_upload_instead_of_revert():
+    t0 = 1_800_000_000
+    subs = [
+        {"version": 1, "time": iso(t0), "ok": True},
+        {"version": 2, "time": iso(t0 + 100_000), "ok": True},
+    ]
+    games = _games(1, [i % 2 == 0 for i in range(60)], t0 + 10) | _games(2, [False] * 6, t0 + 100_100)
+    ch = champ({})
+    ch["version"] = 3
+    now = t0 + 100_000 + 45 * 60  # 45 min after the last upload: < 3 h, > 30 min
+    dec = league.release_decision(ch, ledger(subs, ladder=games), now)
+    assert dec and dec[0] == 3 and dec[1].startswith("fast upload")
+    ch["version"] = 2  # nothing newer to upload: never goes back to v1
+    assert league.release_decision(ch, ledger(subs, ladder=games), now) is None
+    assert not hasattr(league, "revert_decision")
 
 
 def test_review_keeps_reviewer_notes():
