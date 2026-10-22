@@ -3722,6 +3722,7 @@
   {
    "added": "2026-10-22T07:15:47Z",
    "claimed": "2026-10-22T07:15:47Z",
+   "finished": "2026-10-22T07:16:48Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 149,
    "kind": "rollout",
@@ -3730,8 +3731,19 @@
     "it": 19,
     "part": 1
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "arm": 1,
+    "decisions": 1228,
+    "games": 78,
+    "it": 19,
+    "maps": [
+     "swirl",
+     "the-farm",
+     "yellow-brick-road"
+    ],
+    "win": 0.564
+   },
+   "status": "done"
   }
  ]
 }
