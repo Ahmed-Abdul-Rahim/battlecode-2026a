@@ -4950,6 +4950,15 @@
    "time": "2026-10-21T17:30:26.108Z",
    "win": true
   },
+  "c66e5579-face-4c1a-915e-b73317e69679": {
+   "kind": "ranked",
+   "live": 22,
+   "map": "corners",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "time": "2026-10-22T13:30:20.700Z",
+   "win": false
+  },
   "c681091a-bc5c-4b91-ab4c-d86e5c1f434f": {
    "kind": "ranked",
    "live": 21,
@@ -5643,6 +5652,15 @@
    "time": "2026-10-20T16:10:05.811Z",
    "win": false
   },
+  "df37b4b5-d78c-4006-bf63-313af8cba9fc": {
+   "kind": "ranked",
+   "live": 22,
+   "map": "starfish",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "time": "2026-10-22T13:30:20.700Z",
+   "win": false
+  },
   "df460d6a-882c-47b2-ac82-aebc971bb5a8": {
    "kind": "ranked",
    "live": 15,
@@ -5706,6 +5724,15 @@
    "time": "2026-10-22T07:10:14.654Z",
    "win": false
   },
+  "e0ee732d-e5d2-4930-abe3-c85e8af0b56c": {
+   "kind": "ranked",
+   "live": 22,
+   "map": "shortcut",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "time": "2026-10-22T13:30:20.700Z",
+   "win": true
+  },
   "e114718e-a91f-41c0-b257-4e4b12748950": {
    "kind": "ranked",
    "live": 21,
@@ -5750,6 +5777,15 @@
    "oppId": "23bf8120-448a-424e-8353-cca7079209f4",
    "time": "2026-10-22T08:10:22.177Z",
    "win": false
+  },
+  "e32655b7-d134-4d05-b718-e9d5537a0d15": {
+   "kind": "ranked",
+   "live": 22,
+   "map": "packs",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "time": "2026-10-22T13:30:20.700Z",
+   "win": true
   },
   "e329e08e-668e-4cd8-9cf6-7bca6f1be22b": {
    "kind": "ranked",
@@ -5957,6 +5993,15 @@
    "oppId": "d23f2627-97ea-48b1-b353-5bf2368008f4",
    "time": "2026-10-21T18:10:15.060Z",
    "win": true
+  },
+  "e97fbe83-8f3a-490e-b4c8-5665f2a0efb5": {
+   "kind": "ranked",
+   "live": 22,
+   "map": "lanes",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "time": "2026-10-22T13:30:20.700Z",
+   "win": false
   },
   "ea2dc8bd-9deb-45b7-ad04-0e6d150ca873": {
    "kind": "ranked",
@@ -12909,6 +12954,57 @@
    "oppId": "4fbe2b8b-0a69-4dd5-b3f0-d8787101d7bc",
    "status": "open",
    "time": "2026-10-22T13:00:16.320Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 8
+   },
+   "deaths_them": 7,
+   "deaths_us": 10,
+   "gems_them": "1024",
+   "gems_us": "984",
+   "id": "e97fbe83-8f3a-490e-b4c8-5665f2a0efb5",
+   "map": "lanes",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "status": "open",
+   "time": "2026-10-22T13:30:20.700Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 14,
+    "champion": 73
+   },
+   "deaths_them": 32,
+   "deaths_us": 87,
+   "gems_them": "1011",
+   "gems_us": "162",
+   "id": "df37b4b5-d78c-4006-bf63-313af8cba9fc",
+   "map": "starfish",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "status": "open",
+   "time": "2026-10-22T13:30:20.700Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 5,
+    "champion": 9
+   },
+   "deaths_them": 14,
+   "deaths_us": 14,
+   "gems_them": "1035",
+   "gems_us": "817",
+   "id": "c66e5579-face-4c1a-915e-b73317e69679",
+   "map": "corners",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "status": "open",
+   "time": "2026-10-22T13:30:20.700Z",
    "tries_at": 4
   }
  ],
