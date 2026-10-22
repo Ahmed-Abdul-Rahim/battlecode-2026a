@@ -1139,6 +1139,38 @@ impl Exec<'_> {
         self.opportunistic_attack()
     }
 
+    /// knob2 MICRO_NET (arm 2): the micro network's step, attack target and cast, executed as
+    /// given (illegal parts are skipped, never errors).
+    pub fn micro(&mut self, step: Option<Pos>, target: Option<Pos>, cast: bool) -> Result<()> {
+        self.cast_support()?;
+        let vis = self.vis;
+        let enemy = target.and_then(|t| vis.enemies.iter().find(|e| e.pos == t));
+        if let (true, Some(e)) = (cast, enemy) {
+            self.cast_offensive(e.pos, None, Some(&e.handle), step.is_some())?;
+        }
+        if let Some(e) = enemy {
+            if self.in_attack_range(e.pos) {
+                self.attack_champion(&e.handle);
+            }
+        }
+        if let Some(to) = step {
+            if self.me.can_move()?
+                && self.world.terrain.walkable(to)
+                && !self.occupied.contains(&to)
+                && self.me.move_absolute(vec2(to)).unwrap_or(false)
+            {
+                self.my_pos = to;
+                self.out.moved = true;
+            }
+        }
+        if let Some(e) = enemy {
+            if !self.out.attacked && self.in_attack_range(e.pos) {
+                self.attack_champion(&e.handle);
+            }
+        }
+        Ok(())
+    }
+
     fn retreat(&mut self) -> Result<()> {
         self.cast_support()?;
         self.recall_or_walk_home()

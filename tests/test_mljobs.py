@@ -9,15 +9,34 @@ import experiments as X
 import mljobs as M
 
 
+def test_rl_plan_init_rollouts_update_per_arm():
+    reg = {"jobs": []}
+    assert M.plan_rl(reg) == ("rlinit", {"arm": 1})
+    M.add(reg, "rlinit", {"arm": 1})["status"] = "done"
+    M.add(reg, "rlinit", {"arm": 2})["status"] = "done"
+    kind, params = M.plan_rl(reg)
+    assert kind == "rollout" and params["it"] == 0 and params["part"] == 0
+    for part in range(M.RL_PARTS):
+        M.add(reg, "rollout", {"arm": 1, "it": 0, "part": part})["status"] = "done"
+        M.add(reg, "rollout", {"arm": 2, "it": 0, "part": part})["status"] = "done"
+    kind, params = M.plan_rl(reg)
+    assert kind == "update" and params["it"] == 0
+    M.add(reg, "update", {"arm": 1, "it": 0})["status"] = "done"
+    assert M.rl_state(reg, 1)["it"] == 1 and M.rl_state(reg, 2)["it"] == 0
+    running = M.add(reg, "rollout", {"arm": 1, "it": 1, "part": 0})
+    running["status"] = "running"
+    assert M.rl_state(reg, 1)["rolling"] == 1
+
+
 def test_plan_trains_after_enough_new_shards():
     reg = {"jobs": []}
-    assert M.plan_next(reg)[0] == "gen"
+    assert M.plan_awr(reg)[0] == "gen"
     for _ in range(M.TRAIN_EVERY):
         M.add(reg, "gen", {"explore": 10})["status"] = "done"
-    kind, params = M.plan_next(reg)
+    kind, params = M.plan_awr(reg)
     assert kind == "train" and params["hidden"] == 32
     M.add(reg, "train", params)["status"] = "done"
-    kind, params = M.plan_next(reg)
+    kind, params = M.plan_awr(reg)
     assert kind == "gen" and params["offset"] == M.TRAIN_EVERY * M.GEN_MAPS  # maps rotate
 
 

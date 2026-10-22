@@ -97,8 +97,13 @@ pub mod knob2 {
     /// Gold-rich captures: 1 = the carry (highest base damage, until geared) takes the whole
     /// reward, 2 = the least geared ally does; the others step off the capture tiles.
     pub const GOLD_ORDER: usize = 21;
+    /// RL training builds: the learned heads sample (seeded by this value) instead of taking
+    /// the argmax, and log what they picked (ml/rl). 0 in every shipped build.
+    pub const RL_SEED: usize = 22;
+    /// Arm 2: on fight turns the micro network (weights/micro.bin) moves, targets and casts.
+    pub const MICRO_NET: usize = 23;
 
-    pub const DEFAULTS: [(usize, u8); 22] = [
+    pub const DEFAULTS: [(usize, u8); 24] = [
         (PASSIVE_AWARE, 0),
         (FOCUS, 1),
         (ENDGAME, 1),
@@ -121,6 +126,8 @@ pub mod knob2 {
         (EARLY_GOLD, 0),
         (TP_CRYSTAL, 0),
         (GOLD_ORDER, 0),
+        (RL_SEED, 0),
+        (MICRO_NET, 0),
     ];
 }
 

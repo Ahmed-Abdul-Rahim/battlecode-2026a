@@ -74,6 +74,17 @@ pub fn turn(log: &TurnLog<'_>) {
     );
 }
 
+/// One learned decision (ml/rl): arm, the network's input, the picks per head, their summed
+/// log-probability (x1000) and each head's mask of allowed actions (bits).
+pub fn rl(round: u32, champ: &str, arm: u8, x: &str, picks: &[usize], logp: f32, masks: &[u32]) {
+    cambc::debug_block! {
+        println!(
+            "R {{\"r\":{round},\"c\":\"{champ}\",\"arm\":{arm},\"x\":\"{x}\",\"a\":{picks:?},\"lp\":{},\"m\":{masks:?}}}",
+            (logp * 1000.0).round() as i64
+        );
+    }
+}
+
 pub fn event(round: u32, champ: &str, kind: &str, value: i64) {
     cambc::debug_block! {
         println!("E {{\"r\":{round},\"c\":\"{champ}\",\"k\":\"{kind}\",\"v\":{value}}}");

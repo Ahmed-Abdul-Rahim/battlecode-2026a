@@ -17,6 +17,7 @@ pub mod features_gen;
 pub mod gate;
 pub mod int8;
 pub mod policy;
+pub mod rl;
 pub mod router;
 pub mod shop;
 

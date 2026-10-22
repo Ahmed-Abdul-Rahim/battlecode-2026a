@@ -43,6 +43,17 @@ OUT = L.SCRATCH / "ml"
 GEN_EXPLORE = 10  # percent of logged turns that explore
 GEN_MAPS = 3  # maps per data job (rotating through the pool)
 TRAIN_EVERY = 6  # new data shards per training run
+# On-policy RL (ml/rl): per iteration RL_PARTS rollout jobs, then one PPO update; every
+# RL_PROMOTE_EVERY iterations the network goes to the experiment queue. Arm 1 (experts + fight
+# target) gets RL_ARM_SHARE of the jobs, arm 2 (micro control, experimental) the rest.
+RL_PARTS = 2
+RL_PROMOTE_EVERY = 5
+RL_ARMS = (1, 2)
+RL_ARM_SHARE = 2 / 3
+RL_WEIGHTS = {1: ("ROUTER", "router.bin"), 2: ("MICRO_NET", "micro.bin")}
+#: Keep every n-th decision per champion (arm 1 decides every turn; its full logs are too big
+#: to share through git each iteration; the rewards in between are kept).
+RL_KEEP_EVERY = {1: 8, 2: 1}
 CLAIM_TTL = X.CLAIM_TTL
 
 
@@ -55,7 +66,7 @@ def save(reg: dict) -> None:
 
 
 def add(reg: dict, kind: str, params: dict | None = None) -> dict:
-    assert kind in ("gen", "train"), kind
+    assert kind in ("gen", "train", "rlinit", "rollout", "update"), kind
     j = {
         "id": 1 + max((x["id"] for x in reg["jobs"]), default=0),
         "kind": kind,
@@ -81,8 +92,51 @@ def next_job(reg: dict, now: float | None = None) -> dict | None:
     return next((j for j in reg["jobs"] if available(j, now)), None)
 
 
+def rl_state(reg: dict, arm: int) -> dict:
+    """Where arm `arm` is: initialised?, iteration (= finished updates), rollouts done/running for
+    it, whether its update is running."""
+    jobs = [j for j in reg["jobs"] if j["params"].get("arm") == arm]
+    done = [j for j in jobs if j["status"] == "done"]
+    it = sum(1 for j in done if j["kind"] == "update" and not j["result"].get("duplicate"))
+    cur = [j for j in jobs if j["params"].get("it") == it]
+    return {
+        "init": any(j["kind"] == "rlinit" for j in done),
+        "init_busy": any(j["kind"] == "rlinit" and j["status"] in ("queued", "running") for j in jobs),
+        "it": it,
+        "rolled": sum(1 for j in cur if j["kind"] == "rollout" and j["status"] == "done"),
+        "rolling": sum(1 for j in cur if j["kind"] == "rollout" and j["status"] in ("queued", "running")),
+        "updating": any(j["kind"] == "update" and j["status"] in ("queued", "running") for j in cur),
+    }
+
+
+def plan_rl(reg: dict) -> tuple[str, dict] | None:
+    """The next RL job, arm 1 first by share; None when both arms wait for running jobs."""
+    work = sum(1 for j in reg["jobs"] if j["params"].get("arm") == 1)
+    total = sum(1 for j in reg["jobs"] if j["params"].get("arm") in RL_ARMS)
+    order = (1, 2) if work <= RL_ARM_SHARE * max(total, 1) else (2, 1)
+    for arm in order:
+        s = rl_state(reg, arm)
+        if not s["init"]:
+            if not s["init_busy"]:
+                return "rlinit", {"arm": arm}
+            continue
+        if s["rolled"] + s["rolling"] < RL_PARTS:
+            return "rollout", {"arm": arm, "it": s["it"], "part": s["rolled"] + s["rolling"]}
+        if s["rolled"] >= RL_PARTS and not s["updating"]:
+            return "update", {"arm": arm, "it": s["it"]}
+    return None
+
+
 def plan_next(reg: dict) -> tuple[str, dict]:
-    """What to add when the queue is empty: train once enough new shards exist, else gen."""
+    """What to add when the queue is empty: RL work first (ml/rl), else the older AWR loop."""
+    rl = plan_rl(reg)
+    if rl:
+        return rl
+    return plan_awr(reg)
+
+
+def plan_awr(reg: dict) -> tuple[str, dict]:
+    """Imitation + offline RL (AWR): train once enough new shards exist, else gen."""
     trains = [j["id"] for j in reg["jobs"] if j["kind"] == "train" and j["status"] == "done"]
     last = max(trains, default=0)
     fresh = [j for j in reg["jobs"] if j["kind"] == "gen" and j["status"] == "done" and j["id"] > last]
@@ -219,6 +273,170 @@ def run_train(j: dict, push: bool) -> dict:
     return rep
 
 
+def rl_path(arm: int, name: str) -> Path:
+    return STORE / "rl" / f"arm{arm}" / name
+
+
+def run_rlinit(j: dict, push: bool) -> dict:
+    """Iteration 0 of an arm: arm 1 imitates the rules' expert choices (warm start from the AWR
+    data shards), arm 2 starts near-uniform. Plus a fresh value network."""
+    from ml.rl import ppo
+
+    arm = j["params"]["arm"]
+    spec = ppo.ARMS[arm]
+    store = store_ready()
+    rng = np.random.default_rng(arm)
+    shards = sorted((store / "data").glob("*.npz"))
+    data = awr.load_shards(shards) if arm == 1 else {"X": np.zeros((0, 0), np.int8)}
+    if arm == 1 and len(data["X"]):
+        keep = rng.permutation(len(data["X"]))[:200_000]
+        x, y = data["X"][keep], np.asarray(data["y"])[keep]
+        policy = ppo.warm_start(x, y, spec, rng)
+    else:
+        x = rng.integers(-127, 128, (2000, spec.n_in)).astype(np.int8)
+        policy = ppo.init_params(spec.n_in, spec.hidden, spec.n_out, rng)
+    value = ppo.init_params(spec.n_in, 64, 1, rng)
+    files = [rl_path(arm, "policy-0000.npz"), rl_path(arm, "value-0000.npz"), rl_path(arm, "policy-0000.bin")]
+    ppo.save(files[0], policy)
+    ppo.save(files[1], value)
+    files[2].write_bytes(ppo.export(policy, x, spec))
+    store_push(files, f"ml-data: rl arm {arm} iteration 0", push)
+    return {"arm": arm, "it": 0, "warm_rows": len(x)}
+
+
+def run_rollout(j: dict, push: bool) -> dict:
+    """Play the arm's current network (sampling, seeded per iteration and part) against the
+    league: faithful mimics on rotating maps, plus each map's exploiter. Store the decisions."""
+    from ml.rl import reward
+
+    arm, it, part = j["params"]["arm"], j["params"]["it"], j["params"]["part"]
+    store_ready()
+    knob, wfile = RL_WEIGHTS[arm]
+    name = f"_rl{arm}"
+    X.knob_variant(name, {knob: 1, "RL_SEED": (it * 7 + part) % 250 + 1})
+    (ROOT / "bots" / name / "src" / "weights" / wfile).write_bytes(
+        rl_path(arm, f"policy-{it:04d}.bin").read_bytes()
+    )
+    led = L.load_ledger()
+    faithful, _ = L.ensure_mimics(led)
+    pool = sorted(L.trainable_maps(led).items())
+    k = (it * RL_PARTS + part) * GEN_MAPS
+    maps = [pool[(k + i) % len(pool)] for i in range(min(GEN_MAPS, len(pool)))]
+    out = OUT / f"rl{arm}-{it:04d}-{part}"
+    res = runner.run_pairs([p for o in faithful for p in ((name, o), (o, name))], [m for _, m in maps], out)
+    xpl = L.ensure_exploiters()
+    for mp, path in maps:
+        if mp in xpl:
+            res += runner.run_pairs([(name, xpl[mp]), (xpl[mp], name)], [path], out / f"xpl-{mp}")
+    parts, wins = [], 0.0
+    for r in res:
+        side = "a" if r.bot_a == name else "b"
+        ours, theirs = (r.gems_a, r.gems_b) if side == "a" else (r.gems_b, r.gems_a)
+        won = r.score_for(name)
+        wins += won
+        try:
+            parts.append(
+                reward.game_samples(
+                    Path(r.replay),
+                    Path(r.stats),
+                    side,
+                    arm,
+                    won,
+                    (ours - theirs) / max(ours + theirs, 1),
+                    RL_KEEP_EVERY[arm],
+                )
+            )
+        except (OSError, KeyError, ValueError):
+            continue
+    data = reward.concat(parts)
+    shard = rl_path(arm, f"it{it:04d}-p{part}-{L.HOST}.npz")
+    shard.parent.mkdir(parents=True, exist_ok=True)
+    np.savez_compressed(shard, **data) if data else None
+    if data:
+        store_push([shard], f"ml-data: rl arm {arm} it {it} part {part} ({len(data['R'])} decisions)", push)
+    shutil.rmtree(out, ignore_errors=True)
+    return {
+        "arm": arm,
+        "it": it,
+        "games": len(res),
+        "win": round(wins / max(len(res), 1), 3),
+        "decisions": len(data.get("R", [])),
+        "maps": [m for m, _ in maps],
+    }
+
+
+def run_update(j: dict, reg: dict, push: bool) -> dict:
+    """PPO on the iteration's rollouts -> the next network; every RL_PROMOTE_EVERY iterations it
+    is queued as an experiment (first in line), so it only ships through the gate."""
+    from ml.rl import ppo, reward
+
+    arm, it = j["params"]["arm"], j["params"]["it"]
+    dup = [
+        x
+        for x in reg["jobs"]
+        if x is not j
+        and x["kind"] == "update"
+        and x["params"] == j["params"]
+        and x["status"] in ("running", "done")
+        and not x["result"].get("duplicate")
+    ]
+    if dup:
+        return {"arm": arm, "it": it, "duplicate": True}
+    spec = ppo.ARMS[arm]
+    store = store_ready()
+    shards = sorted((store / "rl" / f"arm{arm}").glob(f"it{it:04d}-p*.npz"))
+    data = reward.concat([dict(np.load(s)) for s in shards])
+    if not data:
+        return {"arm": arm, "it": it, "skipped": "no decisions logged"}
+    policy = ppo.load(rl_path(arm, f"policy-{it:04d}.npz"))
+    value = ppo.load(rl_path(arm, f"value-{it:04d}.npz"))
+    m = ppo.update(policy, value, data, spec, np.random.default_rng(it))
+    nxt = it + 1
+    files = [
+        rl_path(arm, f"policy-{nxt:04d}.npz"),
+        rl_path(arm, f"value-{nxt:04d}.npz"),
+        rl_path(arm, f"policy-{nxt:04d}.bin"),
+    ]
+    ppo.save(files[0], policy)
+    ppo.save(files[1], value)
+    files[2].write_bytes(ppo.export(policy, data["X"], spec))
+    store_push(files, f"ml-data: rl arm {arm} iteration {nxt}", push)
+    rolls = [
+        x
+        for x in reg["jobs"]
+        if x["kind"] == "rollout"
+        and x["params"].get("arm") == arm
+        and x["params"].get("it") == it
+        and x["status"] == "done"
+    ]
+    m.update(
+        arm=arm,
+        it=nxt,
+        shards=len(shards),
+        rollout_win=round(sum(x["result"].get("win", 0) for x in rolls) / max(len(rolls), 1), 3),
+    )
+    if nxt % RL_PROMOTE_EVERY == 0:
+        knob, wfile = RL_WEIGHTS[arm]
+        xreg = X.load()
+        e = X.add(
+            xreg,
+            f"RL arm {arm} ({'experts+target' if arm == 1 else 'micro control'}) iteration {nxt}",
+            "learning",
+            knobs={knob: 1},
+            files={f"bots/main/src/weights/{wfile}": f"ml-data:rl/arm{arm}/policy-{nxt:04d}.bin"},
+            notes=f"PPO on {m['samples']} decisions; rollout win {m['rollout_win']}; reward {m['mean_reward']}.",
+        )
+        xreg["experiments"].remove(e)
+        i = next(
+            (k for k, x in enumerate(xreg["experiments"]) if x["status"] == "queued"),
+            len(xreg["experiments"]),
+        )
+        xreg["experiments"].insert(i, e)
+        X.save(xreg)
+        m["experiment"] = e["id"]
+    return m
+
+
 def finish(j: dict, reg: dict, push: bool) -> None:
     j["finished"] = L.now_iso()
     save(reg)
@@ -243,7 +461,17 @@ def cmd_run(a: argparse.Namespace) -> int:
             L.log(f"ml: job {j['id']} was claimed by another PC; next")
             continue
         try:
-            j["result"] = run_gen(j, a.push) if j["kind"] == "gen" else run_train(j, a.push)
+            kind = j["kind"]
+            if kind == "gen":
+                j["result"] = run_gen(j, a.push)
+            elif kind == "train":
+                j["result"] = run_train(j, a.push)
+            elif kind == "rlinit":
+                j["result"] = run_rlinit(j, a.push)
+            elif kind == "rollout":
+                j["result"] = run_rollout(j, a.push)
+            else:
+                j["result"] = run_update(j, reg, a.push)
             j["status"] = "done"
         except Exception as ex:  # one broken job must not stop the queue
             j["status"] = "failed"

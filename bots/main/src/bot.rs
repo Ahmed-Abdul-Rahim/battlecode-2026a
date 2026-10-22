@@ -7,6 +7,7 @@ use crate::bc_brain::experts::N_EXPERTS;
 use crate::bc_brain::features::{extract, GroupMask, RawEconomy, RawObs, RawSelf};
 use crate::bc_brain::features_gen::SCHEMA_HASH;
 use crate::bc_brain::int8::Mlp;
+use crate::bc_brain::rl::{self, TargetMode};
 use crate::bc_brain::{gate, policy, router, shop, Expert, Intent, Mode};
 use crate::bc_core::belief::{Belief, GroupObs, GroupState, Sighting};
 use crate::bc_core::champion::{AttackType, ChampionKind, KitInfo};
@@ -488,8 +489,17 @@ impl Bot {
             }
             mode = gate::rule_gate(&ctx);
             ctx.fight_bias = self.fight_bias(&ctx, &vis);
-            expert = self.pick_expert(mode, &ctx, me);
+            // knob2 ROUTER with an arm-1 network: it picks the expert and the fight target.
+            let rl_pick = self.rl_policy(mode, &ctx, me, round);
+            expert = rl_pick.map_or_else(|| self.pick_expert(mode, &ctx, me), |p| p.0);
             intent = expert.plan(&ctx);
+            if let Some(tp) = rl_pick.and_then(|p| self.rl_target(p.1, &vis)) {
+                intent = match intent {
+                    Intent::Engage(_) => Intent::Engage(tp),
+                    Intent::Kite(_) => Intent::Kite(tp),
+                    other => other,
+                };
+            }
             // Answer a teammate's call for help: healthy, not carrying a big bag, nothing
             // in our own view, and the fight is close. Safety overrides still win (Routine only).
             let mut assist = None;
@@ -922,6 +932,7 @@ impl Bot {
                 let los_retreat = self.theta.knob2(knob2::LOS_RETREAT) > 0;
                 let tp_crystal = self.theta.knob2(knob2::TP_CRYSTAL) > 0;
                 let weak_first = self.theta.knob2(knob2::WEAK_CAMP_FIRST) > 0;
+                let micro = self.micro_policy(&ctx, &vis, me, my_pos, intent, round);
                 let mut exec = self.exec(me, &vis, my_pos, hurt_this_round);
                 exec.gold_order = gold_order;
                 exec.lock_contested_only = lock_contested_only;
@@ -939,7 +950,11 @@ impl Bot {
                 exec.combo = fsm_bits & (64 | 8) == 64 | 8;
                 exec.stun_lock = stun_lock;
                 exec.dash_in = fsm_bits & (64 | 16) == 64 | 16;
-                exec.execute(intent)?;
+                if let Some((step, target, cast)) = micro {
+                    exec.micro(step, target, cast)?;
+                } else {
+                    exec.execute(intent)?;
+                }
                 exec_out = exec.out;
                 let total = before.saturating_sub(fuel());
                 self.gov.record(Stage::Path, exec_out.path_fuel);
@@ -947,6 +962,13 @@ impl Bot {
             }
             if exec_out.moved {
                 self.last_pos = pos(me.position()?);
+            }
+            // RL training builds: what this turn did (wasted turns cost reward in ml/rl).
+            if self.theta.knob2(knob2::RL_SEED) > 0 {
+                let did = u8::from(exec_out.moved)
+                    | u8::from(exec_out.attacked) << 1
+                    | u8::from(exec_out.cast) << 2;
+                telemetry::event(round, champ_name(self.kind), "o", i64::from(did));
             }
             // knob2 UNSTICK bookkeeping: where we ended the turn, and whether anything happened.
             self.recent[self.recent_n % UNSTICK_TURNS] =
@@ -1375,6 +1397,117 @@ impl Bot {
             }
         }
         router::select(mode, ctx, None)
+    }
+
+    /// Arm 1 (knob2 ROUTER with a [`rl::RL_OUTPUTS`]-wide network): expert + fight-target
+    /// mode, sampled while training (knob2 RL_SEED), argmax otherwise. Logged as an `R` line.
+    fn rl_policy(
+        &self,
+        mode: Mode,
+        ctx: &Context,
+        me: &Champion,
+        round: u32,
+    ) -> Option<(Expert, TargetMode)> {
+        if self.theta.knob2(knob2::ROUTER) == 0
+            || matches!(mode, Mode::Override(_))
+            || fuel() <= LEARNED_MIN_FUEL
+        {
+            return None;
+        }
+        LEARNED.with(|cell| {
+            let mlp = cell.get_or_init(|| Mlp::parse_for_schema(ROUTER_BLOB, SCHEMA_HASH).ok()).as_ref()?;
+            if mlp.output_len() != rl::RL_OUTPUTS {
+                return None;
+            }
+            let raw = self.raw_obs(ctx, me).ok()?;
+            let features = extract(&raw, GroupMask::ALL);
+            let mut logits = [0i32; rl::RL_OUTPUTS];
+            mlp.forward(features.values(), Some(&self.theta.film[..]), &mut logits);
+            let shift = mlp.layers.last().map_or(0, |l| l.shift);
+            let seed = self.theta.knob2(knob2::RL_SEED);
+            let u = |head: u8| (seed > 0).then(|| rl::uniform(self.turns, self.slot, seed, head));
+            let emask: [bool; 9] = core::array::from_fn(|i| Expert::from_index(i).is_some_and(|e| feasible(e, ctx)));
+            let fight = ctx.enemy.is_some();
+            let tmask = [true, fight, fight, fight];
+            let (ei, lp1) = rl::pick(&logits[rl::EXPERT_HEAD], &emask, shift, u(0))?;
+            let (ti, lp2) = rl::pick(&logits[rl::TARGET_HEAD], &tmask, shift, u(1))?;
+            cambc::debug_block! {
+                telemetry::rl(round, champ_name(self.kind), 1, &features.to_hex(), &[ei, ti], lp1 + lp2, &[bits(&emask), bits(&tmask)]);
+            }
+            Some((Expert::from_index(ei)?, TargetMode::from_index(ti)))
+        })
+    }
+
+    /// The enemy a target mode means (None = keep the rules' choice).
+    fn rl_target(&self, mode: TargetMode, vis: &Visible) -> Option<Pos> {
+        let c = vis.enemies.iter().filter(|e| !e.on_spawn && e.dist <= 8);
+        match mode {
+            TargetMode::Rule => None,
+            TargetMode::Nearest => c.min_by_key(|e| e.dist).map(|e| e.pos),
+            TargetMode::Weakest => c.min_by(|a, b| a.hp.total_cmp(&b.hp)).map(|e| e.pos),
+            TargetMode::Carrier => c.max_by_key(|e| e.gems).map(|e| e.pos),
+        }
+    }
+
+    /// Arm 2 (knob2 MICRO_NET): on fight turns the micro network picks (step, attack target,
+    /// cast). Its input is the 109 features plus, per step (stay + 8 directions), whether the
+    /// tile is free and how many enemies can hit it.
+    fn micro_policy(
+        &self,
+        ctx: &Context,
+        vis: &Visible,
+        me: &Champion,
+        my_pos: Pos,
+        intent: Intent,
+        round: u32,
+    ) -> Option<(Option<Pos>, Option<Pos>, bool)> {
+        if self.theta.knob2(knob2::MICRO_NET) == 0
+            || !matches!(intent, Intent::Engage(_) | Intent::Kite(_) | Intent::Retreat)
+            || !vis.enemies.iter().any(|e| !e.on_spawn && e.dist <= 6)
+            || fuel() <= LEARNED_MIN_FUEL
+        {
+            return None;
+        }
+        MICRO.with(|cell| {
+            let mlp = cell
+                .get_or_init(|| {
+                    Mlp::parse_for_schema(MICRO_BLOB, rl::MICRO_SCHEMA)
+                        .ok()
+                        .filter(|m| m.input_len() == rl::MICRO_INPUTS && m.output_len() == rl::MICRO_OUTPUTS)
+                })
+                .as_ref()?;
+            let raw = self.raw_obs(ctx, me).ok()?;
+            let mut x: Vec<i8> = extract(&raw, GroupMask::ALL).values().to_vec();
+            x.resize(rl::MICRO_INPUTS - 18, 0);
+            let occupied = occupied_tiles(vis, my_pos);
+            let steps: [Pos; 9] = core::array::from_fn(|i| if i == 0 { my_pos } else { my_pos + crate::bc_core::geom::DIRS8[i - 1] });
+            let free: [bool; 9] =
+                core::array::from_fn(|i| i == 0 || (self.world.terrain.walkable(steps[i]) && !occupied.contains(&steps[i])));
+            for &f in &free {
+                x.push(if f { 127 } else { 0 });
+            }
+            for &p in &steps {
+                let n = vis.enemies.iter().filter(|e| !e.on_spawn && e.pos.cheb(p) <= e.range).count();
+                x.push((n * 42).min(127) as i8);
+            }
+            let mut logits = [0i32; rl::MICRO_OUTPUTS];
+            mlp.forward(&x, None, &mut logits);
+            let shift = mlp.layers.last().map_or(0, |l| l.shift);
+            let seed = self.theta.knob2(knob2::RL_SEED);
+            let u = |head: u8| (seed > 0).then(|| rl::uniform(self.turns, self.slot, seed, head));
+            let fight = vis.enemies.iter().any(|e| !e.on_spawn && e.dist <= 8);
+            let tmask = [true, fight, fight, fight];
+            let (si, lp1) = rl::pick(&logits[rl::STEP_HEAD], &free, shift, u(2))?;
+            let (ti, lp2) = rl::pick(&logits[rl::MICRO_TARGET_HEAD], &tmask, shift, u(3))?;
+            let (ci, lp3) = rl::pick(&logits[rl::CAST_HEAD], &[true, true], shift, u(4))?;
+            cambc::debug_block! {
+                let hex: String = x.iter().map(|b| format!("{:02x}", *b as u8)).collect();
+                telemetry::rl(round, champ_name(self.kind), 2, &hex, &[si, ti, ci], lp1 + lp2 + lp3, &[bits(&free), bits(&tmask), 3]);
+            }
+            let step = (si > 0).then_some(steps[si]);
+            let target = self.rl_target(TargetMode::from_index(ti), vis);
+            Some((step, target, ci == 1))
+        })
     }
 
     fn learned_expert(&self, ctx: &Context, me: &Champion) -> Option<Expert> {
@@ -2242,6 +2375,8 @@ fn champ_name(kind: ChampionKind) -> &'static str {
 
 /// Learned router weights (BCW1 blob, ml/distill / harness/league_train.py offline RL).
 static ROUTER_BLOB: &[u8] = include_bytes!("weights/router.bin");
+/// Arm 2 network (ml/rl); empty until one is trained, which disables MICRO_NET.
+static MICRO_BLOB: &[u8] = include_bytes!("weights/micro.bin");
 /// Logit gap (int32 accumulator units) the learned router needs over its runner-up.
 const LEARNED_MARGIN: i32 = 1_700;
 /// Below this much fuel left, skip feature extraction + inference (rule router only).
@@ -2249,9 +2384,15 @@ const LEARNED_MIN_FUEL: u64 = 65_000;
 
 thread_local! {
     static LEARNED: std::cell::OnceCell<Option<Mlp>> = const { std::cell::OnceCell::new() };
+    static MICRO: std::cell::OnceCell<Option<Mlp>> = const { std::cell::OnceCell::new() };
 }
 
 /// An expert the situation allows (exploration and the learned router never pick nonsense).
+/// A head's mask as bits (for the `R` log line).
+fn bits(mask: &[bool]) -> u32 {
+    mask.iter().enumerate().fold(0, |b, (i, &m)| b | u32::from(m) << i)
+}
+
 fn feasible(e: Expert, ctx: &Context) -> bool {
     match e {
         Expert::Fight => ctx.enemy.is_some() && ctx.gems < ctx.knobs.big_bag(),
