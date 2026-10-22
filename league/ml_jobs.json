@@ -10350,6 +10350,7 @@
   {
    "added": "2026-10-22T11:31:48Z",
    "claimed": "2026-10-22T11:31:48Z",
+   "finished": "2026-10-22T11:33:16Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 404,
    "kind": "rollout",
@@ -10358,8 +10359,19 @@
     "it": 76,
     "part": 0
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "arm": 1,
+    "decisions": 30288,
+    "games": 78,
+    "it": 76,
+    "maps": [
+     "gemfight",
+     "gold-rush",
+     "great-wall"
+    ],
+    "win": 0.167
+   },
+   "status": "done"
   }
  ]
 }
