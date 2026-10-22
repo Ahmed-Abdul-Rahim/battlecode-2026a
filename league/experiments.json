@@ -4034,6 +4034,8 @@
   {
    "added": "2026-10-22T11:44:45Z",
    "area": "learning",
+   "claimed": "2026-10-22T11:52:45Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 90,
    "notes": "PPO on 22884 decisions; rollout win 0.429; reward -0.088.",
    "results": {},
@@ -4045,7 +4047,7 @@
      "MICRO_NET": 1
     }
    },
-   "status": "queued",
+   "status": "screening",
    "title": "RL arm 2 (micro control) iteration 40"
   }
  ]
