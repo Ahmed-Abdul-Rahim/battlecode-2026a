@@ -8796,6 +8796,20 @@
     "vloss": 1.1426
    },
    "status": "done"
+  },
+  {
+   "added": "2026-10-22T10:30:55Z",
+   "claimed": "2026-10-22T10:30:55Z",
+   "host": "DESKTOP-QVEMEEE",
+   "id": 346,
+   "kind": "rollout",
+   "params": {
+    "arm": 1,
+    "it": 63,
+    "part": 0
+   },
+   "result": {},
+   "status": "running"
   }
  ]
 }
