@@ -1071,6 +1071,15 @@
    "time": "2026-10-21T13:50:14.700Z",
    "win": false
   },
+  "37a6d8c9-ca1b-4234-bb39-2541a670acce": {
+   "kind": "unranked",
+   "live": 17,
+   "map": "corners",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "time": "2026-10-22T07:06:57.965Z",
+   "win": false
+  },
   "37a7191c-c9ef-40c1-bce9-7028c6fdc3fa": {
    "kind": "ranked",
    "live": 1,
@@ -2727,6 +2736,15 @@
    "time": "2026-10-22T05:20:12.743Z",
    "win": false
   },
+  "96e3f593-9dd5-46c3-9775-0526d64ba328": {
+   "kind": "unranked",
+   "live": 17,
+   "map": "interlock",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "time": "2026-10-22T07:06:57.869Z",
+   "win": false
+  },
   "98370cfa-e25f-40a6-8afc-ce928a452fe0": {
    "kind": "ranked",
    "live": 1,
@@ -2752,6 +2770,15 @@
    "opp": "ggez",
    "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
    "time": "2026-10-20T17:10:06.134Z",
+   "win": false
+  },
+  "993a6199-ffb1-409c-9f5c-7c2336c967fd": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "lanes",
+   "opp": "The Flotte Experience",
+   "oppId": "4f895cf2-77c0-4d65-91a6-320d46ecca54",
+   "time": "2026-10-22T07:00:15.627Z",
    "win": false
   },
   "9968c19b-1275-44d5-8b3b-cb7c246e601f": {
@@ -3186,6 +3213,15 @@
    "time": "2026-10-21T13:30:11.453Z",
    "win": true
   },
+  "aec8bdf7-b5ed-44ba-8671-e3eed722ca32": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "corners",
+   "opp": "The Flotte Experience",
+   "oppId": "4f895cf2-77c0-4d65-91a6-320d46ecca54",
+   "time": "2026-10-22T07:00:15.627Z",
+   "win": false
+  },
   "b0c85ad7-b1cb-4c07-83a5-87645cd1a055": {
    "kind": "ranked",
    "live": 1,
@@ -3348,6 +3384,15 @@
    "time": "2026-10-20T16:40:04.457Z",
    "win": true
   },
+  "b8121486-4f10-4ace-8860-f1641dd81ce6": {
+   "kind": "unranked",
+   "live": 17,
+   "map": "the-farm",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "time": "2026-10-22T07:06:57.908Z",
+   "win": true
+  },
   "b8f44646-b79e-4ef8-b2e4-65f4a4f62277": {
    "kind": "ranked",
    "live": 1,
@@ -3356,6 +3401,15 @@
    "oppId": "e39c3d57-1813-4a18-a7e7-2b1df6bb3594",
    "time": "2026-10-21T14:10:17.167Z",
    "win": true
+  },
+  "b90a349c-4d94-4475-bc31-a2307e9eae12": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "fragment",
+   "opp": "The Flotte Experience",
+   "oppId": "4f895cf2-77c0-4d65-91a6-320d46ecca54",
+   "time": "2026-10-22T07:00:15.627Z",
+   "win": false
   },
   "b9139497-9f87-4b2d-9fa5-59697e948962": {
    "kind": "ranked",
@@ -3879,6 +3933,24 @@
    "time": "2026-10-20T19:00:08.517Z",
    "win": true
   },
+  "d9490e63-ec87-4ac6-8e3c-ef68450d0582": {
+   "kind": "unranked",
+   "live": 17,
+   "map": "quadrants",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "time": "2026-10-22T07:06:57.925Z",
+   "win": true
+  },
+  "d9a3e715-0e54-4032-93a2-7b0e866d3023": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "road-of-riches",
+   "opp": "The Flotte Experience",
+   "oppId": "4f895cf2-77c0-4d65-91a6-320d46ecca54",
+   "time": "2026-10-22T07:00:15.627Z",
+   "win": true
+  },
   "da39e432-ee0c-4043-a5bc-d5c789d8eba4": {
    "kind": "ranked",
    "live": 15,
@@ -4013,6 +4085,15 @@
    "oppId": "2451bf9d-9782-4060-b8b4-fc2e7a69ef9a",
    "time": "2026-10-20T16:50:05.756Z",
    "win": true
+  },
+  "de7b6286-3f51-4da9-ab05-ba215ce718cc": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "collision",
+   "opp": "The Flotte Experience",
+   "oppId": "4f895cf2-77c0-4d65-91a6-320d46ecca54",
+   "time": "2026-10-22T07:00:15.628Z",
+   "win": false
   },
   "deb8eb4b-0322-4047-88e6-0d5d52307d0a": {
    "kind": "ranked",
@@ -4202,6 +4283,15 @@
    "oppId": "d5e1fbdf-184c-4e9c-9ccc-e13c53841b14",
    "time": "2026-10-21T13:40:14.979Z",
    "win": false
+  },
+  "e85e4c55-6607-4ed0-9170-0d33c2a990df": {
+   "kind": "unranked",
+   "live": 17,
+   "map": "shortcut",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "time": "2026-10-22T07:06:57.888Z",
+   "win": true
   },
   "e85ebfe5-18db-4d0f-bea0-aaf27a418570": {
    "kind": "ranked",
@@ -9155,6 +9245,107 @@
    "status": "open",
    "time": "2026-10-22T06:50:20.044Z",
    "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 32,
+    "Unknown entity kind (2)": 6
+   },
+   "deaths_them": 29,
+   "deaths_us": 38,
+   "gems_them": "1020",
+   "gems_us": "906",
+   "id": "37a6d8c9-ca1b-4234-bb39-2541a670acce",
+   "map": "corners",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "status": "open",
+   "time": "2026-10-22T07:06:57.965Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 39,
+    "Unknown entity kind (2)": 2
+   },
+   "deaths_them": 42,
+   "deaths_us": 41,
+   "gems_them": "921",
+   "gems_us": "799",
+   "id": "96e3f593-9dd5-46c3-9775-0526d64ba328",
+   "map": "interlock",
+   "opp": "ggez",
+   "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
+   "status": "open",
+   "time": "2026-10-22T07:06:57.869Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 23
+   },
+   "deaths_them": 2,
+   "deaths_us": 23,
+   "gems_them": "1014",
+   "gems_us": "514",
+   "id": "de7b6286-3f51-4da9-ab05-ba215ce718cc",
+   "map": "collision",
+   "opp": "The Flotte Experience",
+   "oppId": "4f895cf2-77c0-4d65-91a6-320d46ecca54",
+   "status": "open",
+   "time": "2026-10-22T07:00:15.628Z",
+   "tries_at": 6
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 27,
+    "Unknown entity kind (2)": 4
+   },
+   "deaths_them": 4,
+   "deaths_us": 31,
+   "gems_them": "998",
+   "gems_us": "108",
+   "id": "b90a349c-4d94-4475-bc31-a2307e9eae12",
+   "map": "fragment",
+   "opp": "The Flotte Experience",
+   "oppId": "4f895cf2-77c0-4d65-91a6-320d46ecca54",
+   "status": "open",
+   "time": "2026-10-22T07:00:15.627Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 9,
+    "Unknown entity kind (2)": 6
+   },
+   "deaths_them": 5,
+   "deaths_us": 15,
+   "gems_them": "1020",
+   "gems_us": "821",
+   "id": "993a6199-ffb1-409c-9f5c-7c2336c967fd",
+   "map": "lanes",
+   "opp": "The Flotte Experience",
+   "oppId": "4f895cf2-77c0-4d65-91a6-320d46ecca54",
+   "status": "open",
+   "time": "2026-10-22T07:00:15.627Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 14,
+    "Unknown entity kind (2)": 6
+   },
+   "deaths_them": 0,
+   "deaths_us": 20,
+   "gems_them": "1009",
+   "gems_us": "972",
+   "id": "aec8bdf7-b5ed-44ba-8671-e3eed722ca32",
+   "map": "corners",
+   "opp": "The Flotte Experience",
+   "oppId": "4f895cf2-77c0-4d65-91a6-320d46ecca54",
+   "status": "open",
+   "time": "2026-10-22T07:00:15.627Z",
+   "tries_at": 4
   }
  ],
  "map_files": {
