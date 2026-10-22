@@ -8225,6 +8225,7 @@
   {
    "added": "2026-10-22T10:05:20Z",
    "claimed": "2026-10-22T10:05:20Z",
+   "finished": "2026-10-22T10:06:15Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 324,
    "kind": "rollout",
@@ -8233,8 +8234,19 @@
     "it": 29,
     "part": 1
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "arm": 2,
+    "decisions": 4918,
+    "games": 78,
+    "it": 29,
+    "maps": [
+     "gold-rush",
+     "great-wall",
+     "hooks"
+    ],
+    "win": 0.487
+   },
+   "status": "done"
   }
  ]
 }
