@@ -486,6 +486,15 @@
    "time": "2026-10-22T06:10:11.799Z",
    "win": true
   },
+  "149bd108-3d50-4157-bec7-6fb796c5fe71": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "rows",
+   "opp": "Electric Shard Casters",
+   "oppId": "1fd7861b-b197-4ea9-b94d-0d5a70f69758",
+   "time": "2026-10-22T09:20:19.205Z",
+   "win": true
+  },
   "14d56491-2408-4223-a389-825b240f9356": {
    "kind": "ranked",
    "live": 1,
@@ -2007,6 +2016,15 @@
    "time": "2026-10-22T04:20:14.332Z",
    "win": false
   },
+  "60c05fbf-cc4a-4e4b-a8a9-c61a12e94724": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "swirl",
+   "opp": "Electric Shard Casters",
+   "oppId": "1fd7861b-b197-4ea9-b94d-0d5a70f69758",
+   "time": "2026-10-22T09:20:19.205Z",
+   "win": true
+  },
   "611c0dcc-9e06-4263-9e92-43e8be530b1e": {
    "kind": "ranked",
    "live": null,
@@ -3150,6 +3168,15 @@
    "time": "2026-10-20T17:10:06.134Z",
    "win": false
   },
+  "98b71f91-2b29-4b10-8552-88597c7b8f8e": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "big-world",
+   "opp": "Electric Shard Casters",
+   "oppId": "1fd7861b-b197-4ea9-b94d-0d5a70f69758",
+   "time": "2026-10-22T09:20:19.205Z",
+   "win": true
+  },
   "993a6199-ffb1-409c-9f5c-7c2336c967fd": {
    "kind": "ranked",
    "live": 17,
@@ -3176,6 +3203,15 @@
    "oppId": "59ffaf30-962d-4729-8cde-f4732f04f436",
    "time": "2026-10-21T13:50:14.700Z",
    "win": true
+  },
+  "9ab3f1cc-e34c-4fd1-a07d-ae6f012836e8": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "pilgrimage",
+   "opp": "Electric Shard Casters",
+   "oppId": "1fd7861b-b197-4ea9-b94d-0d5a70f69758",
+   "time": "2026-10-22T09:20:19.206Z",
+   "win": false
   },
   "9ad90878-9616-4991-beb0-c0b8c6c211c7": {
    "kind": "ranked",
@@ -4670,6 +4706,15 @@
    "oppId": "5e0c725a-b9b4-4523-8739-4427f20b9ce5",
    "time": "2026-10-22T05:40:12.635Z",
    "win": true
+  },
+  "ddbe2203-732d-4036-8411-6905ad213285": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "gem-fields",
+   "opp": "Electric Shard Casters",
+   "oppId": "1fd7861b-b197-4ea9-b94d-0d5a70f69758",
+   "time": "2026-10-22T09:20:19.206Z",
+   "win": false
   },
   "ddc4e992-d884-45ea-a59e-07739bc3be96": {
    "kind": "ranked",
@@ -10376,13 +10421,14 @@
    },
    "deaths_them": 0,
    "deaths_us": 13,
+   "fixed_in": 21,
    "gems_them": "1034",
    "gems_us": "154",
    "id": "1a523160-e3ec-4be4-b1b4-dc48ec2ad2f7",
    "map": "split",
    "opp": "prism best girl",
    "oppId": "38e6d8c4-1608-44f5-956b-08390f564336",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-22T08:21:22.324Z",
    "tries_at": 3
   },
@@ -10756,6 +10802,40 @@
    "status": "open",
    "time": "2026-10-22T09:10:16.236Z",
    "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 9,
+    "Unknown entity kind (2)": 5
+   },
+   "deaths_them": 28,
+   "deaths_us": 14,
+   "gems_them": "1000",
+   "gems_us": "911",
+   "id": "ddbe2203-732d-4036-8411-6905ad213285",
+   "map": "gem-fields",
+   "opp": "Electric Shard Casters",
+   "oppId": "1fd7861b-b197-4ea9-b94d-0d5a70f69758",
+   "status": "open",
+   "time": "2026-10-22T09:20:19.206Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 16,
+    "Unknown entity kind (2)": 8
+   },
+   "deaths_them": 37,
+   "deaths_us": 24,
+   "gems_them": "845",
+   "gems_us": "502",
+   "id": "9ab3f1cc-e34c-4fd1-a07d-ae6f012836e8",
+   "map": "pilgrimage",
+   "opp": "Electric Shard Casters",
+   "oppId": "1fd7861b-b197-4ea9-b94d-0d5a70f69758",
+   "status": "open",
+   "time": "2026-10-22T09:20:19.206Z",
+   "tries_at": 2
   }
  ],
  "map_files": {
