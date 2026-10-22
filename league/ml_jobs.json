@@ -8800,6 +8800,7 @@
   {
    "added": "2026-10-22T10:30:55Z",
    "claimed": "2026-10-22T10:30:55Z",
+   "finished": "2026-10-22T10:31:54Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 346,
    "kind": "rollout",
@@ -8808,8 +8809,19 @@
     "it": 63,
     "part": 0
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "arm": 1,
+    "decisions": 51201,
+    "games": 78,
+    "it": 63,
+    "maps": [
+     "great-wall",
+     "hooks",
+     "interlock"
+    ],
+    "win": 0.0
+   },
+   "status": "done"
   }
  ]
 }
