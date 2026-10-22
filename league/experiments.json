@@ -3116,6 +3116,8 @@
   {
    "added": "2026-10-22T06:35:50Z",
    "area": "learning",
+   "claimed": "2026-10-22T06:38:43Z",
+   "host": "muhammad-usman-Inspiron-14-5410-2-in-1",
    "id": 70,
    "notes": "PPO on 54557 decisions; rollout win 0.333; reward -0.0528.",
    "results": {},
@@ -3127,7 +3129,7 @@
      "ROUTER": 1
     }
    },
-   "status": "queued",
+   "status": "screening",
    "title": "RL arm 1 (experts+target) iteration 10"
   }
  ]
