@@ -192,6 +192,9 @@ const CAMP_FEASIBLE_SLACK: f32 = 3.0;
 const EARLY_RAMP_ROUNDS: u32 = 300;
 const EARLY_RAMP_KNEE: f32 = 20.0;
 const CAMP_INFEASIBLE_VALUE: f32 = 0.1;
+/// Fuel kept for pathing (up to 40k) and acting (5k) after field precompute; 20k let a
+/// field started late in the turn run it out of fuel (champions froze every other turn).
+const PRECOMPUTE_REST_FUEL: u64 = 45_000;
 /// Fuel the rest of a turn needs after target scoring (path 40k + act 5k + reserve).
 const TARGET_REST_FUEL: u64 = 55_000;
 /// Most turns in a row a target is kept unscored when fuel is short.
@@ -485,7 +488,7 @@ impl Bot {
             mark = self.charge(Stage::Brain, mark);
             // First turns: get the fields we need right now.
             let gov = &self.gov;
-            self.world.fields.precompute(&|cost| gov.turn_allows(cost + 20_000, fuel()))?;
+            self.world.fields.precompute(&|cost| gov.turn_allows(cost + PRECOMPUTE_REST_FUEL, fuel()))?;
             mark = self.charge(Stage::Precompute, mark);
 
             let mut ctx = self.context(round, my_pos, hp, max_hp, &vis, &chan, state, me)?;
@@ -1843,20 +1846,13 @@ impl Bot {
             }
         }
         self.target_kept = 0;
-        // knob2 ROUTES: only the current route cluster's groups compete; an empty cluster moves
-        // the route on (once), then everything is scored as before.
-        let mut only = self.route_cluster(my_pos, round, chan);
-        for _ in 0..2 {
-            self.score_targets(my_pos, round, chan, vis, only);
-            if self.target.is_some() || only.is_none() {
-                break;
-            }
-            if !self.route_plan.is_empty() {
-                self.route_plan.remove(0);
-            }
-            only = self.route_cluster(my_pos, round, chan);
-        }
+        // knob2 ROUTES: only the current route cluster's groups compete. If none of them can be
+        // scored (all skipped), drop the plan and score every group once, as without routes:
+        // never more than two scorings in a turn (each is ~1.5k fuel per group).
+        let only = self.route_cluster(my_pos, round, chan);
+        self.score_targets(my_pos, round, chan, vis, only);
         if self.target.is_none() && only.is_some() {
+            self.route_plan.clear();
             self.score_targets(my_pos, round, chan, vis, None);
         }
         self.target_cost = start.saturating_sub(fuel());
@@ -1873,14 +1869,18 @@ impl Bot {
             .collect()
     }
 
-    /// Per cluster: value of its groups that are up (or back within ROUTE_UP_SOON rounds) and
-    /// not claimed by an ally.
-    fn cluster_live(&self, r: &crate::pack::Routes, round: u32, claimed: &[usize]) -> Vec<f32> {
+    /// Per cluster: value of its groups that are up (or back within ROUTE_UP_SOON rounds), not
+    /// claimed by an ally and reachable on foot (a ready field that reaches us; groups whose
+    /// field isn't ready yet count, as in target scoring).
+    fn cluster_live(&self, r: &crate::pack::Routes, round: u32, claimed: &[usize], me: Pos) -> Vec<f32> {
         let mut live = vec![0.0f32; r.clusters];
         for (i, g) in self.world.groups.iter().enumerate() {
             let down = self.belief.expected_state(i, round) == GroupState::Respawning
                 && self.belief.rounds_until_up(i, round) > ROUTE_UP_SOON;
-            if down || claimed.contains(&i) || g.gems + g.gold == 0 {
+            if down || claimed.contains(&i) || g.gems + g.gold == 0 || g.has_monolith {
+                continue;
+            }
+            if self.group_distance(i, me).is_none() {
                 continue;
             }
             if let Some(v) = live.get_mut(r.cluster_of(i)) {
@@ -1901,7 +1901,7 @@ impl Bot {
             return None;
         }
         let claimed = self.claimed_groups(chan);
-        let live = self.cluster_live(&r, round, &claimed);
+        let live = self.cluster_live(&r, round, &claimed, my_pos);
         while let Some(&c) = self.route_plan.first() {
             if live.get(usize::from(c)).is_some_and(|&v| v > 0.0) {
                 break;

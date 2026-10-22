@@ -284,10 +284,15 @@ impl FieldCache {
         if s >= self.roots.len() || self.fields[s].is_some() {
             return Ok(());
         }
+        let before = sdk::fuel();
         let mut field = DistanceField::new()?;
         let mut visited = Bitboard::new()?;
         field.compute(&self.blocked, &self.roots[s], &mut visited, DistanceField::UNREACHABLE)?;
         self.fields[s] = Some(field);
+        // The size-based estimate is low on big maps (fields cost ~20k there): keep the largest
+        // cost seen, plus 1/8, so precompute never starts a field the turn can't afford.
+        let spent = before.saturating_sub(sdk::fuel());
+        self.compute_cost = self.compute_cost.max(spent + spent / 8);
         self.queue.retain(|&g| g != goal);
         Ok(())
     }
