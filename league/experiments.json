@@ -2837,6 +2837,8 @@
   {
    "added": "2026-10-21T15:12:04Z",
    "area": "farming",
+   "claimed": "2026-10-22T01:16:17Z",
+   "host": "muhammad-usman-Inspiron-14-5410-2-in-1",
    "id": 38,
    "notes": "",
    "results": {},
@@ -2845,7 +2847,7 @@
      "REMOTE_FARMER": 1
     }
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Last slot farms far, quiet camps"
   },
   {
