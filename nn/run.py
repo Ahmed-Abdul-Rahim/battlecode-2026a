@@ -59,6 +59,9 @@ SWEEP = [
     {"width": 512, "seed": 2, "lr": 1e-4, "entropy": 0.003, "reward": "shaped"},
     {"width": 1024, "seed": 1, "lr": 1e-4, "entropy": 0.003, "reward": "win"},
 ]
+# Explore harder (try what the rules never do): second in line, after the first baseline run.
+SWEEP.insert(1, {"width": 512, "seed": 0, "lr": 1e-4, "entropy": 0.02, "reward": "win"})
+PATCH_EVERY = 6 * 3600
 REWARDS = {
     "shaped": dict(data.WEIGHTS),
     "win": {k: (v if k in ("win", "margin", "fault") else 0.0) for k, v in data.WEIGHTS.items()},
@@ -161,6 +164,8 @@ def imitation_data(st: dict) -> None:
     log(f"imitation data: {len(games)} games")
     # Played and parsed in chunks so the replays don't pile up on disk.
     for c in range(0, len(games), 56):
+        if (shard_dir / f"chunk{c // 56:03d}.npz").exists():
+            continue
         res = play_games(games[c : c + 56], out, 512)
         d, m = samples(res, bot, "shaped")
         if d:
@@ -224,6 +229,7 @@ def ppo_run(st: dict, idx: int) -> None:
     train, _ = maps()
     rng = random.Random(1000 * idx + run["it"])
     while not run["done"]:
+        patch_check(st)
         it = run["it"]
         seed = (it * 7 + idx * 31) % 250 + 1
         bot = variant("_nn_play", 2, seed, cur / "teacher.bin")
@@ -270,6 +276,25 @@ def ppo_run(st: dict, idx: int) -> None:
                 run["done"] = True
                 log(f"run {idx}: flat after {run['games']} games; best it {best['it']} {best['train']}")
         save_state(st)
+
+
+def patch_check(st: dict) -> None:
+    """Every PATCH_EVERY: apply a new game patch (SDK, maps) and note it; the runs continue
+    from their current best on the new rules (fine-tune, not restart)."""
+    if time.time() - st.get("patch_checked", 0) < PATCH_EVERY:
+        return
+    st["patch_checked"] = time.time()
+    try:
+        from nn import patch
+
+        rep = patch.run_check(do_apply=True)
+        if rep.get("changed"):
+            st.setdefault("patches", []).append({"id": rep.get("applied_id"), "time": rep["time"],
+                                                 "constants": rep["constants"], "maps": rep["maps"]})
+            log(f"game patch applied: {rep.get('applied_id')} ({len(rep['constants'])} constant changes, maps {rep['maps']})")
+    except Exception as e:  # noqa: BLE001 - a failed check must not stop training
+        log(f"patch check failed: {e}")
+    save_state(st)
 
 
 def cmd_run(_: argparse.Namespace) -> int:
