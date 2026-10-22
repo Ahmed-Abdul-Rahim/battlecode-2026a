@@ -64,12 +64,40 @@ pub mod knob2 {
     pub const PREDICT: usize = 6;
     /// Place the free ward on likely approach paths.
     pub const WARDS: usize = 7;
+    /// Never spend a stun on a unit (champion or camp) that is already stunned: hold it for the
+    /// turn the stun ends, so teammates' stuns chain into a lock.
+    pub const STUN_LOCK: usize = 8;
+    /// Recall and buy before a hard fight or a slow camp when carrying value x 10 gold.
+    pub const UPGRADE_FIRST: usize = 9;
+    /// Join an ally's fight with an enemy champion within this many tiles, at any enemy health
+    /// (kill assist only joins at <= 50%), unless the two of us still clearly lose.
+    pub const TEAM_UP: usize = 10;
+
     /// Use the learned router (weights/router.bin) on complex turns (offline RL, mljobs.py).
     pub const ROUTER: usize = 11;
     /// RL data games: explore a random feasible expert on this many percent of logged turns.
     pub const EXPLORE: usize = 12;
+    /// Attack an enemy recalling alone within this many tiles (damage cancels a recall).
+    pub const PUNISH_RECALL: usize = 13;
+    /// Walking back and forth over two tiles without fighting: recall (or walk home if near).
+    pub const UNSTICK: usize = 14;
+    /// Retreating or recalling within this many tiles of spawn: walk instead (no frozen channel).
+    pub const WALK_HOME: usize = 15;
+    /// Don't take on a group of this many monsters alone, unless geared enough to solo it.
+    pub const SOLO_CAP: usize = 16;
+    /// Alone: easier groups first (fewer monsters rank higher).
+    pub const EASE_FIRST: usize = 17;
+    /// Walk to the weakest monster of a group (HP, then distance), not just the nearest.
+    pub const WEAK_CAMP_FIRST: usize = 18;
+    /// Until 2 emblems, gold on quick groups counts extra (cheap early upgrades).
+    pub const EARLY_GOLD: usize = 19;
+    /// Carry a teleport crystal and use it when it saves enough walking.
+    pub const TP_CRYSTAL: usize = 20;
+    /// Gold-rich captures: 1 = the carry (highest base damage, until geared) takes the whole
+    /// reward, 2 = the least geared ally does; the others step off the capture tiles.
+    pub const GOLD_ORDER: usize = 21;
 
-    pub const DEFAULTS: [(usize, u8); 10] = [
+    pub const DEFAULTS: [(usize, u8); 22] = [
         (PASSIVE_AWARE, 0),
         (FOCUS, 1),
         (ENDGAME, 0),
@@ -78,8 +106,20 @@ pub mod knob2 {
         (CAMP_DIVERT, 0),
         (PREDICT, 0),
         (WARDS, 0),
+        (STUN_LOCK, 0),
+        (UPGRADE_FIRST, 0),
+        (TEAM_UP, 0),
         (ROUTER, 0),
         (EXPLORE, 0),
+        (PUNISH_RECALL, 0),
+        (UNSTICK, 0),
+        (WALK_HOME, 0),
+        (SOLO_CAP, 0),
+        (EASE_FIRST, 0),
+        (WEAK_CAMP_FIRST, 0),
+        (EARLY_GOLD, 0),
+        (TP_CRYSTAL, 0),
+        (GOLD_ORDER, 0),
     ];
 }
 
@@ -622,6 +662,9 @@ mod tests {
     fn knobs2_round_trip_and_default_off() {
         let mut t = sample_theta();
         assert_eq!(t.knob2(knob2::SPACING), 0);
+        for k in knob2::PUNISH_RECALL..=knob2::GOLD_ORDER {
+            assert_eq!(t.knob2(k), 0, "new switches default off");
+        }
         assert_eq!(t.knob2(knob2::FOCUS), 1, "team focus target is on (experiment 43)");
         t.knobs2[knob2::WARDS] = 3;
         let d = ThetaMatch::decode(&t.encode()).unwrap();

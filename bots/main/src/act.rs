@@ -27,6 +27,17 @@ const DEEP_SEARCH_MIN_FUEL: u64 = 75_000;
 /// Altar locks: placement range (tiles) and price (gold).
 const ALTAR_LOCK_RANGE: i32 = 2;
 const ALTAR_LOCK_COST: u32 = 10;
+/// ALTAR_LOCK 2: an altar within this many tiles of equal distance to both spawns is contested.
+const CONTESTED_SLACK: i32 = 3;
+/// TP_CRYSTAL: teleport only when it saves this many steps (the channel itself takes 3
+/// turns), with no enemy this close, and buy one only with this much gold left over.
+const TP_MIN_SAVING: u16 = 7;
+const TP_SAFE_DIST: i32 = 6;
+const TP_BUY_MIN_GOLD: u32 = 40;
+/// WEAK_CAMP_FIRST: one tile of walking is worth this much monster HP.
+const WEAK_HP_PER_TILE: f32 = 100.0;
+/// GOLD_ORDER 1: the carry keeps priority until this much gear (shards; an emblem is 5).
+const CARRY_FULL_GEAR: u32 = 15;
 
 pub struct EnemyView {
     pub handle: Champion,
@@ -42,6 +53,8 @@ pub struct EnemyView {
     pub on_spawn: bool,
     /// Channelling a tribute: a stun, a kill or a new altar lock cancels the whole bag.
     pub tributing: bool,
+    /// Channelling a recall: any damage cancels it (knob2 PUNISH_RECALL).
+    pub recalling: bool,
     pub kind: crate::bc_core::champion::ChampionKind,
 }
 
@@ -52,6 +65,7 @@ pub struct AllyView {
     pub hp: f32,
     pub max_hp: f32,
     pub dps: f32,
+    pub kind: crate::bc_core::champion::ChampionKind,
 }
 
 pub struct CampView {
@@ -143,6 +157,18 @@ pub struct Exec<'a> {
     pub altar_lock: bool,
     /// COMBAT_FSM 64|8: combo cast order against champions (Exec::combo_cast).
     pub combo: bool,
+    /// knob2 STUN_LOCK: hold stuns while the target is already stunned.
+    pub stun_lock: bool,
+    /// knob2 GOLD_ORDER: 1 carry first, 2 catch-up (who takes gold-rich capture rewards).
+    pub gold_order: u8,
+    /// ALTAR_LOCK 2: only lock altars about as close to the enemy spawn as to ours.
+    pub lock_contested_only: bool,
+    /// knob2 LOS_RETREAT: get out of the chasers' sight, then recall.
+    pub los_retreat: bool,
+    /// knob2 TP_CRYSTAL: carry a teleport crystal, use it when it saves enough walking.
+    pub tp_crystal: bool,
+    /// knob2 WEAK_CAMP_FIRST: walk to a group's weakest monster, not the nearest.
+    pub weak_first: bool,
     /// COMBAT_FSM 64|16: melee champions dash into attack range.
     pub dash_in: bool,
     /// TAVI_META: Tavi buys shards anywhere on the map (its passive).
@@ -226,6 +252,16 @@ impl Exec<'_> {
         // One altar lock in the pocket (10 gold) to cancel enemy tributes.
         if self.deny_tribute && gold >= ALTAR_LOCK_COST {
             self.buy_lock()?;
+        }
+        // knob2 TP_CRYSTAL: one crystal in the pocket, from gold the build order didn't need.
+        if self.tp_crystal
+            && self.me.gold_count()? >= TP_BUY_MIN_GOLD
+            && self.me.consumables()[ConsumableType::TpCrystal].count().unwrap_or(1) == 0
+            && self.me.can_buy_consumable(ConsumableType::TpCrystal).unwrap_or(false)
+        {
+            if let Err(e) = self.me.buy_consumable(ConsumableType::TpCrystal) {
+                telemetry::error("buy_crystal", &e);
+            }
         }
         Ok(())
     }
@@ -341,9 +377,56 @@ impl Exec<'_> {
     /// the chosen tile hides an unseen occupant.
     fn walk(&mut self, goal: Goal, threats: &[Threat]) -> Result<()> {
         let before = crate::sdk::fuel();
+        if self.tp_crystal && self.try_teleport(goal)? {
+            self.out.path_fuel += before.saturating_sub(crate::sdk::fuel());
+            return Ok(());
+        }
         let result = self.walk_inner(goal, threats);
         self.out.path_fuel += before.saturating_sub(crate::sdk::fuel());
         result
+    }
+
+    /// knob2 TP_CRYSTAL: start a teleport to the tile within 3 that is closest to `goal` when
+    /// it saves at least TP_MIN_SAVING steps (walls and holes make long detours) and no enemy is
+    /// near (an enemy stun cancels the channel).
+    fn try_teleport(&mut self, goal: Goal) -> Result<bool> {
+        if self.out.moved || self.out.cast || !self.world.fields.is_ready(goal) {
+            return Ok(false);
+        }
+        if self.vis.enemies.iter().any(|e| !e.on_spawn && e.dist <= TP_SAFE_DIST) {
+            return Ok(false);
+        }
+        let crystal = &self.me.consumables()[ConsumableType::TpCrystal];
+        if crystal.count().unwrap_or(0) == 0 {
+            return Ok(false);
+        }
+        let fields = &self.world.fields;
+        let Some(here) = fields.distance(goal, self.my_pos) else { return Ok(false) };
+        let mut best: Option<(u16, Pos)> = None;
+        for dx in -3..=3 {
+            for dy in -3..=3 {
+                let p = Pos::new(self.my_pos.x + dx, self.my_pos.y + dy);
+                if p == self.my_pos || !self.world.terrain.walkable(p) || self.occupied.contains(&p)
+                {
+                    continue;
+                }
+                if let Some(d) = fields.distance(goal, p) {
+                    if best.is_none_or(|(b, _)| d < b) {
+                        best = Some((d, p));
+                    }
+                }
+            }
+        }
+        let Some((d, to)) = best else { return Ok(false) };
+        if here < d + TP_MIN_SAVING {
+            return Ok(false);
+        }
+        if crystal.use_at(vec2(to)).unwrap_or(false) {
+            telemetry::event(0, "", "tp_crystal", i64::from(here - d));
+            self.out.moved = true;
+            return Ok(true);
+        }
+        Ok(false)
     }
 
     fn walk_inner(&mut self, goal: Goal, threats: &[Threat]) -> Result<()> {
@@ -437,6 +520,9 @@ impl Exec<'_> {
                 Err(e) => telemetry::error("recall", &e),
             }
         }
+        if self.los_retreat && !self.vis.enemies.is_empty() && self.hide_then_recall()? {
+            return Ok(());
+        }
         if !self.vis.enemies.is_empty() && !self.hurt_this_round {
             // Hidden with a healthy ally close: hold and let them take the fight.
             let tank_near = self.vis.allies.iter().any(|a| a.dist <= 3 && a.hp >= 0.6 * a.max_hp);
@@ -449,6 +535,51 @@ impl Exec<'_> {
         }
         let threats = self.vis.threats(None);
         self.walk(Goal::AllySpawn, &threats)
+    }
+
+    /// knob2 LOS_RETREAT: out of every nearby enemy's sight and reach, start the recall (they
+    /// can't see us to cancel it); otherwise step towards home onto a tile they can't see.
+    /// True if we recalled or moved.
+    fn hide_then_recall(&mut self) -> Result<bool> {
+        let masks: Vec<cambc::Bitboard> = self
+            .vis
+            .enemies
+            .iter()
+            .filter(|e| !e.on_spawn && e.dist <= 10)
+            .filter_map(|e| e.handle.visible_tiles_from(vec2(e.pos)).ok())
+            .collect();
+        let seen = |p: Pos| masks.iter().any(|m| m.is_set(vec2(p)).unwrap_or(true));
+        if !seen(self.my_pos)
+            && !self.hurt_this_round
+            && self.vis.enemies.iter().all(|e| e.dist > e.range + 2)
+            && self.me.recall().is_ok()
+        {
+            telemetry::event(0, "", "hide_recall", 1);
+            return Ok(true);
+        }
+        if !self.me.can_move()? {
+            return Ok(false);
+        }
+        let world = self.world;
+        let to = DIRS8
+            .iter()
+            .map(|&d| self.my_pos + d)
+            .filter(|&p| world.terrain.walkable(p) && !self.occupied.contains(&p))
+            .min_by_key(|&p| {
+                i32::from(seen(p)) * 1000
+                    + world.fields.distance(Goal::AllySpawn, p).map_or(60, i32::from)
+            });
+        let Some(to) = to else { return Ok(false) };
+        if seen(to) && !seen(self.my_pos) {
+            return Ok(false);
+        }
+        if self.me.move_absolute(vec2(to)).unwrap_or(false) {
+            self.my_pos = to;
+            self.out.moved = true;
+            self.out.tier = Some(Tier::Fallback);
+            return Ok(true);
+        }
+        Ok(false)
     }
 
     /// Step into an adjacent bush that no visible enemy can hit. True if we moved.
@@ -552,12 +683,17 @@ impl Exec<'_> {
             }
         }
         let dist = self.my_pos.cheb(target_pos);
+        // knob2 STUN_LOCK: a stun on a stunned unit is wasted; keep it for when the stun ends
+        // (an ally acting after us then re-stuns, and the stuns chain).
+        let hold_stun = self.stun_lock
+            && (camp.is_some_and(|c| stunned(c)) || enemy.is_some_and(|e| stunned(e)));
         for ability in me.abilities() {
             let Some(info) = ability.info()? else { continue };
             let meta = info.as_dyn();
             let Ok(range) = meta.range() else { continue };
             if dist as f32 > range
                 || (meta.is_exclusive_with_movement() && (will_move || self.out.moved))
+                || (hold_stun && meta.kind() == AbilityKind::Cc)
             {
                 continue;
             }
@@ -751,7 +887,13 @@ impl Exec<'_> {
             }
         }
         let threats = vis.threats(Some(group));
-        if let Some(camp) = targets.iter().copied().min_by_key(|c| c.dist) {
+        let approach = if self.weak_first {
+            let cost = |c: &CampView| c.hp + c.dist as f32 * WEAK_HP_PER_TILE;
+            targets.iter().copied().min_by(|a, b| cost(a).total_cmp(&cost(b)))
+        } else {
+            targets.iter().copied().min_by_key(|c| c.dist)
+        };
+        if let Some(camp) = approach {
             // A group's field leads to *any* of its spawn tiles, which can be out
             // of range of the living camps in a long group: close in on a camp.
             let (goal, range) = (camp.pos, self.kit.attack_range);
@@ -784,10 +926,60 @@ impl Exec<'_> {
     fn capture(&mut self, group: usize) -> Result<()> {
         let on_tile = self.world.group_at(self.my_pos) == Some(group);
         if on_tile {
+            if self.gold_order > 0 && self.yield_capture(group)? {
+                return Ok(());
+            }
             return self.opportunistic_attack();
         }
         let threats = self.vis.threats(None);
         self.walk(Goal::Group(group as u8), &threats)
+    }
+
+    /// knob2 GOLD_ORDER: a capture reward is split among the allies on the capture tiles, so on a
+    /// gold-rich group everyone but the first in the gold order steps off (and guards), and that
+    /// champion gets all of it. Only yields to an ally already standing on the tiles, so the
+    /// capture never stalls. True if we stepped off.
+    fn yield_capture(&mut self, group: usize) -> Result<bool> {
+        let Some(g) = self.world.groups.get(group) else { return Ok(false) };
+        if g.gold < g.gems.max(1) {
+            return Ok(false);
+        }
+        let gear = |c: &Champion| -> u32 {
+            c.item_count().map_or(0, |ic| {
+                ic.iter()
+                    .map(|(it, n)| {
+                        let emblem = crate::bc_core::ledger::decode_item(it as u32 as u8)
+                            .is_some_and(|(_, _, e)| e);
+                        n * if emblem { 5 } else { 1 }
+                    })
+                    .sum()
+            })
+        };
+        let mode = self.gold_order;
+        let key = |gear: u32, dps: f32, kind: u8| -> (u32, i64, u8) {
+            if mode == 2 {
+                (gear, 0, kind)
+            } else {
+                (u32::from(gear >= CARRY_FULL_GEAR), -(dps * 100.0) as i64, kind)
+            }
+        };
+        let my_kind = self.me.champion_name().map_or(0, |n| crate::sdk::kind(n) as u8);
+        let my_dps = crate::sdk::dps(self.kit.base_strength, self.kit.base_focus, self.kit);
+        let mine = key(gear(self.me), my_dps, my_kind);
+        let world = self.world;
+        let ahead = self
+            .vis
+            .allies
+            .iter()
+            .filter(|a| world.group_at(a.pos) == Some(group))
+            .any(|a| key(gear(&a.handle), a.dps, a.kind as u8) < mine);
+        if !ahead {
+            return Ok(false);
+        }
+        telemetry::event(0, "", "gold_order", i64::from(mode));
+        self.leave_spawn_tiles(group)?;
+        self.opportunistic_attack()?;
+        Ok(true)
     }
 
     /// Standing on any spawn tile of a dead group blocks its respawn: step off.
@@ -833,6 +1025,7 @@ impl Exec<'_> {
             }
             // Leave our lock on the altar first: it only blocks the enemy.
             if self.altar_lock
+                && (!self.lock_contested_only || self.contested_altar(altar))
                 && cambc::vision::altar_lock_at(vec2(altar)).is_err()
                 && self.me.consumables()[ConsumableType::AltarLock].count().unwrap_or(0) > 0
                 && self.me.consumables()[ConsumableType::AltarLock]
@@ -852,6 +1045,17 @@ impl Exec<'_> {
         }
         let threats = self.vis.threats(None);
         self.walk(Goal::Altars, &threats)
+    }
+
+    /// ALTAR_LOCK 2: the altar is about as close to the enemy spawn as to ours.
+    fn contested_altar(&self, altar: Pos) -> bool {
+        let theirs = self.world.terrain.enemy_spawn.positions();
+        let Some(d_them) = theirs.iter().map(|p| p.cheb(altar)).min() else { return true };
+        crate::bc_core::tactics::contested(
+            self.world.spawn_hint.cheb(altar),
+            d_them,
+            CONTESTED_SLACK,
+        )
     }
 
     fn engage(&mut self, target: Pos) -> Result<()> {
@@ -950,4 +1154,9 @@ pub fn occupied_tiles(vis: &Visible, me: Pos) -> Vec<Pos> {
         .chain(vis.camps.iter().filter(|c| c.hp > 0.0).map(|c| c.pos))
         .filter(|&p| p != me)
         .collect()
+}
+
+/// The unit carries a stun right now (camps are units too).
+fn stunned(u: &cambc::Unit) -> bool {
+    u.buffs().is_ok_and(|b| b.has_stun())
 }
