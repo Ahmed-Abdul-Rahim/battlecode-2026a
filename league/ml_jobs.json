@@ -1590,6 +1590,7 @@
   {
    "added": "2026-10-22T05:58:36Z",
    "claimed": "2026-10-22T05:58:36Z",
+   "finished": "2026-10-22T05:58:44Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 66,
    "kind": "update",
@@ -1597,8 +1598,16 @@
     "arm": 2,
     "it": 0
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "arm": 2,
+    "it": 1,
+    "kl": 0.0035,
+    "mean_reward": -0.4441,
+    "rollout_win": 0.576,
+    "samples": 7911,
+    "shards": 2
+   },
+   "status": "done"
   }
  ]
 }
