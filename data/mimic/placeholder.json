@@ -1,32 +1,27 @@
 {
  "build": {},
  "cadence": {
-  "bag": 31.8,
+  "bag": 12.5,
   "first_emblem": null,
   "shops_per_100r": null
  },
  "draft": {
-  "3": [
-   3,
-   9,
-   4
-  ],
   "4": [
+   4,
    3,
    9,
-   4,
    10
   ],
   "5": [
+   4,
    3,
    9,
-   4,
    10,
-   0
+   1
   ]
  },
  "games": 10,
  "opening": {},
- "team": "chatswood rsl",
+ "team": "Placeholder",
  "win_rate": 0.5
 }

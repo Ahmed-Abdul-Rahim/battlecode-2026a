@@ -1,7 +1,7 @@
 {
  "build": {},
  "cadence": {
-  "bag": 47.1,
+  "bag": 47.8,
   "first_emblem": null,
   "shops_per_100r": null
  },
@@ -25,8 +25,8 @@
    10
   ]
  },
- "games": 8,
+ "games": 13,
  "opening": {},
  "team": "Univardisty of Shingtonwash",
- "win_rate": 0.75
+ "win_rate": 0.615
 }

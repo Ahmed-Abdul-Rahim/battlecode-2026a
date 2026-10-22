@@ -1854,6 +1854,15 @@
    "time": "2026-10-22T06:30:13.247Z",
    "win": false
   },
+  "5bd0043b-3f44-49b9-b757-ef50073aa750": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "gem-fields",
+   "opp": "Placeholder",
+   "oppId": "a65688e3-cb2b-4e8b-8c6f-771292c1ebe2",
+   "time": "2026-10-22T08:30:15.402Z",
+   "win": false
+  },
   "5c372318-2a1f-4bf5-939c-4e7409133894": {
    "kind": "ranked",
    "live": 1,
@@ -4248,6 +4257,15 @@
    "time": "2026-10-21T17:00:20.987Z",
    "win": false
   },
+  "d86409f6-3c5c-4925-a90e-c6eff70b5cfd": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "big-world",
+   "opp": "Placeholder",
+   "oppId": "a65688e3-cb2b-4e8b-8c6f-771292c1ebe2",
+   "time": "2026-10-22T08:30:15.402Z",
+   "win": true
+  },
   "d8c9d920-7db9-4533-a673-d35849695e2d": {
    "kind": "ranked",
    "live": 1,
@@ -4392,6 +4410,15 @@
    "time": "2026-10-20T16:20:07.815Z",
    "win": false
   },
+  "de53572c-52fe-4400-8d6f-31aa34035c8f": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "reverse-spiral",
+   "opp": "Placeholder",
+   "oppId": "a65688e3-cb2b-4e8b-8c6f-771292c1ebe2",
+   "time": "2026-10-22T08:30:15.402Z",
+   "win": false
+  },
   "de5589a0-ee5c-44f7-95fa-87b351f6b3b0": {
    "kind": "ranked",
    "live": 15,
@@ -4498,6 +4525,15 @@
    "opp": "Aviators",
    "oppId": "0948671e-bedc-4ca1-8dde-2526adff3d0e",
    "time": "2026-10-20T15:50:11.039Z",
+   "win": true
+  },
+  "e15e820d-4c80-4592-b6a3-7c2d395dce42": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "shortcut",
+   "opp": "Placeholder",
+   "oppId": "a65688e3-cb2b-4e8b-8c6f-771292c1ebe2",
+   "time": "2026-10-22T08:30:15.402Z",
    "win": true
   },
   "e16bc712-ccbf-4dad-a9df-b570925811e2": {
@@ -5011,6 +5047,15 @@
    "opp": "0xBURGER",
    "oppId": "23bf8120-448a-424e-8353-cca7079209f4",
    "time": "2026-10-22T08:10:22.177Z",
+   "win": true
+  },
+  "f83d3847-2f07-4783-88c5-e27a1cb4111e": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "lanes",
+   "opp": "Placeholder",
+   "oppId": "a65688e3-cb2b-4e8b-8c6f-771292c1ebe2",
+   "time": "2026-10-22T08:30:15.402Z",
    "win": true
   },
   "f8795093-c7dd-4561-ab76-f5bedc5aea0a": {
@@ -9948,13 +9993,14 @@
    },
    "deaths_them": 2,
    "deaths_us": 76,
+   "fixed_in": 20,
    "gems_them": "1080",
    "gems_us": "0",
    "id": "26792072-1a7c-4240-8309-f560f261dfe4",
    "map": "elk-arena",
    "opp": "prism best girl",
    "oppId": "38e6d8c4-1608-44f5-956b-08390f564336",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-22T08:21:22.412Z",
    "tries_at": 3
   },
@@ -10108,6 +10154,39 @@
    "status": "open",
    "time": "2026-10-22T08:10:22.177Z",
    "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 2
+   },
+   "deaths_them": 9,
+   "deaths_us": 2,
+   "gems_them": "935",
+   "gems_us": "0",
+   "id": "de53572c-52fe-4400-8d6f-31aa34035c8f",
+   "map": "reverse-spiral",
+   "opp": "Placeholder",
+   "oppId": "a65688e3-cb2b-4e8b-8c6f-771292c1ebe2",
+   "status": "open",
+   "time": "2026-10-22T08:30:15.402Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 10,
+    "Unknown entity kind (2)": 3
+   },
+   "deaths_them": 21,
+   "deaths_us": 13,
+   "gems_them": "1004",
+   "gems_us": "432",
+   "id": "5bd0043b-3f44-49b9-b757-ef50073aa750",
+   "map": "gem-fields",
+   "opp": "Placeholder",
+   "oppId": "a65688e3-cb2b-4e8b-8c6f-771292c1ebe2",
+   "status": "open",
+   "time": "2026-10-22T08:30:15.402Z",
+   "tries_at": 3
   }
  ],
  "map_files": {
@@ -10196,10 +10275,10 @@
  ],
  "pool": [
   {
-   "games": 5,
-   "macro_hash": "4bd97ce5d48b",
+   "games": 15,
+   "macro_hash": "f2d528b1785f",
    "name": "prism best girl",
-   "since": "2026-10-22T05:35:37Z",
+   "since": "2026-10-22T08:40:31Z",
    "slug": "prism-best-girl",
    "static": false,
    "teamId": "38e6d8c4-1608-44f5-956b-08390f564336",
@@ -10211,7 +10290,7 @@
    "name": "Intercontinental Fish",
    "since": "2026-10-22T05:35:58Z",
    "slug": "intercontinental-fish",
-   "static": false,
+   "static": true,
    "teamId": "1890540d-1ffc-4847-adbf-d0d08772f268",
    "why": "top2"
   },
@@ -10221,19 +10300,49 @@
    "name": "procless",
    "since": "2026-10-22T05:36:13Z",
    "slug": "procless",
-   "static": false,
+   "static": true,
    "teamId": "8df7e1cd-0d60-413b-9331-f5427ce9ca88",
    "why": "top3"
   },
   {
-   "games": 141,
-   "macro_hash": "7eb6eda8707c",
-   "name": ":3",
-   "since": "2026-10-21T17:54:38Z",
-   "slug": "3",
-   "static": true,
-   "teamId": "bbe481a7-4575-4826-9a3e-f81c28205de8",
+   "games": 55,
+   "macro_hash": "ca6c8dd5c568",
+   "name": "policy wonk",
+   "since": "2026-10-22T08:41:30Z",
+   "slug": "policy-wonk",
+   "static": false,
+   "teamId": "3ec4a701-a9b5-498f-9361-eea4a6dd1cde",
    "why": "top4"
+  },
+  {
+   "games": 151,
+   "macro_hash": "162e98dff954",
+   "name": ":3",
+   "since": "2026-10-22T08:41:52Z",
+   "slug": "3",
+   "static": false,
+   "teamId": "bbe481a7-4575-4826-9a3e-f81c28205de8",
+   "why": "top5"
+  },
+  {
+   "games": 13,
+   "macro_hash": "98534b15782d",
+   "name": "Univardisty of Shingtonwash",
+   "since": "2026-10-22T08:42:12Z",
+   "slug": "univardisty-of-shingtonwash",
+   "static": false,
+   "teamId": "a4350547-b7a1-47b1-9031-4f7f084ad0d8",
+   "why": "top6"
+  },
+  {
+   "games": 180,
+   "macro_hash": "543e5e9601d3",
+   "name": "Trzy Kwaterki",
+   "since": "2026-10-22T08:42:42Z",
+   "slug": "trzy-kwaterki",
+   "static": false,
+   "teamId": "36258abf-3fd0-4827-8fa5-2a217438cf6f",
+   "why": "top7"
   },
   {
    "games": 110,
@@ -10241,38 +10350,8 @@
    "name": "EMPEROR Tung",
    "since": "2026-10-22T05:36:47Z",
    "slug": "emperor-tung",
-   "static": false,
+   "static": true,
    "teamId": "a1e82708-dfd3-4609-8b9a-69f652d12185",
-   "why": "top5"
-  },
-  {
-   "games": 45,
-   "macro_hash": "1d1c67f60510",
-   "name": "policy wonk",
-   "since": "2026-10-22T05:37:07Z",
-   "slug": "policy-wonk",
-   "static": false,
-   "teamId": "3ec4a701-a9b5-498f-9361-eea4a6dd1cde",
-   "why": "top6"
-  },
-  {
-   "games": 8,
-   "macro_hash": "8e77a400cf3a",
-   "name": "Univardisty of Shingtonwash",
-   "since": "2026-10-22T05:37:25Z",
-   "slug": "univardisty-of-shingtonwash",
-   "static": false,
-   "teamId": "a4350547-b7a1-47b1-9031-4f7f084ad0d8",
-   "why": "top7"
-  },
-  {
-   "games": 150,
-   "macro_hash": "5bc1e1d61b19",
-   "name": "Sponge(Albert and Bob)",
-   "since": "2026-10-22T05:37:40Z",
-   "slug": "sponge-albert-and-bob",
-   "static": false,
-   "teamId": "26824601-d225-427f-bd2d-ce8aa9faa392",
    "why": "top8"
   },
   {
@@ -10281,48 +10360,48 @@
    "name": "Zarzorki",
    "since": "2026-10-22T05:38:03Z",
    "slug": "zarzorki",
-   "static": false,
+   "static": true,
    "teamId": "c0a5d0a5-eb8f-4aa7-8d6a-8e74ed78874c",
    "why": "top9"
   },
   {
-   "games": 170,
-   "macro_hash": "91dc8e3048fc",
-   "name": "Trzy Kwaterki",
-   "since": "2026-10-22T05:38:26Z",
-   "slug": "trzy-kwaterki",
-   "static": false,
-   "teamId": "36258abf-3fd0-4827-8fa5-2a217438cf6f",
+   "games": 150,
+   "macro_hash": "5bc1e1d61b19",
+   "name": "Sponge(Albert and Bob)",
+   "since": "2026-10-22T05:37:40Z",
+   "slug": "sponge-albert-and-bob",
+   "static": true,
+   "teamId": "26824601-d225-427f-bd2d-ce8aa9faa392",
    "why": "top10"
   },
   {
    "games": 10,
-   "macro_hash": "7a647ccd8564",
-   "name": "\u200e",
-   "since": "2026-10-22T05:38:47Z",
-   "slug": "b58c08d8",
+   "macro_hash": "11e805d57970",
+   "name": "Placeholder",
+   "since": "2026-10-22T08:43:36Z",
+   "slug": "placeholder",
    "static": false,
-   "teamId": "b58c08d8-498a-4fc7-9585-f4fafaefa688",
+   "teamId": "a65688e3-cb2b-4e8b-8c6f-771292c1ebe2",
+   "why": "loss"
+  },
+  {
+   "games": 15,
+   "macro_hash": "5777072a1993",
+   "name": "CHERI Blossom",
+   "since": "2026-10-22T08:43:51Z",
+   "slug": "cheri-blossom",
+   "static": false,
+   "teamId": "7d07c0f3-d4ef-4722-aad2-2531397e3be9",
    "why": "loss"
   },
   {
    "games": 10,
-   "macro_hash": "c3f04d03eb38",
-   "name": "Agent Perry the Platypus Gang",
-   "since": "2026-10-22T05:39:06Z",
-   "slug": "agent-perry-the-platypus-gang",
+   "macro_hash": "47ea76f22e96",
+   "name": "0xBURGER",
+   "since": "2026-10-22T08:44:21Z",
+   "slug": "0xburger",
    "static": false,
-   "teamId": "598ea864-6da9-41d1-984f-63136069bc50",
-   "why": "loss"
-  },
-  {
-   "games": 10,
-   "macro_hash": "4b512f3e67d2",
-   "name": "chatswood rsl",
-   "since": "2026-10-22T05:39:26Z",
-   "slug": "chatswood-rsl",
-   "static": false,
-   "teamId": "895285b0-fee7-4543-ac50-401017b951eb",
+   "teamId": "23bf8120-448a-424e-8353-cca7079209f4",
    "why": "loss"
   }
  ],
@@ -11366,6 +11445,81 @@
     }
    ],
    "time": "2026-10-22T05:35:16Z"
+  },
+  {
+   "teams": [
+    {
+     "name": "prism best girl",
+     "rank": 1,
+     "rating": 2228.4,
+     "slug": "prism-best-girl",
+     "teamId": "38e6d8c4-1608-44f5-956b-08390f564336"
+    },
+    {
+     "name": "Intercontinental Fish",
+     "rank": 2,
+     "rating": 2188.2,
+     "slug": "intercontinental-fish",
+     "teamId": "1890540d-1ffc-4847-adbf-d0d08772f268"
+    },
+    {
+     "name": "procless",
+     "rank": 3,
+     "rating": 2161.7,
+     "slug": "procless",
+     "teamId": "8df7e1cd-0d60-413b-9331-f5427ce9ca88"
+    },
+    {
+     "name": "policy wonk",
+     "rank": 4,
+     "rating": 2138.9,
+     "slug": "policy-wonk",
+     "teamId": "3ec4a701-a9b5-498f-9361-eea4a6dd1cde"
+    },
+    {
+     "name": ":3",
+     "rank": 5,
+     "rating": 2133.9,
+     "slug": "3",
+     "teamId": "bbe481a7-4575-4826-9a3e-f81c28205de8"
+    },
+    {
+     "name": "Univardisty of Shingtonwash",
+     "rank": 6,
+     "rating": 2087.4,
+     "slug": "univardisty-of-shingtonwash",
+     "teamId": "a4350547-b7a1-47b1-9031-4f7f084ad0d8"
+    },
+    {
+     "name": "Trzy Kwaterki",
+     "rank": 7,
+     "rating": 2066.2,
+     "slug": "trzy-kwaterki",
+     "teamId": "36258abf-3fd0-4827-8fa5-2a217438cf6f"
+    },
+    {
+     "name": "EMPEROR Tung",
+     "rank": 8,
+     "rating": 2063.8,
+     "slug": "emperor-tung",
+     "teamId": "a1e82708-dfd3-4609-8b9a-69f652d12185"
+    },
+    {
+     "name": "Zarzorki",
+     "rank": 9,
+     "rating": 2056.2,
+     "slug": "zarzorki",
+     "teamId": "c0a5d0a5-eb8f-4aa7-8d6a-8e74ed78874c"
+    },
+    {
+     "name": "Sponge(Albert and Bob)",
+     "rank": 10,
+     "rating": 2056.2,
+     "slug": "sponge-albert-and-bob",
+     "teamId": "26824601-d225-427f-bd2d-ce8aa9faa392"
+    }
+   ],
+   "time": "2026-10-22T08:39:49Z"
   }
  ]
 }
