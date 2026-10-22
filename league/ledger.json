@@ -612,6 +612,15 @@
    "time": "2026-10-22T08:21:22.324Z",
    "win": false
   },
+  "1b28b133-a6d3-4cb2-93a5-b5a3dfa7594c": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "rows",
+   "opp": "Opus 5.5",
+   "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
+   "time": "2026-10-22T10:10:16.175Z",
+   "win": false
+  },
   "1bfb2d1c-c351-40d7-97f7-41b525716554": {
    "kind": "ranked",
    "live": null,
@@ -11242,6 +11251,20 @@
    "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
    "status": "open",
    "time": "2026-10-22T10:00:18.611Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {},
+   "deaths_them": 0,
+   "deaths_us": 0,
+   "gems_them": "1000",
+   "gems_us": "920",
+   "id": "1b28b133-a6d3-4cb2-93a5-b5a3dfa7594c",
+   "map": "rows",
+   "opp": "Opus 5.5",
+   "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
+   "status": "open",
+   "time": "2026-10-22T10:10:16.175Z",
    "tries_at": 2
   }
  ],
