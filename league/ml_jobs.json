@@ -1417,14 +1417,17 @@
   {
    "added": "2026-10-22T05:52:23Z",
    "claimed": "2026-10-22T05:52:23Z",
+   "finished": "2026-10-22T05:52:29Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 58,
    "kind": "rlinit",
    "params": {
     "arm": 1
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "error": "KeyError('y is not a file in the archive')"
+   },
+   "status": "failed"
   }
  ]
 }
