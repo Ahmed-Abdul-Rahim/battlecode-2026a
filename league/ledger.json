@@ -279,6 +279,15 @@
    "time": "2026-10-22T06:30:13.246Z",
    "win": false
   },
+  "0b237879-dd22-4b50-8296-a09345349252": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "swirl",
+   "opp": "Prompt Beasts",
+   "oppId": "94f6d660-7c65-40c2-bca0-40d7b66a5005",
+   "time": "2026-10-22T09:50:15.250Z",
+   "win": false
+  },
   "0b379936-fce4-4dd9-a829-1df244af3975": {
    "kind": "ranked",
    "live": 1,
@@ -1053,6 +1062,15 @@
    "time": "2026-10-21T15:00:13.926Z",
    "win": true
   },
+  "2d8ca401-44b6-4c68-bf91-59fdca750f59": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "concentrated-wealth",
+   "opp": "Prompt Beasts",
+   "oppId": "94f6d660-7c65-40c2-bca0-40d7b66a5005",
+   "time": "2026-10-22T09:50:15.250Z",
+   "win": true
+  },
   "2ee21475-09aa-4428-85d7-d3c76a33a247": {
    "kind": "ranked",
    "live": 1,
@@ -1647,6 +1665,15 @@
    "time": "2026-10-22T05:50:11.839Z",
    "win": false
   },
+  "4c097b2c-e5b3-4e86-8c9f-c60d2c810ce4": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "rushbait-v2",
+   "opp": "Prompt Beasts",
+   "oppId": "94f6d660-7c65-40c2-bca0-40d7b66a5005",
+   "time": "2026-10-22T09:50:15.250Z",
+   "win": true
+  },
   "4e0718f5-690b-4790-8d6d-a44c05cad10a": {
    "kind": "ranked",
    "live": 1,
@@ -1897,6 +1924,15 @@
    "opp": "ggez",
    "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
    "time": "2026-10-21T15:10:26.178Z",
+   "win": true
+  },
+  "58c9f3b3-cc46-4c49-aae3-34c293fe5605": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "contest",
+   "opp": "Prompt Beasts",
+   "oppId": "94f6d660-7c65-40c2-bca0-40d7b66a5005",
+   "time": "2026-10-22T09:50:15.250Z",
    "win": true
   },
   "58e2915f-a159-4571-ba54-fb4d6702bc31": {
@@ -4589,6 +4625,15 @@
    "oppId": "d88df6e3-53c7-44ed-874f-67f3caa0578c",
    "time": "2026-10-20T18:50:08.433Z",
    "win": true
+  },
+  "d6883d73-45bc-4871-80e0-e1e83e7a80d2": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "elkring",
+   "opp": "Prompt Beasts",
+   "oppId": "94f6d660-7c65-40c2-bca0-40d7b66a5005",
+   "time": "2026-10-22T09:50:15.250Z",
+   "win": false
   },
   "d696c36c-2439-45ea-809a-8127b5e1983b": {
    "kind": "ranked",
@@ -11027,6 +11072,40 @@
    "status": "open",
    "time": "2026-10-22T09:40:19.254Z",
    "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 11,
+    "Unknown entity kind (2)": 14
+   },
+   "deaths_them": 3,
+   "deaths_us": 25,
+   "gems_them": "1012",
+   "gems_us": "385",
+   "id": "d6883d73-45bc-4871-80e0-e1e83e7a80d2",
+   "map": "elkring",
+   "opp": "Prompt Beasts",
+   "oppId": "94f6d660-7c65-40c2-bca0-40d7b66a5005",
+   "status": "open",
+   "time": "2026-10-22T09:50:15.250Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 55,
+    "Unknown entity kind (2)": 4
+   },
+   "deaths_them": 45,
+   "deaths_us": 59,
+   "gems_them": "1015",
+   "gems_us": "836",
+   "id": "0b237879-dd22-4b50-8296-a09345349252",
+   "map": "swirl",
+   "opp": "Prompt Beasts",
+   "oppId": "94f6d660-7c65-40c2-bca0-40d7b66a5005",
+   "status": "open",
+   "time": "2026-10-22T09:50:15.250Z",
+   "tries_at": 3
   }
  ],
  "map_files": {
