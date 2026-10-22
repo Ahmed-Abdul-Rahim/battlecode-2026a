@@ -307,8 +307,11 @@ newest trained version when \textbf{all} of these are true:
 \item at least 3 hours have passed since the last upload;
 \item we lost a ladder game since then, \textbf{or} the new version wins at least 5\% more against the mimics.
 \end{itemize}
-If the new version then does more than 10\% worse on the ladder (after 10 ranked games each), the
-previous version is put back.
+\textbf{Never back to an old version.} Instead, when the live version loses more than chance explains,
+the next version goes up after only 30 minutes. The live version's ranked games since its upload are
+compared with our earlier versions' last 60 ranked games. Two things count as "beyond chance", each
+under 5\% likely by luck: a closing losing streak (5 in a row when we usually win half) or the whole
+record (from 10 games, exact binomial test). If no newer version exists yet, nothing changes.
 
 The 3 hours count from the last upload's time in \f{league/ledger.json}, not from when the daemon
 started. The daemon checks at the start and the end of every round, so after a restart a due upload goes
