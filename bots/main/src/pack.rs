@@ -127,7 +127,6 @@ impl Routes {
         (i32::from(self.data[at]), i32::from(self.data[at + 1]))
     }
 
-
     /// Walking tiles between the nearest groups of two clusters (255 = unreachable).
     #[must_use]
     pub fn dist(&self, a: usize, b: usize) -> u32 {
