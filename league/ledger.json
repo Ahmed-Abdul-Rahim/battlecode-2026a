@@ -1674,6 +1674,15 @@
    "time": "2026-10-22T05:50:11.839Z",
    "win": false
   },
+  "4b9f5488-2076-4f30-862d-04eaa7a433ed": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "big-world",
+   "opp": "Opus 5.5",
+   "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
+   "time": "2026-10-22T10:10:16.175Z",
+   "win": true
+  },
   "4c097b2c-e5b3-4e86-8c9f-c60d2c810ce4": {
    "kind": "ranked",
    "live": 17,
@@ -2339,6 +2348,15 @@
    "oppId": "fd3a404c-954b-4628-a418-7a8e57fb3783",
    "time": "2026-10-20T17:50:06.264Z",
    "win": true
+  },
+  "6a9d3a3c-5dd0-4318-b936-3a28b2aa6bca": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "fragment",
+   "opp": "Opus 5.5",
+   "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
+   "time": "2026-10-22T10:10:16.174Z",
+   "win": false
   },
   "6aa2a080-1ac6-41bc-97f6-25556315484e": {
    "kind": "ranked",
@@ -5598,6 +5616,15 @@
    "time": "2026-10-21T13:50:14.700Z",
    "win": true
   },
+  "f918eaf2-04f7-45e1-832d-3ae124b32a8f": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "expanse",
+   "opp": "Opus 5.5",
+   "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
+   "time": "2026-10-22T10:10:16.175Z",
+   "win": true
+  },
   "f957f29a-1a2b-4c4f-b278-107ab3528ef4": {
    "kind": "ranked",
    "live": 1,
@@ -5623,6 +5650,15 @@
    "opp": "Pikachu",
    "oppId": "dc24ee25-0f21-4353-8ebf-1ce5a82e22bb",
    "time": "2026-10-22T09:00:17.841Z",
+   "win": true
+  },
+  "fabfa5b0-1b39-4913-9dfc-1bc3eda9fa2a": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "elk-arena",
+   "opp": "Opus 5.5",
+   "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
+   "time": "2026-10-22T10:10:16.175Z",
    "win": true
   },
   "fac53974-8eb7-4760-b824-6ab79d29b193": {
@@ -11266,6 +11302,23 @@
    "status": "open",
    "time": "2026-10-22T10:10:16.175Z",
    "tries_at": 2
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 60,
+    "Unknown entity kind (2)": 2
+   },
+   "deaths_them": 17,
+   "deaths_us": 62,
+   "gems_them": "1012",
+   "gems_us": "248",
+   "id": "6a9d3a3c-5dd0-4318-b936-3a28b2aa6bca",
+   "map": "fragment",
+   "opp": "Opus 5.5",
+   "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
+   "status": "open",
+   "time": "2026-10-22T10:10:16.174Z",
+   "tries_at": 4
   }
  ],
  "map_files": {
