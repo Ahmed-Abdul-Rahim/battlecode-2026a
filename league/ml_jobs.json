@@ -10183,6 +10183,19 @@
     "win": 0.0
    },
    "status": "done"
+  },
+  {
+   "added": "2026-10-22T11:26:24Z",
+   "claimed": "2026-10-22T11:26:24Z",
+   "host": "DESKTOP-QVEMEEE",
+   "id": 398,
+   "kind": "update",
+   "params": {
+    "arm": 1,
+    "it": 74
+   },
+   "result": {},
+   "status": "running"
   }
  ]
 }
