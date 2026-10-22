@@ -1469,6 +1469,18 @@
     "win": 0.588
    },
    "status": "done"
+  },
+  {
+   "added": "2026-10-22T05:54:39Z",
+   "claimed": "2026-10-22T05:54:39Z",
+   "host": "DESKTOP-QVEMEEE",
+   "id": 61,
+   "kind": "rlinit",
+   "params": {
+    "arm": 1
+   },
+   "result": {},
+   "status": "running"
   }
  ]
 }
