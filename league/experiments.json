@@ -2933,6 +2933,8 @@
   {
    "added": "2026-10-21T15:12:04Z",
    "area": "farming",
+   "claimed": "2026-10-22T02:07:49Z",
+   "host": "muhammad-usman-Inspiron-14-5410-2-in-1",
    "id": 40,
    "notes": "",
    "results": {},
@@ -2941,7 +2943,7 @@
      "VALUE_PROFILE": 5
     }
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Camp value: gems + gold"
   },
   {
