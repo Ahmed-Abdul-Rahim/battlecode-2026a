@@ -5319,6 +5319,15 @@
    "time": "2026-10-22T07:40:13.075Z",
    "win": false
   },
+  "eb72f8b9-f60a-4561-b217-6535e73f49eb": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "rushbait-v2",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "time": "2026-10-22T10:30:12.502Z",
+   "win": true
+  },
   "ebd29af3-1093-488f-8b33-f8215513f5fd": {
    "kind": "ranked",
    "live": 1,
