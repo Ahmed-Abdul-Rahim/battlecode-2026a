@@ -486,6 +486,15 @@
    "time": "2026-10-22T06:10:11.799Z",
    "win": true
   },
+  "143985eb-8591-4f7c-9080-e81c97d22d0e": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "interlock",
+   "opp": "Quantum Elk",
+   "oppId": "ee461d0b-afa8-4943-ae64-d0605ffa01a4",
+   "time": "2026-10-22T09:30:19.246Z",
+   "win": false
+  },
   "149bd108-3d50-4157-bec7-6fb796c5fe71": {
    "kind": "ranked",
    "live": 17,
@@ -3573,6 +3582,15 @@
    "time": "2026-10-20T19:50:11.277Z",
    "win": false
   },
+  "a9d2a6ea-df22-4f72-9321-04fb83d25258": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "hooks",
+   "opp": "Quantum Elk",
+   "oppId": "ee461d0b-afa8-4943-ae64-d0605ffa01a4",
+   "time": "2026-10-22T09:30:19.246Z",
+   "win": false
+  },
   "a9efc645-e172-475a-9920-cd7be3fafe26": {
    "kind": "ranked",
    "live": 15,
@@ -4444,6 +4462,15 @@
    "opp": "tvojtatko",
    "oppId": "0263b3aa-28cf-469f-abd3-e07327c6e757",
    "time": "2026-10-21T17:40:16.367Z",
+   "win": true
+  },
+  "d20da4d9-47bf-4711-b63d-a9f4c54b8f52": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "islands",
+   "opp": "Quantum Elk",
+   "oppId": "ee461d0b-afa8-4943-ae64-d0605ffa01a4",
+   "time": "2026-10-22T09:30:19.246Z",
    "win": true
   },
   "d33ff9a7-e1ea-4fc2-9f45-31dd8d2fd56a": {
@@ -10836,6 +10863,40 @@
    "status": "open",
    "time": "2026-10-22T09:20:19.206Z",
    "tries_at": 2
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 7,
+    "Unknown entity kind (2)": 2
+   },
+   "deaths_them": 23,
+   "deaths_us": 9,
+   "gems_them": "660",
+   "gems_us": "506",
+   "id": "a9d2a6ea-df22-4f72-9321-04fb83d25258",
+   "map": "hooks",
+   "opp": "Quantum Elk",
+   "oppId": "ee461d0b-afa8-4943-ae64-d0605ffa01a4",
+   "status": "open",
+   "time": "2026-10-22T09:30:19.246Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 19,
+    "Unknown entity kind (2)": 6
+   },
+   "deaths_them": 20,
+   "deaths_us": 25,
+   "gems_them": "1034",
+   "gems_us": "575",
+   "id": "143985eb-8591-4f7c-9080-e81c97d22d0e",
+   "map": "interlock",
+   "opp": "Quantum Elk",
+   "oppId": "ee461d0b-afa8-4943-ae64-d0605ffa01a4",
+   "status": "open",
+   "time": "2026-10-22T09:30:19.246Z",
+   "tries_at": 4
   }
  ],
  "map_files": {
