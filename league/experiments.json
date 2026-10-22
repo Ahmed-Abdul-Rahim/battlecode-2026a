@@ -794,7 +794,7 @@
    "finished": "2026-10-21T17:13:23Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 44,
-   "notes": "error: ValueError(\"needs rebase: origin/feat/team-endgame conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 e104209eb453a182007c31e8d53097 Re-run: the branch conflicted with the live code after #43 (fixed: #42/#44 are now plain switches on live, the stun-upgrade branch is merged with live).",
+   "notes": "error: ValueError(\"needs rebase: origin/feat/team-endgame conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 e104209eb453a182007c31e8d53097 Re-run: the branch conflicted with the live code after #43 (fixed: #42/#44 are now plain switches on live, the stun-upgrade branch is merged with live). Merged together (#29,#33,#34,#44,#48,#58); combined full check vs the old live: win 0.499->0.621, fitness 0.216->0.395, h2h 0.605.",
    "results": {
     "full": {
      "h2h": 0.5,
@@ -842,7 +842,7 @@
      "ENDGAME": 1
     }
    },
-   "status": "passed",
+   "status": "merged",
    "title": "Endgame mode near a win or tie"
   },
   {
@@ -1030,7 +1030,7 @@
    "finished": "2026-10-21T17:43:23Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 47,
-   "notes": "error: ValueError(\"needs rebase: origin/feat/stun-upgrade conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 033c48b0b4cb7c383c515328e6ee9f Re-run: the branch conflicted with the live code after #43 (fixed: #42/#44 are now plain switches on live, the stun-upgrade branch is merged with live).",
+   "notes": "error: ValueError(\"needs rebase: origin/feat/stun-upgrade conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 033c48b0b4cb7c383c515328e6ee9f Re-run: the branch conflicted with the live code after #43 (fixed: #42/#44 are now plain switches on live, the stun-upgrade branch is merged with live). Superseded by #48 (TEAM_UP 6 was stronger).",
    "results": {
     "full": {
      "h2h": 0.529,
@@ -1079,7 +1079,7 @@
     },
     "ref": "origin/feat/stun-upgrade"
    },
-   "status": "passed",
+   "status": "rejected",
    "title": "Team up: join ally fights within 4"
   },
   {
@@ -1089,7 +1089,7 @@
    "finished": "2026-10-21T20:39:51Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 48,
-   "notes": "error: ValueError(\"needs rebase: origin/feat/stun-upgrade conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 033c48b0b4cb7c383c515328e6ee9f Re-run: the branch conflicted with the live code after #43 (fixed: #42/#44 are now plain switches on live, the stun-upgrade branch is merged with live). Claim released: Abdul-Rahim's PC stopped (no result after 3+ hours).",
+   "notes": "error: ValueError(\"needs rebase: origin/feat/stun-upgrade conflicts with the live code ['100644 604b07eb534ff9a38504a6c1d08c4d0b9480e5c4 1\\\\tbots/main/src/bc_core/memory.rs', '100644 b81410c878f38457c89c80316a1e434a5a8f00d1 2\\\\tbots/main/src/bc_core/memory.rs', '100644 033c48b0b4cb7c383c515328e6ee9f Re-run: the branch conflicted with the live code after #43 (fixed: #42/#44 are now plain switches on live, the stun-upgrade branch is merged with live). Claim released: Abdul-Rahim's PC stopped (no result after 3+ hours). Merged together (#29,#33,#34,#44,#48,#58); combined full check vs the old live: win 0.499->0.621, fitness 0.216->0.395, h2h 0.605.",
    "results": {
     "full": {
      "h2h": 0.658,
@@ -1138,7 +1138,7 @@
     },
     "ref": "origin/feat/stun-upgrade"
    },
-   "status": "passed",
+   "status": "merged",
    "title": "Team up: join ally fights within 6"
   },
   {
@@ -1598,7 +1598,7 @@
    "finished": "2026-10-21T18:39:42Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 28,
-   "notes": "",
+   "notes": "Passed the gate but the gain is within noise; not merged.",
    "results": {
     "full": {
      "h2h": 0.513,
@@ -1645,7 +1645,7 @@
      "HUNT_MODE": 2
     }
    },
-   "status": "passed",
+   "status": "rejected",
    "title": "Endgame hunt when behind / enemy near win"
   },
   {
@@ -1697,7 +1697,7 @@
    "finished": "2026-10-21T18:53:58Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 29,
-   "notes": "",
+   "notes": "Merged together (#29,#33,#34,#44,#48,#58); combined full check vs the old live: win 0.499->0.621, fitness 0.216->0.395, h2h 0.605.",
    "results": {
     "full": {
      "h2h": 0.539,
@@ -1744,7 +1744,7 @@
      "ENDGAME_BANK": 1
     }
    },
-   "status": "passed",
+   "status": "merged",
    "title": "Deliver everything from round 1850"
   },
   {
@@ -1835,7 +1835,7 @@
    "finished": "2026-10-21T20:24:14Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 31,
-   "notes": "",
+   "notes": "Passed the gate but the gain is within noise; not merged.",
    "results": {
     "full": {
      "h2h": 0.474,
@@ -1882,7 +1882,7 @@
      "CAMP_SAFE": 2
     }
    },
-   "status": "passed",
+   "status": "rejected",
    "title": "Don't wake a group alone that kills you"
   },
   {
@@ -1949,7 +1949,7 @@
    "finished": "2026-10-21T20:38:35Z",
    "host": "muhammad-usman-Inspiron-14-5410-2-in-1",
    "id": 33,
-   "notes": "",
+   "notes": "Merged together (#29,#33,#34,#44,#48,#58); combined full check vs the old live: win 0.499->0.621, fitness 0.216->0.395, h2h 0.605.",
    "results": {
     "full": {
      "h2h": 0.539,
@@ -1996,7 +1996,7 @@
      "RECALL_SAFE": 2
     }
    },
-   "status": "passed",
+   "status": "merged",
    "title": "Recall only when nothing can reach us"
   },
   {
@@ -2104,7 +2104,7 @@
    "finished": "2026-10-21T20:47:24Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 58,
-   "notes": "Retreat/recall near spawn walks instead (no frozen 5-turn channel that damage cancels).",
+   "notes": "Retreat/recall near spawn walks instead (no frozen 5-turn channel that damage cancels). Merged together (#29,#33,#34,#44,#48,#58); combined full check vs the old live: win 0.499->0.621, fitness 0.216->0.395, h2h 0.605.",
    "results": {
     "full": {
      "h2h": 0.553,
@@ -2152,7 +2152,7 @@
     },
     "ref": "origin/feat/gaps-2"
    },
-   "status": "passed",
+   "status": "merged",
    "title": "Walk home when spawn is within 6"
   },
   {
@@ -2631,7 +2631,7 @@
    "finished": "2026-10-21T23:41:19Z",
    "host": "muhammad-usman-Inspiron-14-5410-2-in-1",
    "id": 34,
-   "notes": "",
+   "notes": "Merged together (#29,#33,#34,#44,#48,#58); combined full check vs the old live: win 0.499->0.621, fitness 0.216->0.395, h2h 0.605.",
    "results": {
     "full": {
      "h2h": 0.526,
@@ -2678,7 +2678,7 @@
      "ALTAR_LOCK": 1
     }
    },
-   "status": "passed",
+   "status": "merged",
    "title": "Carry and place altar locks"
   },
   {
@@ -2937,7 +2937,7 @@
    "finished": "2026-10-22T02:50:52Z",
    "host": "muhammad-usman-Inspiron-14-5410-2-in-1",
    "id": 40,
-   "notes": "",
+   "notes": "Passed the gate but the gain is within noise; not merged.",
    "results": {
     "full": {
      "h2h": 0.474,
@@ -2984,7 +2984,7 @@
      "VALUE_PROFILE": 5
     }
    },
-   "status": "passed",
+   "status": "rejected",
    "title": "Camp value: gems + gold"
   },
   {
