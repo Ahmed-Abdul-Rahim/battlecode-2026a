@@ -36,6 +36,15 @@
    "time": "2026-10-20T15:40:12.933Z",
    "win": true
   },
+  "01f943ad-3d0f-4f61-902a-ee06bf5283b4": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "road-of-riches",
+   "opp": "Pikachu",
+   "oppId": "dc24ee25-0f21-4353-8ebf-1ce5a82e22bb",
+   "time": "2026-10-22T11:10:50.507Z",
+   "win": false
+  },
   "02c536a2-20a3-4b8f-b0cb-99f0c1d4deb3": {
    "kind": "ranked",
    "live": 15,
@@ -387,6 +396,15 @@
    "time": "2026-10-22T05:50:11.840Z",
    "win": false
   },
+  "10e85a16-74c2-49ea-83f3-2d7cd2e25324": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "collision",
+   "opp": "Pikachu",
+   "oppId": "dc24ee25-0f21-4353-8ebf-1ce5a82e22bb",
+   "time": "2026-10-22T11:10:50.507Z",
+   "win": true
+  },
   "1133fd03-7974-4468-9408-1a601df6a0f9": {
    "kind": "ranked",
    "live": 1,
@@ -502,6 +520,15 @@
    "opp": "LiquidSwords",
    "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
    "time": "2026-10-22T10:30:12.501Z",
+   "win": false
+  },
+  "13015abe-7f25-44cc-857a-6464d7a14dad": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "contest",
+   "opp": "Pikachu",
+   "oppId": "dc24ee25-0f21-4353-8ebf-1ce5a82e22bb",
+   "time": "2026-10-22T11:10:50.506Z",
    "win": false
   },
   "13ecf89e-5a43-4a8f-9a05-6dfef9913731": {
@@ -1916,6 +1943,15 @@
    "oppId": "d23f2627-97ea-48b1-b353-5bf2368008f4",
    "time": "2026-10-21T18:10:15.060Z",
    "win": false
+  },
+  "55ea9c36-7730-40dd-8a06-b0eafc387df6": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "islands",
+   "opp": "Pikachu",
+   "oppId": "dc24ee25-0f21-4353-8ebf-1ce5a82e22bb",
+   "time": "2026-10-22T11:10:50.506Z",
+   "win": true
   },
   "5636bed5-9fc7-4472-8d23-1f012a198de4": {
    "kind": "ranked",
@@ -4417,6 +4453,15 @@
    "opp": "777",
    "oppId": "1158c8e5-3ab7-47da-9a7a-344e175243d0",
    "time": "2026-10-20T21:00:10.929Z",
+   "win": true
+  },
+  "c21454c9-9285-49ee-ae17-2c5a10cd9c01": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "lost-world",
+   "opp": "Pikachu",
+   "oppId": "dc24ee25-0f21-4353-8ebf-1ce5a82e22bb",
+   "time": "2026-10-22T11:10:50.507Z",
    "win": true
   },
   "c28e7039-fe1d-45e3-a313-07c504895841": {
@@ -11779,6 +11824,40 @@
    "status": "open",
    "time": "2026-10-22T11:00:15.199Z",
    "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 1,
+    "Unknown entity kind (2)": 31
+   },
+   "deaths_them": 20,
+   "deaths_us": 32,
+   "gems_them": "909",
+   "gems_us": "664",
+   "id": "01f943ad-3d0f-4f61-902a-ee06bf5283b4",
+   "map": "road-of-riches",
+   "opp": "Pikachu",
+   "oppId": "dc24ee25-0f21-4353-8ebf-1ce5a82e22bb",
+   "status": "open",
+   "time": "2026-10-22T11:10:50.507Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 78,
+    "Unknown entity kind (2)": 7
+   },
+   "deaths_them": 8,
+   "deaths_us": 85,
+   "gems_them": "0",
+   "gems_us": "0",
+   "id": "13015abe-7f25-44cc-857a-6464d7a14dad",
+   "map": "contest",
+   "opp": "Pikachu",
+   "oppId": "dc24ee25-0f21-4353-8ebf-1ce5a82e22bb",
+   "status": "open",
+   "time": "2026-10-22T11:10:50.506Z",
+   "tries_at": 0
   }
  ],
  "map_files": {
