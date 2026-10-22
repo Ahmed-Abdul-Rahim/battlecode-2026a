@@ -7917,6 +7917,7 @@
   {
    "added": "2026-10-22T09:55:34Z",
    "claimed": "2026-10-22T09:55:34Z",
+   "finished": "2026-10-22T09:56:32Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 312,
    "kind": "rollout",
@@ -7925,8 +7926,19 @@
     "it": 28,
     "part": 0
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "arm": 2,
+    "decisions": 22025,
+    "games": 80,
+    "it": 28,
+    "maps": [
+     "corridors",
+     "eight",
+     "elk-arena"
+    ],
+    "win": 0.35
+   },
+   "status": "done"
   }
  ]
 }
