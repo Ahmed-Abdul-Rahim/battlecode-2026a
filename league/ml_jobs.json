@@ -2127,6 +2127,7 @@
   {
    "added": "2026-10-22T06:16:57Z",
    "claimed": "2026-10-22T06:16:57Z",
+   "finished": "2026-10-22T06:17:54Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 87,
    "kind": "rollout",
@@ -2135,8 +2136,19 @@
     "it": 3,
     "part": 0
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "arm": 2,
+    "decisions": 12418,
+    "games": 78,
+    "it": 3,
+    "maps": [
+     "great-wall",
+     "hooks",
+     "interlock"
+    ],
+    "win": 0.308
+   },
+   "status": "done"
   }
  ]
 }
