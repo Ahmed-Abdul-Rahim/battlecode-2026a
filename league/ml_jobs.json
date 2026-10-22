@@ -11579,6 +11579,7 @@
   {
    "added": "2026-10-22T13:03:01Z",
    "claimed": "2026-10-22T13:03:01Z",
+   "finished": "2026-10-22T13:04:15Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 450,
    "kind": "rollout",
@@ -11587,8 +11588,19 @@
     "it": 43,
     "part": 1
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "arm": 2,
+    "decisions": 10759,
+    "games": 78,
+    "it": 43,
+    "maps": [
+     "islands",
+     "lanes",
+     "lost-world"
+    ],
+    "win": 0.577
+   },
+   "status": "done"
   }
  ]
 }
