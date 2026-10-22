@@ -110,8 +110,12 @@ pub mod knob2 {
     /// After the build order is complete, keep buying its last emblem instead of hoarding gold.
     /// On since 2026-10-22: 0.675 vs 0.619 over 320 games (better on 15 maps, worse on 4).
     pub const KEEP_BUYING: usize = 25;
+    /// nn/ teacher (weights/teacher.bin): 1 = log the observation and the rules' choice (imitation
+    /// data), 2 = the teacher picks goal, step, attack and cast (sampling when RL_SEED > 0).
+    /// Local runs only: it needs `--fuel` far above the ladder's 100k.
+    pub const TEACHER: usize = 26;
 
-    pub const DEFAULTS: [(usize, u8); 26] = [
+    pub const DEFAULTS: [(usize, u8); 27] = [
         (PASSIVE_AWARE, 0),
         (FOCUS, 1),
         (ENDGAME, 1),
@@ -138,6 +142,7 @@ pub mod knob2 {
         (MICRO_NET, 0),
         (CLUSTER, 0),
         (KEEP_BUYING, 1),
+        (TEACHER, 0),
     ];
 }
 

@@ -152,20 +152,42 @@ def run_pairs(
     rounds: int | None = None,
     release: bool = False,
     log_limit: int = DEFAULT_LOG_LIMIT,
+    fuel: int | None = None,
+    timeout: int | None = None,
 ) -> list[MatchResult]:
-    """Play every (team A, team B) pair on every map, all in one parallel batch."""
+    """Play every (team A, team B) pair on every map, all in one parallel batch. `fuel` raises
+    the per-turn fuel (local experiments only: the ladder gives 100k)."""
     maps = maps or list_maps()
+    games = [(a, b, m) for m in maps for a, b in dict.fromkeys(pairs)]
+    return run_games(games, out_dir, jobs, rounds, release, log_limit, fuel, timeout)
+
+
+def run_games(
+    games: list[tuple[str, str, Path]],
+    out_dir: Path | None = None,
+    jobs: int | None = None,
+    rounds: int | None = None,
+    release: bool = False,
+    log_limit: int = DEFAULT_LOG_LIMIT,
+    fuel: int | None = None,
+    timeout: int | None = None,
+) -> list[MatchResult]:
+    """Play (team A, team B, map) games, all in one parallel batch. A repeated game gets its own
+    files (deterministic, so only useful when a bot changed in between)."""
     out_dir = (out_dir or ROOT / "runs" / time.strftime("%Y%m%d-%H%M%S")).resolve()
     out_dir.mkdir(parents=True, exist_ok=True)
-    for bot in dict.fromkeys(b for pair in pairs for b in pair):
+    for bot in dict.fromkeys(b for g in games for b in g[:2]):
         build(bot, release)
-    rows, expected = [], []
-    for m in maps:
-        for a, b in dict.fromkeys(pairs):
-            tag = f"{m.stem}__{Path(a).name}-vs-{Path(b).name}"
-            replay, stats = out_dir / f"{tag}.repl26a", out_dir / f"{tag}.json"
-            rows.append(f"{bot_dir(a)} {bot_dir(b)} {m.resolve()} {replay} --statistics {stats}")
-            expected.append((stats, m.stem, a, b, replay))
+    rows, expected, seen = [], [], {}
+    for a, b, m in games:
+        tag = f"{m.stem}__{Path(a).name}-vs-{Path(b).name}"
+        n = seen.get(tag, 0)
+        seen[tag] = n + 1
+        if n:
+            tag = f"{tag}__{n}"
+        replay, stats = out_dir / f"{tag}.repl26a", out_dir / f"{tag}.json"
+        rows.append(f"{bot_dir(a)} {bot_dir(b)} {m.resolve()} {replay} --statistics {stats}")
+        expected.append((stats, m.stem, a, b, replay))
     # Stale files from an earlier batch in the same directory would be read as results.
     for stats, _, _, _, replay in expected:
         Path(stats).unlink(missing_ok=True)
@@ -178,6 +200,10 @@ def run_pairs(
     args += ["--json", "--log-limit", str(log_limit)]
     if rounds:
         args += ["--rounds", str(rounds)]
+    if fuel:
+        args += ["--fuel-quantum", str(fuel)]
+    if timeout:
+        args += ["--timeout", str(timeout)]
     if release:
         args.append("--release")
     proc = subprocess.run(args, cwd=ROOT, env=_env(), capture_output=True, text=True)

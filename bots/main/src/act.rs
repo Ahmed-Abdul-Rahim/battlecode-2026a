@@ -15,7 +15,7 @@ use crate::bc_core::Pos;
 use crate::bc_path::danger::{DangerParams, Threat};
 use crate::bc_path::planner::{fallback_step, Situation};
 use crate::bc_path::{choose_step, DistanceOracle, Goal, Tier};
-use crate::sdk::vec2;
+use crate::sdk::{pos, vec2};
 use crate::telemetry;
 use crate::world::World;
 use cambc::{
@@ -117,6 +117,8 @@ pub struct Outcome {
     pub moved: bool,
     pub attacked: bool,
     pub cast: bool,
+    /// Where the enemy champion we attacked stood (nn/ imitation labels).
+    pub attacked_at: Option<Pos>,
     pub tier: Option<Tier>,
     pub spent: u32,
     /// Fuel spent choosing and making steps (the Path stage).
@@ -646,6 +648,7 @@ impl Exec<'_> {
         match self.me.attack(target) {
             Ok(()) => {
                 self.out.attacked = true;
+                self.out.attacked_at = target.position().ok().map(pos);
                 true
             }
             Err(e) => {

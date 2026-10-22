@@ -23,6 +23,9 @@ use crate::telemetry::{self, TurnLog};
 use crate::world::World;
 use cambc::{CampGroupState, Champion, ChampionState, Result, Team};
 
+#[path = "teacher.rs"]
+mod teacher;
+
 /// Vision radius for deciding which camp groups we can check this turn.
 const VISION: i32 = 8;
 
@@ -86,6 +89,8 @@ pub struct Bot {
     fsm_seen: Option<(ChampionKind, f32)>,
     /// COMBAT_FSM bit 64: last fight-or-flee choice against the visible enemy.
     fsm_fighting: Option<bool>,
+    /// knob2 TEACHER: this champion's previous observations (nn/ pipeline).
+    nn_hist: teacher::History,
 }
 
 /// Engage turns without landing anything before we give up on that enemy.
@@ -275,7 +280,7 @@ impl Bot {
         if slot == 0 {
             telemetry::map_dump(&world);
         }
-        Ok(Self {
+        let bot = Self {
             knobs: Knobs::from_theta(&theta),
             team_size: allies.len().max(1),
             world,
@@ -313,7 +318,12 @@ impl Bot {
             fsm: Fsm::default(),
             fsm_seen: None,
             fsm_fighting: None,
-        })
+            nn_hist: teacher::History::default(),
+        };
+        if bot.teacher_mode() > 0 {
+            bot.teacher_header();
+        }
+        Ok(bot)
     }
 
     pub fn turn(&mut self) -> Result<()> {
@@ -904,6 +914,29 @@ impl Bot {
                 intent = Intent::WalkHome;
                 telemetry::event(round, champ_name(self.kind), "walk_home", 1);
             }
+            // nn/ teacher (knob2 TEACHER): observe; at 2 the network replaces the rules' choice.
+            let teach = self.teacher_mode();
+            let busy = state.intersects(
+                ChampionState::RECALLING | ChampionState::SUBMITTING_GEMS | ChampionState::TELEPORTING,
+            );
+            let nn_obs = (teach > 0 && !busy).then(|| {
+                self.teacher_obs(&ctx, &vis, &chan, me, my_pos, round, hurt_this_round, intent)
+            });
+            let mut nn_choice = None;
+            if let (true, Some(o)) = (teach >= 2, &nn_obs) {
+                // 3 = diagnostic: the rules' own goal through the teacher's control path.
+                let pick = if teach == 3 {
+                    Some(teacher::Choice { a: [o.rule_goal as i32, 0, -1, -1], logp: 0.0 })
+                } else {
+                    self.teacher_pick(o, &self.nn_hist)
+                };
+                if let Some(c) = pick {
+                    if let Some(i) = teacher::intent_of(o, c.a[0] as usize) {
+                        intent = i;
+                    }
+                    nn_choice = Some(c);
+                }
+            }
             self.charge(Stage::Brain, mark);
             let claim = match intent {
                 Intent::ClearCamp(g) | Intent::Capture(g) | Intent::Approach(g) => {
@@ -968,7 +1001,14 @@ impl Bot {
                 exec.combo = fsm_bits & (64 | 8) == 64 | 8;
                 exec.stun_lock = stun_lock;
                 exec.dash_in = fsm_bits & (64 | 16) == 64 | 16;
-                if let Some((step, target, cast)) = micro {
+                let nn_micro = nn_choice.filter(|c| c.a[1] > 0).zip(nn_obs.as_ref()).map(|(c, o)| {
+                    let step = (c.a[1] >= 2).then(|| o.steps[c.a[1] as usize - 1]);
+                    let target = (c.a[2] > 0).then(|| o.enemies[c.a[2] as usize - 1]).flatten();
+                    (step, target, c.a[3] == 1)
+                });
+                if let Some((step, target, cast)) = nn_micro {
+                    exec.micro(step, target, cast)?;
+                } else if let Some((step, target, cast)) = micro {
                     exec.micro(step, target, cast)?;
                 } else {
                     exec.execute(intent)?;
@@ -980,6 +1020,12 @@ impl Bot {
             }
             if exec_out.moved {
                 self.last_pos = pos(me.position()?);
+            }
+            if let Some(o) = &nn_obs {
+                let new_pos = if exec_out.moved { self.last_pos } else { my_pos };
+                let c = nn_choice.unwrap_or_else(|| Self::teacher_labels(o, my_pos, &exec_out, new_pos));
+                self.teacher_log(round, o, &c, teach);
+                self.nn_hist.push(&o.s);
             }
             // RL training builds: what this turn did (wasted turns cost reward in ml/rl).
             if self.theta.knob2(knob2::RL_SEED) > 0 {

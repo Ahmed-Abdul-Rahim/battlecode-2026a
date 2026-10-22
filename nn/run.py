@@ -1,0 +1,314 @@
+"""Loop 3: the teacher pipeline (this PC only; `scripts\\train.ps1 ml`).
+
+    python nn/run.py run        # resume / continue the protocol below, forever
+    python nn/run.py status     # where it is, the learning curves
+    python nn/run.py gate       # the full gate for the best teacher so far
+
+Protocol (docs/architecture.md, Phase 2): imitation data from the rules (TEACHER=1) -> imitation
+per width -> PPO runs (one config each) until their learning curve is flat, judged against the
+rule bot. Nothing is thrown away: every evaluation is appended to runs/nn/state.json.
+Games are deterministic, so evaluations use every (map, side) once.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import random
+import shutil
+import subprocess
+import sys
+import time
+from concurrent.futures import ProcessPoolExecutor
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "harness"))
+sys.path.insert(0, str(ROOT / "tools"))
+
+import experiments as X  # noqa: E402
+from bctools import runner  # noqa: E402
+
+from nn import data  # noqa: E402
+
+OUT = ROOT / "runs" / "nn"
+STATE = OUT / "state.json"
+GPU_PY = Path(os.environ.get("NN_GPU_PY", r"D:\Code\ml-gpu-venv\Scripts\python.exe"))
+HELD_OUT = ["00contest", "00monolith", "01islands", "01corridors"]
+LOG_LIMIT = 64 * 1024 * 1024
+FUEL = {512: 50_000_000, 1024: 200_000_000}
+GAME_TIMEOUT = 900
+ANCHORS = [
+    "baseline", "claude-pillager", "claude-ambusher", "claude-focus",
+    "exploit-qwen-rush", "exploit-qwen-pillager", "exploit-qwen-spawn_camper",
+]
+IMIT_GAMES = 288
+ROLL_GAMES = 56
+EVAL_EVERY = 2  # PPO iterations between evaluations
+PLATEAU_EVALS = 5
+MIN_GAMES = 20_000  # PPO training games before a run may be called flat
+# The sweep, in order: early signal first. Each runs until its curve is flat.
+SWEEP = [
+    {"width": 512, "seed": 0, "lr": 1e-4, "entropy": 0.003, "reward": "shaped"},
+    {"width": 512, "seed": 1, "lr": 1e-4, "entropy": 0.003, "reward": "shaped"},
+    {"width": 512, "seed": 0, "lr": 1e-4, "entropy": 0.003, "reward": "win"},
+    {"width": 512, "seed": 0, "lr": 3e-5, "entropy": 0.01, "reward": "shaped"},
+    {"width": 1024, "seed": 0, "lr": 1e-4, "entropy": 0.003, "reward": "shaped"},
+    {"width": 512, "seed": 2, "lr": 1e-4, "entropy": 0.003, "reward": "shaped"},
+    {"width": 1024, "seed": 1, "lr": 1e-4, "entropy": 0.003, "reward": "win"},
+]
+REWARDS = {
+    "shaped": dict(data.WEIGHTS),
+    "win": {k: (v if k in ("win", "margin", "fault") else 0.0) for k, v in data.WEIGHTS.items()},
+}
+
+
+def log(msg: str) -> None:
+    print(f"{time.strftime('%Y-%m-%d %H:%M:%S')} {msg}", flush=True)
+
+
+def load_state() -> dict:
+    if STATE.exists():
+        return json.loads(STATE.read_text(encoding="utf-8"))
+    return {"stage": "imitation_data", "bc": {}, "runs": [], "snapshots": []}
+
+
+def save_state(st: dict) -> None:
+    OUT.mkdir(parents=True, exist_ok=True)
+    tmp = STATE.with_suffix(".tmp")
+    tmp.write_text(json.dumps(st, indent=1), encoding="utf-8")
+    tmp.replace(STATE)
+
+
+def maps() -> tuple[list[Path], list[Path]]:
+    all_maps = runner.list_maps()
+    train = [m for m in all_maps if m.stem not in HELD_OUT]
+    held = [m for m in all_maps if m.stem in HELD_OUT]
+    return train, held
+
+
+def mimics() -> list[str]:
+    return sorted(p.name for p in (ROOT / "bots").glob("mimic-*") if (p / "Cargo.toml").exists())
+
+
+def variant(name: str, teacher: int, seed: int = 0, weights: Path | None = None) -> str:
+    X.knob_variant(name, {"TEACHER": teacher, "RL_SEED": seed})
+    if weights is not None:
+        shutil.copyfile(weights, ROOT / "bots" / name / "src" / "weights" / "teacher.bin")
+    return name
+
+
+def _parse(job: tuple[str, str, str, float, float, str]) -> dict:
+    replay, stats, side, won, margin, reward = job
+    try:
+        return data.game_samples(Path(replay), Path(stats), side, won, margin, REWARDS[reward])
+    except (OSError, KeyError, ValueError) as e:
+        return {"error": str(e)}
+
+
+def play(pairs: list[tuple[str, str]], maps_: list[Path], out: Path, width: int) -> list:
+    return runner.run_pairs(
+        pairs, maps_, out, log_limit=LOG_LIMIT, fuel=FUEL[width], timeout=GAME_TIMEOUT
+    )
+
+
+def play_games(games: list[tuple[str, str, Path]], out: Path, width: int) -> list:
+    return runner.run_games(games, out, log_limit=LOG_LIMIT, fuel=FUEL[width], timeout=GAME_TIMEOUT)
+
+
+def samples(results: list, bot: str, reward: str) -> tuple[dict, dict]:
+    """Training samples of `bot`'s side in every finished game, parsed in parallel."""
+    jobs = []
+    for r in results:
+        if r.winner is None and r.rounds == 0:
+            continue
+        side = "a" if r.bot_a == bot else "b"
+        ours, theirs = (r.gems_a, r.gems_b) if side == "a" else (r.gems_b, r.gems_a)
+        jobs.append((r.replay, r.stats, side, r.score_for(bot), (ours - theirs) / max(ours + theirs, 1), reward))
+    with ProcessPoolExecutor(max_workers=max(2, (os.cpu_count() or 4) - 4)) as ex:
+        parts = list(ex.map(_parse, jobs))
+    errors = [p["error"] for p in parts if "error" in p]
+    d = data.concat([p for p in parts if p and "error" not in p])
+    wins = sum(r.score_for(bot) for r in results)
+    return d, {"games": len(results), "win": round(wins / max(len(results), 1), 3), "parse_errors": len(errors)}
+
+
+def gpu(args: list[str]) -> dict:
+    p = subprocess.run([str(GPU_PY), "-X", "utf8", str(ROOT / "nn" / "train.py"), *args],
+                       cwd=ROOT, capture_output=True, text=True)
+    if p.returncode != 0:
+        raise RuntimeError(f"train.py failed: {p.stderr[-2000:]}")
+    return json.loads(p.stdout.strip().splitlines()[-1])
+
+
+# ---------------------------------------------------------------- stages
+
+
+def imitation_data(st: dict) -> None:
+    train, _ = maps()
+    opps = ["main", *ANCHORS, *mimics()]
+    rng = random.Random(1)
+    bot = variant("_nn_rules", 1)
+    games = []
+    for k in range(IMIT_GAMES // 2):
+        m = train[k % len(train)]
+        o = rng.choice(opps)
+        games += [(bot, o, m), (o, bot, m)]
+    shard_dir = OUT / "data" / "imitation"
+    out = OUT / "games" / "imitation"
+    log(f"imitation data: {len(games)} games")
+    # Played and parsed in chunks so the replays don't pile up on disk.
+    for c in range(0, len(games), 56):
+        res = play_games(games[c : c + 56], out, 512)
+        d, m = samples(res, bot, "shaped")
+        if d:
+            data.save(shard_dir / f"chunk{c // 56:03d}.npz", d)
+        log(f"  chunk {c // 56}: {m}, {len(d.get('R', []))} decisions")
+        if m["parse_errors"] == m["games"]:
+            raise RuntimeError("no game could be parsed: see nn/data.py")
+        shutil.rmtree(out, ignore_errors=True)
+    st["stage"] = "runs"
+    save_state(st)
+
+
+def bc_for(st: dict, width: int) -> Path:
+    key = str(width)
+    ck = OUT / "ckpt" / f"bc{width}"
+    if key in st["bc"] and (ck / "teacher.bin").exists():
+        return ck
+    shards = sorted(str(p) for p in (OUT / "data" / "imitation").glob("*.npz"))
+    log(f"imitation training, width {width}, {len(shards)} shards")
+    m = gpu(["bc", "--data", *shards, "--out", str(ck), "--width", str(width)])
+    st["bc"][key] = m
+    save_state(st)
+    log(f"  held-out accuracy {m['held_out'][-1]} after {m['epochs']} epochs")
+    return ck
+
+
+def evaluate(weights: Path, width: int, tag: str) -> dict:
+    """Teacher (argmax) vs the rule bot on every (map, side): train maps and held-out maps."""
+    train, held = maps()
+    bot = variant("_nn_eval", 2, 0, weights)
+    out = OUT / "games" / f"eval-{tag}"
+    res = play([(bot, "main"), ("main", bot)], train + held, out, width)
+    shutil.rmtree(out, ignore_errors=True)
+    tr = [r for r in res if Path(r.replay).name.split("__")[0] not in HELD_OUT]
+    ho = [r for r in res if Path(r.replay).name.split("__")[0] in HELD_OUT]
+
+    def score(rs: list) -> float:
+        return round(sum(r.score_for(bot) for r in rs) / max(len(rs), 1), 3)
+
+    margin = [((r.gems_a - r.gems_b) if r.bot_a == bot else (r.gems_b - r.gems_a)) for r in res]
+    return {"train": score(tr), "held_out": score(ho), "games": len(res),
+            "gem_margin": round(sum(margin) / max(len(margin), 1), 1)}
+
+
+def ppo_run(st: dict, idx: int) -> None:
+    cfg = SWEEP[idx]
+    if idx >= len(st["runs"]):
+        st["runs"].append({"cfg": cfg, "it": 0, "games": 0, "evals": [], "done": False})
+        save_state(st)
+    run = st["runs"][idx]
+    width = cfg["width"]
+    base = bc_for(st, width)
+    rdir = OUT / "ckpt" / f"run{idx}"
+    cur = rdir / f"it{run['it']:04d}"
+    if run["it"] == 0 and not cur.exists():
+        shutil.copytree(base, cur)
+        e = evaluate(cur / "teacher.bin", width, f"r{idx}-it0")
+        run["evals"].append({"it": 0, "games": 0, **e})
+        save_state(st)
+        log(f"run {idx} {cfg}: imitation teacher vs rules {e}")
+    train, _ = maps()
+    rng = random.Random(1000 * idx + run["it"])
+    while not run["done"]:
+        it = run["it"]
+        seed = (it * 7 + idx * 31) % 250 + 1
+        bot = variant("_nn_play", 2, seed, cur / "teacher.bin")
+        pool = ["main"] * 4 + ANCHORS[:3] + rng.sample(mimics(), k=min(3, len(mimics())))
+        snaps = [s for s in st["snapshots"] if Path(s).exists()]
+        games = []
+        for k in range(ROLL_GAMES // 2):
+            m = rng.choice(train)
+            if snaps and rng.random() < 0.15:
+                o = variant(f"_nn_snap{snaps.index(s := rng.choice(snaps))}", 2, 0, Path(s))
+            else:
+                o = rng.choice(pool)
+            games += [(bot, o, m), (o, bot, m)]
+        out = OUT / "games" / f"r{idx}-it{it:04d}"
+        res = play_games(games, out, width)
+        d, m = samples(res, bot, cfg["reward"])
+        shutil.rmtree(out, ignore_errors=True)
+        if not d:
+            log(f"run {idx} it {it}: no samples ({m}); retrying")
+            continue
+        shard = OUT / "data" / f"run{idx}" / "rollout.npz"
+        data.save(shard, d)
+        nxt = rdir / f"it{it + 1:04d}"
+        u = gpu(["ppo", "--data", str(shard), "--init", str(cur), "--out", str(nxt),
+                 "--lr", str(cfg["lr"]), "--entropy", str(cfg["entropy"]), "--seed", str(cfg["seed"])])
+        run["it"], run["games"] = it + 1, run["games"] + m["games"]
+        cur = nxt
+        log(f"run {idx} it {it + 1}: rollout {m}, update kl {u['kl']} ent {u['entropy']} "
+            f"clip {u['clipfrac']} reward {u['reward_mean']}")
+        # Keep only the evaluated checkpoints and the latest one.
+        old = rdir / f"it{it:04d}"
+        if it % EVAL_EVERY and old.exists():
+            shutil.rmtree(old, ignore_errors=True)
+        if run["it"] % EVAL_EVERY == 0:
+            e = evaluate(cur / "teacher.bin", width, f"r{idx}-it{run['it']}")
+            run["evals"].append({"it": run["it"], "games": run["games"], **e})
+            best = max(run["evals"], key=lambda x: (x["train"], x["gem_margin"]))
+            log(f"run {idx} eval it {run['it']}: {e} (best it {best['it']}: {best['train']})")
+            if best["it"] == run["it"] and e["train"] > 0.5:
+                st["snapshots"] = [*st["snapshots"], str(cur / "teacher.bin")][-6:]
+            recent = run["evals"][-PLATEAU_EVALS:]
+            flat = len(run["evals"]) > PLATEAU_EVALS and best not in recent
+            if flat and run["games"] >= MIN_GAMES:
+                run["done"] = True
+                log(f"run {idx}: flat after {run['games']} games; best it {best['it']} {best['train']}")
+        save_state(st)
+
+
+def cmd_run(_: argparse.Namespace) -> int:
+    OUT.mkdir(parents=True, exist_ok=True)
+    st = load_state()
+    if st["stage"] == "imitation_data":
+        imitation_data(st)
+    for idx in range(len(SWEEP)):
+        if idx < len(st["runs"]) and st["runs"][idx]["done"]:
+            continue
+        ppo_run(st, idx)
+    log("sweep finished")
+    return 0
+
+
+def cmd_status(_: argparse.Namespace) -> int:
+    st = load_state()
+    print(f"stage: {st['stage']}")
+    for w, m in st["bc"].items():
+        print(f"imitation width {w}: held-out accuracy {m['held_out'][-1]} ({m['samples']} samples)")
+    for i, r in enumerate(st["runs"]):
+        ev = r["evals"]
+        best = max(ev, key=lambda x: x["train"]) if ev else None
+        state = "done" if r["done"] else "running"
+        print(f"run {i} {r['cfg']}: {state}, it {r['it']}, {r['games']} games")
+        if best:
+            print(f"   best: it {best['it']} vs rules {best['train']} (held-out {best['held_out']}, margin {best['gem_margin']})")
+        print("   curve (games: win vs rules): " + ", ".join(f"{e['games']}: {e['train']}" for e in ev[-10:]))
+    return 0
+
+
+def main(argv: list[str] | None = None) -> int:
+    p = argparse.ArgumentParser()
+    sub = p.add_subparsers(dest="cmd", required=True)
+    sub.add_parser("run").set_defaults(fn=cmd_run)
+    sub.add_parser("status").set_defaults(fn=cmd_status)
+    a = p.parse_args(argv)
+    return a.fn(a)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
