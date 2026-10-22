@@ -891,6 +891,15 @@
    "time": "2026-10-20T15:32:13.244Z",
    "win": true
   },
+  "281a0f84-befc-4821-8aad-ecfb079d751a": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "monolith",
+   "opp": "Prime Bot 007",
+   "oppId": "4b09b8ff-b429-43dc-9be1-180565784e87",
+   "time": "2026-10-22T09:40:19.254Z",
+   "win": true
+  },
   "28605a72-2d90-4b10-ba3b-3b8a5b43566b": {
    "kind": "ranked",
    "live": 1,
@@ -980,6 +989,15 @@
    "oppId": "2173d644-f134-4b10-8cd8-2f6d9bfc0696",
    "time": "2026-10-21T14:00:16.613Z",
    "win": false
+  },
+  "2b732838-f2fc-450a-b259-d5cf3ca5ca08": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "starvation",
+   "opp": "Prime Bot 007",
+   "oppId": "4b09b8ff-b429-43dc-9be1-180565784e87",
+   "time": "2026-10-22T09:40:19.254Z",
+   "win": true
   },
   "2b94aac3-894c-4bd6-a286-712cd59dfd5f": {
    "kind": "ranked",
@@ -2023,6 +2041,15 @@
    "opp": "Seacaps",
    "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
    "time": "2026-10-22T04:20:14.332Z",
+   "win": false
+  },
+  "5f6526e7-f9b5-4ef2-a728-6a9f566e7dc6": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "corners",
+   "opp": "Prime Bot 007",
+   "oppId": "4b09b8ff-b429-43dc-9be1-180565784e87",
+   "time": "2026-10-22T09:40:19.254Z",
    "win": false
   },
   "60c05fbf-cc4a-4e4b-a8a9-c61a12e94724": {
@@ -4572,6 +4599,15 @@
    "time": "2026-10-20T22:30:11.149Z",
    "win": true
   },
+  "d6b2a7f7-4391-4e5d-ac09-704e73069d34": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "elk-arena",
+   "opp": "Prime Bot 007",
+   "oppId": "4b09b8ff-b429-43dc-9be1-180565784e87",
+   "time": "2026-10-22T09:40:19.254Z",
+   "win": true
+  },
   "d7d67518-a48b-48fd-a650-f3a08a4c2351": {
    "kind": "ranked",
    "live": 1,
@@ -5515,6 +5551,15 @@
    "opp": "EXP'D",
    "oppId": "42220ad3-01b9-4e78-a6db-e26f75bf375c",
    "time": "2026-10-22T06:00:12.757Z",
+   "win": false
+  },
+  "fd59fd26-51ac-4e8b-9a2a-1658d4261fd5": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "eight",
+   "opp": "Prime Bot 007",
+   "oppId": "4b09b8ff-b429-43dc-9be1-180565784e87",
+   "time": "2026-10-22T09:40:19.255Z",
    "win": false
   },
   "fd8f8c8c-2f52-4143-81f4-2db66cf002b0": {
@@ -10948,6 +10993,40 @@
    "status": "open",
    "time": "2026-10-22T09:30:19.246Z",
    "tries_at": 2
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 41,
+    "Unknown entity kind (2)": 4
+   },
+   "deaths_them": 32,
+   "deaths_us": 45,
+   "gems_them": "1013",
+   "gems_us": "485",
+   "id": "fd59fd26-51ac-4e8b-9a2a-1658d4261fd5",
+   "map": "eight",
+   "opp": "Prime Bot 007",
+   "oppId": "4b09b8ff-b429-43dc-9be1-180565784e87",
+   "status": "open",
+   "time": "2026-10-22T09:40:19.255Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 13,
+    "Unknown entity kind (2)": 7
+   },
+   "deaths_them": 27,
+   "deaths_us": 20,
+   "gems_them": "1003",
+   "gems_us": "827",
+   "id": "5f6526e7-f9b5-4ef2-a728-6a9f566e7dc6",
+   "map": "corners",
+   "opp": "Prime Bot 007",
+   "oppId": "4b09b8ff-b429-43dc-9be1-180565784e87",
+   "status": "open",
+   "time": "2026-10-22T09:40:19.254Z",
+   "tries_at": 4
   }
  ],
  "map_files": {
