@@ -9,6 +9,15 @@
    "time": "2026-10-22T06:56:06.323Z",
    "win": false
   },
+  "005bc512-fe29-4382-b430-e5b8804906cb": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "elkring",
+   "opp": "Turbo Pathfinders",
+   "oppId": "05dcfad0-d27d-4452-beab-4b61c0d8179b",
+   "time": "2026-10-22T13:20:18.859Z",
+   "win": true
+  },
   "00d6a4d3-a826-43b6-9b84-1b48cf2b3b46": {
    "kind": "ranked",
    "live": 1,
@@ -89,6 +98,15 @@
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
    "time": "2026-10-20T16:00:07.664Z",
    "win": false
+  },
+  "043983eb-40b4-4036-a99b-4f0060ebb5db": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "corridors",
+   "opp": "tRust me bro",
+   "oppId": "4fbe2b8b-0a69-4dd5-b3f0-d8787101d7bc",
+   "time": "2026-10-22T13:00:16.320Z",
+   "win": true
   },
   "04699660-cfa1-49ee-837e-7f86d9512e3e": {
    "kind": "ranked",
@@ -601,6 +619,15 @@
    "opp": "haha",
    "oppId": "70dc8c4e-5d63-4f8d-8915-1b9c7fe7fee7",
    "time": "2026-10-20T17:20:08.637Z",
+   "win": true
+  },
+  "17b85ef9-fb3f-4400-9a56-8e81669ee4b7": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "big-world",
+   "opp": "Turbo Pathfinders",
+   "oppId": "05dcfad0-d27d-4452-beab-4b61c0d8179b",
+   "time": "2026-10-22T13:20:18.859Z",
    "win": true
   },
   "17fcbb50-be82-42cb-8496-8cc813c3e02b": {
@@ -1719,6 +1746,15 @@
    "time": "2026-10-21T15:10:26.221Z",
    "win": true
   },
+  "47512c0b-6e1f-4a8b-9822-debf1e532ddc": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "big-world",
+   "opp": "tRust me bro",
+   "oppId": "4fbe2b8b-0a69-4dd5-b3f0-d8787101d7bc",
+   "time": "2026-10-22T13:00:16.319Z",
+   "win": true
+  },
   "4814d77b-a3d7-4913-94fa-bfa0a1095196": {
    "kind": "ranked",
    "live": 15,
@@ -2203,6 +2239,15 @@
    "opp": "Patient Gem Thieves",
    "oppId": "cfd44d0a-4d7b-42db-a1e6-e04ff397f391",
    "time": "2026-10-20T20:30:13.466Z",
+   "win": true
+  },
+  "5ab217d8-5d81-4f5f-a1a2-e36751be1db2": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "packs",
+   "opp": "Turbo Pathfinders",
+   "oppId": "05dcfad0-d27d-4452-beab-4b61c0d8179b",
+   "time": "2026-10-22T13:20:18.859Z",
    "win": true
   },
   "5b32abca-b30e-475c-9138-9a7d13cf8ddb": {
@@ -2690,6 +2735,15 @@
    "oppId": "d3f95349-b568-4699-b975-ce3f1f9f60fd",
    "time": "2026-10-22T12:10:14.425Z",
    "win": true
+  },
+  "6d0ad793-2721-4570-8cf0-55171321f83f": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "elk-arena",
+   "opp": "Turbo Pathfinders",
+   "oppId": "05dcfad0-d27d-4452-beab-4b61c0d8179b",
+   "time": "2026-10-22T13:20:18.859Z",
+   "win": false
   },
   "6d62a678-0343-41ad-b99c-b462f1576c0f": {
    "kind": "ranked",
@@ -3204,6 +3258,15 @@
    "time": "2026-10-22T06:20:14.650Z",
    "win": false
   },
+  "83f30fbd-8047-408e-b753-ad7db65c63f0": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "quadrants",
+   "opp": "Turbo Pathfinders",
+   "oppId": "05dcfad0-d27d-4452-beab-4b61c0d8179b",
+   "time": "2026-10-22T13:20:18.859Z",
+   "win": true
+  },
   "84d0cca1-44dd-4fd7-8f18-0386f9b14ef3": {
    "kind": "ranked",
    "live": 1,
@@ -3636,6 +3699,15 @@
    "time": "2026-10-22T07:06:57.869Z",
    "win": false
   },
+  "96f90427-4fd1-455c-87e3-b7a47f1613d6": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "stampede",
+   "opp": "tRust me bro",
+   "oppId": "4fbe2b8b-0a69-4dd5-b3f0-d8787101d7bc",
+   "time": "2026-10-22T13:00:16.320Z",
+   "win": false
+  },
   "9776bdff-5227-4e03-80f8-d8c3df627bf9": {
    "kind": "ranked",
    "live": 17,
@@ -3978,6 +4050,15 @@
    "time": "2026-10-21T17:50:18.948Z",
    "win": true
   },
+  "a142686e-43ae-4894-a03a-dec933b727c5": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "gem-fields",
+   "opp": "bob",
+   "oppId": "92b742bb-333e-4677-9f63-adf894534dcb",
+   "time": "2026-10-22T13:10:12.332Z",
+   "win": true
+  },
   "a19a21ac-2399-4375-91e6-ef36138fe369": {
    "kind": "ranked",
    "live": 15,
@@ -4293,6 +4374,15 @@
    "time": "2026-10-22T07:00:15.627Z",
    "win": false
   },
+  "b021e54f-531a-49dd-b5a8-7dd71f6417bc": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "gem-fields",
+   "opp": "tRust me bro",
+   "oppId": "4fbe2b8b-0a69-4dd5-b3f0-d8787101d7bc",
+   "time": "2026-10-22T13:00:16.320Z",
+   "win": true
+  },
   "b0310ec6-b68e-4268-b49a-2c8097da4846": {
    "kind": "unranked",
    "live": 17,
@@ -4498,6 +4588,15 @@
    "opp": "Azerbaijan Technologies",
    "oppId": "7218a6a8-8211-4587-bdf8-3bae779e930e",
    "time": "2026-10-22T08:50:14.543Z",
+   "win": true
+  },
+  "b74f8193-db70-40aa-818b-0a0f57fa2c5e": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "shortcut",
+   "opp": "tRust me bro",
+   "oppId": "4fbe2b8b-0a69-4dd5-b3f0-d8787101d7bc",
+   "time": "2026-10-22T13:00:16.320Z",
    "win": true
   },
   "b75016d3-49be-470d-b37f-438a2e143f7f": {
@@ -4940,6 +5039,15 @@
    "oppId": "da1c0f93-a0cc-43df-8aca-059e15923cda",
    "time": "2026-10-21T15:30:12.915Z",
    "win": true
+  },
+  "c986291b-4fd0-469e-a2de-8e87739c607c": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "yellow-brick-road",
+   "opp": "bob",
+   "oppId": "92b742bb-333e-4677-9f63-adf894534dcb",
+   "time": "2026-10-22T13:10:12.333Z",
+   "win": false
   },
   "c986444f-dce7-4448-a243-f25cab10760b": {
    "kind": "ranked",
@@ -5489,6 +5597,15 @@
    "oppId": "f537e7fe-e576-4563-8fd8-3cd30a318652",
    "time": "2026-10-21T18:30:14.995Z",
    "win": true
+  },
+  "de5a790d-5a7f-46a4-8eb8-f01105568cbd": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "lost-world",
+   "opp": "bob",
+   "oppId": "92b742bb-333e-4677-9f63-adf894534dcb",
+   "time": "2026-10-22T13:10:12.332Z",
+   "win": false
   },
   "de64f4fa-5372-4ddc-84c4-dd06e3718f29": {
    "kind": "ranked",
@@ -6174,6 +6291,15 @@
    "time": "2026-10-22T08:00:13.767Z",
    "win": true
   },
+  "f55cf318-ce2f-41c5-b174-665c1c3ed8f9": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "rushbait-v2",
+   "opp": "bob",
+   "oppId": "92b742bb-333e-4677-9f63-adf894534dcb",
+   "time": "2026-10-22T13:10:12.332Z",
+   "win": true
+  },
   "f560744f-04de-4c87-a515-dc3051ceb937": {
    "kind": "ranked",
    "live": 16,
@@ -6379,6 +6505,15 @@
    "opp": "Brr Brr Battlecode",
    "oppId": "8478dd36-bb39-4d06-abe2-b76bdc755cac",
    "time": "2026-10-22T12:20:15.006Z",
+   "win": true
+  },
+  "fc4bb538-d790-45a9-a4c7-e27adf41214f": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "monolith",
+   "opp": "bob",
+   "oppId": "92b742bb-333e-4677-9f63-adf894534dcb",
+   "time": "2026-10-22T13:10:12.333Z",
    "win": true
   },
   "fccc1b06-d01b-43d0-8ab6-367f169efea5": {
@@ -12707,6 +12842,73 @@
    "status": "superseded",
    "superseded_by": 22,
    "time": "2026-10-22T12:50:24.575Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "champion": 5
+   },
+   "deaths_them": 2,
+   "deaths_us": 5,
+   "gems_them": "1008",
+   "gems_us": "144",
+   "id": "6d0ad793-2721-4570-8cf0-55171321f83f",
+   "map": "elk-arena",
+   "opp": "Turbo Pathfinders",
+   "oppId": "05dcfad0-d27d-4452-beab-4b61c0d8179b",
+   "status": "open",
+   "time": "2026-10-22T13:20:18.859Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 8,
+    "champion": 23
+   },
+   "deaths_them": 76,
+   "deaths_us": 31,
+   "gems_them": "895",
+   "gems_us": "568",
+   "id": "c986291b-4fd0-469e-a2de-8e87739c607c",
+   "map": "yellow-brick-road",
+   "opp": "bob",
+   "oppId": "92b742bb-333e-4677-9f63-adf894534dcb",
+   "status": "open",
+   "time": "2026-10-22T13:10:12.333Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 15,
+    "champion": 24
+   },
+   "deaths_them": 22,
+   "deaths_us": 39,
+   "gems_them": "1010",
+   "gems_us": "700",
+   "id": "de5a790d-5a7f-46a4-8eb8-f01105568cbd",
+   "map": "lost-world",
+   "opp": "bob",
+   "oppId": "92b742bb-333e-4677-9f63-adf894534dcb",
+   "status": "open",
+   "time": "2026-10-22T13:10:12.332Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "camp": 18,
+    "champion": 35
+   },
+   "deaths_them": 8,
+   "deaths_us": 53,
+   "gems_them": "560",
+   "gems_us": "400",
+   "id": "96f90427-4fd1-455c-87e3-b7a47f1613d6",
+   "map": "stampede",
+   "opp": "tRust me bro",
+   "oppId": "4fbe2b8b-0a69-4dd5-b3f0-d8787101d7bc",
+   "status": "open",
+   "time": "2026-10-22T13:00:16.320Z",
    "tries_at": 4
   }
  ],
