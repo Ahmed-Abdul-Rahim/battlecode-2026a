@@ -2724,16 +2724,57 @@
    "added": "2026-10-21T15:12:04Z",
    "area": "draft",
    "claimed": "2026-10-21T23:48:33Z",
+   "finished": "2026-10-22T00:32:13Z",
    "host": "muhammad-usman-Inspiron-14-5410-2-in-1",
    "id": 36,
    "notes": "",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.25,
+     "h2h_games": 76,
+     "live": {
+      "deaths": 22.63,
+      "fitness": 0.455,
+      "games": 988,
+      "gem_margin": 0.132,
+      "win": 0.649
+     },
+     "variant": {
+      "deaths": 23.51,
+      "fitness": 0.288,
+      "games": 988,
+      "gem_margin": -0.02,
+      "win": 0.528
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 16.52,
+      "fitness": 0.39,
+      "games": 182,
+      "gem_margin": -0.0,
+      "win": 0.555
+     },
+     "paired": {
+      "mean": -0.0484,
+      "pairs": 182,
+      "se": 0.0573
+     },
+     "variant": {
+      "deaths": 16.91,
+      "fitness": 0.341,
+      "games": 182,
+      "gem_margin": -0.068,
+      "win": 0.527
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "DRAFT_BEST": 1
     }
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "Draft like the best ladder bot"
   },
   {
