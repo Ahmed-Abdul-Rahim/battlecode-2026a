@@ -2780,6 +2780,8 @@
   {
    "added": "2026-10-21T15:12:04Z",
    "area": "draft",
+   "claimed": "2026-10-22T00:32:18Z",
+   "host": "muhammad-usman-Inspiron-14-5410-2-in-1",
    "id": 37,
    "notes": "",
    "results": {},
@@ -2788,7 +2790,7 @@
      "TAVI_META": 0
     }
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Map-scorer draft instead of the fixed meta"
   },
   {
