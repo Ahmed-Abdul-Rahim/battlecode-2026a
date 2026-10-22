@@ -1443,6 +1443,20 @@
     "error": "KeyError('y is not a file in the archive')"
    },
    "status": "failed"
+  },
+  {
+   "added": "2026-10-22T05:52:43Z",
+   "claimed": "2026-10-22T05:52:43Z",
+   "host": "DESKTOP-QVEMEEE",
+   "id": 60,
+   "kind": "rollout",
+   "params": {
+    "arm": 2,
+    "it": 0,
+    "part": 0
+   },
+   "result": {},
+   "status": "running"
   }
  ]
 }
