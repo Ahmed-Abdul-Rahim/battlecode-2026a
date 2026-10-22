@@ -1946,6 +1946,7 @@
   {
    "added": "2026-10-22T06:10:35Z",
    "claimed": "2026-10-22T06:10:35Z",
+   "finished": "2026-10-22T06:11:56Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 80,
    "kind": "rollout",
@@ -1954,8 +1955,19 @@
     "it": 4,
     "part": 0
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "arm": 1,
+    "decisions": 21515,
+    "games": 78,
+    "it": 4,
+    "maps": [
+     "monolith",
+     "packs",
+     "pilgrimage"
+    ],
+    "win": 0.346
+   },
+   "status": "done"
   }
  ]
 }
