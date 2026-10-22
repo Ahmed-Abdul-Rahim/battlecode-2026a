@@ -2838,16 +2838,57 @@
    "added": "2026-10-21T15:12:04Z",
    "area": "farming",
    "claimed": "2026-10-22T01:16:17Z",
+   "finished": "2026-10-22T02:00:35Z",
    "host": "muhammad-usman-Inspiron-14-5410-2-in-1",
    "id": 38,
    "notes": "",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.592,
+     "h2h_games": 76,
+     "live": {
+      "deaths": 22.63,
+      "fitness": 0.455,
+      "games": 988,
+      "gem_margin": 0.132,
+      "win": 0.649
+     },
+     "variant": {
+      "deaths": 22.06,
+      "fitness": 0.452,
+      "games": 988,
+      "gem_margin": 0.136,
+      "win": 0.639
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 16.52,
+      "fitness": 0.39,
+      "games": 182,
+      "gem_margin": -0.0,
+      "win": 0.555
+     },
+     "paired": {
+      "mean": -0.0341,
+      "pairs": 182,
+      "se": 0.0527
+     },
+     "variant": {
+      "deaths": 15.67,
+      "fitness": 0.356,
+      "games": 182,
+      "gem_margin": -0.016,
+      "win": 0.516
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "REMOTE_FARMER": 1
     }
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "Last slot farms far, quiet camps"
   },
   {
