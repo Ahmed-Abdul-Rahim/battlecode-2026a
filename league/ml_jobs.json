@@ -6527,6 +6527,7 @@
   {
    "added": "2026-10-22T09:08:20Z",
    "claimed": "2026-10-22T09:08:20Z",
+   "finished": "2026-10-22T09:09:12Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 258,
    "kind": "rollout",
@@ -6535,8 +6536,19 @@
     "it": 22,
     "part": 0
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "arm": 2,
+    "decisions": 15421,
+    "games": 78,
+    "it": 22,
+    "maps": [
+     "expanse",
+     "fracture",
+     "fragment"
+    ],
+    "win": 0.474
+   },
+   "status": "done"
   }
  ]
 }
