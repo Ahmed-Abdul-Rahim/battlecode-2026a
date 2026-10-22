@@ -4077,9 +4077,10 @@
    "added": "2026-10-22T12:44:01Z",
    "area": "learning",
    "claimed": "2026-10-22T12:45:45Z",
+   "finished": "2026-10-22T12:46:13Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 92,
-   "notes": "PPO on 91832 decisions; rollout win 0.147; reward -0.0691.",
+   "notes": "error: CalledProcessError(128, ['git', 'show', 'origin/ml-data:rl/arm1/policy-0085.bin'])",
    "results": {},
    "spec": {
     "files": {
@@ -4089,7 +4090,7 @@
      "ROUTER": 1
     }
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "RL arm 1 (experts+target) iteration 85"
   }
  ]
