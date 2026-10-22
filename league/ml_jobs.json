@@ -4984,6 +4984,7 @@
   {
    "added": "2026-10-22T08:06:51Z",
    "claimed": "2026-10-22T08:06:51Z",
+   "finished": "2026-10-22T08:08:30Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 198,
    "kind": "rollout",
@@ -4992,8 +4993,19 @@
     "it": 15,
     "part": 1
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "arm": 2,
+    "decisions": 16044,
+    "games": 78,
+    "it": 15,
+    "maps": [
+     "fracture",
+     "fragment",
+     "gem-fields"
+    ],
+    "win": 0.436
+   },
+   "status": "done"
   }
  ]
 }
