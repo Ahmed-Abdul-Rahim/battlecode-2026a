@@ -10938,6 +10938,7 @@
   {
    "added": "2026-10-22T11:52:03Z",
    "claimed": "2026-10-22T11:52:03Z",
+   "finished": "2026-10-22T11:52:32Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 426,
    "kind": "update",
@@ -10945,8 +10946,22 @@
     "arm": 2,
     "it": 40
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "anchor_kl": 0.0,
+    "arm": 2,
+    "device": "cuda",
+    "distill_gap": 0.0025,
+    "epochs_run": 6,
+    "it": 41,
+    "kl": 0.0087,
+    "mean_reward": -0.0101,
+    "rollout_win": 0.587,
+    "samples": 14150,
+    "shards": 2,
+    "teacher": "512x512",
+    "vloss": 0.7378
+   },
+   "status": "done"
   }
  ]
 }
