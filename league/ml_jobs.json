@@ -8932,6 +8932,7 @@
   {
    "added": "2026-10-22T10:37:10Z",
    "claimed": "2026-10-22T10:37:10Z",
+   "finished": "2026-10-22T10:38:57Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 351,
    "kind": "rollout",
@@ -8940,8 +8941,19 @@
     "it": 32,
     "part": 1
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "arm": 2,
+    "decisions": 7779,
+    "games": 78,
+    "it": 32,
+    "maps": [
+     "starfish",
+     "starvation",
+     "swirl"
+    ],
+    "win": 0.538
+   },
+   "status": "done"
   }
  ]
 }
