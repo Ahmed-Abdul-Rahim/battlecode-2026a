@@ -9,6 +9,15 @@
    "time": "2026-10-20T21:00:10.928Z",
    "win": true
   },
+  "0134b621-5dd3-455d-a5c2-2bd6060b146b": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "lanes",
+   "opp": "we were fed fish",
+   "oppId": "ccb3c236-83be-42df-b06b-ddfd44d3ffbd",
+   "time": "2026-10-22T05:50:11.840Z",
+   "win": false
+  },
   "01df3c09-ad4e-4a41-844c-fa0af33536e4": {
    "kind": "ranked",
    "live": null,
@@ -80,6 +89,15 @@
    "oppId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
    "time": "2026-10-21T15:20:15.263Z",
    "win": false
+  },
+  "05dbb82e-5f97-436b-bb6a-8859820d4542": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "the-farm",
+   "opp": "we were fed fish",
+   "oppId": "ccb3c236-83be-42df-b06b-ddfd44d3ffbd",
+   "time": "2026-10-22T05:50:11.840Z",
+   "win": true
   },
   "06182bbf-364d-4be0-acc4-96215042f247": {
    "kind": "ranked",
@@ -259,6 +277,15 @@
    "opp": "knownasjason",
    "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
    "time": "2026-10-21T15:40:12.911Z",
+   "win": false
+  },
+  "108f9ca9-6661-410b-9085-35aa14688ca1": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "ambush",
+   "opp": "we were fed fish",
+   "oppId": "ccb3c236-83be-42df-b06b-ddfd44d3ffbd",
+   "time": "2026-10-22T05:50:11.840Z",
    "win": false
   },
   "1133fd03-7974-4468-9408-1a601df6a0f9": {
@@ -1258,6 +1285,15 @@
    "opp": "DeepSleep",
    "oppId": "c14b952b-899c-4f25-a4f8-d3a4b06cbf9a",
    "time": "2026-10-20T20:10:09.725Z",
+   "win": false
+  },
+  "4b99b198-1660-42bf-96b3-15b024eed557": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "yellow-brick-road",
+   "opp": "we were fed fish",
+   "oppId": "ccb3c236-83be-42df-b06b-ddfd44d3ffbd",
+   "time": "2026-10-22T05:50:11.839Z",
    "win": false
   },
   "4e0718f5-690b-4790-8d6d-a44c05cad10a": {
@@ -3877,6 +3913,15 @@
    "opp": "Hidden Gem Thieves",
    "oppId": "c8773982-afe9-4f64-99ba-0cc1fb3fe3c2",
    "time": "2026-10-21T14:20:15.008Z",
+   "win": false
+  },
+  "e74a9643-8bb8-496f-b211-8b0e34c9731b": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "starvation",
+   "opp": "we were fed fish",
+   "oppId": "ccb3c236-83be-42df-b06b-ddfd44d3ffbd",
+   "time": "2026-10-22T05:50:11.840Z",
    "win": false
   },
   "e7ad856b-1e97-408a-9fec-e93267c384de": {
@@ -8289,6 +8334,71 @@
    "status": "open",
    "time": "2026-10-22T05:40:12.635Z",
    "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (2)": 8
+   },
+   "deaths_them": 9,
+   "deaths_us": 8,
+   "gems_them": "1007",
+   "gems_us": "865",
+   "id": "108f9ca9-6661-410b-9085-35aa14688ca1",
+   "map": "ambush",
+   "opp": "we were fed fish",
+   "oppId": "ccb3c236-83be-42df-b06b-ddfd44d3ffbd",
+   "status": "open",
+   "time": "2026-10-22T05:50:11.840Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 11,
+    "Unknown entity kind (2)": 2
+   },
+   "deaths_them": 4,
+   "deaths_us": 13,
+   "gems_them": "1004",
+   "gems_us": "725",
+   "id": "0134b621-5dd3-455d-a5c2-2bd6060b146b",
+   "map": "lanes",
+   "opp": "we were fed fish",
+   "oppId": "ccb3c236-83be-42df-b06b-ddfd44d3ffbd",
+   "status": "open",
+   "time": "2026-10-22T05:50:11.840Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (2)": 7
+   },
+   "deaths_them": 41,
+   "deaths_us": 7,
+   "gems_them": "655",
+   "gems_us": "349",
+   "id": "e74a9643-8bb8-496f-b211-8b0e34c9731b",
+   "map": "starvation",
+   "opp": "we were fed fish",
+   "oppId": "ccb3c236-83be-42df-b06b-ddfd44d3ffbd",
+   "status": "open",
+   "time": "2026-10-22T05:50:11.840Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (2)": 2
+   },
+   "deaths_them": 9,
+   "deaths_us": 2,
+   "gems_them": "390",
+   "gems_us": "45",
+   "id": "4b99b198-1660-42bf-96b3-15b024eed557",
+   "map": "yellow-brick-road",
+   "opp": "we were fed fish",
+   "oppId": "ccb3c236-83be-42df-b06b-ddfd44d3ffbd",
+   "status": "open",
+   "time": "2026-10-22T05:50:11.839Z",
+   "tries_at": 1
   }
  ],
  "map_files": {
