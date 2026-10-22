@@ -101,7 +101,7 @@ pub mod knob2 {
     pub const DEFAULTS: [(usize, u8); 22] = [
         (PASSIVE_AWARE, 0),
         (FOCUS, 1),
-        (ENDGAME, 0),
+        (ENDGAME, 1),
         (SPACING, 0),
         (LOS_RETREAT, 0),
         (CAMP_DIVERT, 0),
@@ -109,12 +109,12 @@ pub mod knob2 {
         (WARDS, 0),
         (STUN_LOCK, 0),
         (UPGRADE_FIRST, 0),
-        (TEAM_UP, 0),
+        (TEAM_UP, 6),
         (ROUTER, 0),
         (EXPLORE, 0),
         (PUNISH_RECALL, 0),
         (UNSTICK, 0),
-        (WALK_HOME, 0),
+        (WALK_HOME, 6),
         (SOLO_CAP, 0),
         (EASE_FIRST, 0),
         (WEAK_CAMP_FIRST, 0),
@@ -229,13 +229,13 @@ pub mod knob {
         (REMOTE_FARMER, 0),
         (HUNT_MODE, 0),
         (DENY_TRIBUTE, 1),
-        (ENDGAME_BANK, 0),
+        (ENDGAME_BANK, 1),
         (TEAM_FIGHT, 0),
         (COMBAT_SEARCH, 0),
         (CAMP_SAFE, 0),
-        (ALTAR_LOCK, 0),
+        (ALTAR_LOCK, 1),
         (TAVI_META, 1),
-        (RECALL_SAFE, 1),
+        (RECALL_SAFE, 2),
         (FIGHT_V6, 0),
         (STUN_THREAT, 0),
         (CAMP_FEASIBLE, 24),
@@ -664,8 +664,11 @@ mod tests {
         let mut t = sample_theta();
         assert_eq!(t.knob2(knob2::SPACING), 0);
         for k in knob2::PUNISH_RECALL..=knob2::GOLD_ORDER {
-            assert_eq!(t.knob2(k), 0, "new switches default off");
+            let on = if k == knob2::WALK_HOME { 6 } else { 0 };
+            assert_eq!(t.knob2(k), on, "gap switches off except WALK_HOME (experiment 58)");
         }
+        assert_eq!(t.knob2(knob2::TEAM_UP), 6, "team up within 6 is on (experiment 48)");
+        assert_eq!(t.knob2(knob2::ENDGAME), 1, "endgame mode is on (experiment 44)");
         assert_eq!(t.knob2(knob2::FOCUS), 1, "team focus target is on (experiment 43)");
         t.knobs2[knob2::WARDS] = 3;
         let d = ThetaMatch::decode(&t.encode()).unwrap();
