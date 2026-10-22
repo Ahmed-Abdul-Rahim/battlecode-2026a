@@ -1486,6 +1486,20 @@
     "warm_rows": 200000
    },
    "status": "done"
+  },
+  {
+   "added": "2026-10-22T05:54:54Z",
+   "claimed": "2026-10-22T05:54:54Z",
+   "host": "DESKTOP-QVEMEEE",
+   "id": 62,
+   "kind": "rollout",
+   "params": {
+    "arm": 1,
+    "it": 0,
+    "part": 0
+   },
+   "result": {},
+   "status": "running"
   }
  ]
 }
