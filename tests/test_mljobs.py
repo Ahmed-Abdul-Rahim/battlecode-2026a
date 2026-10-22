@@ -1,4 +1,4 @@
-"""harness/mljobs.py: queue planning, claims and registry merges (no games played)."""
+"""harness/mljobs.py: queue planning, claims, registry merges and status (no games played)."""
 
 import sys
 from pathlib import Path
@@ -28,21 +28,9 @@ def test_rl_plan_init_rollouts_update_per_arm():
     assert M.rl_state(reg, 1)["rolling"] == 1
 
 
-def test_plan_trains_after_enough_new_shards():
-    reg = {"jobs": []}
-    assert M.plan_awr(reg)[0] == "gen"
-    for _ in range(M.TRAIN_EVERY):
-        M.add(reg, "gen", {"explore": 10})["status"] = "done"
-    kind, params = M.plan_awr(reg)
-    assert kind == "train" and params["hidden"] == 32
-    M.add(reg, "train", params)["status"] = "done"
-    kind, params = M.plan_awr(reg)
-    assert kind == "gen" and params["offset"] == M.TRAIN_EVERY * M.GEN_MAPS  # maps rotate
-
-
 def test_claims_resume_ours_and_free_stale_ones():
     reg = {"jobs": []}
-    a = M.add(reg, "gen")
+    a = M.add(reg, "rollout", {"arm": 1, "it": 0, "part": 0})
     a.update(status="running", host="other", claimed="2026-10-21T10:00:00Z")
     now = M.L.ts("2026-10-21T11:00:00Z")
     assert M.next_job(reg, now) is None
@@ -51,66 +39,71 @@ def test_claims_resume_ours_and_free_stale_ones():
     assert M.next_job(reg, now) is a
 
 
+def test_retired_job_kinds_are_ignored():
+    reg = {
+        "jobs": [
+            {
+                "id": 1,
+                "kind": "gen",
+                "params": {},
+                "status": "running",
+                "host": M.L.HOST,
+                "claimed": "2026-10-21T10:00:00Z",
+                "result": {},
+            }
+        ]
+    }
+    assert M.next_job(reg, M.L.ts("2026-10-21T11:00:00Z")) is None
+    assert "gen" not in M.status_report(reg, {"experiments": []})
+
+
 def test_job_registry_merge():
     ours, theirs = {"jobs": []}, {"jobs": []}
-    M.add(theirs, "gen")["status"] = "done"
-    j = M.add(ours, "gen")
+    M.add(theirs, "rlinit", {"arm": 1})["status"] = "done"
+    j = M.add(ours, "rlinit", {"arm": 1})
     j.update(status="running", host="me", claimed="2026-10-21T10:00:00Z")
-    M.add(ours, "train")
+    M.add(ours, "rollout", {"arm": 1, "it": 0, "part": 0})
     m = M.L.merge_experiments(ours, theirs, key="jobs")["jobs"]
     assert [x["status"] for x in m] == ["done", "queued"]
-
-
-def test_status_report():
-    reg = {"jobs": []}
-    for _ in range(2):
-        g = M.add(reg, "gen")
-        g.update(status="done", result={"games": 78, "rows": 1000, "win": 0.3, "maps": ["a"]})
-    t = M.add(reg, "train")
-    t.update(status="done", result={"rows": 2000, "val_agreement": 0.81, "experiment": 50})
-    xreg = {"experiments": [{"id": 50, "status": "rejected", "results": {}}]}
-    out = M.status_report(reg, xreg)
-    assert "156 data games, 2,000 training rows in 2 shards" in out
-    assert "copies the rules 81% | experiment #50: rejected" in out
-    assert f"after {M.TRAIN_EVERY} more data jobs" in out
-
-
-def test_fit_is_fast_and_reports_held_out_agreement(tmp_path):
-    import numpy as np
-
-    rng = np.random.default_rng(1)
-    x = rng.integers(-127, 127, (5000, 109)).astype(np.int8)
-    y = (x[:, 0] > 0).astype(int)  # learnable
-    rep = M.awr.fit({"X": x, "y": y, "R": rng.normal(size=5000)}, tmp_path / "r.bin", hidden=16, epochs=8)
-    assert rep["val_agreement"] > 0.8 and (tmp_path / "r.bin").exists()
 
 
 def test_variant_files_swap_in(monkeypatch, tmp_path):
     monkeypatch.setattr(X, "ROOT", tmp_path)
     (tmp_path / "bots" / "_x7" / "src" / "weights").mkdir(parents=True)
     monkeypatch.setattr(X, "knob_variant", lambda name, knobs, copy=True: name)
-    monkeypatch.setattr(
-        X, "fetch_file", lambda src: b"BCW1blob" if src == "ml-data:candidates/r.bin" else b""
-    )
+    monkeypatch.setattr(X, "fetch_file", lambda src: b"BCW1blob" if src == "ml-data:rl/arm1/p.bin" else b"")
     e = {
         "id": 7,
         "spec": {
             "knobs": {"ROUTER": 1},
-            "files": {"bots/main/src/weights/router.bin": "ml-data:candidates/r.bin"},
+            "files": {"bots/main/src/weights/router.bin": "ml-data:rl/arm1/p.bin"},
         },
     }
     assert X.build_variant(e) == "_x7"
     assert (tmp_path / "bots" / "_x7" / "src" / "weights" / "router.bin").read_bytes() == b"BCW1blob"
 
 
-def test_status_shows_rl_arms():
+def test_status_shows_rl_arms_and_only_recent_failures():
     reg = {"jobs": []}
     M.add(reg, "rlinit", {"arm": 1})["status"] = "done"
     r = M.add(reg, "rollout", {"arm": 1, "it": 0, "part": 0})
     r.update(status="done", result={"games": 80, "win": 0.55})
     u = M.add(reg, "update", {"arm": 1, "it": 0})
     u.update(status="done", result={"it": 5, "mean_reward": 0.01, "experiment": 70})
-    out = M.status_report(reg, {"experiments": [{"id": 70, "status": "queued", "results": {}}]})
+    old = M.add(reg, "rlinit", {"arm": 2})
+    old.update(status="failed", finished="2026-10-20T00:00:00Z", result={"error": "old"})
+    new = M.add(reg, "rollout", {"arm": 1, "it": 1, "part": 0})
+    new.update(status="failed", finished="2026-10-22T10:00:00Z", result={"error": "new"})
+    out = M.status_report(
+        reg,
+        {"experiments": [{"id": 70, "status": "queued", "results": {}}]},
+        now=M.L.ts("2026-10-22T12:00:00Z"),
+    )
     assert "arm 1 (experts + fight target): iteration 1, 80 games played" in out
     assert "iteration 5 -> experiment #70: queued" in out
     assert "arm 2 (micro control): not started" in out
+    assert "new" in out and "old" not in out
+    later = M.add(reg, "rollout", {"arm": 1, "it": 1, "part": 1})
+    later.update(status="done", result={"games": 80, "win": 0.5})  # the same kind worked since
+    out = M.status_report(reg, {"experiments": []}, now=M.L.ts("2026-10-22T12:00:00Z"))
+    assert "UNRESOLVED" not in out

@@ -153,6 +153,15 @@ def game_samples(
     }
 
 
+def read_shard(p: Path, keys: tuple[str, ...]) -> dict[str, np.ndarray] | None:
+    """A shard's arrays, or None if it is unreadable or incomplete (e.g. written on a full disk)."""
+    try:
+        d = np.load(p)
+        return {k: d[k] for k in keys}
+    except (OSError, KeyError, ValueError, zipfile.BadZipFile, EOFError):
+        return None
+
+
 def concat(parts: list[dict[str, np.ndarray]]) -> dict[str, np.ndarray]:
     """Join samples of several games; trajectory ids stay unique."""
     parts = [p for p in parts if p]

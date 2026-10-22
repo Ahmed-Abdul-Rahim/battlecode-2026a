@@ -22,7 +22,7 @@ sys.path.insert(0, str(ROOT))
 
 from ml.distill import quant  # noqa: E402
 
-SCHEMA_HASH = 0xBDF9  # the feature schema (ml/distill/train_np.py); no repo tooling needed here
+SCHEMA_HASH = 0xBDF9  # the feature schema (crates/bc-brain features_gen.rs)
 
 
 @dataclass(frozen=True)

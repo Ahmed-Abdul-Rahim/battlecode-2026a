@@ -17,7 +17,6 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-import zipfile
 from pathlib import Path
 
 import numpy as np
@@ -35,11 +34,7 @@ EPOCHS, BATCH, LR, DISTILL_EPOCHS = 6, 1024, 3e-4, 6
 
 
 def read(p: Path) -> dict | None:
-    try:
-        d = np.load(p)
-        return {k: d[k] for k in KEYS}
-    except (OSError, KeyError, ValueError, zipfile.BadZipFile, EOFError):
-        return None
+    return reward.read_shard(p, KEYS)
 
 
 def net(n_in: int, n_out: int) -> nn.Module:

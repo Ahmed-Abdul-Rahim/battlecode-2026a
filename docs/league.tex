@@ -422,18 +422,23 @@ re-run gets a new run number, so its result replaces the old one. Every result, 
 the registry: Appendix~\ref{sec:registry} is generated from it.
 
 \section{The neural net}\label{sec:nn}
-The bot has a small neural network (109 inputs, 32 hidden, 9 outputs, int8) that can choose the
-expert (farm, fight, retreat, \dots) on hard turns. It is off until a trained one passes the gate.
+Two small int8 networks learn by \emph{playing}, not by copying our rules. Both are off in the
+live bot until one passes the experiment gate.
 \begin{itemize}[nosep]
-\item \textbf{Data:} \emph{data jobs} play logged games of the live bot against the mimics. On 10\% of
-  logged turns the bot tries a random sensible expert instead of its rule (switch \f{EXPLORE}), so
-  the data shows what other choices lead to. Each job stores a small file of (inputs, choice,
-  what happened over the next 40 rounds) on the git branch \f{ml-data}.
-\item \textbf{Training:} after 6 new data files, a \emph{training job} fits the network by offline
-  reinforcement learning (advantage-weighted regression, \f{ml/rl/awr.py}): choices that turned out
-  better than expected are copied more strongly. It takes minutes on a CPU, so no GPU is needed.
-\item \textbf{Testing:} each trained network is added to the experiment queue as ``switch
-  \f{ROUTER} on with this network'' and goes through the same gate as every other idea.
+\item \textbf{Arm 1, experts + target} (switch \f{ROUTER}): picks the expert (farm, fight, retreat,
+  \dots) and, in fights, which enemy to target. Started from our rules' choices.
+\item \textbf{Arm 2, micro control} (switch \f{MICRO\_NET}, experimental): on fight turns it picks
+  the step, the attack target and whether to cast.
+\item \textbf{Rollout jobs} play the current network against the mimics and the map's exploiter.
+  The network samples its choices (switch \f{RL\_SEED}) and logs them.
+\item \textbf{Reward} (\f{ml/rl/reward.py}, one table of weights): win/loss, gem margin, gold,
+  gems delivered, kills, assists; minus deaths, time dead, crashes and fuel overruns, wasted turns,
+  fuel used.
+\item \textbf{Update jobs} run PPO. On a PC with the GPU environment (\f{../ml-gpu-venv}), a big
+  512$\times$512 teacher trains on the GPU and the bot's small network learns to copy it
+  (\f{ml/rl/ppo\_gpu.py}); elsewhere a numpy version runs (\f{ml/rl/ppo.py}).
+\item \textbf{Every 5 iterations} the network joins the experiment queue and has to pass the same gate
+  as every other idea. \f{train ml-status} shows each arm's progress.
 \end{itemize}
 \textbf{Why not copy the top teams?} We tried. Their full replays record only actions (moves,
 attacks, spells, purchases); health, gems and gold are not stored, and monsters take turns without an

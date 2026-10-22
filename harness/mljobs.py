@@ -1,17 +1,19 @@
-"""Neural-net job queue shared by every PC (league/ml_jobs.json), like the experiment autopilot.
+"""Neural-net jobs shared by every PC (league/ml_jobs.json): networks that learn by playing.
 
-    gen    play logged games of the live bot that explores a random feasible expert on some
-           turns (knob2 EXPLORE) against the faithful mimics; the rows (int8 features, the
-           expert used, a shaped return) become a data shard on branch ml-data
-    train  offline RL (advantage-weighted regression, ml/rl/awr.py) on every shard -> a
-           candidate router blob on ml-data, queued as an autopilot experiment (knob2 ROUTER
-           on + that blob), so it only ships through the usual gate
+Two arms (ml/rl/ppo.py):
+    arm 1  experts + fight target (knob2 ROUTER, weights/router.bin)
+    arm 2  micro control on fight turns (knob2 MICRO_NET, weights/micro.bin), experimental
 
-Games are the slow part (CPU); training this small network takes minutes on any CPU, so a
-GPU is not needed. With an empty queue a PC adds the next job itself: a training run once
-TRAIN_EVERY new shards exist, otherwise another data job.
+Per arm and iteration:
+    rlinit   iteration 0: arm 1 starts from the rules' choices, arm 2 near-uniform
+    rollout  RL_PARTS jobs: the current network plays (sampling) against the mimics and the map's
+             exploiter; its decisions and rewards (ml/rl/reward.py) go to branch ml-data
+    update   PPO: on the GPU with a big teacher distilled into the bot's network
+             (ml/rl/ppo_gpu.py, needs a torch Python), else in numpy (ml/rl/ppo.py)
+Every RL_PROMOTE_EVERY iterations the network is queued as an experiment, so it only reaches the
+bot through the usual gate. Any PC can take any job (claims, as for experiments).
 
-    python harness/mljobs.py list
+    python harness/mljobs.py status | list
     python harness/mljobs.py run [--forever] [--no-push]
 """
 
@@ -36,27 +38,30 @@ import experiments as X
 
 import league as L
 from bctools import ROOT, runner
-from ml.rl import awr
+from ml.rl import ppo, reward
 
 REGISTRY = L.LEAGUE / "ml_jobs.json"
 STORE_BRANCH = "ml-data"
 STORE = ROOT.parent / f"{ROOT.name}-mldata"
 OUT = L.SCRATCH / "ml"
-GEN_EXPLORE = 10  # percent of logged turns that explore
-GEN_MAPS = 3  # maps per data job (rotating through the pool)
-TRAIN_EVERY = 6  # new data shards per training run
-# On-policy RL (ml/rl): per iteration RL_PARTS rollout jobs, then one PPO update; every
-# RL_PROMOTE_EVERY iterations the network goes to the experiment queue. Arm 1 (experts + fight
-# target) gets RL_ARM_SHARE of the jobs, arm 2 (micro control, experimental) the rest.
-RL_PARTS = 2
-RL_PROMOTE_EVERY = 5
+KINDS = ("rlinit", "rollout", "update")
+RL_PARTS = 2  # rollout jobs per iteration
+RL_MAPS = 3  # maps per rollout job (rotating through the pool)
+RL_PROMOTE_EVERY = 5  # iterations between networks sent to the experiment queue
 RL_ARMS = (1, 2)
-RL_ARM_SHARE = 2 / 3
+RL_ARM_SHARE = 2 / 3  # arm 1's share of the jobs
 RL_WEIGHTS = {1: ("ROUTER", "router.bin"), 2: ("MICRO_NET", "micro.bin")}
 #: Keep every n-th decision per champion (arm 1 decides every turn; its full logs are too big
 #: to share through git each iteration; the rewards in between are kept).
 RL_KEEP_EVERY = {1: 8, 2: 1}
+SHARD_KEYS = ("X", "A", "LP", "M", "R", "DONE", "TRAJ")
+FAILURES_SHOWN_FOR = 24 * 3600
 CLAIM_TTL = X.CLAIM_TTL
+#: A Python with torch (CUDA if there's a GPU) for ml/rl/ppo_gpu.py; without it updates run in numpy.
+GPU_PYTHON = Path(
+    os.environ.get("ML_GPU_PYTHON")
+    or ROOT.parent / "ml-gpu-venv" / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
+)
 
 
 def load() -> dict:
@@ -68,7 +73,7 @@ def save(reg: dict) -> None:
 
 
 def add(reg: dict, kind: str, params: dict | None = None) -> dict:
-    assert kind in ("gen", "train", "rlinit", "rollout", "update"), kind
+    assert kind in KINDS, kind
     j = {
         "id": 1 + max((x["id"] for x in reg["jobs"]), default=0),
         "kind": kind,
@@ -82,6 +87,9 @@ def add(reg: dict, kind: str, params: dict | None = None) -> dict:
 
 
 def available(j: dict, now: float) -> bool:
+    """Queued, or a claim of ours / gone stale. Old job kinds (the retired imitation loop) never."""
+    if j["kind"] not in KINDS:
+        return False
     if j["status"] == "queued":
         return True
     if j["status"] != "running" or "claimed" not in j:
@@ -97,7 +105,7 @@ def next_job(reg: dict, now: float | None = None) -> dict | None:
 def rl_state(reg: dict, arm: int) -> dict:
     """Where arm `arm` is: initialised?, iteration (= finished updates), rollouts done/running for
     it, whether its update is running."""
-    jobs = [j for j in reg["jobs"] if j["params"].get("arm") == arm]
+    jobs = [j for j in reg["jobs"] if j["kind"] in KINDS and j["params"].get("arm") == arm]
     done = [j for j in jobs if j["status"] == "done"]
     it = sum(1 for j in done if j["kind"] == "update" and not j["result"].get("duplicate"))
     cur = [j for j in jobs if j["params"].get("it") == it]
@@ -112,7 +120,7 @@ def rl_state(reg: dict, arm: int) -> dict:
 
 
 def plan_rl(reg: dict) -> tuple[str, dict] | None:
-    """The next RL job, arm 1 first by share; None when both arms wait for running jobs."""
+    """The next job, arm 1 first by share; None when both arms wait for running jobs."""
     work = sum(1 for j in reg["jobs"] if j["params"].get("arm") == 1)
     total = sum(1 for j in reg["jobs"] if j["params"].get("arm") in RL_ARMS)
     order = (1, 2) if work <= RL_ARM_SHARE * max(total, 1) else (2, 1)
@@ -127,25 +135,6 @@ def plan_rl(reg: dict) -> tuple[str, dict] | None:
         if s["rolled"] >= RL_PARTS and not s["updating"]:
             return "update", {"arm": arm, "it": s["it"]}
     return None
-
-
-def plan_next(reg: dict) -> tuple[str, dict]:
-    """What to add when the queue is empty: RL work first (ml/rl), else the older AWR loop."""
-    rl = plan_rl(reg)
-    if rl:
-        return rl
-    return plan_awr(reg)
-
-
-def plan_awr(reg: dict) -> tuple[str, dict]:
-    """Imitation + offline RL (AWR): train once enough new shards exist, else gen."""
-    trains = [j["id"] for j in reg["jobs"] if j["kind"] == "train" and j["status"] == "done"]
-    last = max(trains, default=0)
-    fresh = [j for j in reg["jobs"] if j["kind"] == "gen" and j["status"] == "done" and j["id"] > last]
-    if len(fresh) >= TRAIN_EVERY:
-        return "train", {"hidden": 32, "epochs": 8}
-    n_gen = sum(1 for j in reg["jobs"] if j["kind"] == "gen")
-    return "gen", {"explore": GEN_EXPLORE, "offset": n_gen * GEN_MAPS}
 
 
 def publish(paths: list[Path], msg: str, push: bool) -> None:
@@ -183,8 +172,8 @@ def store_ready() -> Path:
                 if p.name != ".git":
                     shutil.rmtree(p) if p.is_dir() else p.unlink()
             (STORE / "README.md").write_text(
-                "Neural-net data shards (data/) and candidate router blobs (candidates/),\n"
-                "written by harness/mljobs.py. Not a code branch.\n",
+                "Neural-net rollouts and networks (rl/arm<N>/), written by harness/mljobs.py.\n"
+                "Not a code branch.\n",
                 encoding="utf-8",
             )
             git("add", "README.md")
@@ -208,91 +197,28 @@ def store_push(files: list[Path], msg: str, push: bool) -> bool:
     return False
 
 
-# ----------------------------------------------------------------- jobs
-
-
-def run_gen(j: dict, push: bool) -> dict:
-    led = L.load_ledger()
-    faithful, _ = L.ensure_mimics(led)
-    pool = sorted(L.trainable_maps(led).items())
-    k = j["params"].get("offset", 0)
-    maps = [pool[(k + i) % len(pool)][1] for i in range(min(GEN_MAPS, len(pool)))]
-    var = X.knob_variant("_mlgen", {"EXPLORE": int(j["params"].get("explore", GEN_EXPLORE))})
-    out = OUT / f"gen-{j['id']}"
-    pairs = [p for o in faithful for p in ((var, o), (o, var))]
-    res = runner.run_pairs(pairs, maps, out, release=False)  # debug build: logs the features
-    xs, ys, rs, wins = [], [], [], 0.0
-    for r in res:
-        side = "a" if r.bot_a == var else "b"
-        x, y, ret = awr.rows_from_bundle(Path(r.replay), side, r.winner == var)
-        xs += x
-        ys += y
-        rs += ret
-        wins += r.score_for(var)
-    store = store_ready()
-    shard = store / "data" / f"gen-{j['id']:05d}-{L.HOST}.npz"
-    rows = awr.save_rows(
-        {"X": np.stack(xs) if xs else np.zeros((0, 0), np.int8), "y": np.array(ys), "R": np.array(rs)}, shard
-    )
-    store_push([shard], f"ml-data: shard {shard.name} ({rows} rows)", push)
-    shutil.rmtree(out, ignore_errors=True)  # bundles are large; the shard keeps what training needs
-    return {
-        "games": len(res),
-        "rows": rows,
-        "win": round(wins / max(len(res), 1), 3),
-        "maps": [m.stem for m in maps],
-        "shard": shard.name,
-    }
-
-
-def run_train(j: dict, push: bool) -> dict:
-    store = store_ready()
-    shards = sorted((store / "data").glob("*.npz"))
-    data = awr.load_shards(shards)
-    out = store / "candidates" / f"router-{j['id']:05d}.bin"
-    rep = awr.fit(data, out, int(j["params"].get("hidden", 32)), int(j["params"].get("epochs", 500)))
-    rep["shards"] = len(shards)
-    if "skipped" in rep:
-        return rep
-    store_push([out, out.with_suffix(".json")], f"ml-data: candidate {out.name}", push)
-    xreg = X.load()
-    e = X.add(
-        xreg,
-        f"Learned router #{j['id']} ({rep['rows']} rows, AWR)",
-        "learning",
-        knobs={"ROUTER": 1},
-        files={"bots/main/src/weights/router.bin": f"ml-data:candidates/{out.name}"},
-        notes=f"Offline RL on {len(shards)} shards; train agreement {rep['train_agreement']}.",
-    )
-    # Test it next: a new network matters more than the old switch ideas waiting in the queue.
-    xreg["experiments"].remove(e)
-    i = next(
-        (k for k, x in enumerate(xreg["experiments"]) if x["status"] == "queued"), len(xreg["experiments"])
-    )
-    xreg["experiments"].insert(i, e)
-    X.save(xreg)
-    rep["experiment"] = e["id"]
-    return rep
-
-
 def rl_path(arm: int, name: str) -> Path:
     return STORE / "rl" / f"arm{arm}" / name
 
 
-def run_rlinit(j: dict, push: bool) -> dict:
-    """Iteration 0 of an arm: arm 1 imitates the rules' expert choices (warm start from the AWR
-    data shards), arm 2 starts near-uniform. Plus a fresh value network."""
-    from ml.rl import ppo
+# ----------------------------------------------------------------- jobs
 
+
+def run_rlinit(j: dict, push: bool) -> dict:
+    """Iteration 0 of an arm: arm 1 imitates the rules' expert choices (the logged rule decisions
+    in ml-data data/), arm 2 starts near-uniform. Plus a fresh value network."""
     arm = j["params"]["arm"]
     spec = ppo.ARMS[arm]
     store = store_ready()
     rng = np.random.default_rng(arm)
-    shards = sorted((store / "data").glob("*.npz"))
-    data = awr.load_shards(shards) if arm == 1 else {"X": np.zeros((0, 0), np.int8)}
-    if arm == 1 and len(data["X"]):
-        keep = rng.permutation(len(data["X"]))[:200_000]
-        x, y = data["X"][keep], np.asarray(data["y"])[keep]
+    parts = (
+        [reward.read_shard(s, ("X", "y")) for s in sorted((store / "data").glob("*.npz"))] if arm == 1 else []
+    )
+    parts = [d for d in parts if d is not None and len(d["y"])]
+    if parts:
+        x, y = np.concatenate([d["X"] for d in parts]), np.concatenate([d["y"] for d in parts])
+        keep = rng.permutation(len(x))[:200_000]
+        x, y = x[keep], y[keep]
         policy = ppo.warm_start(x, y, spec, rng)
     else:
         x = rng.integers(-127, 128, (2000, spec.n_in)).astype(np.int8)
@@ -309,8 +235,6 @@ def run_rlinit(j: dict, push: bool) -> dict:
 def run_rollout(j: dict, push: bool) -> dict:
     """Play the arm's current network (sampling, seeded per iteration and part) against the
     league: faithful mimics on rotating maps, plus each map's exploiter. Store the decisions."""
-    from ml.rl import reward
-
     arm, it, part = j["params"]["arm"], j["params"]["it"], j["params"]["part"]
     store_ready()
     knob, wfile = RL_WEIGHTS[arm]
@@ -322,8 +246,8 @@ def run_rollout(j: dict, push: bool) -> dict:
     led = L.load_ledger()
     faithful, _ = L.ensure_mimics(led)
     pool = sorted(L.trainable_maps(led).items())
-    k = (it * RL_PARTS + part) * GEN_MAPS
-    maps = [pool[(k + i) % len(pool)] for i in range(min(GEN_MAPS, len(pool)))]
+    k = (it * RL_PARTS + part) * RL_MAPS
+    maps = [pool[(k + i) % len(pool)] for i in range(min(RL_MAPS, len(pool)))]
     out = OUT / f"rl{arm}-{it:04d}-{part}"
     res = runner.run_pairs([p for o in faithful for p in ((name, o), (o, name))], [m for _, m in maps], out)
     xpl = L.ensure_exploiters()
@@ -336,25 +260,18 @@ def run_rollout(j: dict, push: bool) -> dict:
         ours, theirs = (r.gems_a, r.gems_b) if side == "a" else (r.gems_b, r.gems_a)
         won = r.score_for(name)
         wins += won
+        margin = (ours - theirs) / max(ours + theirs, 1)
         try:
             parts.append(
-                reward.game_samples(
-                    Path(r.replay),
-                    Path(r.stats),
-                    side,
-                    arm,
-                    won,
-                    (ours - theirs) / max(ours + theirs, 1),
-                    RL_KEEP_EVERY[arm],
-                )
+                reward.game_samples(Path(r.replay), Path(r.stats), side, arm, won, margin, RL_KEEP_EVERY[arm])
             )
         except (OSError, KeyError, ValueError):
             continue
     data = reward.concat(parts)
     shard = rl_path(arm, f"it{it:04d}-p{part}-{L.HOST}.npz")
-    shard.parent.mkdir(parents=True, exist_ok=True)
-    np.savez_compressed(shard, **data) if data else None
     if data:
+        shard.parent.mkdir(parents=True, exist_ok=True)
+        np.savez_compressed(shard, **data)
         store_push([shard], f"ml-data: rl arm {arm} it {it} part {part} ({len(data['R'])} decisions)", push)
     shutil.rmtree(out, ignore_errors=True)
     return {
@@ -367,33 +284,13 @@ def run_rollout(j: dict, push: bool) -> dict:
     }
 
 
-#: A Python with torch (CUDA if there's a GPU) for ml/rl/ppo_gpu.py; without it updates run in numpy.
-GPU_PYTHON = Path(
-    os.environ.get("ML_GPU_PYTHON")
-    or ROOT.parent / "ml-gpu-venv" / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
-)
-
-
 def gpu_update(arm: int, it: int, store: Path) -> dict | None:
     """The PPO update with the big teacher (ml/rl/ppo_gpu.py) when a torch Python exists; its
     metrics, or None to fall back to numpy (no torch Python, or it failed)."""
     if not GPU_PYTHON.exists():
         return None
-    p = subprocess.run(
-        [
-            str(GPU_PYTHON),
-            str(ROOT / "ml" / "rl" / "ppo_gpu.py"),
-            "--arm",
-            str(arm),
-            "--it",
-            str(it),
-            "--store",
-            str(store),
-        ],
-        cwd=ROOT,
-        capture_output=True,
-        text=True,
-    )
+    cmd = [str(GPU_PYTHON), str(ROOT / "ml" / "rl" / "ppo_gpu.py"), "--arm", str(arm), "--it", str(it)]
+    p = subprocess.run([*cmd, "--store", str(store)], cwd=ROOT, capture_output=True, text=True)
     lines = [ln for ln in p.stdout.splitlines() if ln.startswith("{")]
     if p.returncode != 0 or not lines:
         L.log(f"ml: GPU update failed, using numpy: {(p.stderr or p.stdout)[-300:]}")
@@ -401,28 +298,43 @@ def gpu_update(arm: int, it: int, store: Path) -> dict | None:
     return json.loads(lines[-1])
 
 
-def run_update(j: dict, reg: dict, push: bool) -> dict:
-    """PPO on the iteration's rollouts -> the next network; every RL_PROMOTE_EVERY iterations it
-    is queued as an experiment (first in line), so it only ships through the gate."""
-    from ml.rl import ppo, reward
+def promote(arm: int, it: int, m: dict) -> int:
+    """Queue the arm's network as the next experiment (first in line); its id."""
+    knob, wfile = RL_WEIGHTS[arm]
+    xreg = X.load()
+    e = X.add(
+        xreg,
+        f"RL arm {arm} ({'experts+target' if arm == 1 else 'micro control'}) iteration {it}",
+        "learning",
+        knobs={knob: 1},
+        files={f"bots/main/src/weights/{wfile}": f"ml-data:rl/arm{arm}/policy-{it:04d}.bin"},
+        notes=f"PPO on {m['samples']} decisions; rollout win {m['rollout_win']}; reward {m['mean_reward']}.",
+    )
+    xreg["experiments"].remove(e)
+    i = next(
+        (k for k, x in enumerate(xreg["experiments"]) if x["status"] == "queued"), len(xreg["experiments"])
+    )
+    xreg["experiments"].insert(i, e)
+    X.save(xreg)
+    return e["id"]
 
+
+def run_update(j: dict, reg: dict, push: bool) -> dict:
+    """PPO on the iteration's rollouts -> the next network (GPU teacher if available)."""
     arm, it = j["params"]["arm"], j["params"]["it"]
-    dup = [
-        x
-        for x in reg["jobs"]
-        if x is not j
+    if any(
+        x is not j
         and x["kind"] == "update"
         and x["params"] == j["params"]
         and x["status"] in ("running", "done")
         and not x["result"].get("duplicate")
-    ]
-    if dup:
+        for x in reg["jobs"]
+    ):
         return {"arm": arm, "it": it, "duplicate": True}
     spec = ppo.ARMS[arm]
     store = store_ready()
     shards = sorted((store / "rl" / f"arm{arm}").glob(f"it{it:04d}-p*.npz"))
-    keys = ("X", "A", "LP", "M", "R", "DONE", "TRAJ")
-    data = reward.concat([d for d in (awr.read_shard(s, keys) for s in shards) if d])
+    data = reward.concat([d for d in (reward.read_shard(s, SHARD_KEYS) for s in shards) if d])
     if not data:
         return {"arm": arm, "it": it, "skipped": "no decisions logged"}
     nxt = it + 1
@@ -451,32 +363,18 @@ def run_update(j: dict, reg: dict, push: bool) -> dict:
         and x["params"].get("it") == it
         and x["status"] == "done"
     ]
-    m.update(
-        arm=arm,
-        it=nxt,
-        shards=len(shards),
-        rollout_win=round(sum(x["result"].get("win", 0) for x in rolls) / max(len(rolls), 1), 3),
-    )
+    win = sum(x["result"].get("win", 0) for x in rolls) / max(len(rolls), 1)
+    m.update(arm=arm, it=nxt, shards=len(shards), rollout_win=round(win, 3))
     if nxt % RL_PROMOTE_EVERY == 0:
-        knob, wfile = RL_WEIGHTS[arm]
-        xreg = X.load()
-        e = X.add(
-            xreg,
-            f"RL arm {arm} ({'experts+target' if arm == 1 else 'micro control'}) iteration {nxt}",
-            "learning",
-            knobs={knob: 1},
-            files={f"bots/main/src/weights/{wfile}": f"ml-data:rl/arm{arm}/policy-{nxt:04d}.bin"},
-            notes=f"PPO on {m['samples']} decisions; rollout win {m['rollout_win']}; reward {m['mean_reward']}.",
-        )
-        xreg["experiments"].remove(e)
-        i = next(
-            (k for k, x in enumerate(xreg["experiments"]) if x["status"] == "queued"),
-            len(xreg["experiments"]),
-        )
-        xreg["experiments"].insert(i, e)
-        X.save(xreg)
-        m["experiment"] = e["id"]
+        m["experiment"] = promote(arm, nxt, m)
     return m
+
+
+RUNNERS = {
+    "rlinit": lambda j, reg, push: run_rlinit(j, push),
+    "rollout": lambda j, reg, push: run_rollout(j, push),
+    "update": run_update,
+}
 
 
 def finish(j: dict, reg: dict, push: bool) -> None:
@@ -496,24 +394,17 @@ def cmd_run(a: argparse.Namespace) -> int:
         reg = load()
         j = next_job(reg)
         if j is None:
-            kind, params = plan_next(reg)
-            j = add(reg, kind, params)
+            planned = plan_rl(reg)
+            if planned is None:  # both arms wait for jobs running on other PCs
+                time.sleep(300)
+                continue
+            j = add(reg, *planned)
             save(reg)
         if not claim(j, reg, a.push):
             L.log(f"ml: job {j['id']} was claimed by another PC; next")
             continue
         try:
-            kind = j["kind"]
-            if kind == "gen":
-                j["result"] = run_gen(j, a.push)
-            elif kind == "train":
-                j["result"] = run_train(j, a.push)
-            elif kind == "rlinit":
-                j["result"] = run_rlinit(j, a.push)
-            elif kind == "rollout":
-                j["result"] = run_rollout(j, a.push)
-            else:
-                j["result"] = run_update(j, reg, a.push)
+            j["result"] = RUNNERS[j["kind"]](j, reg, a.push)
             j["status"] = "done"
         except Exception as ex:  # one broken job must not stop the queue
             j["status"] = "failed"
@@ -523,10 +414,11 @@ def cmd_run(a: argparse.Namespace) -> int:
             return 0
 
 
+# ----------------------------------------------------------------- reporting
+
+
 def shared(path: str, default: dict) -> dict:
     """A registry file as on GitHub (every PC's work), falling back to the local copy."""
-    import json
-
     subprocess.run(["git", "fetch", "-q", "origin", L.BRANCH], cwd=ROOT, capture_output=True)
     p = subprocess.run(
         ["git", "show", f"origin/{L.BRANCH}:{path}"],
@@ -538,94 +430,46 @@ def shared(path: str, default: dict) -> dict:
     return {**default, **json.loads(p.stdout)} if p.returncode == 0 and p.stdout.strip() else default
 
 
-def status_report(reg: dict, xreg: dict) -> str:
-    jobs = reg["jobs"]
-    gens = [j for j in jobs if j["kind"] == "gen" and j["status"] == "done"]
-    trains = [
-        j for j in jobs if j["kind"] == "train" and j["status"] == "done" and "experiment" in j["result"]
-    ]
+def status_report(reg: dict, xreg: dict, now: float | None = None) -> str:
+    now = time.time() if now is None else now
+    jobs = [j for j in reg["jobs"] if j["kind"] in KINDS]
     running = [j for j in jobs if j["status"] == "running"]
-    failed = [j for j in jobs if j["status"] == "failed"]
-    rows = sum(j["result"].get("rows", 0) for j in gens)
-    games = sum(j["result"].get("games", 0) for j in gens)
-    last = max((j["id"] for j in jobs if j["kind"] == "train" and j["status"] == "done"), default=0)
-    fresh = sum(1 for j in gens if j["id"] > last)
-    lines = [
-        f"NEURAL NET: {games} data games, {rows:,} training rows in {len(gens)} shards | "
-        f"{len(trains)} networks trained | {len(running)} running | {len(failed)} failed",
-        "",
+
+    def fixed(f: dict) -> bool:  # a later job of the same kind and arm succeeded
+        return any(
+            j["id"] > f["id"]
+            and j["kind"] == f["kind"]
+            and j["params"].get("arm") == f["params"].get("arm")
+            and j["status"] == "done"
+            for j in jobs
+        )
+
+    failed = [
+        j
+        for j in jobs
+        if j["status"] == "failed"
+        and not fixed(j)
+        and now - L.ts(j.get("finished") or j.get("added")) < FAILURES_SHOWN_FOR
     ]
-    if running:
-        lines.append("RUNNING NOW")
-        for j in running:
-            what = {
-                "gen": "data games",
-                "rollout": "RL games",
-                "update": "PPO update",
-                "rlinit": "RL start",
-            }.get(j["kind"], "training")
-            when = time.strftime("%d %b %H:%M", time.localtime(L.ts(j.get("claimed"))))
-            lines.append(f"  job {j['id']:<4} {what:11s} on {j.get('host', '?')}, since {when}")
-        lines.append("")
-    by_id = {e["id"]: e for e in xreg.get("experiments", [])}
-    if trains:
-        lines.append("TRAINED NETWORKS (each is tested by the experiment autopilot)")
-        for j in trains:
-            r, e = j["result"], by_id.get(j["result"]["experiment"], {})
-            res = e.get("results", {}).get("full") or e.get("results", {}).get("screen") or {}
-            score = (
-                f", win {res['live']['win']:.2f} -> {res['variant']['win']:.2f}" if "variant" in res else ""
-            )
-            agree = r.get("val_agreement", r.get("train_agreement"))
-            lines.append(
-                f"  job {j['id']:<4} {r.get('rows', 0):>9,} rows, copies the rules {agree:.0%} | "
-                f"experiment #{e.get('id', '?')}: {e.get('status', '?')}{score}"
-            )
-        lines.append("")
-    else:
-        lines.append(f"No network trained yet: the first one trains after {TRAIN_EVERY} data jobs.")
-        lines.append("")
-    lines.append(
-        f"NEXT TRAINING after {max(TRAIN_EVERY - fresh, 0)} more data jobs ({fresh} of {TRAIN_EVERY} new shards)"
-    )
-    if gens:
-        lines.append("")
-        lines.append("RECENT DATA JOBS (win = the exploring bot vs the mimics, lower than live on purpose)")
-        for j in gens[-6:]:
-            r = j["result"]
-            lines.append(
-                f"  job {j['id']:<4} {r.get('games', 0):>3} games, {r.get('rows', 0):>8,} rows, "
-                f"win {r.get('win', 0):.2f}  {', '.join(r.get('maps', []))}"
-            )
-    lines += rl_report(reg, xreg)
-    if failed:
-        lines.append("")
-        lines.append("RECENT FAILURES")
-    for j in failed[-3:]:
-        lines.append(f"  job {j['id']} ({j['kind']}): {j['result'].get('error', '')[:90]}")
-    return "\n".join(lines).rstrip() + "\n"
-
-
-def rl_report(reg: dict, xreg: dict) -> list[str]:
-    """The learning-by-playing arms: iteration, latest rollout win rate and reward, experiments."""
     names = {1: "arm 1 (experts + fight target)", 2: "arm 2 (micro control)"}
     by_id = {e["id"]: e for e in xreg.get("experiments", [])}
-    out = [
+    lines = [
+        f"LEARNING BY PLAYING (PPO; a network goes to the experiment queue every {RL_PROMOTE_EVERY} iterations; "
+        f"updates on {'the GPU' if GPU_PYTHON.exists() else 'the CPU'} here)",
         "",
-        f"LEARNING BY PLAYING (PPO; a network goes to the experiment queue every {RL_PROMOTE_EVERY} iterations)",
     ]
     for arm in RL_ARMS:
         s = rl_state(reg, arm)
-        jobs = [j for j in reg["jobs"] if j["params"].get("arm") == arm and j["status"] == "done"]
+        done = [j for j in jobs if j["params"].get("arm") == arm and j["status"] == "done"]
         if not s["init"]:
-            out.append(f"  {names[arm]}: not started")
+            lines.append(f"  {names[arm]}: not started")
             continue
-        rolls = [j for j in jobs if j["kind"] == "rollout"]
-        ups = [j for j in jobs if j["kind"] == "update" and not j["result"].get("duplicate")]
+        rolls = [j for j in done if j["kind"] == "rollout"]
+        ups = [j for j in done if j["kind"] == "update" and not j["result"].get("duplicate")]
         games = sum(j["result"].get("games", 0) for j in rolls)
         last = ups[-1]["result"] if ups else {}
         win = rolls[-1]["result"].get("win") if rolls else None
-        out.append(
+        lines.append(
             f"  {names[arm]}: iteration {s['it']}, {games} games played, "
             f"latest rollout win {win if win is not None else '-'}, "
             f"reward {last.get('mean_reward', '-')}, rollouts this iteration {s['rolled']}/{RL_PARTS}"
@@ -635,10 +479,20 @@ def rl_report(reg: dict, xreg: dict) -> list[str]:
             if e:
                 r = e.get("results", {}).get("full") or e.get("results", {}).get("screen") or {}
                 score = f", win {r['live']['win']:.2f} -> {r['variant']['win']:.2f}" if "variant" in r else ""
-                out.append(
+                lines.append(
                     f"    iteration {j['result']['it']} -> experiment #{e['id']}: {e['status']}{score}"
                 )
-    return out
+    if running:
+        lines += ["", "RUNNING NOW"]
+        for j in running:
+            what = {"rollout": "RL games", "update": "PPO update", "rlinit": "RL start"}[j["kind"]]
+            when = time.strftime("%d %b %H:%M", time.localtime(L.ts(j.get("claimed"))))
+            arm = j["params"].get("arm")
+            lines.append(f"  job {j['id']:<4} arm {arm} {what:10s} on {j.get('host', '?')}, since {when}")
+    if failed:
+        lines += ["", "UNRESOLVED FAILURES (last 24 h)"]
+        lines += [f"  job {j['id']} ({j['kind']}): {j['result'].get('error', '')[:90]}" for j in failed[-3:]]
+    return "\n".join(lines).rstrip() + "\n"
 
 
 def cmd_status(_: argparse.Namespace) -> int:
@@ -651,11 +505,14 @@ def cmd_status(_: argparse.Namespace) -> int:
 def cmd_list(_: argparse.Namespace) -> int:
     reg = load()
     for j in reg["jobs"]:
+        if j["kind"] not in KINDS:
+            continue
         r = j.get("result", {})
-        info = r.get("error") or (f"{r.get('rows')} rows" if "rows" in r else "")
-        print(f"{j['id']:4d} {j['kind']:5s} {j['status']:8s} {j.get('host', ''):18s} {info}")
-    kind, params = plan_next(reg)
-    print(f"next when the queue is empty: {kind} {params}")
+        info = r.get("error") or (f"{r.get('games')} games, win {r.get('win')}" if "games" in r else "")
+        print(
+            f"{j['id']:4d} {j['kind']:8s} arm {j['params'].get('arm')} {j['status']:8s} {j.get('host', ''):18s} {info}"
+        )
+    print(f"next when the queue is empty: {plan_rl(reg)}")
     return 0
 
 

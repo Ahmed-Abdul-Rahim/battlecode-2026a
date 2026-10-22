@@ -55,7 +55,7 @@ The rules above are the engine; learned data sits on top and defaults to a no-op
 
 - **θ** (`bots/main/src/learned.rs`, 102 floats, layout in `harness/params.py`): multipliers on hand-set constants, a camp-target scorer, a fight-advantage bias and the **utility arbiter** (`utility.rs`), which scores keep / step back (aggro swap) / support / fight / walk home / recall together each turn.
 - **Policy pack** (`pack.rs`, `pack/pack.bin`): per map (by fingerprint) a θ override, draft, emblem builds per champion kind and opening routes. Size is cheap (data segment), lookups are O(1).
-- **Router** (`weights/router.bin`): int8 MLP trained by offline RL (`ml/rl/awr.py`), off unless enabled.
+- **Router** (`weights/router.bin`, `weights/micro.bin`): int8 MLPs trained by playing (PPO, `ml/rl/`), off unless enabled.
 - **Fuel tiers**: learned parts run only above their fuel floors; below `gate::LOW_FUEL` the cheapest rules always decide.
 
 Training daemons and how to extend them: [training.md](training.md).

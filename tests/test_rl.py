@@ -140,11 +140,9 @@ def test_thinning_keeps_total_reward(tmp_path):
 
 
 def test_broken_shards_are_skipped(tmp_path):
-    from ml.rl import awr
-
     good = tmp_path / "a.npz"
-    np.savez_compressed(good, X=np.zeros((3, 109), np.int8), y=np.zeros(3, int), R=np.zeros(3))
+    np.savez_compressed(good, X=np.zeros((3, 109), np.int8), y=np.zeros(3, int))
     (tmp_path / "b.npz").write_bytes(b"PK truncated")
-    np.savez_compressed(tmp_path / "c.npz", X=np.zeros((2, 109), np.int8))  # no y / R
-    d = awr.load_shards(sorted(tmp_path.glob("*.npz")))
-    assert len(d["y"]) == 3
+    np.savez_compressed(tmp_path / "c.npz", X=np.zeros((2, 109), np.int8))  # no y
+    got = [reward.read_shard(p, ("X", "y")) for p in sorted(tmp_path.glob("*.npz"))]
+    assert got[0] is not None and len(got[0]["y"]) == 3 and got[1] is None and got[2] is None
