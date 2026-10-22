@@ -9147,6 +9147,7 @@
   {
    "added": "2026-10-22T10:46:31Z",
    "claimed": "2026-10-22T10:46:31Z",
+   "finished": "2026-10-22T10:47:35Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 359,
    "kind": "rollout",
@@ -9155,8 +9156,19 @@
     "it": 66,
     "part": 0
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "arm": 1,
+    "decisions": 50010,
+    "games": 78,
+    "it": 66,
+    "maps": [
+     "starvation",
+     "swirl",
+     "the-farm"
+    ],
+    "win": 0.154
+   },
+   "status": "done"
   }
  ]
 }
