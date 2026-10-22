@@ -3327,10 +3327,33 @@
    "added": "2026-10-22T08:01:10Z",
    "area": "learning",
    "claimed": "2026-10-22T08:04:39Z",
+   "finished": "2026-10-22T08:06:34Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 75,
-   "notes": "PPO on 32185 decisions; rollout win 0.404; reward -0.0825.",
-   "results": {},
+   "notes": "PPO on 32185 decisions; rollout win 0.404; reward -0.0825. Screen: win 0.61 vs 0.681, fitness 0.42 vs 0.557 (paired -0.137 +- 0.050).",
+   "results": {
+    "screen": {
+     "live": {
+      "deaths": 15.1,
+      "fitness": 0.557,
+      "games": 182,
+      "gem_margin": 0.108,
+      "win": 0.681
+     },
+     "paired": {
+      "mean": -0.1371,
+      "pairs": 182,
+      "se": 0.0501
+     },
+     "variant": {
+      "deaths": 19.91,
+      "fitness": 0.42,
+      "games": 182,
+      "gem_margin": 0.038,
+      "win": 0.61
+     }
+    }
+   },
    "spec": {
     "files": {
      "bots/main/src/weights/micro.bin": "ml-data:rl/arm2/policy-0015.bin"
@@ -3339,7 +3362,7 @@
      "MICRO_NET": 1
     }
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "RL arm 2 (micro control) iteration 15"
   },
   {
