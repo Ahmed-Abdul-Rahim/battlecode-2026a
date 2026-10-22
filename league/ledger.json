@@ -3177,6 +3177,15 @@
    "time": "2026-10-20T17:10:06.134Z",
    "win": false
   },
+  "98800901-33ac-48ed-82cb-e43501e57ba0": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "starvation",
+   "opp": "Quantum Elk",
+   "oppId": "ee461d0b-afa8-4943-ae64-d0605ffa01a4",
+   "time": "2026-10-22T09:30:19.246Z",
+   "win": false
+  },
   "98b71f91-2b29-4b10-8552-88597c7b8f8e": {
    "kind": "ranked",
    "live": 17,
@@ -4202,6 +4211,15 @@
    "oppId": "7218a6a8-8211-4587-bdf8-3bae779e930e",
    "time": "2026-10-22T08:50:14.543Z",
    "win": true
+  },
+  "c53764c7-43de-43aa-ad68-896214c834bf": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "fracture",
+   "opp": "Quantum Elk",
+   "oppId": "ee461d0b-afa8-4943-ae64-d0605ffa01a4",
+   "time": "2026-10-22T09:30:19.246Z",
+   "win": false
   },
   "c5aba51e-604f-4c18-8505-b91d6cf55685": {
    "kind": "ranked",
@@ -10897,6 +10915,39 @@
    "status": "open",
    "time": "2026-10-22T09:30:19.246Z",
    "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (2)": 25
+   },
+   "deaths_them": 6,
+   "deaths_us": 25,
+   "gems_them": "1038",
+   "gems_us": "464",
+   "id": "c53764c7-43de-43aa-ad68-896214c834bf",
+   "map": "fracture",
+   "opp": "Quantum Elk",
+   "oppId": "ee461d0b-afa8-4943-ae64-d0605ffa01a4",
+   "status": "open",
+   "time": "2026-10-22T09:30:19.246Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 7,
+    "Unknown entity kind (2)": 6
+   },
+   "deaths_them": 50,
+   "deaths_us": 13,
+   "gems_them": "520",
+   "gems_us": "300",
+   "id": "98800901-33ac-48ed-82cb-e43501e57ba0",
+   "map": "starvation",
+   "opp": "Quantum Elk",
+   "oppId": "ee461d0b-afa8-4943-ae64-d0605ffa01a4",
+   "status": "open",
+   "time": "2026-10-22T09:30:19.246Z",
+   "tries_at": 2
   }
  ],
  "map_files": {
