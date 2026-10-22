@@ -3339,6 +3339,15 @@
    "time": "2026-10-22T08:52:34.499Z",
    "win": true
   },
+  "8c101b00-39c8-44dc-835f-7b87c07355a1": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "great-wall",
+   "opp": "angsana forest",
+   "oppId": "89041e37-b511-48d2-aa3d-922e12fe8630",
+   "time": "2026-10-22T12:30:23.032Z",
+   "win": true
+  },
   "8d1fa7c0-1956-4cc6-a132-1015f9d1ba85": {
    "kind": "ranked",
    "live": 10,
@@ -3868,6 +3877,15 @@
    "opp": "ggez",
    "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
    "time": "2026-10-21T15:30:43.147Z",
+   "win": false
+  },
+  "9fe12a54-4424-4465-bab1-a79357db0c54": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "fragment",
+   "opp": "angsana forest",
+   "oppId": "89041e37-b511-48d2-aa3d-922e12fe8630",
+   "time": "2026-10-22T12:30:23.032Z",
    "win": false
   },
   "a01623d2-751c-432d-bf30-56c2e5c6159e": {
@@ -4760,6 +4778,15 @@
    "oppId": "61e5f5c0-3ba9-4c48-ba68-bf125f0fdfc0",
    "time": "2026-10-21T17:30:26.108Z",
    "win": true
+  },
+  "c681091a-bc5c-4b91-ab4c-d86e5c1f434f": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "yellow-brick-road",
+   "opp": "angsana forest",
+   "oppId": "89041e37-b511-48d2-aa3d-922e12fe8630",
+   "time": "2026-10-22T12:30:23.031Z",
+   "win": false
   },
   "c6b69406-0eb4-461d-9a99-92343f108688": {
    "kind": "ranked",
@@ -6147,6 +6174,15 @@
    "time": "2026-10-21T13:50:14.700Z",
    "win": true
   },
+  "f8c88d46-77e9-4260-a324-f66f279b6d66": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "elkring",
+   "opp": "angsana forest",
+   "oppId": "89041e37-b511-48d2-aa3d-922e12fe8630",
+   "time": "2026-10-22T12:30:23.032Z",
+   "win": false
+  },
   "f8c8bda6-17bf-45a9-8b55-855eb9db75b8": {
    "kind": "ranked",
    "live": 21,
@@ -6299,6 +6335,15 @@
    "oppId": "dba8d35f-fd1d-432d-8ba5-9f076cb3dcac",
    "time": "2026-10-21T16:00:12.834Z",
    "win": true
+  },
+  "fe88e30b-9722-4f9b-a94a-1470c38f63e9": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "corridors",
+   "opp": "angsana forest",
+   "oppId": "89041e37-b511-48d2-aa3d-922e12fe8630",
+   "time": "2026-10-22T12:30:23.032Z",
+   "win": false
   },
   "fe9a23d9-350c-4432-aded-12a42cfbce2d": {
    "kind": "ranked",
@@ -12446,6 +12491,74 @@
    "status": "open",
    "time": "2026-10-22T12:20:15.006Z",
    "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 9,
+    "Unknown entity kind (2)": 6
+   },
+   "deaths_them": 20,
+   "deaths_us": 15,
+   "gems_them": "1012",
+   "gems_us": "506",
+   "id": "f8c88d46-77e9-4260-a324-f66f279b6d66",
+   "map": "elkring",
+   "opp": "angsana forest",
+   "oppId": "89041e37-b511-48d2-aa3d-922e12fe8630",
+   "status": "open",
+   "time": "2026-10-22T12:30:23.032Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 39,
+    "Unknown entity kind (2)": 5
+   },
+   "deaths_them": 25,
+   "deaths_us": 44,
+   "gems_them": "922",
+   "gems_us": "406",
+   "id": "9fe12a54-4424-4465-bab1-a79357db0c54",
+   "map": "fragment",
+   "opp": "angsana forest",
+   "oppId": "89041e37-b511-48d2-aa3d-922e12fe8630",
+   "status": "open",
+   "time": "2026-10-22T12:30:23.032Z",
+   "tries_at": 6
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 2,
+    "Unknown entity kind (2)": 44
+   },
+   "deaths_them": 46,
+   "deaths_us": 46,
+   "gems_them": "1046",
+   "gems_us": "426",
+   "id": "fe88e30b-9722-4f9b-a94a-1470c38f63e9",
+   "map": "corridors",
+   "opp": "angsana forest",
+   "oppId": "89041e37-b511-48d2-aa3d-922e12fe8630",
+   "status": "open",
+   "time": "2026-10-22T12:30:23.032Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 1,
+    "Unknown entity kind (2)": 2
+   },
+   "deaths_them": 4,
+   "deaths_us": 3,
+   "gems_them": "1016",
+   "gems_us": "0",
+   "id": "c681091a-bc5c-4b91-ab4c-d86e5c1f434f",
+   "map": "yellow-brick-road",
+   "opp": "angsana forest",
+   "oppId": "89041e37-b511-48d2-aa3d-922e12fe8630",
+   "status": "open",
+   "time": "2026-10-22T12:30:23.031Z",
+   "tries_at": 1
   }
  ],
  "map_files": {
