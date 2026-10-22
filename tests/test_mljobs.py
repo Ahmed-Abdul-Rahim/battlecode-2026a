@@ -101,3 +101,16 @@ def test_variant_files_swap_in(monkeypatch, tmp_path):
     }
     assert X.build_variant(e) == "_x7"
     assert (tmp_path / "bots" / "_x7" / "src" / "weights" / "router.bin").read_bytes() == b"BCW1blob"
+
+
+def test_status_shows_rl_arms():
+    reg = {"jobs": []}
+    M.add(reg, "rlinit", {"arm": 1})["status"] = "done"
+    r = M.add(reg, "rollout", {"arm": 1, "it": 0, "part": 0})
+    r.update(status="done", result={"games": 80, "win": 0.55})
+    u = M.add(reg, "update", {"arm": 1, "it": 0})
+    u.update(status="done", result={"it": 5, "mean_reward": 0.01, "experiment": 70})
+    out = M.status_report(reg, {"experiments": [{"id": 70, "status": "queued", "results": {}}]})
+    assert "arm 1 (experts + fight target): iteration 1, 80 games played" in out
+    assert "iteration 5 -> experiment #70: queued" in out
+    assert "arm 2 (micro control): not started" in out

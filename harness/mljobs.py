@@ -517,7 +517,12 @@ def status_report(reg: dict, xreg: dict) -> str:
     if running:
         lines.append("RUNNING NOW")
         for j in running:
-            what = "data games" if j["kind"] == "gen" else "training"
+            what = {
+                "gen": "data games",
+                "rollout": "RL games",
+                "update": "PPO update",
+                "rlinit": "RL start",
+            }.get(j["kind"], "training")
             when = time.strftime("%d %b %H:%M", time.localtime(L.ts(j.get("claimed"))))
             lines.append(f"  job {j['id']:<4} {what:11s} on {j.get('host', '?')}, since {when}")
         lines.append("")
@@ -551,9 +556,48 @@ def status_report(reg: dict, xreg: dict) -> str:
                 f"  job {j['id']:<4} {r.get('games', 0):>3} games, {r.get('rows', 0):>8,} rows, "
                 f"win {r.get('win', 0):.2f}  {', '.join(r.get('maps', []))}"
             )
-    for j in failed[-5:]:
-        lines.append(f"  FAILED job {j['id']} ({j['kind']}): {j['result'].get('error', '')[:90]}")
+    lines += rl_report(reg, xreg)
+    if failed:
+        lines.append("")
+        lines.append("RECENT FAILURES")
+    for j in failed[-3:]:
+        lines.append(f"  job {j['id']} ({j['kind']}): {j['result'].get('error', '')[:90]}")
     return "\n".join(lines).rstrip() + "\n"
+
+
+def rl_report(reg: dict, xreg: dict) -> list[str]:
+    """The learning-by-playing arms: iteration, latest rollout win rate and reward, experiments."""
+    names = {1: "arm 1 (experts + fight target)", 2: "arm 2 (micro control)"}
+    by_id = {e["id"]: e for e in xreg.get("experiments", [])}
+    out = [
+        "",
+        f"LEARNING BY PLAYING (PPO; a network goes to the experiment queue every {RL_PROMOTE_EVERY} iterations)",
+    ]
+    for arm in RL_ARMS:
+        s = rl_state(reg, arm)
+        jobs = [j for j in reg["jobs"] if j["params"].get("arm") == arm and j["status"] == "done"]
+        if not s["init"]:
+            out.append(f"  {names[arm]}: not started")
+            continue
+        rolls = [j for j in jobs if j["kind"] == "rollout"]
+        ups = [j for j in jobs if j["kind"] == "update" and not j["result"].get("duplicate")]
+        games = sum(j["result"].get("games", 0) for j in rolls)
+        last = ups[-1]["result"] if ups else {}
+        win = rolls[-1]["result"].get("win") if rolls else None
+        out.append(
+            f"  {names[arm]}: iteration {s['it']}, {games} games played, "
+            f"latest rollout win {win if win is not None else '-'}, "
+            f"reward {last.get('mean_reward', '-')}, rollouts this iteration {s['rolled']}/{RL_PARTS}"
+        )
+        for j in ups:
+            e = by_id.get(j["result"].get("experiment"))
+            if e:
+                r = e.get("results", {}).get("full") or e.get("results", {}).get("screen") or {}
+                score = f", win {r['live']['win']:.2f} -> {r['variant']['win']:.2f}" if "variant" in r else ""
+                out.append(
+                    f"    iteration {j['result']['it']} -> experiment #{e['id']}: {e['status']}{score}"
+                )
+    return out
 
 
 def cmd_status(_: argparse.Namespace) -> int:
