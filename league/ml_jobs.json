@@ -1413,6 +1413,18 @@
     "warm_rows": 2000
    },
    "status": "done"
+  },
+  {
+   "added": "2026-10-22T05:52:23Z",
+   "claimed": "2026-10-22T05:52:23Z",
+   "host": "DESKTOP-QVEMEEE",
+   "id": 58,
+   "kind": "rlinit",
+   "params": {
+    "arm": 1
+   },
+   "result": {},
+   "status": "running"
   }
  ]
 }
