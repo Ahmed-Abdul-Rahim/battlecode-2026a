@@ -6604,6 +6604,7 @@
   {
    "added": "2026-10-22T09:10:51Z",
    "claimed": "2026-10-22T09:10:51Z",
+   "finished": "2026-10-22T09:11:42Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 261,
    "kind": "rollout",
@@ -6612,8 +6613,19 @@
     "it": 22,
     "part": 1
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "arm": 2,
+    "decisions": 917,
+    "games": 78,
+    "it": 22,
+    "maps": [
+     "gem-fields",
+     "gemfight",
+     "gold-rush"
+    ],
+    "win": 0.692
+   },
+   "status": "done"
   }
  ]
 }
