@@ -1872,6 +1872,15 @@
    "time": "2026-10-21T17:30:26.108Z",
    "win": false
   },
+  "4fe56864-a3f4-4186-83ca-7ae6172a8fc5": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "pilgrimage",
+   "opp": "Brr Brr Battlecode",
+   "oppId": "8478dd36-bb39-4d06-abe2-b76bdc755cac",
+   "time": "2026-10-22T12:20:15.006Z",
+   "win": true
+  },
   "502ebce3-3d80-4ee7-9620-1497f1cb7e72": {
    "kind": "ranked",
    "live": 1,
@@ -2097,6 +2106,15 @@
    "time": "2026-10-21T15:10:26.178Z",
    "win": true
   },
+  "588e4c0d-3d81-4d16-9718-cfc0bf7d8c6d": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "rows",
+   "opp": "Brr Brr Battlecode",
+   "oppId": "8478dd36-bb39-4d06-abe2-b76bdc755cac",
+   "time": "2026-10-22T12:20:15.007Z",
+   "win": true
+  },
   "58c9f3b3-cc46-4c49-aae3-34c293fe5605": {
    "kind": "ranked",
    "live": 17,
@@ -2221,6 +2239,15 @@
    "opp": "Kukuku",
    "oppId": "775572bb-1052-4089-883d-61943e261640",
    "time": "2026-10-22T04:40:12.087Z",
+   "win": false
+  },
+  "5e137611-7fa3-48ca-afe9-65f1c2f9efba": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "great-wall",
+   "opp": "Brr Brr Battlecode",
+   "oppId": "8478dd36-bb39-4d06-abe2-b76bdc755cac",
+   "time": "2026-10-22T12:20:15.006Z",
    "win": false
   },
   "5e7c2860-45d1-4196-8641-42a13638f9bf": {
@@ -5220,6 +5247,15 @@
    "time": "2026-10-21T16:00:12.834Z",
    "win": false
   },
+  "db557199-9b66-4fc4-a5c3-0ebc287faafb": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "rushbait-v2",
+   "opp": "Brr Brr Battlecode",
+   "oppId": "8478dd36-bb39-4d06-abe2-b76bdc755cac",
+   "time": "2026-10-22T12:20:15.006Z",
+   "win": false
+  },
   "db7eee6d-913e-4387-b3f5-7d2204f52aef": {
    "kind": "ranked",
    "live": null,
@@ -6209,6 +6245,15 @@
    "oppId": "5d4e6798-122b-4cbb-a685-78c5f075ff46",
    "time": "2026-10-21T13:10:15.673Z",
    "win": false
+  },
+  "fc0227a7-4af4-45cf-bd20-c0ae3752d93a": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "lanes",
+   "opp": "Brr Brr Battlecode",
+   "oppId": "8478dd36-bb39-4d06-abe2-b76bdc755cac",
+   "time": "2026-10-22T12:20:15.006Z",
+   "win": true
   },
   "fccc1b06-d01b-43d0-8ab6-367f169efea5": {
    "kind": "ranked",
@@ -12367,6 +12412,39 @@
    "oppId": "d3f95349-b568-4699-b975-ce3f1f9f60fd",
    "status": "open",
    "time": "2026-10-22T12:10:14.425Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 14
+   },
+   "deaths_them": 0,
+   "deaths_us": 14,
+   "gems_them": "1002",
+   "gems_us": "647",
+   "id": "db557199-9b66-4fc4-a5c3-0ebc287faafb",
+   "map": "rushbait-v2",
+   "opp": "Brr Brr Battlecode",
+   "oppId": "8478dd36-bb39-4d06-abe2-b76bdc755cac",
+   "status": "open",
+   "time": "2026-10-22T12:20:15.006Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 17,
+    "Unknown entity kind (2)": 32
+   },
+   "deaths_them": 15,
+   "deaths_us": 49,
+   "gems_them": "1005",
+   "gems_us": "839",
+   "id": "5e137611-7fa3-48ca-afe9-65f1c2f9efba",
+   "map": "great-wall",
+   "opp": "Brr Brr Battlecode",
+   "oppId": "8478dd36-bb39-4d06-abe2-b76bdc755cac",
+   "status": "open",
+   "time": "2026-10-22T12:20:15.006Z",
    "tries_at": 4
   }
  ],
