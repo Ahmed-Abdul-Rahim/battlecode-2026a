@@ -1404,6 +1404,15 @@
    "time": "2026-10-21T14:20:15.009Z",
    "win": false
   },
+  "465dd55b-edd8-4381-a136-c3a4aba681a1": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "stampede",
+   "opp": "Fighting Illini",
+   "oppId": "7ad58f1a-2b64-463d-8b4c-71f1ff26a146",
+   "time": "2026-10-22T08:00:13.768Z",
+   "win": true
+  },
   "46f1654e-e765-48e2-bd2a-b44d4db6ce62": {
    "kind": "unranked",
    "live": 10,
@@ -1906,6 +1915,15 @@
    "opp": "Intercontinental Fish",
    "oppId": "1890540d-1ffc-4847-adbf-d0d08772f268",
    "time": "2026-10-20T17:51:26.764Z",
+   "win": false
+  },
+  "620810c9-6c7e-44a0-84a2-92aebf4901d0": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "contest",
+   "opp": "Fighting Illini",
+   "oppId": "7ad58f1a-2b64-463d-8b4c-71f1ff26a146",
+   "time": "2026-10-22T08:00:13.767Z",
    "win": false
   },
   "62312663-94c9-4fc2-a42d-cb9c5b3cc671": {
@@ -3123,6 +3141,15 @@
    "time": "2026-10-22T04:10:14.351Z",
    "win": true
   },
+  "a09281a4-ac7f-4f68-9a3a-106f523df1ab": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "boss-battle",
+   "opp": "Fighting Illini",
+   "oppId": "7ad58f1a-2b64-463d-8b4c-71f1ff26a146",
+   "time": "2026-10-22T08:00:13.768Z",
+   "win": true
+  },
   "a11aaca8-28b5-403c-8109-e30d6e74bb48": {
    "kind": "ranked",
    "live": 1,
@@ -3509,6 +3536,15 @@
    "oppId": "fa2b8732-ebdd-4618-8d5d-47be4a1c1ed5",
    "time": "2026-10-22T06:10:11.799Z",
    "win": true
+  },
+  "b644f589-acb7-4633-9ec8-6689452f7cf4": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "shortcut",
+   "opp": "Fighting Illini",
+   "oppId": "7ad58f1a-2b64-463d-8b4c-71f1ff26a146",
+   "time": "2026-10-22T08:00:13.768Z",
+   "win": false
   },
   "b65eddd7-d9a0-4522-8af9-dcd65ac98a52": {
    "kind": "ranked",
@@ -4796,6 +4832,15 @@
    "oppId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
    "time": "2026-10-20T20:00:10.344Z",
    "win": false
+  },
+  "f52415ed-eaaa-4a6d-87b3-fecfbc16595d": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "starvation",
+   "opp": "Fighting Illini",
+   "oppId": "7ad58f1a-2b64-463d-8b4c-71f1ff26a146",
+   "time": "2026-10-22T08:00:13.767Z",
+   "win": true
   },
   "f560744f-04de-4c87-a515-dc3051ceb937": {
    "kind": "ranked",
@@ -9683,13 +9728,14 @@
    },
    "deaths_them": 23,
    "deaths_us": 15,
+   "fixed_in": 19,
    "gems_them": "1019",
    "gems_us": "229",
    "id": "832d359a-c4ce-4889-9ed3-28e608be85c6",
    "map": "lost-world",
    "opp": "I told chatgpt about her",
    "oppId": "f55b4e8c-91d3-47d7-9539-88cabea848fc",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-22T07:30:19.642Z",
    "tries_at": 0
   },
@@ -9726,6 +9772,40 @@
    "status": "open",
    "time": "2026-10-22T07:50:12.101Z",
    "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 13,
+    "Unknown entity kind (2)": 12
+   },
+   "deaths_them": 12,
+   "deaths_us": 25,
+   "gems_them": "932",
+   "gems_us": "502",
+   "id": "b644f589-acb7-4633-9ec8-6689452f7cf4",
+   "map": "shortcut",
+   "opp": "Fighting Illini",
+   "oppId": "7ad58f1a-2b64-463d-8b4c-71f1ff26a146",
+   "status": "open",
+   "time": "2026-10-22T08:00:13.768Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 73,
+    "Unknown entity kind (2)": 5
+   },
+   "deaths_them": 63,
+   "deaths_us": 78,
+   "gems_them": "600",
+   "gems_us": "200",
+   "id": "620810c9-6c7e-44a0-84a2-92aebf4901d0",
+   "map": "contest",
+   "opp": "Fighting Illini",
+   "oppId": "7ad58f1a-2b64-463d-8b4c-71f1ff26a146",
+   "status": "open",
+   "time": "2026-10-22T08:00:13.767Z",
+   "tries_at": 0
   }
  ],
  "map_files": {
