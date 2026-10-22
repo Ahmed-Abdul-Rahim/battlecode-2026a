@@ -37,6 +37,20 @@ Numbers below were measured on `ambush` (100×100) with `bots/fuelbench` (`cambc
 | int8 layer 64×32 (2,048 MACs) | 5,915 | about 3 per MAC |
 | int8 layer 32×16 | 4,123 | |
 
+## Network kernels (2026-10-23, cambc 3.0.5, release build, dot product of 16,384)
+
+| Kernel | Fuel per multiply-add |
+|---|---|
+| int8 scalar | 4.4 |
+| int8 SIMD (`simd128`: extend to i16, `i32x4.dot_i16x8`) | 1.8 |
+| f32 scalar | 7.5 |
+| f32 SIMD (`f32x4` mul + add) | 3.9 |
+
+- Fuel is not one unit per vector instruction: SIMD is about 2.4x cheaper, not 8-16x.
+- Expected next step: weights stored pre-widened to i16, each input load shared by 4 rows (~0.8 per multiply-add, not measured yet).
+- **Not yet confirmed: whether the ladder engine accepts `simd128`.** Check with an unranked match before shipping SIMD code.
+- Setup to repeat: a bot that runs one kernel per turn; read the per-turn fuel from the replay's `team-a.fuel` (`bctools.replay.parse_fuel`). Release builds don't print stdout.
+
 ## Lessons (each one cost us turns)
 
 - **`BitGrid::positions()` scans every tile in guest code:** about 150k fuel, and it ran the first turn out. Use the SDK's `positions()`.
