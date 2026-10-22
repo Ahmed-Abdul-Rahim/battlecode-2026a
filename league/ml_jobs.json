@@ -3027,6 +3027,7 @@
   {
    "added": "2026-10-22T06:49:02Z",
    "claimed": "2026-10-22T06:49:02Z",
+   "finished": "2026-10-22T06:50:42Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 122,
    "kind": "rollout",
@@ -3035,8 +3036,19 @@
     "it": 13,
     "part": 1
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "arm": 1,
+    "decisions": 17918,
+    "games": 78,
+    "it": 13,
+    "maps": [
+     "big-world",
+     "boss-battle",
+     "broken-curve"
+    ],
+    "win": 0.449
+   },
+   "status": "done"
   }
  ]
 }
