@@ -2435,6 +2435,7 @@
   {
    "added": "2026-10-22T06:28:03Z",
    "claimed": "2026-10-22T06:28:03Z",
+   "finished": "2026-10-22T06:28:58Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 99,
    "kind": "rollout",
@@ -2443,8 +2444,19 @@
     "it": 4,
     "part": 1
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "arm": 2,
+    "decisions": 79,
+    "games": 78,
+    "it": 4,
+    "maps": [
+     "quadrants",
+     "reverse-spiral",
+     "road-of-riches"
+    ],
+    "win": 0.667
+   },
+   "status": "done"
   }
  ]
 }
