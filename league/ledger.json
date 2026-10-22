@@ -396,6 +396,15 @@
    "time": "2026-10-22T06:00:12.757Z",
    "win": true
   },
+  "13ecf89e-5a43-4a8f-9a05-6dfef9913731": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "eight",
+   "opp": "MHW",
+   "oppId": "fa2b8732-ebdd-4618-8d5d-47be4a1c1ed5",
+   "time": "2026-10-22T06:10:11.799Z",
+   "win": true
+  },
   "14d56491-2408-4223-a389-825b240f9356": {
    "kind": "ranked",
    "live": 1,
@@ -629,6 +638,15 @@
    "oppId": "0263b3aa-28cf-469f-abd3-e07327c6e757",
    "time": "2026-10-21T17:40:16.367Z",
    "win": false
+  },
+  "245eb436-169d-4975-b517-88b7547ec82f": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "shortcut",
+   "opp": "MHW",
+   "oppId": "fa2b8732-ebdd-4618-8d5d-47be4a1c1ed5",
+   "time": "2026-10-22T06:10:11.799Z",
+   "win": true
   },
   "249558dc-e5f5-4c6d-880a-448936f5cc06": {
    "kind": "ranked",
@@ -1476,6 +1494,15 @@
    "time": "2026-10-21T15:10:10.876Z",
    "win": false
   },
+  "54ab9b5a-5a8b-4e2a-805d-68915e5fb32c": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "collision",
+   "opp": "Fighting Illini",
+   "oppId": "7ad58f1a-2b64-463d-8b4c-71f1ff26a146",
+   "time": "2026-10-22T06:20:14.650Z",
+   "win": false
+  },
   "551e942f-71c6-4d0c-8988-bf56a41e83ec": {
    "kind": "ranked",
    "live": 1,
@@ -2124,6 +2151,15 @@
    "time": "2026-10-21T18:20:17.185Z",
    "win": false
   },
+  "7626adda-85a3-437c-985e-d9eaa92aae95": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "interlock",
+   "opp": "MHW",
+   "oppId": "fa2b8732-ebdd-4618-8d5d-47be4a1c1ed5",
+   "time": "2026-10-22T06:10:11.799Z",
+   "win": false
+  },
   "7663500f-2598-4a90-9ae7-ac9fea2a8353": {
    "kind": "ranked",
    "live": 1,
@@ -2303,6 +2339,15 @@
    "oppId": "d5e1fbdf-184c-4e9c-9ccc-e13c53841b14",
    "time": "2026-10-22T04:30:13.405Z",
    "win": true
+  },
+  "83e5df64-6150-4491-a524-915cfc7fcc4b": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "split",
+   "opp": "Fighting Illini",
+   "oppId": "7ad58f1a-2b64-463d-8b4c-71f1ff26a146",
+   "time": "2026-10-22T06:20:14.650Z",
+   "win": false
   },
   "84d0cca1-44dd-4fd7-8f18-0386f9b14ef3": {
    "kind": "ranked",
@@ -2943,6 +2988,15 @@
    "time": "2026-10-20T17:00:08.371Z",
    "win": true
   },
+  "aaf7fd06-f49d-404b-9d9a-f28b418742bb": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "pilgrimage",
+   "opp": "Fighting Illini",
+   "oppId": "7ad58f1a-2b64-463d-8b4c-71f1ff26a146",
+   "time": "2026-10-22T06:20:14.650Z",
+   "win": true
+  },
   "ab0a2a28-7904-44a6-89d2-d580140f142a": {
    "kind": "ranked",
    "live": 15,
@@ -3112,6 +3166,15 @@
    "opp": "Motu Patlu",
    "oppId": "4e6d067e-75a9-4891-bc9d-cf69e5def756",
    "time": "2026-10-21T15:50:14.108Z",
+   "win": true
+  },
+  "b59149a1-1b4e-437d-be54-bd2f08de1047": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "starvation",
+   "opp": "MHW",
+   "oppId": "fa2b8732-ebdd-4618-8d5d-47be4a1c1ed5",
+   "time": "2026-10-22T06:10:11.799Z",
    "win": true
   },
   "b65eddd7-d9a0-4522-8af9-dcd65ac98a52": {
@@ -3320,6 +3383,15 @@
    "oppId": "1158c8e5-3ab7-47da-9a7a-344e175243d0",
    "time": "2026-10-20T21:00:10.929Z",
    "win": true
+  },
+  "c28e7039-fe1d-45e3-a313-07c504895841": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "gemfight",
+   "opp": "MHW",
+   "oppId": "fa2b8732-ebdd-4618-8d5d-47be4a1c1ed5",
+   "time": "2026-10-22T06:10:11.799Z",
+   "win": false
   },
   "c34b7546-1a3a-4c11-b480-224bccfca6fe": {
    "kind": "ranked",
@@ -4049,6 +4121,24 @@
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
    "time": "2026-10-21T15:00:13.926Z",
    "win": false
+  },
+  "ece48c22-fa8f-4002-b110-1d6c693f0977": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "monolith",
+   "opp": "Fighting Illini",
+   "oppId": "7ad58f1a-2b64-463d-8b4c-71f1ff26a146",
+   "time": "2026-10-22T06:20:14.650Z",
+   "win": false
+  },
+  "ed9f7241-6a27-4594-a705-819b19d30aff": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "fracture",
+   "opp": "Fighting Illini",
+   "oppId": "7ad58f1a-2b64-463d-8b4c-71f1ff26a146",
+   "time": "2026-10-22T06:20:14.650Z",
+   "win": true
   },
   "eda7484a-213c-4091-ae33-d27b2c89b9a9": {
    "kind": "ranked",
@@ -8460,6 +8550,89 @@
    "status": "open",
    "time": "2026-10-22T06:00:12.757Z",
    "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 7,
+    "Unknown entity kind (2)": 29
+   },
+   "deaths_them": 26,
+   "deaths_us": 36,
+   "gems_them": "1064",
+   "gems_us": "365",
+   "id": "83e5df64-6150-4491-a524-915cfc7fcc4b",
+   "map": "split",
+   "opp": "Fighting Illini",
+   "oppId": "7ad58f1a-2b64-463d-8b4c-71f1ff26a146",
+   "status": "open",
+   "time": "2026-10-22T06:20:14.650Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 26
+   },
+   "deaths_them": 18,
+   "deaths_us": 26,
+   "gems_them": "1001",
+   "gems_us": "750",
+   "id": "ece48c22-fa8f-4002-b110-1d6c693f0977",
+   "map": "monolith",
+   "opp": "Fighting Illini",
+   "oppId": "7ad58f1a-2b64-463d-8b4c-71f1ff26a146",
+   "status": "open",
+   "time": "2026-10-22T06:20:14.650Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 30
+   },
+   "deaths_them": 21,
+   "deaths_us": 30,
+   "gems_them": "1001",
+   "gems_us": "676",
+   "id": "54ab9b5a-5a8b-4e2a-805d-68915e5fb32c",
+   "map": "collision",
+   "opp": "Fighting Illini",
+   "oppId": "7ad58f1a-2b64-463d-8b4c-71f1ff26a146",
+   "status": "open",
+   "time": "2026-10-22T06:20:14.650Z",
+   "tries_at": 6
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 31,
+    "Unknown entity kind (2)": 4
+   },
+   "deaths_them": 25,
+   "deaths_us": 35,
+   "gems_them": "1024",
+   "gems_us": "720",
+   "id": "7626adda-85a3-437c-985e-d9eaa92aae95",
+   "map": "interlock",
+   "opp": "MHW",
+   "oppId": "fa2b8732-ebdd-4618-8d5d-47be4a1c1ed5",
+   "status": "open",
+   "time": "2026-10-22T06:10:11.799Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 26,
+    "Unknown entity kind (2)": 4
+   },
+   "deaths_them": 18,
+   "deaths_us": 30,
+   "gems_them": "1026",
+   "gems_us": "513",
+   "id": "c28e7039-fe1d-45e3-a313-07c504895841",
+   "map": "gemfight",
+   "opp": "MHW",
+   "oppId": "fa2b8732-ebdd-4618-8d5d-47be4a1c1ed5",
+   "status": "open",
+   "time": "2026-10-22T06:10:11.799Z",
+   "tries_at": 3
   }
  ],
  "map_files": {
