@@ -3852,6 +3852,7 @@
   {
    "added": "2026-10-22T07:22:19Z",
    "claimed": "2026-10-22T07:22:19Z",
+   "finished": "2026-10-22T07:23:17Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 154,
    "kind": "rollout",
@@ -3860,8 +3861,19 @@
     "it": 20,
     "part": 1
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "arm": 1,
+    "decisions": 22051,
+    "games": 78,
+    "it": 20,
+    "maps": [
+     "broken-curve",
+     "collision",
+     "concentrated-wealth"
+    ],
+    "win": 0.41
+   },
+   "status": "done"
   }
  ]
 }
