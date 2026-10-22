@@ -6,7 +6,8 @@
 //! bytes). Tags: 1 θ (f32 × learned::P_N), 2 hotspots ((x u8, y u8, weight u8) × n),
 //! 3 opening (n sides u8, then per side: spawn x u8, y u8, KINDS × OPENING_LEN group
 //! indices, 255 = none), 4 draft (team sizes 3/4/5 × DRAFT_LEN DraftChoice, 255 = none),
-//! 5 build (KINDS × BUILD_LEN emblems as family * 3 + stat, 255 = end).
+//! 5 build (KINDS × BUILD_LEN emblems as family * 3 + stat, 255 = end),
+//! 6 routes (precomputed camp clusters and farming routes, harness/routes.py; see [`Routes`]).
 //! An empty pack (no entries) leaves the bot exactly as compiled.
 
 static PACK: &[u8] = include_bytes!("pack/pack.bin");
@@ -16,6 +17,8 @@ pub const TAG_HOTSPOTS: u8 = 2;
 pub const TAG_OPENING: u8 = 3;
 pub const TAG_DRAFT: u8 = 4;
 pub const TAG_BUILD: u8 = 5;
+pub const TAG_ROUTES: u8 = 6;
+pub const ROUTE_LEN: usize = 4;
 pub const KINDS: usize = 13;
 pub const OPENING_LEN: usize = 4;
 pub const DRAFT_LEN: usize = 5;
@@ -28,6 +31,7 @@ pub struct Entry {
     pub opening: &'static [u8],
     pub draft: &'static [u8],
     pub build: &'static [u8],
+    pub routes: &'static [u8],
 }
 
 impl Entry {
@@ -61,6 +65,91 @@ impl Entry {
             });
         best.and_then(|side| side.get(2 + kind * OPENING_LEN..2 + (kind + 1) * OPENING_LEN))
             .map_or_else(Vec::new, |s| s.iter().copied().take_while(|&g| g != 255).collect())
+    }
+}
+
+/// Precomputed clusters of camp groups and farming routes (pack TAG_ROUTES):
+/// G u8, K u8, cluster_of[G], centroid[K] (x, y), value[K] (/4), dist[K*K] (walking tiles,
+/// 255 = unreachable), sides u8, per side: spawn (x, y), home[K], R u8, R × ROUTE_LEN ids.
+#[derive(Clone, Copy, Debug)]
+pub struct Routes {
+    pub groups: usize,
+    pub clusters: usize,
+    data: &'static [u8],
+    side: usize,
+}
+
+impl Routes {
+    /// Parse and pick the spawn side nearest `spawn`. None if absent or malformed, or if the
+    /// group count doesn't match this map's (a stale pack).
+    #[must_use]
+    pub fn parse(b: &'static [u8], spawn: (i32, i32), groups: usize) -> Option<Self> {
+        let (g, k) = (usize::from(*b.first()?), usize::from(*b.get(1)?));
+        if g != groups || k == 0 {
+            return None;
+        }
+        let sides_at = 2 + g + 2 * k + k + k * k;
+        let n = usize::from(*b.get(sides_at)?);
+        let mut r = Self { groups: g, clusters: k, data: b, side: 0 };
+        let mut best = (i32::MAX, None);
+        for s in 0..n {
+            let at = r.side_at(s);
+            let (x, y) = (i32::from(*b.get(at)?), i32::from(*b.get(at + 1)?));
+            let d = (x - spawn.0).abs().max((y - spawn.1).abs());
+            if d < best.0 {
+                best = (d, Some(at));
+            }
+        }
+        r.side = best.1?;
+        let routes = usize::from(*b.get(r.side + 2 + k)?);
+        (b.len() >= r.side + 3 + k + routes * ROUTE_LEN).then_some(r)
+    }
+
+    fn side_at(&self, s: usize) -> usize {
+        let k = self.clusters;
+        let first = 2 + self.groups + 2 * k + k + k * k + 1;
+        let mut at = first;
+        for _ in 0..s {
+            let routes = usize::from(self.data.get(at + 2 + k).copied().unwrap_or(0));
+            at += 3 + k + routes * ROUTE_LEN;
+        }
+        at
+    }
+
+    #[must_use]
+    pub fn cluster_of(&self, group: usize) -> usize {
+        usize::from(self.data[2 + group])
+    }
+
+    #[must_use]
+    pub fn centroid(&self, c: usize) -> (i32, i32) {
+        let at = 2 + self.groups + 2 * c;
+        (i32::from(self.data[at]), i32::from(self.data[at + 1]))
+    }
+
+
+    /// Walking tiles between the nearest groups of two clusters (255 = unreachable).
+    #[must_use]
+    pub fn dist(&self, a: usize, b: usize) -> u32 {
+        let k = self.clusters;
+        u32::from(self.data[2 + self.groups + 3 * k + a * k + b])
+    }
+
+    /// Walking tiles from our spawn to a cluster.
+    #[must_use]
+    pub fn home(&self, c: usize) -> u32 {
+        u32::from(self.data[self.side + 2 + c])
+    }
+
+    #[must_use]
+    pub fn route_count(&self) -> usize {
+        usize::from(self.data[self.side + 2 + self.clusters])
+    }
+
+    /// Route `r`: its clusters in visiting order.
+    pub fn route(&self, r: usize) -> impl Iterator<Item = usize> + '_ {
+        let at = self.side + 3 + self.clusters + r * ROUTE_LEN;
+        self.data[at..at + ROUTE_LEN].iter().take_while(|&&c| c != 255).map(|&c| usize::from(c))
     }
 }
 
@@ -98,6 +187,7 @@ pub fn lookup(fingerprint: u32) -> Entry {
                 TAG_OPENING => e.opening = data,
                 TAG_DRAFT => e.draft = data,
                 TAG_BUILD => e.build = data,
+                TAG_ROUTES => e.routes = data,
                 _ => {}
             }
             at = start + len as usize;

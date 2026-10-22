@@ -20,10 +20,14 @@ from collections import defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from routes import routes_bytes  # noqa: E402
 FINGERPRINTS = ROOT / "data" / "fingerprints.json"
 PACK = ROOT / "bots" / "main" / "src" / "pack" / "pack.bin"
 OUR_ENGINE = ("main", "_lg-", "auto-v", "_es-", "_v6-", "_sr-", "_mt-", "_oos-", "_var-", "_tune")
-TAG_THETA, TAG_HOTSPOTS, TAG_OPENING, TAG_DRAFT, TAG_BUILD = 1, 2, 3, 4, 5
+TAG_THETA, TAG_HOTSPOTS, TAG_OPENING, TAG_DRAFT, TAG_BUILD, TAG_ROUTES = 1, 2, 3, 4, 5, 6
+ROUTES = ROOT / "data" / "routes.json"  # harness/routes.py build
 KINDS, OPENING_LEN, DRAFT_LEN, BUILD_LEN = 13, 4, 5, 12
 
 
@@ -62,8 +66,12 @@ def write(spec: dict, out: Path = PACK) -> int:
     entries = []
     if "global" in spec:
         entries.append((0, spec["global"]))
-    for name, e in sorted(spec.get("maps", {}).items()):
-        key = name.replace("_", "-")
+    # Precomputed clusters and routes go into every known map's entry (harness/routes.py).
+    routes = json.loads(ROUTES.read_text(encoding="utf-8")) if ROUTES.exists() else {}
+    maps = {name.replace("_", "-"): dict(e) for name, e in spec.get("maps", {}).items()}
+    for name, r in routes.items():
+        maps.setdefault(name, {})["routes"] = r
+    for key, e in sorted(maps.items()):
         if key in fps:
             entries.append((fps[key], e))
     blob = bytearray(b"BCPK" + struct.pack("<HH", 1, len(entries)))
@@ -79,6 +87,8 @@ def write(spec: dict, out: Path = PACK) -> int:
             sections.append((TAG_DRAFT, _draft_bytes(e["draft"])))
         if e.get("build"):
             sections.append((TAG_BUILD, _build_bytes(e["build"])))
+        if e.get("routes"):
+            sections.append((TAG_ROUTES, routes_bytes(e["routes"])))
         blob += struct.pack("<IH", fp, len(sections))
         for tag, data in sections:
             blob += struct.pack("<BI", tag, len(data)) + data

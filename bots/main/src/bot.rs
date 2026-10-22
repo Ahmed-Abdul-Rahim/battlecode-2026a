@@ -61,6 +61,10 @@ pub struct Bot {
     hotspots: Vec<(Pos, f32)>,
     /// Policy-pack opening route for this champion kind and spawn side (group indices).
     opening: Vec<u8>,
+    /// Precomputed clusters and routes for this map and spawn side (pack TAG_ROUTES).
+    routes: Option<crate::pack::Routes>,
+    /// knob2 ROUTES: the clusters still to visit on the current route.
+    route_plan: Vec<u8>,
     opening_idx: usize,
     /// Health lost since our previous turn (what is actually hitting us).
     dmg_taken: f32,
@@ -192,6 +196,16 @@ const CAMP_INFEASIBLE_VALUE: f32 = 0.1;
 const TARGET_REST_FUEL: u64 = 55_000;
 /// Most turns in a row a target is kept unscored when fuel is short.
 const TARGET_KEEP_MAX: u8 = 8;
+/// knob2 ROUTES: a respawning group counts as live when it is back within this many rounds.
+const ROUTE_UP_SOON: u32 = 15;
+/// knob2 ROUTES: rounds assumed per cluster visit (clear + capture) when ranking routes.
+const ROUTE_DWELL: f32 = 12.0;
+/// knob2 ROUTES: weight of each later cluster on a route.
+const ROUTE_DISCOUNT: f32 = 0.8;
+/// knob2 ROUTES: the current plan's score multiplier (stay unless clearly worse).
+const ROUTE_KEEP: f32 = 1.3;
+/// knob2 ROUTES: hash seed for sampled route picks.
+const ROUTE_SEED: u8 = 91;
 /// knob2 CLUSTER: neighbours count up to this many walking tiles from a group's centre.
 const CLUSTER_PATH: u32 = 14;
 /// Debug runs: rounds between `G` lines (each group's target score and what cut it).
@@ -248,6 +262,11 @@ impl Bot {
         let passive = me.passive().map_or(0, |p| p as i32 as usize);
         let build_profile = theta.knob(knob::BUILD_PROFILE);
         let opening = entry.opening_for((world.spawn_hint.x, world.spawn_hint.y), kind as usize);
+        let routes = crate::pack::Routes::parse(
+            entry.routes,
+            (world.spawn_hint.x, world.spawn_hint.y),
+            world.groups.len(),
+        );
         let pack_build = entry.build_for(kind as usize);
         let order = if !pack_build.is_empty() {
             // Policy-pack build (mimicked from top teams / evolved per map).
@@ -299,6 +318,8 @@ impl Bot {
             ignore_until: [0; 13],
             hotspots,
             opening,
+            routes,
+            route_plan: Vec::new(),
             opening_idx: 0,
             dmg_taken: 0.0,
             gather_wait: 0,
@@ -1822,8 +1843,121 @@ impl Bot {
             }
         }
         self.target_kept = 0;
-        self.score_targets(my_pos, round, chan, vis);
+        // knob2 ROUTES: only the current route cluster's groups compete; an empty cluster moves
+        // the route on (once), then everything is scored as before.
+        let mut only = self.route_cluster(my_pos, round, chan);
+        for _ in 0..2 {
+            self.score_targets(my_pos, round, chan, vis, only);
+            if self.target.is_some() || only.is_none() {
+                break;
+            }
+            if !self.route_plan.is_empty() {
+                self.route_plan.remove(0);
+            }
+            only = self.route_cluster(my_pos, round, chan);
+        }
+        if self.target.is_none() && only.is_some() {
+            self.score_targets(my_pos, round, chan, vis, None);
+        }
         self.target_cost = start.saturating_sub(fuel());
+    }
+
+    /// Groups allies have claimed (team channel), by group index.
+    fn claimed_groups(&self, chan: &TeamChannel) -> Vec<usize> {
+        chan.claims
+            .iter()
+            .enumerate()
+            .filter(|&(s, _)| s != self.slot as usize)
+            .filter_map(|(_, c)| *c)
+            .filter_map(|pi| self.theta.camp_priority.get(usize::from(pi)).map(|&(g, _)| usize::from(g)))
+            .collect()
+    }
+
+    /// Per cluster: value of its groups that are up (or back within ROUTE_UP_SOON rounds) and
+    /// not claimed by an ally.
+    fn cluster_live(&self, r: &crate::pack::Routes, round: u32, claimed: &[usize]) -> Vec<f32> {
+        let mut live = vec![0.0f32; r.clusters];
+        for (i, g) in self.world.groups.iter().enumerate() {
+            let down = self.belief.expected_state(i, round) == GroupState::Respawning
+                && self.belief.rounds_until_up(i, round) > ROUTE_UP_SOON;
+            if down || claimed.contains(&i) || g.gems + g.gold == 0 {
+                continue;
+            }
+            if let Some(v) = live.get_mut(r.cluster_of(i)) {
+                *v += g.gems as f32 + g.gold as f32 / 3.0;
+            }
+        }
+        live
+    }
+
+    /// knob2 ROUTES: the cluster to farm now. Every full target decision re-scores every route
+    /// and every remainder of one as discounted live value over walking rounds from here; the
+    /// current plan (past its dead clusters) counts ROUTE_KEEP x, so the champion stays unless
+    /// another area is clearly better.
+    fn route_cluster(&mut self, my_pos: Pos, round: u32, chan: &TeamChannel) -> Option<usize> {
+        let mode = self.theta.knob2(knob2::ROUTES);
+        let r = self.routes?;
+        if mode == 0 {
+            return None;
+        }
+        let claimed = self.claimed_groups(chan);
+        let live = self.cluster_live(&r, round, &claimed);
+        while let Some(&c) = self.route_plan.first() {
+            if live.get(usize::from(c)).is_some_and(|&v| v > 0.0) {
+                break;
+            }
+            self.route_plan.remove(0);
+        }
+        let at_home = self.world.spawn_hint.cheb(my_pos) <= 3;
+        let walk = |c: usize| -> f32 {
+            if at_home {
+                return r.home(c) as f32;
+            }
+            let (x, y) = r.centroid(c);
+            (Pos::new(x, y).cheb(my_pos) * 6 / 5 + 2) as f32
+        };
+        let mut cands: Vec<(f32, Vec<u8>)> = Vec::new();
+        let current: Vec<usize> = self.route_plan.iter().map(|&c| usize::from(c)).collect();
+        let routes = (0..r.route_count()).map(|k| r.route(k).collect::<Vec<usize>>());
+        for (k, route) in routes.chain(std::iter::once(current)).enumerate() {
+            let keep = if k == r.route_count() { ROUTE_KEEP } else { 1.0 };
+            if route.is_empty() {
+                continue;
+            }
+            for s in 0..route.len() {
+                let rest = &route[s..];
+                if live[rest[0]] <= 0.0 || (keep > 1.0 && s > 0) {
+                    continue;
+                }
+                let mut t = walk(rest[0]) + ROUTE_DWELL;
+                let (mut v, mut w) = (live[rest[0]], 1.0);
+                for pair in rest.windows(2) {
+                    t += r.dist(pair[0], pair[1]) as f32 + ROUTE_DWELL;
+                    w *= ROUTE_DISCOUNT;
+                    v += w * live[pair[1]];
+                }
+                cands.push((keep * v / t.max(1.0), rest.iter().map(|&c| c as u8).collect()));
+            }
+        }
+        let best = cands.iter().map(|(s, _)| *s).fold(0.0f32, f32::max);
+        if best <= 0.0 {
+            return None;
+        }
+        let pick = if mode <= 1 {
+            cands.iter().position(|(s, _)| *s == best)
+        } else {
+            // Softmax over scores relative to the best, temperature (mode - 1) / 10.
+            let temp = f32::from(mode - 1) / 10.0;
+            let ws: Vec<f32> = cands.iter().map(|(s, _)| ((s / best - 1.0) / temp).exp()).collect();
+            let total: f32 = ws.iter().sum();
+            let mut u = crate::bc_brain::rl::uniform(self.turns, self.slot, ROUTE_SEED, 0) * total;
+            ws.iter().position(|&w| {
+                u -= w;
+                u <= 0.0
+            })
+        }?;
+        self.route_plan = cands.swap_remove(pick).1;
+        self.route_plan.first().map(|&c| usize::from(c))
     }
 
     /// Cluster neighbours of group `i`: groups within CLUSTER_PATH walking tiles of its centre,
@@ -1893,8 +2027,16 @@ impl Bot {
         bonus
     }
 
-    fn score_targets(&mut self, my_pos: Pos, round: u32, chan: &TeamChannel, vis: &Visible) {
+    fn score_targets(
+        &mut self,
+        my_pos: Pos,
+        round: u32,
+        chan: &TeamChannel,
+        vis: &Visible,
+        only: Option<usize>,
+    ) {
         let cluster = self.cluster_bonus(round);
+        let routes = self.routes;
         // Live damage (items included): base stats alone underrate a geared champion, making
         // every camp look slower to clear than it is.
         let my_dps = sdk::dps(self.kit.base_strength, self.kit.base_focus, &self.kit)
@@ -1952,6 +2094,11 @@ impl Bot {
         let (mut t0, mut t1) = (0u64, 0u64);
         why!(t0 = fuel());
         for (i, g) in self.world.groups.iter().enumerate() {
+            if let (Some(c), Some(r)) = (only, routes) {
+                if r.cluster_of(i) != c {
+                    continue;
+                }
+            }
             why!(f.clear());
             if g.has_monolith && live {
                 // The monolith hits the nearest champion for its strength every round: the
@@ -2137,8 +2284,9 @@ impl Bot {
             }
         }
         why!(println!(
-            "G {{\"r\":{round},\"c\":\"{}\",\"pick\":{pick},\"route\":{},\"fuel_loop\":{},\"fuel_route\":{},\"groups\":[{}]}}",
+            "G {{\"r\":{round},\"c\":\"{}\",\"cl\":{},\"pick\":{pick},\"route\":{},\"fuel_loop\":{},\"fuel_route\":{},\"groups\":[{}]}}",
             champ_name(self.kind),
+            only.map_or(-1, |c| c as i64),
             best.map_or(-1, |(_, i)| i as i64),
             t0.saturating_sub(t1),
             t1.saturating_sub(fuel()),

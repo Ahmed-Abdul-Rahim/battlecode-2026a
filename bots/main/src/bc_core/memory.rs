@@ -111,8 +111,12 @@ pub mod knob2 {
     /// After the build order is complete, keep buying its last emblem instead of hoarding gold.
     /// On since 2026-10-22: 0.675 vs 0.619 over 320 games (better on 15 maps, worse on 4).
     pub const KEEP_BUYING: usize = 25;
+    /// Precomputed farming routes (pack TAG_ROUTES, harness/routes.py): follow a route of camp
+    /// clusters and only score the groups of its current cluster. 1 = best route by live value
+    /// per walking round; n > 1 = sample routes with temperature (n - 1) / 10.
+    pub const ROUTES: usize = 26;
 
-    pub const DEFAULTS: [(usize, u8); 26] = [
+    pub const DEFAULTS: [(usize, u8); 27] = [
         (PASSIVE_AWARE, 0),
         (FOCUS, 1),
         (ENDGAME, 1),
@@ -139,6 +143,7 @@ pub mod knob2 {
         (MICRO_NET, 0),
         (CLUSTER, 0),
         (KEEP_BUYING, 1),
+        (ROUTES, 0),
     ];
 }
 
