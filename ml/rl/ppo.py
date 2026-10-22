@@ -21,7 +21,8 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
 from ml.distill import quant  # noqa: E402
-from ml.distill.train_np import SCHEMA_HASH  # noqa: E402
+
+SCHEMA_HASH = 0xBDF9  # the feature schema (ml/distill/train_np.py); no repo tooling needed here
 
 
 @dataclass(frozen=True)

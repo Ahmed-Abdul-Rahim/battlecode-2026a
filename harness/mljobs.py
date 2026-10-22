@@ -18,6 +18,8 @@ TRAIN_EVERY new shards exist, otherwise another data job.
 from __future__ import annotations
 
 import argparse
+import json
+import os
 import shutil
 import subprocess
 import sys
@@ -365,6 +367,40 @@ def run_rollout(j: dict, push: bool) -> dict:
     }
 
 
+#: A Python with torch (CUDA if there's a GPU) for ml/rl/ppo_gpu.py; without it updates run in numpy.
+GPU_PYTHON = Path(
+    os.environ.get("ML_GPU_PYTHON")
+    or ROOT.parent / "ml-gpu-venv" / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
+)
+
+
+def gpu_update(arm: int, it: int, store: Path) -> dict | None:
+    """The PPO update with the big teacher (ml/rl/ppo_gpu.py) when a torch Python exists; its
+    metrics, or None to fall back to numpy (no torch Python, or it failed)."""
+    if not GPU_PYTHON.exists():
+        return None
+    p = subprocess.run(
+        [
+            str(GPU_PYTHON),
+            str(ROOT / "ml" / "rl" / "ppo_gpu.py"),
+            "--arm",
+            str(arm),
+            "--it",
+            str(it),
+            "--store",
+            str(store),
+        ],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+    )
+    lines = [ln for ln in p.stdout.splitlines() if ln.startswith("{")]
+    if p.returncode != 0 or not lines:
+        L.log(f"ml: GPU update failed, using numpy: {(p.stderr or p.stdout)[-300:]}")
+        return None
+    return json.loads(lines[-1])
+
+
 def run_update(j: dict, reg: dict, push: bool) -> dict:
     """PPO on the iteration's rollouts -> the next network; every RL_PROMOTE_EVERY iterations it
     is queued as an experiment (first in line), so it only ships through the gate."""
@@ -389,19 +425,24 @@ def run_update(j: dict, reg: dict, push: bool) -> dict:
     data = reward.concat([d for d in (awr.read_shard(s, keys) for s in shards) if d])
     if not data:
         return {"arm": arm, "it": it, "skipped": "no decisions logged"}
-    policy = ppo.load(rl_path(arm, f"policy-{it:04d}.npz"))
-    value = ppo.load(rl_path(arm, f"value-{it:04d}.npz"))
-    m = ppo.update(policy, value, data, spec, np.random.default_rng(it))
     nxt = it + 1
     files = [
         rl_path(arm, f"policy-{nxt:04d}.npz"),
         rl_path(arm, f"value-{nxt:04d}.npz"),
         rl_path(arm, f"policy-{nxt:04d}.bin"),
     ]
-    ppo.save(files[0], policy)
-    ppo.save(files[1], value)
-    files[2].write_bytes(ppo.export(policy, data["X"], spec))
-    store_push(files, f"ml-data: rl arm {arm} iteration {nxt}", push)
+    m = gpu_update(arm, it, store)
+    if m is not None:  # big teacher on the GPU, distilled into the bot's network
+        files += [rl_path(arm, f"teacher-{nxt:04d}.pt"), rl_path(arm, f"tvalue-{nxt:04d}.pt")]
+    else:
+        policy = ppo.load(rl_path(arm, f"policy-{it:04d}.npz"))
+        value = ppo.load(rl_path(arm, f"value-{it:04d}.npz"))
+        m = ppo.update(policy, value, data, spec, np.random.default_rng(it))
+        m["device"] = "cpu (numpy)"
+        ppo.save(files[0], policy)
+        ppo.save(files[1], value)
+        files[2].write_bytes(ppo.export(policy, data["X"], spec))
+    store_push([f for f in files if f.exists()], f"ml-data: rl arm {arm} iteration {nxt}", push)
     rolls = [
         x
         for x in reg["jobs"]
