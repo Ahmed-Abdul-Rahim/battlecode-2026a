@@ -1586,6 +1586,19 @@
     "shards": 2
    },
    "status": "done"
+  },
+  {
+   "added": "2026-10-22T05:58:36Z",
+   "claimed": "2026-10-22T05:58:36Z",
+   "host": "DESKTOP-QVEMEEE",
+   "id": 66,
+   "kind": "update",
+   "params": {
+    "arm": 2,
+    "it": 0
+   },
+   "result": {},
+   "status": "running"
   }
  ]
 }
