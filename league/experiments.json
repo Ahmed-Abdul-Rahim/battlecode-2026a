@@ -2781,16 +2781,57 @@
    "added": "2026-10-21T15:12:04Z",
    "area": "draft",
    "claimed": "2026-10-22T00:32:18Z",
+   "finished": "2026-10-22T01:16:12Z",
    "host": "muhammad-usman-Inspiron-14-5410-2-in-1",
    "id": 37,
    "notes": "",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.316,
+     "h2h_games": 76,
+     "live": {
+      "deaths": 22.63,
+      "fitness": 0.455,
+      "games": 988,
+      "gem_margin": 0.132,
+      "win": 0.649
+     },
+     "variant": {
+      "deaths": 20.64,
+      "fitness": 0.378,
+      "games": 988,
+      "gem_margin": 0.032,
+      "win": 0.577
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 16.52,
+      "fitness": 0.39,
+      "games": 182,
+      "gem_margin": -0.0,
+      "win": 0.555
+     },
+     "paired": {
+      "mean": 0.0292,
+      "pairs": 182,
+      "se": 0.0531
+     },
+     "variant": {
+      "deaths": 14.23,
+      "fitness": 0.419,
+      "games": 182,
+      "gem_margin": -0.041,
+      "win": 0.571
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "TAVI_META": 0
     }
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "Map-scorer draft instead of the fixed meta"
   },
   {
