@@ -378,6 +378,15 @@
    "time": "2026-10-20T21:10:08.566Z",
    "win": false
   },
+  "0e374fcc-c1da-4fef-92b7-6aaf4e5fc265": {
+   "kind": "ranked",
+   "live": 22,
+   "map": "hooks",
+   "opp": "Worldwide Gem Thieves",
+   "oppId": "f73c4710-c1c1-41c1-b59a-6165b02a1be9",
+   "time": "2026-10-22T14:10:08.632Z",
+   "win": true
+  },
   "0efd9c50-4d26-493a-a99a-282fac0eba6c": {
    "kind": "ranked",
    "live": 1,
@@ -1384,6 +1393,15 @@
    "opp": "prism best girl",
    "oppId": "38e6d8c4-1608-44f5-956b-08390f564336",
    "time": "2026-10-22T06:56:06.315Z",
+   "win": false
+  },
+  "352fa97e-40c6-4342-a805-bd1ed73ab80e": {
+   "kind": "ranked",
+   "live": 22,
+   "map": "rushbait-v2",
+   "opp": "Worldwide Gem Thieves",
+   "oppId": "f73c4710-c1c1-41c1-b59a-6165b02a1be9",
+   "time": "2026-10-22T14:10:08.632Z",
    "win": false
   },
   "35fc7014-ee3b-4d22-adb3-1595794d7499": {
@@ -3906,6 +3924,15 @@
    "time": "2026-10-22T06:40:14.275Z",
    "win": false
   },
+  "9b2bf7d4-8aab-4576-bfac-164edc8f23ce": {
+   "kind": "ranked",
+   "live": 22,
+   "map": "ambush",
+   "opp": "Worldwide Gem Thieves",
+   "oppId": "f73c4710-c1c1-41c1-b59a-6165b02a1be9",
+   "time": "2026-10-22T14:10:08.630Z",
+   "win": false
+  },
   "9b746a24-fce9-4899-bb9e-dcfd0d28778e": {
    "kind": "ranked",
    "live": 16,
@@ -5220,6 +5247,15 @@
    "time": "2026-10-20T16:20:07.815Z",
    "win": true
   },
+  "cc5c1469-6d0f-4c9a-abfa-7dc443df5919": {
+   "kind": "ranked",
+   "live": 22,
+   "map": "split",
+   "opp": "Worldwide Gem Thieves",
+   "oppId": "f73c4710-c1c1-41c1-b59a-6165b02a1be9",
+   "time": "2026-10-22T14:10:08.630Z",
+   "win": false
+  },
   "cc8ad0d7-4153-4b26-a741-fe184b167430": {
    "kind": "ranked",
    "live": 17,
@@ -5326,6 +5362,15 @@
    "opp": "Pikachu",
    "oppId": "dc24ee25-0f21-4353-8ebf-1ce5a82e22bb",
    "time": "2026-10-20T21:10:08.566Z",
+   "win": false
+  },
+  "d0f6ff85-9761-465d-9009-82ebd8f44273": {
+   "kind": "ranked",
+   "live": 22,
+   "map": "lost-world",
+   "opp": "Worldwide Gem Thieves",
+   "oppId": "f73c4710-c1c1-41c1-b59a-6165b02a1be9",
+   "time": "2026-10-22T14:10:08.630Z",
    "win": false
   },
   "d0fa64c4-1d47-4629-b1d9-17eb6e86cf31": {
@@ -13083,11 +13128,12 @@
    "deaths_us": 53,
    "gems_them": "560",
    "gems_us": "400",
+   "hint": "mimic can't express it (we win 100% vs their mimic here): improve the mimic",
    "id": "96f90427-4fd1-455c-87e3-b7a47f1613d6",
    "map": "stampede",
    "opp": "tRust me bro",
    "oppId": "4fbe2b8b-0a69-4dd5-b3f0-d8787101d7bc",
-   "status": "open",
+   "status": "needs-human",
    "time": "2026-10-22T13:00:16.320Z",
    "tries_at": 4
   },
@@ -13306,6 +13352,74 @@
    "oppId": "4fbe2b8b-0a69-4dd5-b3f0-d8787101d7bc",
    "status": "open",
    "time": "2026-10-22T14:00:12.311Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 1,
+    "champion": 44
+   },
+   "deaths_them": 16,
+   "deaths_us": 45,
+   "gems_them": "672",
+   "gems_us": "607",
+   "id": "352fa97e-40c6-4342-a805-bd1ed73ab80e",
+   "map": "rushbait-v2",
+   "opp": "Worldwide Gem Thieves",
+   "oppId": "f73c4710-c1c1-41c1-b59a-6165b02a1be9",
+   "status": "open",
+   "time": "2026-10-22T14:10:08.632Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 8,
+    "champion": 20
+   },
+   "deaths_them": 32,
+   "deaths_us": 28,
+   "gems_them": "1018",
+   "gems_us": "648",
+   "id": "cc5c1469-6d0f-4c9a-abfa-7dc443df5919",
+   "map": "split",
+   "opp": "Worldwide Gem Thieves",
+   "oppId": "f73c4710-c1c1-41c1-b59a-6165b02a1be9",
+   "status": "open",
+   "time": "2026-10-22T14:10:08.630Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 4,
+    "champion": 42
+   },
+   "deaths_them": 27,
+   "deaths_us": 46,
+   "gems_them": "1019",
+   "gems_us": "532",
+   "id": "d0f6ff85-9761-465d-9009-82ebd8f44273",
+   "map": "lost-world",
+   "opp": "Worldwide Gem Thieves",
+   "oppId": "f73c4710-c1c1-41c1-b59a-6165b02a1be9",
+   "status": "open",
+   "time": "2026-10-22T14:10:08.630Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "camp": 6,
+    "champion": 16
+   },
+   "deaths_them": 5,
+   "deaths_us": 22,
+   "gems_them": "1108",
+   "gems_us": "888",
+   "id": "9b2bf7d4-8aab-4576-bfac-164edc8f23ce",
+   "map": "ambush",
+   "opp": "Worldwide Gem Thieves",
+   "oppId": "f73c4710-c1c1-41c1-b59a-6165b02a1be9",
+   "status": "open",
+   "time": "2026-10-22T14:10:08.630Z",
    "tries_at": 4
   }
  ],
