@@ -3592,6 +3592,23 @@
    },
    "status": "rejected",
    "title": "RL arm 1 (experts+target) iteration 45"
+  },
+  {
+   "added": "2026-10-22T09:31:16Z",
+   "area": "learning",
+   "id": 81,
+   "notes": "PPO on 13683 decisions; rollout win 0.571; reward -0.1413.",
+   "results": {},
+   "spec": {
+    "files": {
+     "bots/main/src/weights/micro.bin": "ml-data:rl/arm2/policy-0025.bin"
+    },
+    "knobs": {
+     "MICRO_NET": 1
+    }
+   },
+   "status": "queued",
+   "title": "RL arm 2 (micro control) iteration 25"
   }
  ]
 }
