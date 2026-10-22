@@ -72,6 +72,15 @@
    "time": "2026-10-20T16:00:07.664Z",
    "win": false
   },
+  "04a9e326-cb30-4b4c-a790-db3ebfb064a6": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "contest",
+   "opp": "EXP'D",
+   "oppId": "42220ad3-01b9-4e78-a6db-e26f75bf375c",
+   "time": "2026-10-22T06:00:12.757Z",
+   "win": true
+  },
   "04c22692-638f-47a2-a42c-a669723183a5": {
    "kind": "ranked",
    "live": 1,
@@ -377,6 +386,15 @@
    "oppId": "90ddaf0d-1cf1-4110-a127-d14da2ce2c66",
    "time": "2026-10-22T04:10:14.351Z",
    "win": false
+  },
+  "12aaab77-5118-41bd-a705-1151f2bc7b51": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "rows",
+   "opp": "EXP'D",
+   "oppId": "42220ad3-01b9-4e78-a6db-e26f75bf375c",
+   "time": "2026-10-22T06:00:12.757Z",
+   "win": true
   },
   "14d56491-2408-4223-a389-825b240f9356": {
    "kind": "ranked",
@@ -1168,6 +1186,24 @@
    "opp": "eclipsed Sunlight",
    "oppId": "dba8d35f-fd1d-432d-8ba5-9f076cb3dcac",
    "time": "2026-10-20T20:40:10.182Z",
+   "win": true
+  },
+  "42e8ba3f-697f-45a4-b91e-fd55c021c0f9": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "yellow-brick-road",
+   "opp": "EXP'D",
+   "oppId": "42220ad3-01b9-4e78-a6db-e26f75bf375c",
+   "time": "2026-10-22T06:00:12.757Z",
+   "win": true
+  },
+  "43ebb846-94ad-4819-a76a-d1f64a06c473": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "split",
+   "opp": "EXP'D",
+   "oppId": "42220ad3-01b9-4e78-a6db-e26f75bf375c",
+   "time": "2026-10-22T06:00:12.757Z",
    "win": true
   },
   "4443dece-61a6-469c-8476-fb1328da8493": {
@@ -4264,6 +4300,15 @@
    "opp": "Water Water Water",
    "oppId": "5d4e6798-122b-4cbb-a685-78c5f075ff46",
    "time": "2026-10-21T13:10:15.673Z",
+   "win": false
+  },
+  "fccc1b06-d01b-43d0-8ab6-367f169efea5": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "fracture",
+   "opp": "EXP'D",
+   "oppId": "42220ad3-01b9-4e78-a6db-e26f75bf375c",
+   "time": "2026-10-22T06:00:12.757Z",
    "win": false
   },
   "fd8f8c8c-2f52-4143-81f4-2db66cf002b0": {
@@ -8399,6 +8444,22 @@
    "status": "open",
    "time": "2026-10-22T05:50:11.839Z",
    "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (2)": 25
+   },
+   "deaths_them": 6,
+   "deaths_us": 25,
+   "gems_them": "1001",
+   "gems_us": "23",
+   "id": "fccc1b06-d01b-43d0-8ab6-367f169efea5",
+   "map": "fracture",
+   "opp": "EXP'D",
+   "oppId": "42220ad3-01b9-4e78-a6db-e26f75bf375c",
+   "status": "open",
+   "time": "2026-10-22T06:00:12.757Z",
+   "tries_at": 4
   }
  ],
  "map_files": {
