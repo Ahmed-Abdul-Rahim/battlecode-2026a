@@ -1361,6 +1361,7 @@
   {
    "added": "2026-10-21T19:04:12Z",
    "claimed": "2026-10-22T05:47:11Z",
+   "finished": "2026-10-22T05:51:58Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 55,
    "kind": "gen",
@@ -1368,8 +1369,18 @@
     "explore": 10,
     "offset": 141
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "games": 78,
+    "maps": [
+     "01islands",
+     "00lanes",
+     "00lost-world"
+    ],
+    "rows": 131870,
+    "shard": "gen-00055-DESKTOP-QVEMEEE.npz",
+    "win": 0.385
+   },
+   "status": "done"
   }
  ]
 }
