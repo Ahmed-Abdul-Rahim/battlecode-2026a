@@ -1170,6 +1170,15 @@
    "time": "2026-10-21T16:30:13.511Z",
    "win": false
   },
+  "2f5f4dad-3bf2-459c-bd0c-e95aa2755c97": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "great-wall",
+   "opp": "WanderersOfAbyss",
+   "oppId": "07278352-d849-4c77-9ce1-0f8307fd4fa9",
+   "time": "2026-10-22T11:40:20.386Z",
+   "win": true
+  },
   "2ff47531-5657-4481-b764-c3de9d8f3c42": {
    "kind": "ranked",
    "live": 1,
@@ -2402,6 +2411,15 @@
    "oppId": "56492446-eca6-4557-9a40-559bd4c318dc",
    "time": "2026-10-20T16:30:26.059Z",
    "win": false
+  },
+  "67f315d1-4883-4499-8c5c-dbc9afea8029": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "expanse",
+   "opp": "WanderersOfAbyss",
+   "oppId": "07278352-d849-4c77-9ce1-0f8307fd4fa9",
+   "time": "2026-10-22T11:40:20.386Z",
+   "win": true
   },
   "68437780-bad1-4016-b0ac-b287d6dcb5c3": {
    "kind": "ranked",
@@ -5643,6 +5661,15 @@
    "time": "2026-10-22T06:20:14.650Z",
    "win": false
   },
+  "ed11061b-1b1a-4016-a597-b15a27278838": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "rows",
+   "opp": "WanderersOfAbyss",
+   "oppId": "07278352-d849-4c77-9ce1-0f8307fd4fa9",
+   "time": "2026-10-22T11:40:20.386Z",
+   "win": true
+  },
   "ed9f7241-6a27-4594-a705-819b19d30aff": {
    "kind": "ranked",
    "live": 16,
@@ -5913,6 +5940,15 @@
    "time": "2026-10-22T10:30:12.501Z",
    "win": false
   },
+  "f78ccba8-cc3e-4374-a295-b8370c406162": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "yellow-brick-road",
+   "opp": "WanderersOfAbyss",
+   "oppId": "07278352-d849-4c77-9ce1-0f8307fd4fa9",
+   "time": "2026-10-22T11:40:20.386Z",
+   "win": false
+  },
   "f7939e70-0621-4114-9f46-dcc8b4319d27": {
    "kind": "ranked",
    "live": null,
@@ -5974,6 +6010,15 @@
    "opp": "Slough Reps",
    "oppId": "fd3a404c-954b-4628-a418-7a8e57fb3783",
    "time": "2026-10-20T17:50:06.264Z",
+   "win": true
+  },
+  "f95a9dfc-112a-4423-aa37-2a9210ee8500": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "corners",
+   "opp": "WanderersOfAbyss",
+   "oppId": "07278352-d849-4c77-9ce1-0f8307fd4fa9",
+   "time": "2026-10-22T11:40:20.386Z",
    "win": true
   },
   "f9abd877-2549-43b8-bd8c-6b768da578aa": {
@@ -12047,6 +12092,23 @@
    "status": "open",
    "time": "2026-10-22T11:30:18.050Z",
    "tries_at": 6
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 1,
+    "Unknown entity kind (2)": 3
+   },
+   "deaths_them": 8,
+   "deaths_us": 4,
+   "gems_them": "1007",
+   "gems_us": "143",
+   "id": "f78ccba8-cc3e-4374-a295-b8370c406162",
+   "map": "yellow-brick-road",
+   "opp": "WanderersOfAbyss",
+   "oppId": "07278352-d849-4c77-9ce1-0f8307fd4fa9",
+   "status": "open",
+   "time": "2026-10-22T11:40:20.386Z",
+   "tries_at": 1
   }
  ],
  "map_files": {
@@ -12135,54 +12197,74 @@
  ],
  "pool": [
   {
-   "games": 15,
-   "macro_hash": "f2d528b1785f",
-   "name": "prism best girl",
-   "since": "2026-10-22T08:40:31Z",
-   "slug": "prism-best-girl",
+   "games": 145,
+   "macro_hash": "69df68cd5ab8",
+   "name": "Intercontinental Fish",
+   "since": "2026-10-22T11:47:58Z",
+   "slug": "intercontinental-fish",
    "static": false,
-   "teamId": "38e6d8c4-1608-44f5-956b-08390f564336",
+   "teamId": "1890540d-1ffc-4847-adbf-d0d08772f268",
    "why": "top1"
   },
   {
-   "games": 130,
-   "macro_hash": "e61be735fff9",
-   "name": "Intercontinental Fish",
-   "since": "2026-10-22T05:35:58Z",
-   "slug": "intercontinental-fish",
-   "static": true,
-   "teamId": "1890540d-1ffc-4847-adbf-d0d08772f268",
+   "games": 30,
+   "macro_hash": "2af01da89c34",
+   "name": "prism best girl",
+   "since": "2026-10-22T11:48:19Z",
+   "slug": "prism-best-girl",
+   "static": false,
+   "teamId": "38e6d8c4-1608-44f5-956b-08390f564336",
    "why": "top2"
   },
   {
-   "games": 110,
-   "macro_hash": "5c6e3a94f2ba",
+   "games": 120,
+   "macro_hash": "4b70f026b006",
    "name": "procless",
-   "since": "2026-10-22T05:36:13Z",
+   "since": "2026-10-22T11:48:53Z",
    "slug": "procless",
-   "static": true,
+   "static": false,
    "teamId": "8df7e1cd-0d60-413b-9331-f5427ce9ca88",
    "why": "top3"
   },
   {
-   "games": 55,
+   "games": 156,
+   "macro_hash": "09942eeff6e6",
+   "name": ":3",
+   "since": "2026-10-22T11:49:10Z",
+   "slug": "3",
+   "static": false,
+   "teamId": "bbe481a7-4575-4826-9a3e-f81c28205de8",
+   "why": "top4"
+  },
+  {
+   "games": 15,
+   "macro_hash": "fdd5bbfc8ba0",
+   "name": "new team(4)",
+   "since": "2026-10-22T11:49:30Z",
+   "slug": "new-team-4",
+   "static": false,
+   "teamId": "616e95e4-36ee-4669-b9b6-edfe818a7470",
+   "why": "top5"
+  },
+  {
+   "games": 65,
    "macro_hash": "ca6c8dd5c568",
    "name": "policy wonk",
    "since": "2026-10-22T08:41:30Z",
    "slug": "policy-wonk",
-   "static": false,
+   "static": true,
    "teamId": "3ec4a701-a9b5-498f-9361-eea4a6dd1cde",
-   "why": "top4"
+   "why": "top6"
   },
   {
-   "games": 151,
-   "macro_hash": "162e98dff954",
-   "name": ":3",
-   "since": "2026-10-22T08:41:52Z",
-   "slug": "3",
+   "games": 120,
+   "macro_hash": "403d8e0709a9",
+   "name": "EMPEROR Tung",
+   "since": "2026-10-22T11:50:28Z",
+   "slug": "emperor-tung",
    "static": false,
-   "teamId": "bbe481a7-4575-4826-9a3e-f81c28205de8",
-   "why": "top5"
+   "teamId": "a1e82708-dfd3-4609-8b9a-69f652d12185",
+   "why": "top7"
   },
   {
    "games": 13,
@@ -12190,78 +12272,58 @@
    "name": "Univardisty of Shingtonwash",
    "since": "2026-10-22T08:42:12Z",
    "slug": "univardisty-of-shingtonwash",
-   "static": false,
+   "static": true,
    "teamId": "a4350547-b7a1-47b1-9031-4f7f084ad0d8",
-   "why": "top6"
+   "why": "top8"
   },
   {
-   "games": 180,
+   "games": 190,
    "macro_hash": "543e5e9601d3",
    "name": "Trzy Kwaterki",
    "since": "2026-10-22T08:42:42Z",
    "slug": "trzy-kwaterki",
-   "static": false,
+   "static": true,
    "teamId": "36258abf-3fd0-4827-8fa5-2a217438cf6f",
-   "why": "top7"
-  },
-  {
-   "games": 110,
-   "macro_hash": "8246fafa831b",
-   "name": "EMPEROR Tung",
-   "since": "2026-10-22T05:36:47Z",
-   "slug": "emperor-tung",
-   "static": true,
-   "teamId": "a1e82708-dfd3-4609-8b9a-69f652d12185",
-   "why": "top8"
-  },
-  {
-   "games": 95,
-   "macro_hash": "37aed8dd0b6f",
-   "name": "Zarzorki",
-   "since": "2026-10-22T05:38:03Z",
-   "slug": "zarzorki",
-   "static": true,
-   "teamId": "c0a5d0a5-eb8f-4aa7-8d6a-8e74ed78874c",
    "why": "top9"
   },
   {
-   "games": 150,
-   "macro_hash": "5bc1e1d61b19",
+   "games": 160,
+   "macro_hash": "95cfe21b2ee8",
    "name": "Sponge(Albert and Bob)",
-   "since": "2026-10-22T05:37:40Z",
+   "since": "2026-10-22T11:52:34Z",
    "slug": "sponge-albert-and-bob",
-   "static": true,
+   "static": false,
    "teamId": "26824601-d225-427f-bd2d-ce8aa9faa392",
    "why": "top10"
   },
   {
-   "games": 10,
-   "macro_hash": "11e805d57970",
-   "name": "Placeholder",
-   "since": "2026-10-22T08:43:36Z",
-   "slug": "placeholder",
+   "games": 5,
+   "macro_hash": "3d14915dc89f",
+   "name": "WanderersOfAbyss",
+   "since": "2026-10-22T11:52:52Z",
+   "slug": "wanderersofabyss",
    "static": false,
-   "teamId": "a65688e3-cb2b-4e8b-8c6f-771292c1ebe2",
+   "teamId": "07278352-d849-4c77-9ce1-0f8307fd4fa9",
    "why": "loss"
   },
   {
    "games": 15,
-   "macro_hash": "5777072a1993",
-   "name": "CHERI Blossom",
-   "since": "2026-10-22T08:43:51Z",
-   "slug": "cheri-blossom",
+   "macro_hash": "30472246d994",
+   "name": "tRust me bro",
+   "since": "2026-10-22T11:53:42Z",
+   "slug": "trust-me-bro",
    "static": false,
-   "teamId": "7d07c0f3-d4ef-4722-aad2-2531397e3be9",
+   "teamId": "4fbe2b8b-0a69-4dd5-b3f0-d8787101d7bc",
    "why": "loss"
   },
   {
    "games": 10,
-   "macro_hash": "47ea76f22e96",
-   "name": "0xBURGER",
-   "since": "2026-10-22T08:44:21Z",
-   "slug": "0xburger",
+   "macro_hash": "7d743b2ec7b4",
+   "name": "Seacaps",
+   "since": "2026-10-22T11:54:30Z",
+   "slug": "seacaps",
    "static": false,
-   "teamId": "23bf8120-448a-424e-8353-cca7079209f4",
+   "teamId": "9608c441-389d-4dcd-961c-e19258e4a236",
    "why": "loss"
   }
  ],
@@ -13389,6 +13451,81 @@
     }
    ],
    "time": "2026-10-22T08:39:49Z"
+  },
+  {
+   "teams": [
+    {
+     "name": "Intercontinental Fish",
+     "rank": 1,
+     "rating": 2248.4,
+     "slug": "intercontinental-fish",
+     "teamId": "1890540d-1ffc-4847-adbf-d0d08772f268"
+    },
+    {
+     "name": "prism best girl",
+     "rank": 2,
+     "rating": 2236.9,
+     "slug": "prism-best-girl",
+     "teamId": "38e6d8c4-1608-44f5-956b-08390f564336"
+    },
+    {
+     "name": "procless",
+     "rank": 3,
+     "rating": 2161.3,
+     "slug": "procless",
+     "teamId": "8df7e1cd-0d60-413b-9331-f5427ce9ca88"
+    },
+    {
+     "name": ":3",
+     "rank": 4,
+     "rating": 2148.9,
+     "slug": "3",
+     "teamId": "bbe481a7-4575-4826-9a3e-f81c28205de8"
+    },
+    {
+     "name": "new team(4)",
+     "rank": 5,
+     "rating": 2117.5,
+     "slug": "new-team-4",
+     "teamId": "616e95e4-36ee-4669-b9b6-edfe818a7470"
+    },
+    {
+     "name": "policy wonk",
+     "rank": 6,
+     "rating": 2097.0,
+     "slug": "policy-wonk",
+     "teamId": "3ec4a701-a9b5-498f-9361-eea4a6dd1cde"
+    },
+    {
+     "name": "EMPEROR Tung",
+     "rank": 7,
+     "rating": 2078.0,
+     "slug": "emperor-tung",
+     "teamId": "a1e82708-dfd3-4609-8b9a-69f652d12185"
+    },
+    {
+     "name": "Univardisty of Shingtonwash",
+     "rank": 8,
+     "rating": 2073.4,
+     "slug": "univardisty-of-shingtonwash",
+     "teamId": "a4350547-b7a1-47b1-9031-4f7f084ad0d8"
+    },
+    {
+     "name": "Trzy Kwaterki",
+     "rank": 9,
+     "rating": 2063.8,
+     "slug": "trzy-kwaterki",
+     "teamId": "36258abf-3fd0-4827-8fa5-2a217438cf6f"
+    },
+    {
+     "name": "Sponge(Albert and Bob)",
+     "rank": 10,
+     "rating": 2049.9,
+     "slug": "sponge-albert-and-bob",
+     "teamId": "26824601-d225-427f-bd2d-ce8aa9faa392"
+    }
+   ],
+   "time": "2026-10-22T11:47:24Z"
   }
  ]
 }

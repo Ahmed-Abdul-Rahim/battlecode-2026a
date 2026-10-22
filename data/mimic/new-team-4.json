@@ -1,32 +1,32 @@
 {
  "build": {},
  "cadence": {
-  "bag": 13.8,
+  "bag": 45.7,
   "first_emblem": null,
   "shops_per_100r": null
  },
  "draft": {
   "3": [
-   9,
-   4,
-   3
+   11,
+   6,
+   1
   ],
   "4": [
-   9,
-   4,
-   3,
-   8
+   11,
+   6,
+   1,
+   0
   ],
   "5": [
-   9,
-   4,
-   3,
-   8,
-   10
+   11,
+   6,
+   1,
+   0,
+   2
   ]
  },
- "games": 10,
+ "games": 15,
  "opening": {},
- "team": "0xBURGER",
- "win_rate": 0.4
+ "team": "new team(4)",
+ "win_rate": 0.2
 }

@@ -1,7 +1,7 @@
 {
  "build": {},
  "cadence": {
-  "bag": 31.8,
+  "bag": 31.5,
   "first_emblem": null,
   "shops_per_100r": null
  },
@@ -25,8 +25,8 @@
    9
   ]
  },
- "games": 110,
+ "games": 120,
  "opening": {},
  "team": "EMPEROR Tung",
- "win_rate": 0.736
+ "win_rate": 0.758
 }

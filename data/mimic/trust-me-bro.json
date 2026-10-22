@@ -1,27 +1,27 @@
 {
  "build": {},
  "cadence": {
-  "bag": 12.5,
+  "bag": 19.7,
   "first_emblem": null,
   "shops_per_100r": null
  },
  "draft": {
   "4": [
-   4,
-   3,
-   9,
-   10
+   0,
+   6,
+   11,
+   2
   ],
   "5": [
-   4,
-   3,
-   9,
-   10,
-   1
+   0,
+   1,
+   11,
+   6,
+   2
   ]
  },
- "games": 10,
+ "games": 15,
  "opening": {},
- "team": "Placeholder",
- "win_rate": 0.5
+ "team": "tRust me bro",
+ "win_rate": 0.6
 }
