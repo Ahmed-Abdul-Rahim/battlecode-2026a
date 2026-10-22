@@ -1152,6 +1152,15 @@
    "time": "2026-10-22T09:50:15.250Z",
    "win": true
   },
+  "2e43721a-3547-4208-a8ba-153691e26a15": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "big-world",
+   "opp": "** sudo rm -rf Victory**",
+   "oppId": "05f7f6ef-25e7-4707-b0aa-51d1106c980a",
+   "time": "2026-10-22T12:40:18.485Z",
+   "win": true
+  },
   "2ee21475-09aa-4428-85d7-d3c76a33a247": {
    "kind": "ranked",
    "live": 1,
@@ -1807,6 +1816,15 @@
    "opp": "Opus 5.5",
    "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
    "time": "2026-10-22T10:10:16.175Z",
+   "win": true
+  },
+  "4bad8a1e-f5da-4fbe-86e5-c2e92a56a00d": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "elk-arena",
+   "opp": "** sudo rm -rf Victory**",
+   "oppId": "05f7f6ef-25e7-4707-b0aa-51d1106c980a",
+   "time": "2026-10-22T12:40:18.485Z",
    "win": true
   },
   "4c097b2c-e5b3-4e86-8c9f-c60d2c810ce4": {
@@ -3321,6 +3339,15 @@
    "time": "2026-10-22T05:20:12.743Z",
    "win": false
   },
+  "8b956d06-b38e-4429-9339-b4435fcda268": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "boss-battle",
+   "opp": "** sudo rm -rf Victory**",
+   "oppId": "05f7f6ef-25e7-4707-b0aa-51d1106c980a",
+   "time": "2026-10-22T12:40:18.485Z",
+   "win": true
+  },
   "8b964ce4-5818-4f29-91f4-c094e9ea0030": {
    "kind": "ranked",
    "live": 17,
@@ -3751,6 +3778,15 @@
    "opp": "High Frequency Gaming",
    "oppId": "d23f2627-97ea-48b1-b353-5bf2368008f4",
    "time": "2026-10-21T18:10:15.060Z",
+   "win": true
+  },
+  "9c54c98c-df96-4a3d-bd36-6c31825ea98a": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "quadrants",
+   "opp": "** sudo rm -rf Victory**",
+   "oppId": "05f7f6ef-25e7-4707-b0aa-51d1106c980a",
+   "time": "2026-10-22T12:40:18.485Z",
    "win": true
   },
   "9c7e22dc-b8c0-42dd-b54a-4829929d9a6c": {
@@ -5164,6 +5200,15 @@
    "opp": "Prime Bot 007",
    "oppId": "4b09b8ff-b429-43dc-9be1-180565784e87",
    "time": "2026-10-22T09:40:19.254Z",
+   "win": true
+  },
+  "d782a417-e1ec-42c4-8430-86d0f87cc9b1": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "monolith",
+   "opp": "** sudo rm -rf Victory**",
+   "oppId": "05f7f6ef-25e7-4707-b0aa-51d1106c980a",
+   "time": "2026-10-22T12:40:18.485Z",
    "win": true
   },
   "d78e372b-dd77-442e-bef6-c546f611df6a": {
