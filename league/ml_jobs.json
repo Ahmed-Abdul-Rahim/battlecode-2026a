@@ -5446,6 +5446,7 @@
   {
    "added": "2026-10-22T08:23:50Z",
    "claimed": "2026-10-22T08:23:50Z",
+   "finished": "2026-10-22T08:24:40Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 216,
    "kind": "rollout",
@@ -5454,8 +5455,19 @@
     "it": 17,
     "part": 1
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "arm": 2,
+    "decisions": 12344,
+    "games": 78,
+    "it": 17,
+    "maps": [
+     "packs",
+     "pilgrimage",
+     "quadrants"
+    ],
+    "win": 0.538
+   },
+   "status": "done"
   }
  ]
 }
