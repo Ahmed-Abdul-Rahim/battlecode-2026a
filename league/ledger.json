@@ -666,6 +666,15 @@
    "time": "2026-10-22T08:21:22.324Z",
    "win": false
   },
+  "1ace0328-8e36-4897-a2eb-1125c296d7b6": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "packs",
+   "opp": "V4.1 Flash",
+   "oppId": "fd795986-cfd3-4732-9fa9-94caba40067a",
+   "time": "2026-10-22T12:00:30.597Z",
+   "win": true
+  },
   "1b28b133-a6d3-4cb2-93a5-b5a3dfa7594c": {
    "kind": "ranked",
    "live": 21,
@@ -2331,6 +2340,15 @@
    "time": "2026-10-21T14:20:15.009Z",
    "win": false
   },
+  "6302f42f-98c1-45dc-a1ae-dff8d542b007": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "big-world",
+   "opp": "V4.1 Flash",
+   "oppId": "fd795986-cfd3-4732-9fa9-94caba40067a",
+   "time": "2026-10-22T12:00:30.597Z",
+   "win": false
+  },
   "645d13c7-7668-4cb7-972c-f14638706ab8": {
    "kind": "ranked",
    "live": 21,
@@ -3861,6 +3879,15 @@
    "time": "2026-10-21T16:40:14.609Z",
    "win": false
   },
+  "a2ff0679-23a5-4ae8-9a58-246673b64525": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "islands",
+   "opp": "V4.1 Flash",
+   "oppId": "fd795986-cfd3-4732-9fa9-94caba40067a",
+   "time": "2026-10-22T12:00:30.597Z",
+   "win": true
+  },
   "a3e94d15-3ae1-4d5b-89bb-58687ef5df7e": {
    "kind": "ranked",
    "live": 1,
@@ -4247,6 +4274,15 @@
    "oppId": "58e98a11-6404-4f00-83f2-3943c3b72e94",
    "time": "2026-10-20T21:30:09.966Z",
    "win": false
+  },
+  "b566b96b-a0f2-443c-a796-1dd2cd099489": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "corners",
+   "opp": "V4.1 Flash",
+   "oppId": "fd795986-cfd3-4732-9fa9-94caba40067a",
+   "time": "2026-10-22T12:00:30.597Z",
+   "win": true
   },
   "b587618e-f591-4ec1-b9ec-7e5ac60f9733": {
    "kind": "ranked",
@@ -6091,6 +6127,15 @@
    "opp": "ohhhhhh caml",
    "oppId": "5bfa785b-3a15-4398-96b7-624e1a1e103c",
    "time": "2026-10-22T10:40:12.612Z",
+   "win": false
+  },
+  "fa539680-9ce7-4ae5-b475-32e3e4be1830": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "great-wall",
+   "opp": "V4.1 Flash",
+   "oppId": "fd795986-cfd3-4732-9fa9-94caba40067a",
+   "time": "2026-10-22T12:00:30.597Z",
    "win": false
   },
   "fabfa5b0-1b39-4913-9dfc-1bc3eda9fa2a": {
@@ -12218,6 +12263,32 @@
    "status": "open",
    "time": "2026-10-22T11:50:22.937Z",
    "tries_at": 1
+  },
+  {
+   "id": "6302f42f-98c1-45dc-a1ae-dff8d542b007",
+   "map": "big-world",
+   "opp": "V4.1 Flash",
+   "oppId": "fd795986-cfd3-4732-9fa9-94caba40067a",
+   "status": "open",
+   "time": "2026-10-22T12:00:30.597Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 12,
+    "Unknown entity kind (2)": 29
+   },
+   "deaths_them": 2,
+   "deaths_us": 41,
+   "gems_them": "1058",
+   "gems_us": "269",
+   "id": "fa539680-9ce7-4ae5-b475-32e3e4be1830",
+   "map": "great-wall",
+   "opp": "V4.1 Flash",
+   "oppId": "fd795986-cfd3-4732-9fa9-94caba40067a",
+   "status": "open",
+   "time": "2026-10-22T12:00:30.597Z",
+   "tries_at": 4
   }
  ],
  "map_files": {
