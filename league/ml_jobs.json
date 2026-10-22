@@ -9574,6 +9574,7 @@
   {
    "added": "2026-10-22T11:04:29Z",
    "claimed": "2026-10-22T11:04:29Z",
+   "finished": "2026-10-22T11:05:45Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 375,
    "kind": "rollout",
@@ -9582,8 +9583,19 @@
     "it": 35,
     "part": 0
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "arm": 2,
+    "decisions": 27774,
+    "games": 78,
+    "it": 35,
+    "maps": [
+     "elk-arena",
+     "elkring",
+     "expanse"
+    ],
+    "win": 0.269
+   },
+   "status": "done"
   }
  ]
 }
