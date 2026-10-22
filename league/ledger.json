@@ -2466,6 +2466,15 @@
    "time": "2026-10-20T20:00:10.344Z",
    "win": false
   },
+  "6c568630-4fc4-4aba-9a9e-444d0a1872fa": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "elk-arena",
+   "opp": "let's jump into it",
+   "oppId": "3881272c-9c7f-4b3d-94f9-4c0788a3b27a",
+   "time": "2026-10-22T11:00:15.199Z",
+   "win": false
+  },
   "6d62a678-0343-41ad-b99c-b462f1576c0f": {
    "kind": "ranked",
    "live": 21,
@@ -3337,6 +3346,15 @@
    "opp": "Agent Perry the Platypus Gang",
    "oppId": "598ea864-6da9-41d1-984f-63136069bc50",
    "time": "2026-10-22T05:20:12.743Z",
+   "win": false
+  },
+  "96d1a64e-4987-48e1-aa55-33c69623fb36": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "corridors",
+   "opp": "let's jump into it",
+   "oppId": "3881272c-9c7f-4b3d-94f9-4c0788a3b27a",
+   "time": "2026-10-22T11:00:15.199Z",
    "win": false
   },
   "96e3f593-9dd5-46c3-9775-0526d64ba328": {
@@ -4797,6 +4815,15 @@
    "time": "2026-10-21T18:50:18.155Z",
    "win": true
   },
+  "d64fa902-992e-4d06-9141-0a8b8c384fb3": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "fracture",
+   "opp": "let's jump into it",
+   "oppId": "3881272c-9c7f-4b3d-94f9-4c0788a3b27a",
+   "time": "2026-10-22T11:00:15.199Z",
+   "win": false
+  },
   "d654ad51-499e-4c3c-b696-1b48076ef464": {
    "kind": "ranked",
    "live": 1,
@@ -5012,6 +5039,15 @@
    "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
    "time": "2026-10-22T04:20:14.332Z",
    "win": false
+  },
+  "dd4b66b4-3c3d-4722-acdc-76dcb8994787": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "concentrated-wealth",
+   "opp": "let's jump into it",
+   "oppId": "3881272c-9c7f-4b3d-94f9-4c0788a3b27a",
+   "time": "2026-10-22T11:00:15.199Z",
+   "win": true
   },
   "dd84f55b-cc39-448b-91a6-6ebb0a7530ca": {
    "kind": "ranked",
@@ -5777,6 +5813,15 @@
    "oppId": "59ffaf30-962d-4729-8cde-f4732f04f436",
    "time": "2026-10-21T13:50:14.700Z",
    "win": true
+  },
+  "f8c8bda6-17bf-45a9-8b55-855eb9db75b8": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "contest",
+   "opp": "let's jump into it",
+   "oppId": "3881272c-9c7f-4b3d-94f9-4c0788a3b27a",
+   "time": "2026-10-22T11:00:15.199Z",
+   "win": false
   },
   "f918eaf2-04f7-45e1-832d-3ae124b32a8f": {
    "kind": "ranked",
@@ -11667,6 +11712,72 @@
    "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
    "status": "open",
    "time": "2026-10-22T10:50:13.670Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 36,
+    "Unknown entity kind (2)": 15
+   },
+   "deaths_them": 29,
+   "deaths_us": 51,
+   "gems_them": "600",
+   "gems_us": "0",
+   "id": "f8c8bda6-17bf-45a9-8b55-855eb9db75b8",
+   "map": "contest",
+   "opp": "let's jump into it",
+   "oppId": "3881272c-9c7f-4b3d-94f9-4c0788a3b27a",
+   "status": "open",
+   "time": "2026-10-22T11:00:15.199Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (2)": 62
+   },
+   "deaths_them": 18,
+   "deaths_us": 62,
+   "gems_them": "1013",
+   "gems_us": "224",
+   "id": "96d1a64e-4987-48e1-aa55-33c69623fb36",
+   "map": "corridors",
+   "opp": "let's jump into it",
+   "oppId": "3881272c-9c7f-4b3d-94f9-4c0788a3b27a",
+   "status": "open",
+   "time": "2026-10-22T11:00:15.199Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (2)": 24
+   },
+   "deaths_them": 9,
+   "deaths_us": 24,
+   "gems_them": "931",
+   "gems_us": "616",
+   "id": "d64fa902-992e-4d06-9141-0a8b8c384fb3",
+   "map": "fracture",
+   "opp": "let's jump into it",
+   "oppId": "3881272c-9c7f-4b3d-94f9-4c0788a3b27a",
+   "status": "open",
+   "time": "2026-10-22T11:00:15.199Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 16,
+    "Unknown entity kind (2)": 2
+   },
+   "deaths_them": 6,
+   "deaths_us": 18,
+   "gems_them": "1008",
+   "gems_us": "0",
+   "id": "6c568630-4fc4-4aba-9a9e-444d0a1872fa",
+   "map": "elk-arena",
+   "opp": "let's jump into it",
+   "oppId": "3881272c-9c7f-4b3d-94f9-4c0788a3b27a",
+   "status": "open",
+   "time": "2026-10-22T11:00:15.199Z",
    "tries_at": 4
   }
  ],
