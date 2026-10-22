@@ -8,10 +8,12 @@ Per arm and iteration:
     rlinit   iteration 0: arm 1 starts from the rules' choices, arm 2 near-uniform
     rollout  RL_PARTS jobs: the current network plays (sampling) against the mimics and the map's
              exploiter; its decisions and rewards (ml/rl/reward.py) go to branch ml-data
-    update   PPO: on the GPU with a big teacher distilled into the bot's network
-             (ml/rl/ppo_gpu.py, needs a torch Python), else in numpy (ml/rl/ppo.py)
-Every RL_PROMOTE_EVERY iterations the network is queued as an experiment, so it only reaches the
-bot through the usual gate. Any PC can take any job (claims, as for experiments).
+    update   PPO: on the GPU with a big teacher distilled into the bot's network (ml/rl/ppo_gpu.py)
+    eval     every RL_EVAL_EVERY iterations, a fair check (fixed maps, no sampling); the best network
+             is kept and training resets to it when a network falls behind; a new best is queued
+             as an experiment, so it only reaches the bot through the usual gate. Training runs on the GPU only: rlinit and update jobs go to PCs with
+a CUDA torch Python (GPU_PYTHON) and fail (to be retried) rather than fall back to the CPU; any
+PC plays rollouts (claims, as for experiments).
 
     python harness/mljobs.py status | list
     python harness/mljobs.py run [--forever] [--no-push]
@@ -38,16 +40,22 @@ import experiments as X
 
 import league as L
 from bctools import ROOT, runner
-from ml.rl import ppo, reward
+from ml.rl import reward
 
 REGISTRY = L.LEAGUE / "ml_jobs.json"
 STORE_BRANCH = "ml-data"
 STORE = ROOT.parent / f"{ROOT.name}-mldata"
 OUT = L.SCRATCH / "ml"
-KINDS = ("rlinit", "rollout", "update")
+KINDS = ("rlinit", "rollout", "update", "eval")
+#: Fair checks: every RL_EVAL_EVERY iterations (before its rollouts) the network plays without
+#: sampling on the same RL_EVAL_MAPS maps against the faithful mimics, both sides. The best
+#: score is kept; a network more than RL_EVAL_MARGIN below it is replaced by the best one, so
+#: training goes on from the best network. A new best goes to the experiment queue.
+RL_EVAL_EVERY = 2
+RL_EVAL_MAPS = 3
+RL_EVAL_MARGIN = 0.05
 RL_PARTS = 2  # rollout jobs per iteration
 RL_MAPS = 3  # maps per rollout job (rotating through the pool)
-RL_PROMOTE_EVERY = 5  # iterations between networks sent to the experiment queue
 RL_ARMS = (1, 2)
 RL_ARM_SHARE = 2 / 3  # arm 1's share of the jobs
 RL_WEIGHTS = {1: ("ROUTER", "router.bin"), 2: ("MICRO_NET", "micro.bin")}
@@ -57,11 +65,29 @@ RL_KEEP_EVERY = {1: 8, 2: 1}
 SHARD_KEYS = ("X", "A", "LP", "M", "R", "DONE", "TRAJ")
 FAILURES_SHOWN_FOR = 24 * 3600
 CLAIM_TTL = X.CLAIM_TTL
-#: A Python with torch (CUDA if there's a GPU) for ml/rl/ppo_gpu.py; without it updates run in numpy.
+#: A Python with CUDA torch for ml/rl/ppo_gpu.py; PCs without one only play rollouts.
 GPU_PYTHON = Path(
     os.environ.get("ML_GPU_PYTHON")
     or ROOT.parent / "ml-gpu-venv" / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
 )
+
+
+#: Job kinds that train networks: GPU only.
+GPU_KINDS = ("rlinit", "update")
+GPU_RETRY_WAIT = 600  # seconds after a failed training job before the next try
+_gpu: bool | None = None
+
+
+def gpu_ready() -> bool:
+    """This PC can train: GPU_PYTHON exists and sees a CUDA device (checked once per process)."""
+    global _gpu
+    if _gpu is None:
+        check = "import sys, torch; sys.exit(0 if torch.cuda.is_available() else 1)"
+        _gpu = (
+            GPU_PYTHON.exists()
+            and subprocess.run([str(GPU_PYTHON), "-c", check], capture_output=True).returncode == 0
+        )
+    return _gpu
 
 
 def load() -> dict:
@@ -90,6 +116,8 @@ def available(j: dict, now: float) -> bool:
     """Queued, or a claim of ours / gone stale. Old job kinds (the retired imitation loop) never."""
     if j["kind"] not in KINDS:
         return False
+    if j["kind"] in GPU_KINDS and not gpu_ready():
+        return False
     if j["status"] == "queued":
         return True
     if j["status"] != "running" or "claimed" not in j:
@@ -116,23 +144,45 @@ def rl_state(reg: dict, arm: int) -> dict:
         "rolled": sum(1 for j in cur if j["kind"] == "rollout" and j["status"] == "done"),
         "rolling": sum(1 for j in cur if j["kind"] == "rollout" and j["status"] in ("queued", "running")),
         "updating": any(j["kind"] == "update" and j["status"] in ("queued", "running") for j in cur),
+        "evaluated": any(j["kind"] == "eval" and j["status"] == "done" for j in cur),
+        "eval_busy": any(j["kind"] == "eval" and j["status"] in ("queued", "running") for j in cur),
     }
 
 
-def plan_rl(reg: dict) -> tuple[str, dict] | None:
-    """The next job, arm 1 first by share; None when both arms wait for running jobs."""
+def best_eval(reg: dict, arm: int) -> tuple[float, int] | None:
+    """(win, iteration) of the arm's best fair check so far (the later one on a tie)."""
+    evals = [
+        j
+        for j in reg["jobs"]
+        if j["kind"] == "eval"
+        and j["params"].get("arm") == arm
+        and j["status"] == "done"
+        and "win" in j["result"]
+    ]
+    return max(((j["result"]["win"], j["params"]["it"]) for j in evals), default=None)
+
+
+def plan_rl(reg: dict, gpu: bool = True) -> tuple[str, dict] | None:
+    """The next job, arm 1 first by share; None when both arms wait for running jobs (or, on a PC
+    without a GPU, for training jobs it can't run)."""
     work = sum(1 for j in reg["jobs"] if j["params"].get("arm") == 1)
     total = sum(1 for j in reg["jobs"] if j["params"].get("arm") in RL_ARMS)
     order = (1, 2) if work <= RL_ARM_SHARE * max(total, 1) else (2, 1)
     for arm in order:
         s = rl_state(reg, arm)
         if not s["init"]:
-            if not s["init_busy"]:
+            if not s["init_busy"] and gpu:
                 return "rlinit", {"arm": arm}
+            continue
+        # A fair check comes before an iteration's rollouts (once they started, the network
+        # can't be swapped any more).
+        if s["it"] % RL_EVAL_EVERY == 0 and not s["evaluated"] and s["rolled"] + s["rolling"] == 0:
+            if not s["eval_busy"]:
+                return "eval", {"arm": arm, "it": s["it"]}
             continue
         if s["rolled"] + s["rolling"] < RL_PARTS:
             return "rollout", {"arm": arm, "it": s["it"], "part": s["rolled"] + s["rolling"]}
-        if s["rolled"] >= RL_PARTS and not s["updating"]:
+        if s["rolled"] >= RL_PARTS and not s["updating"] and gpu:
             return "update", {"arm": arm, "it": s["it"]}
     return None
 
@@ -205,31 +255,14 @@ def rl_path(arm: int, name: str) -> Path:
 
 
 def run_rlinit(j: dict, push: bool) -> dict:
-    """Iteration 0 of an arm: arm 1 imitates the rules' expert choices (the logged rule decisions
-    in ml-data data/), arm 2 starts near-uniform. Plus a fresh value network."""
+    """Iteration 0 of an arm, on the GPU (ml/rl/ppo_gpu.py --init): arm 1 imitates the rules'
+    expert choices (the logged rule decisions in ml-data data/), arm 2 starts near-uniform."""
     arm = j["params"]["arm"]
-    spec = ppo.ARMS[arm]
     store = store_ready()
-    rng = np.random.default_rng(arm)
-    parts = (
-        [reward.read_shard(s, ("X", "y")) for s in sorted((store / "data").glob("*.npz"))] if arm == 1 else []
-    )
-    parts = [d for d in parts if d is not None and len(d["y"])]
-    if parts:
-        x, y = np.concatenate([d["X"] for d in parts]), np.concatenate([d["y"] for d in parts])
-        keep = rng.permutation(len(x))[:200_000]
-        x, y = x[keep], y[keep]
-        policy = ppo.warm_start(x, y, spec, rng)
-    else:
-        x = rng.integers(-127, 128, (2000, spec.n_in)).astype(np.int8)
-        policy = ppo.init_params(spec.n_in, spec.hidden, spec.n_out, rng)
-    value = ppo.init_params(spec.n_in, 64, 1, rng)
-    files = [rl_path(arm, "policy-0000.npz"), rl_path(arm, "value-0000.npz"), rl_path(arm, "policy-0000.bin")]
-    ppo.save(files[0], policy)
-    ppo.save(files[1], value)
-    files[2].write_bytes(ppo.export(policy, x, spec))
+    m = gpu_train(arm, ["--init"], store)
+    files = [rl_path(arm, "policy-0000.npz"), rl_path(arm, "policy-0000.bin")]
     store_push(files, f"ml-data: rl arm {arm} iteration 0", push)
-    return {"arm": arm, "it": 0, "warm_rows": len(x)}
+    return m
 
 
 def run_rollout(j: dict, push: bool) -> dict:
@@ -254,7 +287,7 @@ def run_rollout(j: dict, push: bool) -> dict:
     for mp, path in maps:
         if mp in xpl:
             res += runner.run_pairs([(name, xpl[mp]), (xpl[mp], name)], [path], out / f"xpl-{mp}")
-    parts, wins = [], 0.0
+    parts, wins, terms = [], 0.0, {}
     for r in res:
         side = "a" if r.bot_a == name else "b"
         ours, theirs = (r.gems_a, r.gems_b) if side == "a" else (r.gems_b, r.gems_a)
@@ -263,7 +296,9 @@ def run_rollout(j: dict, push: bool) -> dict:
         margin = (ours - theirs) / max(ours + theirs, 1)
         try:
             parts.append(
-                reward.game_samples(Path(r.replay), Path(r.stats), side, arm, won, margin, RL_KEEP_EVERY[arm])
+                reward.game_samples(
+                    Path(r.replay), Path(r.stats), side, arm, won, margin, RL_KEEP_EVERY[arm], terms
+                )
             )
         except (OSError, KeyError, ValueError):
             continue
@@ -281,24 +316,83 @@ def run_rollout(j: dict, push: bool) -> dict:
         "win": round(wins / max(len(res), 1), 3),
         "decisions": len(data.get("R", [])),
         "maps": [m for m, _ in maps],
+        "reward_terms": term_shares(terms),
     }
 
 
-def gpu_update(arm: int, it: int, store: Path) -> dict | None:
-    """The PPO update with the big teacher (ml/rl/ppo_gpu.py) when a torch Python exists; its
-    metrics, or None to fall back to numpy (no torch Python, or it failed)."""
-    if not GPU_PYTHON.exists():
-        return None
-    cmd = [str(GPU_PYTHON), str(ROOT / "ml" / "rl" / "ppo_gpu.py"), "--arm", str(arm), "--it", str(it)]
+def eval_maps(pool: list[tuple[str, Path]]) -> list[tuple[str, Path]]:
+    """The fixed maps of the fair checks: RL_EVAL_MAPS spread evenly over the sorted pool."""
+    n = min(RL_EVAL_MAPS, len(pool))
+    return [pool[k * len(pool) // n] for k in range(n)]
+
+
+def run_eval(j: dict, push: bool) -> dict:
+    """Fair check of the arm's current network: no sampling, fixed maps, every faithful mimic on
+    both sides. Below the best check by more than RL_EVAL_MARGIN -> its files become copies of
+    the best network's, so the next rollouts and update start from the best one."""
+    arm, it = j["params"]["arm"], j["params"]["it"]
+    store_ready()
+    knob, wfile = RL_WEIGHTS[arm]
+    name = f"_rl{arm}e"
+    X.knob_variant(name, {knob: 1})  # RL_SEED stays 0: the argmax, as shipped
+    (ROOT / "bots" / name / "src" / "weights" / wfile).write_bytes(
+        rl_path(arm, f"policy-{it:04d}.bin").read_bytes()
+    )
+    led = L.load_ledger()
+    faithful, _ = L.ensure_mimics(led)
+    maps = eval_maps(sorted(L.trainable_maps(led).items()))
+    out = OUT / f"eval{arm}-{it:04d}"
+    res = runner.run_pairs([p for o in faithful for p in ((name, o), (o, name))], [m for _, m in maps], out)
+    shutil.rmtree(out, ignore_errors=True)
+    if not res:
+        raise RuntimeError("fair check played no games")
+    win = round(sum(r.score_for(name) for r in res) / len(res), 3)
+    m = {"arm": arm, "it": it, "games": len(res), "win": win, "maps": [mp for mp, _ in maps]}
+    best = best_eval(load(), arm)
+    if best is None or win >= best[0]:
+        m["best"] = True
+        if it > 0:
+            notes = f"New best fair check: win {win} over {len(res)} games on {', '.join(m['maps'])}."
+            m["experiment"] = promote(arm, it, notes)
+        return m
+    m["best_so_far"] = {"win": best[0], "it": best[1]}
+    if win < best[0] - RL_EVAL_MARGIN:
+        files = []
+        for stem, ext in (("policy", "npz"), ("policy", "bin"), ("teacher", "pt"), ("tvalue", "pt")):
+            src, dst = rl_path(arm, f"{stem}-{best[1]:04d}.{ext}"), rl_path(arm, f"{stem}-{it:04d}.{ext}")
+            if src.exists():
+                shutil.copyfile(src, dst)
+            elif dst.exists():  # no teacher at the best iteration: the update rebuilds it
+                dst.unlink()
+            files.append(dst)
+        store_push(files, f"ml-data: rl arm {arm} iteration {it} reset to iteration {best[1]}", push)
+        m["reset_to"] = best[1]
+    return m
+
+
+def term_shares(terms: dict[str, float]) -> dict:
+    """Each reward term's share of |reward| before the fault cap and the clip, biggest first,
+    plus how many decisions were capped or clipped."""
+    counts = {k: int(terms.pop(k, 0)) for k in ("faults_capped", "clipped")}
+    total = sum(terms.values()) or 1.0
+    shares = {k: round(v / total, 3) for k, v in sorted(terms.items(), key=lambda kv: -kv[1]) if v}
+    return {**shares, **counts}
+
+
+def gpu_train(arm: int, args: list[str], store: Path) -> dict:
+    """Run ml/rl/ppo_gpu.py (an update, or --init) and return its metrics. Raises on failure, so
+    the job fails and is planned again: training never falls back to the CPU."""
+    if not gpu_ready():
+        raise RuntimeError(f"no CUDA torch Python at {GPU_PYTHON}")
+    cmd = [str(GPU_PYTHON), str(ROOT / "ml" / "rl" / "ppo_gpu.py"), "--arm", str(arm), *args]
     p = subprocess.run([*cmd, "--store", str(store)], cwd=ROOT, capture_output=True, text=True)
     lines = [ln for ln in p.stdout.splitlines() if ln.startswith("{")]
     if p.returncode != 0 or not lines:
-        L.log(f"ml: GPU update failed, using numpy: {(p.stderr or p.stdout)[-300:]}")
-        return None
+        raise RuntimeError(f"GPU training failed: {(p.stderr or p.stdout)[-300:]}")
     return json.loads(lines[-1])
 
 
-def promote(arm: int, it: int, m: dict) -> int:
+def promote(arm: int, it: int, notes: str) -> int:
     """Queue the arm's network as the next experiment (first in line); its id."""
     knob, wfile = RL_WEIGHTS[arm]
     xreg = X.load()
@@ -308,7 +402,7 @@ def promote(arm: int, it: int, m: dict) -> int:
         "learning",
         knobs={knob: 1},
         files={f"bots/main/src/weights/{wfile}": f"ml-data:rl/arm{arm}/policy-{it:04d}.bin"},
-        notes=f"PPO on {m['samples']} decisions; rollout win {m['rollout_win']}; reward {m['mean_reward']}.",
+        notes=notes,
     )
     xreg["experiments"].remove(e)
     i = next(
@@ -331,29 +425,14 @@ def run_update(j: dict, reg: dict, push: bool) -> dict:
         for x in reg["jobs"]
     ):
         return {"arm": arm, "it": it, "duplicate": True}
-    spec = ppo.ARMS[arm]
     store = store_ready()
     shards = sorted((store / "rl" / f"arm{arm}").glob(f"it{it:04d}-p*.npz"))
-    data = reward.concat([d for d in (reward.read_shard(s, SHARD_KEYS) for s in shards) if d])
-    if not data:
+    if not any(reward.read_shard(s, SHARD_KEYS) for s in shards):
         return {"arm": arm, "it": it, "skipped": "no decisions logged"}
     nxt = it + 1
-    files = [
-        rl_path(arm, f"policy-{nxt:04d}.npz"),
-        rl_path(arm, f"value-{nxt:04d}.npz"),
-        rl_path(arm, f"policy-{nxt:04d}.bin"),
-    ]
-    m = gpu_update(arm, it, store)
-    if m is not None:  # big teacher on the GPU, distilled into the bot's network
-        files += [rl_path(arm, f"teacher-{nxt:04d}.pt"), rl_path(arm, f"tvalue-{nxt:04d}.pt")]
-    else:
-        policy = ppo.load(rl_path(arm, f"policy-{it:04d}.npz"))
-        value = ppo.load(rl_path(arm, f"value-{it:04d}.npz"))
-        m = ppo.update(policy, value, data, spec, np.random.default_rng(it))
-        m["device"] = "cpu (numpy)"
-        ppo.save(files[0], policy)
-        ppo.save(files[1], value)
-        files[2].write_bytes(ppo.export(policy, data["X"], spec))
+    m = gpu_train(arm, ["--it", str(it)], store)  # big teacher on the GPU, distilled into the bot's net
+    names = (("policy", "npz"), ("policy", "bin"), ("teacher", "pt"), ("tvalue", "pt"))
+    files = [rl_path(arm, f"{name}-{nxt:04d}.{ext}") for name, ext in names]
     store_push([f for f in files if f.exists()], f"ml-data: rl arm {arm} iteration {nxt}", push)
     rolls = [
         x
@@ -365,8 +444,6 @@ def run_update(j: dict, reg: dict, push: bool) -> dict:
     ]
     win = sum(x["result"].get("win", 0) for x in rolls) / max(len(rolls), 1)
     m.update(arm=arm, it=nxt, shards=len(shards), rollout_win=round(win, 3))
-    if nxt % RL_PROMOTE_EVERY == 0:
-        m["experiment"] = promote(arm, nxt, m)
     return m
 
 
@@ -374,6 +451,7 @@ RUNNERS = {
     "rlinit": lambda j, reg, push: run_rlinit(j, push),
     "rollout": lambda j, reg, push: run_rollout(j, push),
     "update": run_update,
+    "eval": lambda j, reg, push: run_eval(j, push),
 }
 
 
@@ -394,7 +472,7 @@ def cmd_run(a: argparse.Namespace) -> int:
         reg = load()
         j = next_job(reg)
         if j is None:
-            planned = plan_rl(reg)
+            planned = plan_rl(reg, gpu_ready())
             if planned is None:  # both arms wait for jobs running on other PCs
                 time.sleep(300)
                 continue
@@ -412,6 +490,8 @@ def cmd_run(a: argparse.Namespace) -> int:
         finish(j, reg, a.push)
         if not a.forever:
             return 0
+        if j["status"] == "failed" and j["kind"] in GPU_KINDS:
+            time.sleep(GPU_RETRY_WAIT)  # don't re-plan a failing GPU job in a tight loop
 
 
 # ----------------------------------------------------------------- reporting
@@ -454,8 +534,8 @@ def status_report(reg: dict, xreg: dict, now: float | None = None) -> str:
     names = {1: "arm 1 (experts + fight target)", 2: "arm 2 (micro control)"}
     by_id = {e["id"]: e for e in xreg.get("experiments", [])}
     lines = [
-        f"LEARNING BY PLAYING (PPO; a network goes to the experiment queue every {RL_PROMOTE_EVERY} iterations; "
-        f"updates on {'the GPU' if GPU_PYTHON.exists() else 'the CPU'} here)",
+        f"LEARNING BY PLAYING (PPO; fair check every {RL_EVAL_EVERY} iterations, a new best goes to the experiment queue; "
+        f"{'training on the GPU here' if gpu_ready() else 'no GPU here: rollouts only'})",
         "",
     ]
     for arm in RL_ARMS:
@@ -474,7 +554,23 @@ def status_report(reg: dict, xreg: dict, now: float | None = None) -> str:
             f"latest rollout win {win if win is not None else '-'}, "
             f"reward {last.get('mean_reward', '-')}, rollouts this iteration {s['rolled']}/{RL_PARTS}"
         )
-        for j in ups:
+        evals = [j for j in done if j["kind"] == "eval"]
+        best = best_eval(reg, arm)
+        if best:
+            lines.append(f"    best network: iteration {best[1]}, fair check win {best[0]}")
+        for j in evals[-3:]:
+            r = j["result"]
+            how = (
+                "new best"
+                if r.get("best")
+                else f"reset to iteration {r['reset_to']}"
+                if "reset_to" in r
+                else "kept"
+            )
+            lines.append(
+                f"    fair check iteration {r.get('it')}: win {r.get('win')} ({r.get('games')} games), {how}"
+            )
+        for j in ups + evals:
             e = by_id.get(j["result"].get("experiment"))
             if e:
                 r = e.get("results", {}).get("full") or e.get("results", {}).get("screen") or {}
@@ -485,7 +581,12 @@ def status_report(reg: dict, xreg: dict, now: float | None = None) -> str:
     if running:
         lines += ["", "RUNNING NOW"]
         for j in running:
-            what = {"rollout": "RL games", "update": "PPO update", "rlinit": "RL start"}[j["kind"]]
+            what = {
+                "rollout": "RL games",
+                "update": "PPO update",
+                "rlinit": "RL start",
+                "eval": "fair check",
+            }[j["kind"]]
             when = time.strftime("%d %b %H:%M", time.localtime(L.ts(j.get("claimed"))))
             arm = j["params"].get("arm")
             lines.append(f"  job {j['id']:<4} arm {arm} {what:10s} on {j.get('host', '?')}, since {when}")

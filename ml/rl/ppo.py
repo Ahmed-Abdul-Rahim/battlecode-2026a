@@ -1,12 +1,13 @@
-"""PPO for the learned policies (numpy; the networks are small enough that a GPU doesn't help).
+"""Shared pieces of the learned policies' PPO; the training itself runs on the GPU (ml/rl/ppo_gpu.py).
 
 Arm 1 "experts+": 109 features -> 32 -> 13 (9 experts + 4 fight-target modes).
 Arm 2 "micro":    127 inputs   -> 32 -> 15 (9 steps + 4 targets + 2 cast).
 
 The bot samples each head from a masked softmax and logs the log-probability (ml/rl/reward.py
-turns a game into samples). An update is the clipped PPO objective with a separate value
-network for advantages (GAE). Exports are int8 BCW1 blobs whose last layer has a power-of-two
-accumulator scale, stored in that layer's `shift`, so the bot's probabilities match training.
+turns a game into samples). Here: the arms, the bot-sized network in numpy (init, forward,
+masked log-probabilities), GAE as the reference for the GPU version, and the export. Exports
+are int8 BCW1 blobs whose last layer has a power-of-two accumulator scale, stored in that
+layer's `shift`, so the bot's probabilities match training.
 """
 
 from __future__ import annotations
@@ -42,8 +43,7 @@ ARMS = {
     2: Arm(127, ((0, 9), (9, 13), (13, 15)), SCHEMA_HASH ^ 0x4D49),
 }
 GAMMA, LAMBDA = 0.99, 0.95
-CLIP, ENTROPY, LR = 0.2, 0.01, 1e-3
-EPOCHS, BATCH, TARGET_KL = 4, 512, 0.03
+CLIP, ENTROPY, TARGET_KL = 0.2, 0.01, 0.03
 
 
 def init_params(n_in: int, hidden: int, n_out: int, rng: np.random.Generator, out_std: float = 0.01) -> dict:
@@ -81,28 +81,6 @@ def log_prob(p: dict, x: np.ndarray, acts: np.ndarray, masks: np.ndarray, arm: A
     return sum(lsm[np.arange(len(x)), acts[:, k]] for k, (lsm, _, _) in enumerate(hs))
 
 
-class Adam:
-    def __init__(self, params: dict, lr: float):
-        self.lr, self.t = lr, 0
-        self.m = {k: np.zeros_like(v) for k, v in params.items()}
-        self.v = {k: np.zeros_like(v) for k, v in params.items()}
-
-    def step(self, params: dict, grads: dict) -> None:
-        self.t += 1
-        for k in params:
-            self.m[k] = 0.9 * self.m[k] + 0.1 * grads[k]
-            self.v[k] = 0.999 * self.v[k] + 0.001 * grads[k] ** 2
-            mh, vh = self.m[k] / (1 - 0.9**self.t), self.v[k] / (1 - 0.999**self.t)
-            params[k] -= self.lr * mh / (np.sqrt(vh) + 1e-8)
-
-
-def backprop(p: dict, x: np.ndarray, z1: np.ndarray, h: np.ndarray, g: np.ndarray) -> dict:
-    """Gradients of the MLP given dLoss/dlogits."""
-    dh = g @ p["w2"]
-    dz1 = dh * (z1 > 0)
-    return {"w2": g.T @ h, "b2": g.sum(0), "w1": dz1.T @ x, "b1": dz1.sum(0)}
-
-
 def gae(
     rew: np.ndarray, val: np.ndarray, done: np.ndarray, traj: np.ndarray
 ) -> tuple[np.ndarray, np.ndarray]:
@@ -118,65 +96,6 @@ def gae(
             last = delta + GAMMA * LAMBDA * (0.0 if done[i] else last)
             adv[i] = last
     return adv, adv + val
-
-
-def update(policy: dict, value: dict, data: dict, arm: Arm, rng: np.random.Generator) -> dict:
-    """One PPO update (in place) on one iteration's samples. Returns metrics."""
-    x = data["X"].astype(np.float32) / 127.0
-    _, _, v = mlp(value, x)
-    adv, ret = gae(data["R"], v[:, 0], data["DONE"], data["TRAJ"])
-    adv = (adv - adv.mean()) / (adv.std() + 1e-8)
-    popt, vopt = Adam(policy, LR), Adam(value, LR * 3)
-    n, kl = len(x), 0.0
-    for _ in range(EPOCHS):
-        for idx in np.array_split(rng.permutation(n), max(1, n // BATCH)):
-            xb, ab, mb, lpo, advb = x[idx], data["A"][idx], data["M"][idx], data["LP"][idx], adv[idx]
-            z1, h, logits = mlp(policy, xb)
-            hs = head_stats(logits, mb, arm)
-            lpn = sum(lsm[np.arange(len(idx)), ab[:, k]] for k, (lsm, _, _) in enumerate(hs))
-            ratio = np.exp(lpn - lpo)
-            clipped = ((advb > 0) & (ratio > 1 + CLIP)) | ((advb < 0) & (ratio < 1 - CLIP))
-            coef = np.where(clipped, 0.0, -ratio * advb) / len(idx)
-            g = np.zeros_like(logits)
-            for k, (a, b) in enumerate(arm.heads):
-                lsm, pr, allowed = hs[k]
-                onehot = np.zeros_like(pr)
-                onehot[np.arange(len(idx)), ab[:, k]] = 1.0
-                ent = -(pr * np.where(allowed, lsm, 0.0)).sum(axis=1, keepdims=True)
-                g[:, a:b] = coef[:, None] * (onehot - pr) + ENTROPY / len(idx) * pr * (
-                    np.where(allowed, lsm, 0.0) + ent
-                )
-            popt.step(policy, backprop(policy, xb, z1, h, g))
-            vz1, vh, vb = mlp(value, xb)
-            vg = 2.0 * (vb[:, 0] - ret[idx])[:, None] / len(idx)
-            vopt.step(value, backprop(value, xb, vz1, vh, vg))
-        kl = float(np.mean(data["LP"] - log_prob(policy, x, data["A"], data["M"], arm)))
-        if kl > TARGET_KL:
-            break
-    return {"samples": n, "kl": round(kl, 4), "mean_reward": round(float(data["R"].mean()), 4)}
-
-
-def warm_start(
-    x_int8: np.ndarray, experts: np.ndarray, arm: Arm, rng: np.random.Generator, epochs: int = 4
-) -> dict:
-    """Arm 1 starts at the rules' level: the expert head imitates the rules' choices (the AWR
-    data shards), the target head prefers 'keep the rules' target'."""
-    p = init_params(arm.n_in, arm.hidden, arm.n_out, rng, out_std=0.1)
-    x = x_int8.astype(np.float32) / 127.0
-    opt = Adam(p, 3e-3)
-    masks = np.tile([(1 << 9) - 1, 0b1], (len(x), 1)).astype(np.int64)
-    acts = np.stack([experts, np.zeros_like(experts)], axis=1)
-    for _ in range(epochs):
-        for idx in np.array_split(rng.permutation(len(x)), max(1, len(x) // BATCH)):
-            z1, h, logits = mlp(p, x[idx])
-            g = np.zeros_like(logits)
-            for k, (_lsm, pr, _) in enumerate(head_stats(logits, masks[idx], arm)):
-                a, b = arm.heads[k]
-                onehot = np.zeros_like(pr)
-                onehot[np.arange(len(idx)), acts[idx, k]] = 1.0
-                g[:, a:b] = (pr - onehot) / len(idx)
-            opt.step(p, backprop(p, x[idx], z1, h, g))
-    return p
 
 
 def export(p: dict, x_int8: np.ndarray, arm: Arm) -> bytes:

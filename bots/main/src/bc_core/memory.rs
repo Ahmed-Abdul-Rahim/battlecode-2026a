@@ -102,8 +102,17 @@ pub mod knob2 {
     pub const RL_SEED: usize = 22;
     /// Arm 2: on fight turns the micro network (weights/micro.bin) moves, targets and casts.
     pub const MICRO_NET: usize = 23;
+    /// Camp clusters: a group's value also counts the other live groups within
+    /// CLUSTER_RADIUS of it (x this / 10, falling off with distance), so areas with several
+    /// groups close together beat a lone group of the same value. Off: computed per turn it
+    /// caused ~9x more fuel stalls (0.613 vs 0.619, 320 games, 2026-10-22); to be redone from
+    /// precomputed per-map clusters.
+    pub const CLUSTER: usize = 24;
+    /// After the build order is complete, keep buying its last emblem instead of hoarding gold.
+    /// On since 2026-10-22: 0.675 vs 0.619 over 320 games (better on 15 maps, worse on 4).
+    pub const KEEP_BUYING: usize = 25;
 
-    pub const DEFAULTS: [(usize, u8); 24] = [
+    pub const DEFAULTS: [(usize, u8); 26] = [
         (PASSIVE_AWARE, 0),
         (FOCUS, 1),
         (ENDGAME, 1),
@@ -128,6 +137,8 @@ pub mod knob2 {
         (GOLD_ORDER, 0),
         (RL_SEED, 0),
         (MICRO_NET, 0),
+        (CLUSTER, 0),
+        (KEEP_BUYING, 1),
     ];
 }
 

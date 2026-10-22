@@ -13,6 +13,10 @@ happened to that champion until its next decision; the game result is added to i
                                                                        attack or cast)
     - FUEL * share of the turn budget used
 
+At most FAULT_CAP fault events count per decision, and every stored reward is clipped to ±CLIP:
+a handful of fault-heavy decisions used to carry half the reward of an iteration (down to -129
+for one decision), which drowned every other signal after advantage normalisation.
+
 Change the weights in WEIGHTS; everything else follows.
 """
 
@@ -39,6 +43,8 @@ WEIGHTS = {
     "waste": 0.01,
     "fuel": 0.002,
 }
+FAULT_CAP = 3  # fault events counted per decision
+CLIP = 5.0  # |reward| of a stored decision (a win is 2 + margin)
 #: Intents that should do something every turn (no move, attack or cast = a wasted turn).
 ACTIVE_INTENTS = ("ClearCamp", "Engage", "Kite")
 TURN_FUEL = 100_000
@@ -71,12 +77,21 @@ def _stats_events(stats: Path, side: str) -> dict[tuple[str, int], dict[str, int
 
 
 def game_samples(
-    bundle: Path, stats: Path, side: str, arm: int, won: float, margin: float, every: int = 1
+    bundle: Path,
+    stats: Path,
+    side: str,
+    arm: int,
+    won: float,
+    margin: float,
+    every: int = 1,
+    terms: dict[str, float] | None = None,
 ) -> dict[str, np.ndarray]:
     """Samples of one arm for our side of one game: X int8 [n, d], A [n, heads], LP [n],
     M (masks, bits) [n, heads], R (reward) [n], DONE [n] (last decision of a champion), TRAJ [n].
     `every` > 1 keeps every n-th decision (and the last); the dropped ones' rewards are added to
-    the decision kept before them, so nothing is lost from the returns."""
+    the decision kept before them, so nothing is lost from the returns (before the clip).
+    `terms`, if given, gets each WEIGHTS term's |reward| added up before the cap and the clip
+    (plus "faults_capped" and "clipped" counts), to see what drives the reward."""
     T: dict[tuple[str, int], dict] = {}
     dec: dict[str, list[dict]] = defaultdict(list)
     dead: set[tuple[str, int]] = set()
@@ -116,22 +131,36 @@ def game_samples(
         for k, o in enumerate(ds):
             r0 = o["r"]
             r1 = ds[k + 1]["r"] if k + 1 < len(ds) else last_round
-            rew = w["gold"] * (at(c, r1, "lg") - at(c, r0, "lg"))
-            rew += w["deliver"] * (at(c, r1, "at") - at(c, r0, "at")) / champs
+            part = defaultdict(float)  # this decision's reward by term
+            part["gold"] = w["gold"] * (at(c, r1, "lg") - at(c, r0, "lg"))
+            part["deliver"] = w["deliver"] * (at(c, r1, "at") - at(c, r0, "at")) / champs
+            faults = 0
             for r in range(r0 + 1, r1 + 1):
                 e = ev.get((c, r), {})
-                rew += w["kill"] * e.get("kill", 0) + w["assist"] * e.get("assist", 0)
-                rew -= w["death"] * e.get("death", 0) + w["fault"] * e.get("fault", 0)
+                part["kill"] += w["kill"] * e.get("kill", 0)
+                part["assist"] += w["assist"] * e.get("assist", 0)
+                part["death"] -= w["death"] * e.get("death", 0)
+                faults += e.get("fault", 0)
                 if (c, r) in dead:
-                    rew -= w["dead"]
+                    part["dead"] -= w["dead"]
                 t = T.get((c, r))
                 if t is not None:
                     if did.get((c, r), 1) == 0 and str(t.get("i", "")).startswith(ACTIVE_INTENTS):
-                        rew -= w["waste"]
-                    rew -= w["fuel"] * max(float(t.get("f0", 0)) - float(t.get("f1", 0)), 0.0) / TURN_FUEL
+                        part["waste"] -= w["waste"]
+                    part["fuel"] -= (
+                        w["fuel"] * max(float(t.get("f0", 0)) - float(t.get("f1", 0)), 0.0) / TURN_FUEL
+                    )
+            part["fault"] = -w["fault"] * faults
             last = k + 1 == len(ds)
             if last:
-                rew += w["win"] * (2.0 * won - 1.0) + w["margin"] * margin
+                part["win"] = w["win"] * (2.0 * won - 1.0)
+                part["margin"] = w["margin"] * margin
+            if terms is not None:
+                for name, v in part.items():
+                    terms[name] = terms.get(name, 0.0) + abs(v)
+                terms["faults_capped"] = terms.get("faults_capped", 0) + (faults > FAULT_CAP)
+            part["fault"] = -w["fault"] * min(faults, FAULT_CAP)
+            rew = sum(part.values())
             if k % every and not last and rews and traj[-1] == ti:
                 rews[-1] += rew  # thinned out: its reward goes to the decision kept before it
                 continue
@@ -142,6 +171,9 @@ def game_samples(
             rews.append(rew)
             done.append(last)
             traj.append(ti)
+    if terms is not None:
+        terms["clipped"] = terms.get("clipped", 0) + sum(abs(r) > CLIP for r in rews)
+    rews = [min(max(r, -CLIP), CLIP) for r in rews]
     return {
         "X": np.stack(xs),
         "A": np.array(acts, dtype=np.int64),

@@ -29,44 +29,6 @@ def test_export_keeps_probabilities():
     assert np.abs(want - got).mean() < 0.1 * np.abs(want).mean() + 0.05
 
 
-def test_ppo_learns_a_contextual_bandit():
-    rng = np.random.default_rng(1)
-    arm = ppo.ARMS[1]
-    policy = ppo.init_params(arm.n_in, arm.hidden, arm.n_out, rng)
-    value = ppo.init_params(arm.n_in, 64, 1, rng)
-    masks = np.tile([(1 << 9) - 1, 0b1111], (4000, 1)).astype(np.int64)
-
-    def rollout():
-        x = rng.integers(-127, 128, (4000, arm.n_in)).astype(np.int8)
-        _, _, logits = ppo.mlp(policy, x.astype(np.float32) / 127.0)
-        acts, lps = [], []
-        for lsm, pr, _ in ppo.head_stats(logits, masks, arm):
-            a = np.array([rng.choice(len(r), p=r / r.sum()) for r in pr])
-            acts.append(a)
-            lps.append(lsm[np.arange(len(a)), a])
-        acts = np.stack(acts, axis=1)
-        good = np.where(x[:, 0] > 0, 2, 5)  # the best expert depends on the input
-        r = np.where(acts[:, 0] == good, 1.0, 0.0).astype(np.float32)
-        n = len(x)
-        data = {
-            "X": x,
-            "A": acts,
-            "LP": sum(lps).astype(np.float32),
-            "M": masks,
-            "R": r,
-            "DONE": np.ones(n, bool),
-            "TRAJ": np.arange(n),
-        }
-        return data, r.mean()
-
-    _, before = rollout()
-    for _ in range(12):
-        data, _ = rollout()
-        ppo.update(policy, value, data, arm, rng)
-    _, after = rollout()
-    assert after > before + 0.25, (before, after)
-
-
 def test_gae_single_trajectory():
     _adv, ret = ppo.gae(
         np.array([0.0, 1.0], np.float32),
@@ -137,6 +99,42 @@ def test_thinning_keeps_total_reward(tmp_path):
     thin = reward.game_samples(bundle, stats, "a", 1, 1.0, 0.0, every=4)
     assert len(full["R"]) == 8 and len(thin["R"]) == 3  # decisions 0, 4 and the last
     assert abs(full["R"].sum() - thin["R"].sum()) < 1e-4
+
+
+def test_faults_are_capped_and_rewards_clipped(tmp_path):
+    x = "00" * 109
+    lines = [
+        json.dumps({"r": r, "c": "Ryth", "lg": 0, "at": 0, "i": "Hold", "f0": 0, "f1": 0}).join(["T ", ""])
+        for r in range(1, 25)
+    ]
+    for r in (1, 12):
+        lines.append(
+            json.dumps({"r": r, "c": "Ryth", "arm": 1, "x": x, "a": [0, 0], "lp": -100, "m": [511, 1]}).join(
+                ["R ", ""]
+            )
+        )
+    bundle = tmp_path / "g.repl26a"
+    with zipfile.ZipFile(bundle, "w") as z:
+        z.writestr("team-a.stdout", "\n".join(lines))
+
+    def ev(kind, rounds):
+        return {
+            "kind": kind,
+            "owner": {"kind": "champion", "name": "Ryth", "team": "teamA"},
+            "entries": [{"timestamp": {"round": r}} for r in rounds],
+        }
+
+    stats = tmp_path / "g.json"
+    # 10 fuel-exhausted turns after decision 1; 30 kills after decision 2 (the last one, a tie)
+    events = [ev("fuelExhausted", range(2, 12)), ev("kill", [13] * 30)]
+    stats.write_text(json.dumps({"events": events}), encoding="utf-8")
+    terms = {}
+    s = reward.game_samples(bundle, stats, "a", 1, 0.5, 0.0, terms=terms)
+    w = reward.WEIGHTS
+    assert abs(s["R"][0] + w["fault"] * reward.FAULT_CAP) < 1e-5
+    assert abs(s["R"][1] - reward.CLIP) < 1e-5  # 30 kills = +9, clipped
+    assert terms["faults_capped"] == 1 and terms["clipped"] == 1
+    assert abs(terms["fault"] - 10 * w["fault"]) < 1e-5  # the shares see the raw terms
 
 
 def test_broken_shards_are_skipped(tmp_path):

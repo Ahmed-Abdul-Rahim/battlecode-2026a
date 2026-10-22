@@ -28,7 +28,13 @@ pub struct GroupStatic {
     /// Sum of camp strengths: what a lone tank takes per round once the group is awake.
     pub total_strength: f32,
     pub has_monolith: bool,
+    /// Other groups whose centre is within [`CLUSTER_RADIUS`] (knob2 CLUSTER).
+    pub near: Vec<u8>,
 }
+
+/// Groups whose centres are this close (Chebyshev) may form a cluster; the walking distance
+/// between them decides (bot.rs CLUSTER_PATH).
+pub const CLUSTER_RADIUS: i32 = 10;
 
 /// Dense tile → group index. A `HashMap<Pos, _>` costs ~150 fuel per lookup in
 /// wasm (SipHash); this is a single byte read.
@@ -160,10 +166,19 @@ impl World {
                 max_strength: camps.iter().map(|(k, _)| k.strength()).fold(0.0, f32::max),
                 total_strength: camps.iter().map(|(k, _)| k.strength()).sum(),
                 has_monolith: camps.iter().any(|(k, _)| *k == CampKind::Monolith),
+                near: Vec::new(),
                 center,
                 tiles,
                 sdk: g,
             });
+        }
+
+        let centers: Vec<Pos> = groups.iter().map(|g| g.center).collect();
+        for (i, g) in groups.iter_mut().enumerate() {
+            g.near = (0..centers.len())
+                .filter(|&j| j != i && centers[j].cheb(g.center) <= CLUSTER_RADIUS)
+                .map(|j| j as u8)
+                .collect();
         }
 
         // SDK positions(): ~600 fuel. BitGrid::positions() would scan every tile (~150k).

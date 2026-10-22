@@ -42,6 +42,10 @@ pub struct Bot {
     slot: u8,
     team_size: usize,
     target: Option<usize>,
+    /// Fuel the last full target scoring took (~1.5k per group on dense maps).
+    target_cost: u64,
+    /// Turns the target was kept without rescoring because fuel was short.
+    target_kept: u8,
     last_hp: f32,
     hurt_round: u32,
     last_pos: Pos,
@@ -67,6 +71,9 @@ pub struct Bot {
     cur_max_hp: f32,
     /// TEAM_RESPAWN: a group we just saw go down (index, respawn round) to broadcast.
     saw_down: Option<(usize, u32)>,
+    /// knob2 CLUSTER: per group, its cluster neighbours with a 0..1 nearness weight and whether
+    /// they came from walking distances (exact) or the straight-line estimate.
+    cluster: Vec<Option<(Vec<(u8, f32)>, bool)>>,
     /// Our passive (engine PassiveType value), read live at start-up (knob2 PASSIVE_AWARE).
     passive: usize,
     /// knob2 UNSTICK: our last positions (ring) and turns since we last hit or got hit.
@@ -181,6 +188,14 @@ const CAMP_FEASIBLE_SLACK: f32 = 3.0;
 const EARLY_RAMP_ROUNDS: u32 = 300;
 const EARLY_RAMP_KNEE: f32 = 20.0;
 const CAMP_INFEASIBLE_VALUE: f32 = 0.1;
+/// Fuel the rest of a turn needs after target scoring (path 40k + act 5k + reserve).
+const TARGET_REST_FUEL: u64 = 55_000;
+/// Most turns in a row a target is kept unscored when fuel is short.
+const TARGET_KEEP_MAX: u8 = 8;
+/// knob2 CLUSTER: neighbours count up to this many walking tiles from a group's centre.
+const CLUSTER_PATH: u32 = 14;
+/// Debug runs: rounds between `G` lines (each group's target score and what cut it).
+const TARGET_DIAG_EVERY: u32 = 100;
 /// EN_ROUTE: only for targets this far; detour, solo clear time and damage limits.
 const EN_ROUTE_MIN_DIST: i32 = 15;
 const EN_ROUTE_DETOUR: i32 = 6;
@@ -273,6 +288,8 @@ impl Bot {
             order,
             slot,
             target: None,
+            target_cost: 0,
+            target_kept: 0,
             last_hp: 0.0,
             hurt_round: 0,
             last_pos,
@@ -288,6 +305,7 @@ impl Bot {
             cur_dps: 0.0,
             cur_max_hp: 0.0,
             saw_down: None,
+            cluster: Vec::new(),
             recent: [Pos::new(-1, -1); UNSTICK_TURNS],
             recent_n: 0,
             idle_turns: 0,
@@ -1291,6 +1309,7 @@ impl Bot {
             weak_first: false,
             dash_in: false,
             field_shop: false,
+            keep_buying: self.theta.knob2(knob2::KEEP_BUYING) > 0,
             recall_safe: false,
             recall_ticks: 5,
             tavi_respec: false,
@@ -1552,24 +1571,21 @@ impl Bot {
         fight_w.iter().zip(psi).map(|(w, x)| w * x).sum::<f32>().clamp(-3.0, 3.0)
     }
 
-    /// exp(TARGET . phi) (learned.rs): learned correction to a camp group's score.
+    /// exp(TARGET . phi) (learned.rs): learned correction to a camp group's score. `w` is
+    /// [`crate::learned::target`] or None when it is all zero (no bias).
     #[allow(clippy::too_many_arguments)]
     fn target_bias(
-        &self,
+        w: Option<&[f32]>,
         g: &crate::world::GroupStatic,
         dist: f32,
         clear: f32,
         eta: f32,
-        i: usize,
-        round: u32,
-        chan: &TeamChannel,
+        others: usize,
+        last_hp: f32,
+        fixed: [f32; 3],
     ) -> f32 {
-        let target_w = crate::learned::target();
-        if target_w.iter().all(|&w| w == 0.0) {
-            return 1.0;
-        }
-        let others = self.priority_index(i).map_or(0, |pi| chan.claimants(pi, self.slot as usize));
-        let damage = g.total_strength * clear / self.last_hp.max(1.0);
+        let Some(w) = w else { return 1.0 };
+        let damage = g.total_strength * clear / last_hp.max(1.0);
         let phi = [
             g.gems as f32 / 100.0,
             g.gold as f32 / 100.0,
@@ -1578,11 +1594,11 @@ impl Bot {
             eta / 50.0,
             others as f32,
             damage.min(5.0),
-            self.ledger.gems as f32 / 100.0,
-            self.emblems() as f32 / 5.0,
-            round as f32 / 1000.0,
+            fixed[0],
+            fixed[1],
+            fixed[2],
         ];
-        target_w.iter().zip(phi).map(|(w, x)| w * x).sum::<f32>().clamp(-4.0, 4.0).exp()
+        w.iter().zip(phi).map(|(w, x)| w * x).sum::<f32>().clamp(-4.0, 4.0).exp()
     }
 
     /// Completed emblems we own.
@@ -1790,6 +1806,95 @@ impl Bot {
             self.target = Some(g);
             return;
         }
+        // Short on fuel: scoring every group costs ~1.5k fuel each (40k+ on dense maps like
+        // yellow-brick-road), which ran turns out of fuel and froze the champions. Keep a
+        // still-valid target instead, for at most TARGET_KEEP_MAX turns in a row.
+        let start = fuel();
+        if let Some(t) = self.target {
+            let valid = t < self.world.groups.len()
+                && self.belief.expected_state(t, round) != GroupState::Respawning;
+            if valid
+                && self.target_kept < TARGET_KEEP_MAX
+                && start < self.target_cost + TARGET_REST_FUEL
+            {
+                self.target_kept += 1;
+                return;
+            }
+        }
+        self.target_kept = 0;
+        self.score_targets(my_pos, round, chan, vis);
+        self.target_cost = start.saturating_sub(fuel());
+    }
+
+    /// Cluster neighbours of group `i`: groups within CLUSTER_PATH walking tiles of its centre,
+    /// weighted 1 (next to it) down to ~0 (CLUSTER_PATH away). Exact (cacheable) once every
+    /// neighbour's field is ready; a straight-line estimate before that.
+    fn cluster_links(&self, i: usize) -> (Vec<(u8, f32)>, bool) {
+        let g = &self.world.groups[i];
+        let mut exact = true;
+        let mut out = Vec::new();
+        for &j in &g.near {
+            let j = usize::from(j);
+            if self.world.groups[j].has_monolith {
+                continue;
+            }
+            exact &= self.world.fields.is_ready(Goal::Group(j as u8));
+            if let Some(d) = self.group_distance(j, g.center) {
+                if d <= CLUSTER_PATH {
+                    out.push((j as u8, 1.0 - d as f32 / (CLUSTER_PATH + 1) as f32));
+                }
+            }
+        }
+        (out, exact)
+    }
+
+    /// knob2 CLUSTER: per group, the value of the live groups around it (gems + gold / 3,
+    /// weighted by nearness), x knob / 10. Empty when the knob is off.
+    fn cluster_bonus(&mut self, round: u32) -> Vec<f32> {
+        let k = self.theta.knob2(knob2::CLUSTER);
+        if k == 0 {
+            return Vec::new();
+        }
+        let n = self.world.groups.len();
+        if self.cluster.len() != n {
+            self.cluster = vec![None; n];
+        }
+        // Each group's links are computed once; estimated ones are redone with walking distances
+        // once the fields exist, at most one group per call (each costs a few field reads).
+        // Round-robin over the estimated ones so each gets its turn.
+        let mut retry = true;
+        for k in 0..n {
+            let i = (k + round as usize) % n;
+            let redo = match &self.cluster[i] {
+                None => true,
+                Some((_, exact)) => !exact && retry,
+            };
+            if redo {
+                if self.cluster[i].is_some() {
+                    retry = false;
+                }
+                self.cluster[i] = Some(self.cluster_links(i));
+            }
+        }
+        let scale = f32::from(k) / 10.0;
+        let mut bonus = vec![0.0; n];
+        for (i, b) in bonus.iter_mut().enumerate() {
+            let Some((links, _)) = &self.cluster[i] else { continue };
+            for &(j, w) in links {
+                let j = usize::from(j);
+                if self.belief.expected_state(j, round) == GroupState::Respawning {
+                    continue;
+                }
+                let gj = &self.world.groups[j];
+                *b += w * (gj.gems as f32 + gj.gold as f32 / 3.0);
+            }
+            *b *= scale;
+        }
+        bonus
+    }
+
+    fn score_targets(&mut self, my_pos: Pos, round: u32, chan: &TeamChannel, vis: &Visible) {
+        let cluster = self.cluster_bonus(round);
         // Live damage (items included): base stats alone underrate a geared champion, making
         // every camp look slower to clear than it is.
         let my_dps = sdk::dps(self.kit.base_strength, self.kit.base_focus, &self.kit)
@@ -1801,8 +1906,53 @@ impl Bot {
         let value_profile = self.theta.knob(knob::VALUE_PROFILE);
         // VALUE_PROFILE 4/5: near camps first in the opening (gold now beats gems later).
         let opening = matches!(value_profile, 4 | 5) && round < OPENING_ROUNDS;
+        // Loop invariants, read once (scoring every group used ~1.5k fuel each).
+        let slot = self.slot as usize;
+        let emblems = self.emblems();
+        let passive_aware = self.theta.knob2(knob2::PASSIVE_AWARE) > 0;
+        let passive_roles = self.theta.knob(knob::PASSIVE_ROLES) > 0;
+        let camp_feasible = self.theta.knob(knob::CAMP_FEASIBLE);
+        let squad_join = self.theta.knob(knob::SQUAD_JOIN_X10);
+        let buddy_claim = chan.claims.get(slot ^ 1).copied().flatten();
+        let solo_cap = usize::from(self.theta.knob2(knob2::SOLO_CAP));
+        let ease_first = self.theta.knob2(knob2::EASE_FIRST) > 0;
+        let ally_near = vis.allies.iter().any(|a| a.dist <= 6);
+        let w_gem = crate::learned::w(crate::learned::GEM);
+        let w_gold = crate::learned::w(crate::learned::GOLD);
+        let w_reward = crate::learned::w(crate::learned::REWARD);
+        let w_shared_small = crate::learned::w(crate::learned::SHARED_SMALL);
+        let w_strength = crate::learned::w(crate::learned::STRENGTH_DISCOUNT);
+        let target_w = Some(crate::learned::target()).filter(|w| w.iter().any(|&x| x != 0.0));
+        let bias_fixed =
+            [self.ledger.gems as f32 / 100.0, emblems as f32 / 5.0, round as f32 / 1000.0];
+        let early_gold = self.theta.knob2(knob2::EARLY_GOLD) > 0;
+        let early = round < EARLY_RAMP_ROUNDS || emblems < 2;
+        // Remote farmer: the last slot of a 4+ team goes further for quieter groups.
+        let remote = self.theta.knob(knob::REMOTE_FARMER) > 0
+            && self.team_size >= 4
+            && slot + 1 == self.team_size;
+        let dist_w = if remote {
+            0.4
+        } else if opening {
+            OPENING_DIST_WEIGHT * crate::learned::w(crate::learned::OPENING_DIST)
+        } else {
+            1.0
+        } * crate::learned::w(crate::learned::DIST);
+        let w_clear = crate::learned::w(crate::learned::CLEAR);
+        let w_hysteresis = crate::learned::w(crate::learned::HYSTERESIS);
         let mut best: Option<(f32, usize)> = None;
+        // Debug runs: every TARGET_DIAG_EVERY rounds, a `G` line with each group's score and
+        // what cut it (debug_block only: free locally, compiled out in release).
+        let diag = round % TARGET_DIAG_EVERY == TARGET_DIAG_EVERY / 2;
+        let mut rows: Vec<String> = Vec::new();
+        macro_rules! why {
+            ($($t:tt)*) => { cambc::debug_block! { if diag { $($t)* } } };
+        }
+        let mut f = String::new();
+        let (mut t0, mut t1) = (0u64, 0u64);
+        why!(t0 = fuel());
         for (i, g) in self.world.groups.iter().enumerate() {
+            why!(f.clear());
             if g.has_monolith && live {
                 // The monolith hits the nearest champion for its strength every round: the
                 // team's pooled health must outlast the time its pooled damage needs.
@@ -1810,26 +1960,29 @@ impl Bot {
                 let survive = self.cur_max_hp.max(1.0) * n / g.total_strength.max(1.0);
                 let kill = g.total_hp / team_power.max(1.0);
                 if kill > survive * MONOLITH_SLACK {
+                    why!(rows.push(format!("[{i},\"skip:monolith_survive\"]")));
                     continue;
                 }
             } else if g.has_monolith
                 && team_power * 10.0 < f32::from(self.knobs.monolith_min_power) * 100.0
             {
+                why!(rows.push(format!("[{i},\"skip:monolith_power\"]")));
                 continue;
             }
             let state = self.belief.expected_state(i, round);
-            let Some(dist) = self.group_distance(i, my_pos) else { continue };
+            let Some(dist) = self.group_distance(i, my_pos) else {
+                why!(rows.push(format!("[{i},\"skip:unreachable\"]")));
+                continue;
+            };
             let dist = dist as f32;
             let eta = self.belief.rounds_until_up(i, round) as f32;
             if state == GroupState::Respawning && eta > dist + 15.0 {
+                why!(rows.push(format!("[{i},\"skip:respawning\"]")));
                 continue;
             }
             let mut value = match value_profile {
                 1 => g.gems as f32 + g.gold as f32 / 10.0,
-                4 => {
-                    g.gems as f32 * crate::learned::w(crate::learned::GEM)
-                        + g.gold as f32 * 0.6 * crate::learned::w(crate::learned::GOLD)
-                }
+                4 => g.gems as f32 * w_gem + g.gold as f32 * 0.6 * w_gold,
                 5 => g.gems as f32 + g.gold as f32,
                 2 if self.slot < 2 => g.gems as f32 * 0.3 + g.gold as f32,
                 2 => g.gems as f32 + g.gold as f32 * 0.15,
@@ -1837,19 +1990,19 @@ impl Bot {
             };
             // Passives: Vesper's gold bonus applies to her capture share (gear herself first),
             // Prism's Focus grows with the gems she carries (she collects them).
-            if self.theta.knob2(knob2::PASSIVE_AWARE) > 0 {
+            if passive_aware {
                 // Gold-bonus passives: gold is worth more until geared. Splash attacks clear
                 // multi-camp groups faster.
-                if self.passive == PASSIVE_BONUS_GOLD && self.emblems() < 3 {
+                if self.passive == PASSIVE_BONUS_GOLD && emblems < 3 {
                     value += g.gold as f32 * 0.3;
                 }
                 if self.passive == PASSIVE_SPLASH {
                     value *= 1.0 + 0.15 * g.tiles.len().saturating_sub(1) as f32;
                 }
             }
-            if self.theta.knob(knob::PASSIVE_ROLES) > 0 {
+            if passive_roles {
                 match self.kind {
-                    ChampionKind::VesperVale if self.emblems() < VESPER_GOLD_EMBLEMS => {
+                    ChampionKind::VesperVale if emblems < VESPER_GOLD_EMBLEMS => {
                         value = g.gems as f32 * 0.25 + g.gold as f32 * 1.2;
                     }
                     ChampionKind::Prism => value = g.gems as f32 * 1.4 + g.gold as f32 / 3.0,
@@ -1858,15 +2011,14 @@ impl Bot {
             }
             // CAMP_FEASIBLE bit 4: a group whose camps are all in sight costs its live HP
             // (an ally may have half-killed it), not its full HP.
-            let group_hp = if self.theta.knob(knob::CAMP_FEASIBLE) & 4 != 0 {
-                let seen: Vec<f32> = vis
-                    .camps
-                    .iter()
-                    .filter(|c| c.group == Some(i))
-                    .map(|c| c.hp.max(0.0))
-                    .collect();
-                if !seen.is_empty() && seen.len() >= g.tiles.len() {
-                    seen.iter().sum()
+            let group_hp = if camp_feasible & 4 != 0 {
+                let (mut n, mut hp) = (0usize, 0.0f32);
+                for c in vis.camps.iter().filter(|c| c.group == Some(i)) {
+                    n += 1;
+                    hp += c.hp.max(0.0);
+                }
+                if n > 0 && n >= g.tiles.len() {
+                    hp
                 } else {
                     g.total_hp
                 }
@@ -1875,7 +2027,7 @@ impl Bot {
             };
             let clear = match state {
                 GroupState::RewardAvailable => {
-                    value *= 1.5 * crate::learned::w(crate::learned::REWARD);
+                    value *= 1.5 * w_reward;
                     0.0
                 }
                 // A monolith is cleared by the whole team, not one champion.
@@ -1883,105 +2035,99 @@ impl Bot {
                 _ => group_hp / my_dps,
             };
             // A capture needs one champion; an ally already on the tile has it.
-            let ally_on_tile = vis.allies.iter().any(|a| self.world.group_at(a.pos) == Some(i));
-            if state == GroupState::RewardAvailable && ally_on_tile {
+            if state == GroupState::RewardAvailable
+                && vis.allies.iter().any(|a| self.world.group_at(a.pos) == Some(i))
+            {
+                why!(rows.push(format!("[{i},\"skip:ally_capturing\"]")));
                 continue;
             }
-            if let Some(pi) = self.priority_index(i) {
-                let others = chan.claimants(pi, self.slot as usize);
+            if let Some(&b) = cluster.get(i) {
+                value += b;
+                why!(f.push_str(&format!("\"cluster\":{b:.1},")));
+            }
+            why!(f.push_str(&format!("\"v0\":{value:.1},")));
+            let pi = self.priority_index(i);
+            let others = pi.map_or(0, |pi| chan.claimants(pi, slot));
+            if pi.is_none() {
+                why!(f.push_str("\"no_claims\":1,"));
+            }
+            if let Some(pi) = pi {
                 // Squads: slot pairs (0,1), (2,3) join each other's group (2v1 fights, faster clears).
-                let join = self.theta.knob(knob::SQUAD_JOIN_X10);
-                let buddy =
-                    chan.claims.get((self.slot ^ 1) as usize).copied().flatten() == Some(pi);
+                let join = squad_join;
+                let buddy = buddy_claim == Some(pi);
                 if join > 0 && buddy {
                     value *= f32::from(join) / 10.0;
                 } else if others > 0 {
                     // Big groups go faster together; small ones are wasted on two.
-                    value *= if g.total_hp >= 3000.0 {
-                        1.1
-                    } else {
-                        0.35 * crate::learned::w(crate::learned::SHARED_SMALL)
-                    };
+                    let k = if g.total_hp >= 3000.0 { 1.1 } else { 0.35 * w_shared_small };
+                    value *= k;
+                    why!(f.push_str(&format!("\"shared\":{k:.2},")));
                 }
             }
             // Stronger camps hurt: discount by expected damage taken.
-            value /=
-                1.0 + g.max_strength / 100.0 * crate::learned::w(crate::learned::STRENGTH_DISCOUNT);
+            let k = 1.0 + g.max_strength / 100.0 * w_strength;
+            value /= k;
+            why!(f.push_str(&format!("\"strength\":{:.2},", 1.0 / k)));
             // Can the champions on it clear it before the tank dies? Gear up on others first.
-            if self.theta.knob(knob::CAMP_FEASIBLE) & 1 != 0 && state != GroupState::RewardAvailable
-            {
-                let helpers = 1 + self
-                    .priority_index(i)
-                    .map_or(0, |pi| chan.claimants(pi, self.slot as usize));
+            if camp_feasible & 1 != 0 && state != GroupState::RewardAvailable {
+                let helpers = 1 + others;
                 let survive = self.last_hp.max(1.0) / (g.total_strength * CAMP_DMG_FLOOR).max(1.0);
                 let kill = group_hp / (self.cur_dps.max(my_dps) * helpers as f32).max(1.0);
                 if kill > survive * CAMP_FEASIBLE_SLACK {
                     value *= CAMP_INFEASIBLE_VALUE;
+                    why!(f.push_str(&format!("\"infeasible\":{CAMP_INFEASIBLE_VALUE},")));
                 }
             }
-            let ally_near = vis.allies.iter().any(|a| a.dist <= 6);
             let monsters = g.tiles.len();
             // knob2 SOLO_CAP: a big group alone only once we're geared enough to outlast it.
-            let solo_cap = usize::from(self.theta.knob2(knob2::SOLO_CAP));
             if solo_cap > 0
                 && monsters >= solo_cap
                 && !ally_near
                 && state != GroupState::RewardAvailable
-                && !self
-                    .priority_index(i)
-                    .is_some_and(|pi| chan.claimants(pi, self.slot as usize) > 0)
+                && others == 0
             {
                 let survive = self.last_hp.max(1.0) / (g.total_strength * CAMP_DMG_FLOOR).max(1.0);
                 let kill = group_hp / self.cur_dps.max(my_dps).max(1.0);
                 if kill * SOLO_GEARED_MARGIN > survive {
                     value *= CAMP_INFEASIBLE_VALUE;
+                    why!(f.push_str(&format!("\"solo_cap\":{CAMP_INFEASIBLE_VALUE},")));
                 }
             }
             // knob2 EASE_FIRST: alone, fewer monsters first (two-monster groups before packs).
-            if self.theta.knob2(knob2::EASE_FIRST) > 0
-                && !ally_near
-                && state != GroupState::RewardAvailable
-            {
-                value /= 1.0 + EASE_PER_MONSTER * monsters.saturating_sub(1) as f32;
+            if ease_first && !ally_near && state != GroupState::RewardAvailable {
+                let k = 1.0 + EASE_PER_MONSTER * monsters.saturating_sub(1) as f32;
+                value /= k;
+                why!(f.push_str(&format!("\"ease\":{:.2},", 1.0 / k)));
             }
             // knob2 EARLY_GOLD: before 2 emblems, gold from quick groups buys the first upgrades.
-            if self.theta.knob2(knob2::EARLY_GOLD) > 0
-                && self.emblems() < 2
-                && clear <= EARLY_RAMP_KNEE
-            {
+            if early_gold && emblems < 2 && clear <= EARLY_RAMP_KNEE {
                 value += g.gold as f32 * EARLY_GOLD_BONUS;
             }
             // CAMP_FEASIBLE bit 2, early ramp: before EARLY_RAMP_ROUNDS or our 2nd emblem, quick
             // camps first; value falls with clear time past EARLY_RAMP_KNEE turns, so guarded
             // groups (Golem, Elk packs) wait until we've geared up.
-            let early = round < EARLY_RAMP_ROUNDS || self.emblems() < 2;
-            if self.theta.knob(knob::CAMP_FEASIBLE) & 2 != 0 && early {
-                value /= 1.0 + (clear - EARLY_RAMP_KNEE).max(0.0) / EARLY_RAMP_KNEE;
+            if camp_feasible & 2 != 0 && early {
+                let k = 1.0 + (clear - EARLY_RAMP_KNEE).max(0.0) / EARLY_RAMP_KNEE;
+                value /= k;
+                why!(f.push_str(&format!("\"early_ramp\":{:.2},", 1.0 / k)));
             }
-            // Remote farmer: the last slot of a 4+ team goes further for quieter groups.
-            let remote = self.theta.knob(knob::REMOTE_FARMER) > 0
-                && self.team_size >= 4
-                && self.slot as usize + 1 == self.team_size;
-            let dist_w = if remote {
-                0.4
-            } else if opening {
-                OPENING_DIST_WEIGHT * crate::learned::w(crate::learned::OPENING_DIST)
-            } else {
-                1.0
-            } * crate::learned::w(crate::learned::DIST);
-            let mut score = value
-                / (dist * dist_w
-                    + clear * crate::learned::w(crate::learned::CLEAR)
-                    + (eta - dist).max(0.0)
-                    + 5.0);
-            score *= self.target_bias(g, dist, clear, eta, i, round, chan);
+            let mut score = value / (dist * dist_w + clear * w_clear + (eta - dist).max(0.0) + 5.0);
+            let bias =
+                Self::target_bias(target_w, g, dist, clear, eta, others, self.last_hp, bias_fixed);
+            score *= bias;
             if self.target == Some(i) {
-                score *= 1.3 * crate::learned::w(crate::learned::HYSTERESIS);
+                score *= 1.3 * w_hysteresis;
             }
+            why!(rows.push(format!(
+                "[{i},{{{f}\"v\":{value:.1},\"dist\":{dist:.0},\"clear\":{clear:.0},\"wait\":{:.0},\"bias\":{bias:.2},\"score\":{score:.3}}}]",
+                (eta - dist).max(0.0)
+            )));
             if best.is_none_or(|(b, _)| score > b) {
                 best = Some((score, i));
             }
         }
+        why!(t1 = fuel());
+        let pick = best.map_or(-1, |(_, i)| i as i64);
         if self.theta.knob(knob::EN_ROUTE) > 0 {
             if let Some((_, far)) = best {
                 let quiet = vis.enemies.iter().all(|e| e.on_spawn || e.dist > 6);
@@ -1990,6 +2136,14 @@ impl Bot {
                 }
             }
         }
+        why!(println!(
+            "G {{\"r\":{round},\"c\":\"{}\",\"pick\":{pick},\"route\":{},\"fuel_loop\":{},\"fuel_route\":{},\"groups\":[{}]}}",
+            champ_name(self.kind),
+            best.map_or(-1, |(_, i)| i as i64),
+            t0.saturating_sub(t1),
+            t1.saturating_sub(fuel()),
+            rows.join(",")
+        ));
         self.target = best.map(|(_, i)| i);
     }
 

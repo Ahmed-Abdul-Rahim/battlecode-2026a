@@ -14,6 +14,9 @@ def test_rl_plan_init_rollouts_update_per_arm():
     assert M.plan_rl(reg) == ("rlinit", {"arm": 1})
     M.add(reg, "rlinit", {"arm": 1})["status"] = "done"
     M.add(reg, "rlinit", {"arm": 2})["status"] = "done"
+    assert M.plan_rl(reg) == ("eval", {"arm": 1, "it": 0})  # a fair check before the rollouts
+    M.add(reg, "eval", {"arm": 1, "it": 0}).update(status="done", result={"win": 0.4})
+    M.add(reg, "eval", {"arm": 2, "it": 0}).update(status="done", result={"win": 0.3})
     kind, params = M.plan_rl(reg)
     assert kind == "rollout" and params["it"] == 0 and params["part"] == 0
     for part in range(M.RL_PARTS):
@@ -55,6 +58,42 @@ def test_retired_job_kinds_are_ignored():
     }
     assert M.next_job(reg, M.L.ts("2026-10-21T11:00:00Z")) is None
     assert "gen" not in M.status_report(reg, {"experiments": []})
+
+
+def test_training_jobs_only_on_a_gpu(monkeypatch):
+    reg = {"jobs": []}
+    M.add(reg, "rlinit", {"arm": 1})["status"] = "done"
+    M.add(reg, "rlinit", {"arm": 2})["status"] = "done"
+    for arm in (1, 2):
+        M.add(reg, "eval", {"arm": arm, "it": 0}).update(status="done", result={"win": 0.5})
+        for part in range(M.RL_PARTS):
+            M.add(reg, "rollout", {"arm": arm, "it": 0, "part": part})["status"] = "done"
+    assert M.plan_rl(reg, gpu=False) is None  # both arms wait for an update
+    assert M.plan_rl({"jobs": []}, gpu=False) is None  # nothing to start without a GPU
+    queued = M.add(reg, "update", {"arm": 1, "it": 0})
+    monkeypatch.setattr(M, "_gpu", False)
+    assert M.next_job(reg) is None
+    monkeypatch.setattr(M, "_gpu", True)
+    assert M.next_job(reg) is queued
+
+
+def test_best_fair_check_and_eval_schedule():
+    reg = {"jobs": []}
+    for arm in (1, 2):
+        M.add(reg, "rlinit", {"arm": arm})["status"] = "done"
+    assert M.best_eval(reg, 1) is None
+    M.add(reg, "eval", {"arm": 1, "it": 0}).update(status="done", result={"win": 0.40})
+    M.add(reg, "eval", {"arm": 1, "it": 2}).update(status="done", result={"win": 0.55})
+    M.add(reg, "eval", {"arm": 1, "it": 4}).update(status="done", result={"win": 0.48})
+    assert M.best_eval(reg, 1) == (0.55, 2)
+    # odd iterations get no fair check
+    for it in range(3):
+        M.add(reg, "update", {"arm": 1, "it": it})["status"] = "done"
+    assert M.rl_state(reg, 1)["it"] == 3
+    M.add(reg, "eval", {"arm": 2, "it": 0}).update(status="done", result={"win": 0.5})
+    assert M.plan_rl(reg)[0] == "rollout"
+    pool = [(f"m{i}", Path(f"m{i}")) for i in range(9)]
+    assert [m for m, _ in M.eval_maps(pool)] == ["m0", "m3", "m6"]
 
 
 def test_job_registry_merge():

@@ -173,6 +173,8 @@ pub struct Exec<'a> {
     pub dash_in: bool,
     /// TAVI_META: Tavi buys shards anywhere on the map (its passive).
     pub field_shop: bool,
+    /// knob2 KEEP_BUYING: once the build order is done, keep buying its last emblem.
+    pub keep_buying: bool,
     /// RECALL_SAFE: only start a recall nothing can reach before it completes.
     pub recall_safe: bool,
     /// Recall channel length (5, or 3 with a Home emblem).
@@ -229,7 +231,12 @@ impl Exec<'_> {
             if gold < SHARD_COST {
                 break;
             }
-            let Some(id) = shop::next_shard(self.order, self.ledger) else { break };
+            let next = if self.keep_buying {
+                shop::next_shard_or_repeat(self.order, self.ledger)
+            } else {
+                shop::next_shard(self.order, self.ledger)
+            };
+            let Some(id) = next else { break };
             let item = ItemType::try_from(u32::from(id))?;
             match self.me.buy(item) {
                 Ok(()) => {

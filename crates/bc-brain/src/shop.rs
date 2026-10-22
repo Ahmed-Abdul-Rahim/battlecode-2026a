@@ -127,6 +127,12 @@ pub fn next_shard(order: &[(Family, Stat)], ledger: &Ledger) -> Option<u8> {
     None
 }
 
+/// Like [`next_shard`], but once the order is complete keep adding its last emblem (usually
+/// Power on the primary stat) instead of hoarding gold. `None` only for an empty order.
+pub fn next_shard_or_repeat(order: &[(Family, Stat)], ledger: &Ledger) -> Option<u8> {
+    next_shard(order, ledger).or_else(|| order.last().map(|&(f, s)| item_id(f, s, false)))
+}
+
 pub fn affordable(gold: u32) -> u32 {
     gold / SHARD_COST
 }
@@ -134,6 +140,19 @@ pub fn affordable(gold: u32) -> u32 {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn complete_order_keeps_buying_its_last_emblem() {
+        let order = build_order(ChampionKind::Varg);
+        let mut l = Ledger::new(ChampionKind::Varg);
+        for &(f, s) in &order {
+            l.items[item_id(f, s, true) as usize] += 1;
+        }
+        assert_eq!(next_shard(&order, &l), None);
+        let (f, s) = *order.last().unwrap();
+        assert_eq!(next_shard_or_repeat(&order, &l), Some(item_id(f, s, false)));
+        assert_eq!(next_shard_or_repeat(&[], &l), None);
+    }
 
     #[test]
     fn order_starts_with_jungle_and_advances_with_emblems() {
