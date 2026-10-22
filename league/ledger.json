@@ -1350,6 +1350,15 @@
    "time": "2026-10-21T16:10:12.194Z",
    "win": false
   },
+  "372dcb81-7a17-4204-9d76-afe9d1a807f0": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "fracture",
+   "opp": "Kvantai",
+   "oppId": "0580c098-a7c9-46d7-b414-bf39c02c3dcc",
+   "time": "2026-10-22T11:50:22.938Z",
+   "win": false
+  },
   "3731588c-3141-429d-aa14-f43dc6c307a2": {
    "kind": "ranked",
    "live": 1,
@@ -3195,6 +3204,15 @@
    "time": "2026-10-20T18:30:06.487Z",
    "win": false
   },
+  "89dc5f76-da19-4fb9-9421-d9698e3186c8": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "reverse-spiral",
+   "opp": "Kvantai",
+   "oppId": "0580c098-a7c9-46d7-b414-bf39c02c3dcc",
+   "time": "2026-10-22T11:50:22.937Z",
+   "win": false
+  },
   "8a4e596f-77f7-4915-9e77-f5acd8ed1eed": {
    "kind": "ranked",
    "live": 17,
@@ -4581,6 +4599,15 @@
    "time": "2026-10-22T06:10:11.799Z",
    "win": false
   },
+  "c2b860cb-5807-4e60-bee9-888717fda27f": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "corners",
+   "opp": "Kvantai",
+   "oppId": "0580c098-a7c9-46d7-b414-bf39c02c3dcc",
+   "time": "2026-10-22T11:50:22.938Z",
+   "win": true
+  },
   "c34b7546-1a3a-4c11-b480-224bccfca6fe": {
    "kind": "ranked",
    "live": 1,
@@ -5346,6 +5373,15 @@
    "time": "2026-10-22T07:10:14.654Z",
    "win": false
   },
+  "e114718e-a91f-41c0-b257-4e4b12748950": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "collision",
+   "opp": "Kvantai",
+   "oppId": "0580c098-a7c9-46d7-b414-bf39c02c3dcc",
+   "time": "2026-10-22T11:50:22.938Z",
+   "win": false
+  },
   "e128a4cc-2b57-4e3f-9a03-4eeb056120b1": {
    "kind": "ranked",
    "live": null,
@@ -5713,6 +5749,15 @@
    "opp": "Stubborn Altar Keepers",
    "oppId": "625bb51a-8d9e-4035-a16e-ce4eea8eb739",
    "time": "2026-10-20T17:40:07.589Z",
+   "win": false
+  },
+  "ee341f9e-ced1-457a-89c5-5eda798d65c3": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "monolith",
+   "opp": "Kvantai",
+   "oppId": "0580c098-a7c9-46d7-b414-bf39c02c3dcc",
+   "time": "2026-10-22T11:50:22.938Z",
    "win": false
   },
   "ee3ca839-cf10-4a2a-80a8-cb2f58c36c1b": {
@@ -12108,6 +12153,70 @@
    "oppId": "07278352-d849-4c77-9ce1-0f8307fd4fa9",
    "status": "open",
    "time": "2026-10-22T11:40:20.386Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 13
+   },
+   "deaths_them": 14,
+   "deaths_us": 13,
+   "gems_them": "1221",
+   "gems_us": "984",
+   "id": "ee341f9e-ced1-457a-89c5-5eda798d65c3",
+   "map": "monolith",
+   "opp": "Kvantai",
+   "oppId": "0580c098-a7c9-46d7-b414-bf39c02c3dcc",
+   "status": "open",
+   "time": "2026-10-22T11:50:22.938Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 4,
+    "Unknown entity kind (2)": 21
+   },
+   "deaths_them": 5,
+   "deaths_us": 25,
+   "gems_them": "1015",
+   "gems_us": "318",
+   "id": "372dcb81-7a17-4204-9d76-afe9d1a807f0",
+   "map": "fracture",
+   "opp": "Kvantai",
+   "oppId": "0580c098-a7c9-46d7-b414-bf39c02c3dcc",
+   "status": "open",
+   "time": "2026-10-22T11:50:22.938Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 21,
+    "Unknown entity kind (2)": 2
+   },
+   "deaths_them": 12,
+   "deaths_us": 23,
+   "gems_them": "1061",
+   "gems_us": "668",
+   "id": "e114718e-a91f-41c0-b257-4e4b12748950",
+   "map": "collision",
+   "opp": "Kvantai",
+   "oppId": "0580c098-a7c9-46d7-b414-bf39c02c3dcc",
+   "status": "open",
+   "time": "2026-10-22T11:50:22.938Z",
+   "tries_at": 6
+  },
+  {
+   "contexts": {},
+   "deaths_them": 46,
+   "deaths_us": 0,
+   "gems_them": "335",
+   "gems_us": "310",
+   "id": "89dc5f76-da19-4fb9-9421-d9698e3186c8",
+   "map": "reverse-spiral",
+   "opp": "Kvantai",
+   "oppId": "0580c098-a7c9-46d7-b414-bf39c02c3dcc",
+   "status": "open",
+   "time": "2026-10-22T11:50:22.937Z",
    "tries_at": 1
   }
  ],
