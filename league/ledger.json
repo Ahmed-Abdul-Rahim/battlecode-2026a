@@ -585,6 +585,15 @@
    "time": "2026-10-20T16:50:05.756Z",
    "win": true
   },
+  "1668402c-4f04-4dc0-aa11-b6f09f6d2149": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "concentrated-wealth",
+   "opp": "tRust me bro",
+   "oppId": "4fbe2b8b-0a69-4dd5-b3f0-d8787101d7bc",
+   "time": "2026-10-22T11:30:18.050Z",
+   "win": false
+  },
   "17847a00-41b5-48f4-aa7d-c2a3d7e0f3f3": {
    "kind": "ranked",
    "live": null,
@@ -1061,6 +1070,15 @@
    "oppId": "4b09b8ff-b429-43dc-9be1-180565784e87",
    "time": "2026-10-22T09:40:19.254Z",
    "win": true
+  },
+  "2b8ec1d9-6bad-409e-aa8e-5a817c70b006": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "collision",
+   "opp": "tRust me bro",
+   "oppId": "4fbe2b8b-0a69-4dd5-b3f0-d8787101d7bc",
+   "time": "2026-10-22T11:30:18.050Z",
+   "win": false
   },
   "2b94aac3-894c-4bd6-a286-712cd59dfd5f": {
    "kind": "ranked",
@@ -2448,6 +2466,15 @@
    "time": "2026-10-20T18:40:10.898Z",
    "win": true
   },
+  "6a3ba8c5-be44-477f-b3f6-9395f45bd874": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "gold-rush",
+   "opp": "tRust me bro",
+   "oppId": "4fbe2b8b-0a69-4dd5-b3f0-d8787101d7bc",
+   "time": "2026-10-22T11:30:18.050Z",
+   "win": false
+  },
   "6a5c4d1b-b9b0-431b-9c1a-f7129c79e941": {
    "kind": "ranked",
    "live": 17,
@@ -3105,6 +3132,15 @@
    "time": "2026-10-20T16:00:07.664Z",
    "win": false
   },
+  "870ca6e5-7366-4e8c-bbf1-994a453422b6": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "gem-fields",
+   "opp": "tRust me bro",
+   "oppId": "4fbe2b8b-0a69-4dd5-b3f0-d8787101d7bc",
+   "time": "2026-10-22T11:30:18.050Z",
+   "win": true
+  },
   "87b06c24-73d2-4a87-ba9e-f652f2ceca31": {
    "kind": "ranked",
    "live": 1,
@@ -3634,6 +3670,15 @@
    "opp": "eclipsed Sunlight",
    "oppId": "dba8d35f-fd1d-432d-8ba5-9f076cb3dcac",
    "time": "2026-10-20T20:40:10.182Z",
+   "win": true
+  },
+  "9dff9468-c821-40c7-98de-f045522eb760": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "great-wall",
+   "opp": "tRust me bro",
+   "oppId": "4fbe2b8b-0a69-4dd5-b3f0-d8787101d7bc",
+   "time": "2026-10-22T11:30:18.050Z",
    "win": true
   },
   "9e01c938-98d4-4e49-a6c0-de555301344f": {
@@ -11953,6 +11998,55 @@
    "status": "open",
    "time": "2026-10-22T11:20:16.889Z",
    "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 42,
+    "Unknown entity kind (2)": 3
+   },
+   "deaths_them": 13,
+   "deaths_us": 45,
+   "gems_them": "820",
+   "gems_us": "110",
+   "id": "6a3ba8c5-be44-477f-b3f6-9395f45bd874",
+   "map": "gold-rush",
+   "opp": "tRust me bro",
+   "oppId": "4fbe2b8b-0a69-4dd5-b3f0-d8787101d7bc",
+   "status": "open",
+   "time": "2026-10-22T11:30:18.050Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 35
+   },
+   "deaths_them": 10,
+   "deaths_us": 35,
+   "gems_them": "922",
+   "gems_us": "517",
+   "id": "1668402c-4f04-4dc0-aa11-b6f09f6d2149",
+   "map": "concentrated-wealth",
+   "opp": "tRust me bro",
+   "oppId": "4fbe2b8b-0a69-4dd5-b3f0-d8787101d7bc",
+   "status": "open",
+   "time": "2026-10-22T11:30:18.050Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 51
+   },
+   "deaths_them": 30,
+   "deaths_us": 51,
+   "gems_them": "988",
+   "gems_us": "233",
+   "id": "2b8ec1d9-6bad-409e-aa8e-5a817c70b006",
+   "map": "collision",
+   "opp": "tRust me bro",
+   "oppId": "4fbe2b8b-0a69-4dd5-b3f0-d8787101d7bc",
+   "status": "open",
+   "time": "2026-10-22T11:30:18.050Z",
+   "tries_at": 6
   }
  ],
  "map_files": {
