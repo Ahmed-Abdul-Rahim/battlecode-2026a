@@ -1334,6 +1334,17 @@ fn camp_groups_use_host_membership_and_state_variants() {
     );
 }
 #[test]
+fn bytemuck_traits_round_trip_sdk_types() {
+    let values = [Vec2::new(-1, 2), Vec2::new(3, -4)];
+    let bytes: &[u8] = bytemuck::cast_slice(&values);
+    assert_eq!(bytemuck::cast_slice::<u8, Vec2>(bytes), values);
+    assert_eq!(bytemuck::cast::<_, u32>(ChampionState::ALIVE | ChampionState::CAN_CAST), 1 | 1 << 11);
+    assert_eq!(bytemuck::checked::try_cast::<u32, ItemType>(41), Ok(ItemType::BruiserEmblemOfHealth));
+    assert!(bytemuck::checked::try_cast::<u32, ItemType>(42).is_err());
+    assert!(bytemuck::checked::try_cast::<u8, PassiveType>(9).is_err());
+    assert_eq!(bytemuck::cast::<_, i32>(ChampionType::Tavi), 11);
+}
+#[test]
 fn aligned_boards_and_fields_clone_own_their_storage() {
     setup();
     crate::init().unwrap();
@@ -1377,6 +1388,35 @@ fn aligned_boards_and_fields_clone_own_their_storage() {
     field.set(Vec2::new(1, 1), 8).unwrap();
     assert_eq!(f.get(Vec2::new(1, 1)).unwrap(), 7);
     assert_eq!(f.export_raw_buffer().unwrap().len(), 128);
+}
+#[test]
+fn distance_field_copy_into_existing_storage() {
+    setup();
+    let mut source = DistanceField::new().unwrap();
+    let mut destination = DistanceField::new().unwrap();
+    let empty = source.clone();
+    source.set(Vec2::new(1, 1), 123).unwrap();
+    source.set(Vec2::new(2, 2), 456).unwrap();
+    destination.copy_from(&source).unwrap();
+    assert_eq!(destination.get(Vec2::new(2, 2)).unwrap(), 456);
+    let address = destination.ptr();
+    let mut mask = Bitboard::new().unwrap();
+    mask.set(Vec2::new(1, 1), true).unwrap();
+    source.set(Vec2::new(1, 1), 321).unwrap();
+    source.set(Vec2::new(2, 2), 654).unwrap();
+    destination.copy_from_with_mask(&source, &mask).unwrap();
+    assert_eq!(destination.get(Vec2::new(1, 1)).unwrap(), 321);
+    assert_eq!(destination.get(Vec2::new(2, 2)).unwrap(), 456);
+    assert_eq!(destination.ptr(), address);
+    destination.copy_from_with_mask(&empty, &mask).unwrap();
+    assert_eq!(destination.get(Vec2::new(1, 1)).unwrap(), 0);
+    assert_eq!(destination.get(Vec2::new(2, 2)).unwrap(), 456);
+    destination.copy_from(&empty).unwrap();
+    assert_eq!(destination.get(Vec2::new(2, 2)).unwrap(), 0);
+    let mut lazy_destination = DistanceField::new().unwrap();
+    lazy_destination.copy_from_with_mask(&source, &mask).unwrap();
+    assert_eq!(lazy_destination.get(Vec2::new(1, 1)).unwrap(), 321);
+    assert_eq!(lazy_destination.get(Vec2::new(2, 2)).unwrap(), 0);
 }
 #[test]
 fn distance_field_next_moves() {

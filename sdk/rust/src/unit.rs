@@ -208,6 +208,9 @@ bitflags::bitflags! {
         const TELEPORTING = 1 << 12;
     }
 }
+// SAFETY: a `repr(transparent)` `u32` flag set; every bit pattern is valid.
+unsafe impl bytemuck::Zeroable for ChampionState {}
+unsafe impl bytemuck::Pod for ChampionState {}
 impl ChampionState {
     /// Test whether `ALIVE` is absent from these captured state flags.
     #[must_use]

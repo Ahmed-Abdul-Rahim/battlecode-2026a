@@ -312,6 +312,17 @@ class DistanceField:
     def copy(self) -> DistanceField:
         """Return an independent copy."""
         ...
+    def copy_from(self, source: DistanceField, mask: Optional[Bitboard] = None) -> None:
+        """Copy into this field, reusing its storage. Self-copy is a no-op.
+
+        Without a mask, copy every value. With a mask, copy only selected tiles;
+        all unselected destination values are preserved and mask padding is ignored.
+
+        Args:
+            source: Field to copy from.
+            mask: Tiles to copy, or None to copy the whole field.
+        """
+        ...
     def width(self) -> int:
         """Return the map width in tiles."""
         ...

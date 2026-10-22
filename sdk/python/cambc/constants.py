@@ -74,7 +74,7 @@ class passive_abilities:
     """Fixed passive-ability tuning values."""
 
     __slots__ = ()
-    PRISM_FOCUS_PER_GEM = 1.0
+    PRISM_FOCUS_PER_GEM = 1.5
     VARG_SPLASH_RADIUS = 1.0
     VESPER_VALE_BONUS_GOLD_PERCENT = 33
     MARCELLA_TRIBUTE_GOLD_PER_GEM = 2

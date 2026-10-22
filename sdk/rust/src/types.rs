@@ -6,6 +6,10 @@ macro_rules! engine_enum {
 #[repr($ty)] #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)] pub enum $name {$(#[doc = concat!(stringify!($variant), " engine value (`", stringify!($value), "`).")] $variant = $value),*}
 impl $name {#[doc = "All recognised values in engine declaration order."] pub const ALL: &'static [Self] = &[$(Self::$variant),*];}
 impl core::fmt::Display for $name {fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {core::fmt::Debug::fmt(self, f)}}
+// SAFETY: a fieldless `repr($ty)` enum has no padding.
+unsafe impl bytemuck::NoUninit for $name {}
+// SAFETY: accepts exactly the declared discriminants.
+unsafe impl bytemuck::CheckedBitPattern for $name {type Bits = $ty; fn is_valid_bit_pattern(bits: &$ty) -> bool {$(*bits == $value)||*}}
 impl TryFrom<$ty> for $name {type Error = Error; fn try_from(value:$ty) -> Result<Self> {match value {$($value => Ok(Self::$variant),)* _ => Err(Error::invalid_value(stringify!($name), value as i64))}}}
 };
 }
@@ -50,6 +54,15 @@ impl ConsumableType {
             Self::TpCrystal => 0,
             Self::AltarLock => 2,
         }
+    }
+}
+// SAFETY: a fieldless `repr(u32)` enum has no padding.
+unsafe impl bytemuck::NoUninit for ConsumableType {}
+// SAFETY: accepts exactly the declared discriminants.
+unsafe impl bytemuck::CheckedBitPattern for ConsumableType {
+    type Bits = u32;
+    fn is_valid_bit_pattern(bits: &u32) -> bool {
+        *bits <= 1
     }
 }
 impl TryFrom<u32> for ConsumableType {
@@ -196,6 +209,9 @@ pub struct Vec2 {
     /// Vertical integer coordinate.
     pub y: i32,
 }
+// SAFETY: `repr(C)` with two `i32` fields: no padding, every bit pattern valid.
+unsafe impl bytemuck::Zeroable for Vec2 {}
+unsafe impl bytemuck::Pod for Vec2 {}
 impl Vec2 {
     /// Unit vectors for the 8 standard directions; north is +y.
     pub const NORTH: Self = Self::new(0, 1);
@@ -395,3 +411,8 @@ bitflags::bitflags! {
         const _ = !0;
     }
 }
+// SAFETY: `repr(transparent)` flag sets that retain unknown bits, so every bit pattern is valid.
+unsafe impl bytemuck::Zeroable for AbilityTargetMask {}
+unsafe impl bytemuck::Pod for AbilityTargetMask {}
+unsafe impl bytemuck::Zeroable for BuffRestrictions {}
+unsafe impl bytemuck::Pod for BuffRestrictions {}

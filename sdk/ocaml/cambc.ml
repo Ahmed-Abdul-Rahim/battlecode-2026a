@@ -158,6 +158,8 @@ module Sys = struct
   external bc_distancefield_print : Bytes.t -> int = "cambc_bc_DistanceField_Print_gc"
   external bc_distancefield_get : Bytes.t -> int -> int -> int -> int = "cambc_bc_DistanceField_Get_gc"
   external bc_distancefield_set : Bytes.t -> int -> int -> int -> int = "cambc_bc_DistanceField_Set_gc"
+  external bc_distancefield_copy : Bytes.t -> Bytes.t -> int = "cambc_bc_DistanceField_Copy_gc"
+  external bc_distancefield_copywithmask : Bytes.t -> Bytes.t -> Bytes.t -> int = "cambc_bc_DistanceField_CopyWithMask_gc"
   external bc_distancefield_computewithexpansioncount : Bytes.t array -> int -> int -> int = "cambc_bc_DistanceField_ComputeWithExpansionCount_gc"
   external bc_distancefield_computetowithexpansioncount : Bytes.t array -> int -> int -> int = "cambc_bc_DistanceField_ComputeToWithExpansionCount_gc"
 end
@@ -1303,7 +1305,7 @@ module Constants = struct
   let get () = Lazy.force cached
 
   module Passive_abilities = struct
-    let prism_focus_per_gem = 1.0
+    let prism_focus_per_gem = 1.5
     let varg_splash_radius = 1.0
     let vesper_vale_bonus_gold_percent = 33
     let marcella_tribute_gold_per_gem = 2
@@ -1554,6 +1556,11 @@ module Distance_field = struct
   let unreachable = 0xffff
   let create () = Bytes.make (Lazy.force layout).field_bytes '\000'
   let copy = Bytes.copy
+  let copy_from ?mask t source =
+    if t != source then
+      check (match mask with
+        | None -> Sys.bc_distancefield_copy source t
+        | Some mask -> Sys.bc_distancefield_copywithmask source mask t)
   let width _ = (Lazy.force layout).w
   let height _ = (Lazy.force layout).h
   let raw_buffer_size t = Bytes.length t

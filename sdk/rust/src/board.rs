@@ -543,6 +543,28 @@ const DIRECTIONS: [Vec2; 8] = [
 ];
 
 impl DistanceField {
+    /// Copy every distance from `source` into this field, reusing its storage.
+    ///
+    /// # Arguments
+    /// * `source` - Field to copy from.
+    pub fn copy_from(&mut self, source: &Self) -> Result<()> {
+        let destination = self.storage.as_mut_ptr().cast();
+        // SAFETY: new() reserves all chunks; the host initializes them on success.
+        check(unsafe { sys::DistanceField_Copy(source.ptr(), destination) })?;
+        unsafe { self.storage.set_len(self.chunks) };
+        Ok(())
+    }
+
+    /// Copy only mask-selected tiles, preserving every unselected destination value.
+    /// Mask padding is ignored; this field's existing storage is reused.
+    ///
+    /// # Arguments
+    /// * `source` - Field to copy from.
+    /// * `mask` - Tiles to copy.
+    pub fn copy_from_with_mask(&mut self, source: &Self, mask: &Bitboard) -> Result<()> {
+        check(unsafe { sys::DistanceField_CopyWithMask(source.ptr(), mask.ptr(), self.ptr_mut()) })
+    }
+
     /// Allocate aligned owning distance storage from the cached, validated layout.
     /// No global initialisation is required; compute or set values before use.
     pub fn new() -> Result<Self> {
