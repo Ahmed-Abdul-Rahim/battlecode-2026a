@@ -13081,7 +13081,8 @@
    "map": "elk-arena",
    "opp": "Turbo Pathfinders",
    "oppId": "05dcfad0-d27d-4452-beab-4b61c0d8179b",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 23,
    "time": "2026-10-22T13:20:18.859Z",
    "tries_at": 4
   },
@@ -13098,7 +13099,8 @@
    "map": "yellow-brick-road",
    "opp": "bob",
    "oppId": "92b742bb-333e-4677-9f63-adf894534dcb",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 23,
    "time": "2026-10-22T13:10:12.333Z",
    "tries_at": 1
   },
@@ -13115,7 +13117,8 @@
    "map": "lost-world",
    "opp": "bob",
    "oppId": "92b742bb-333e-4677-9f63-adf894534dcb",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 23,
    "time": "2026-10-22T13:10:12.332Z",
    "tries_at": 3
   },
@@ -13150,7 +13153,8 @@
    "map": "lanes",
    "opp": "ggez",
    "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 23,
    "time": "2026-10-22T13:30:20.700Z",
    "tries_at": 4
   },
@@ -13167,7 +13171,8 @@
    "map": "starfish",
    "opp": "ggez",
    "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 23,
    "time": "2026-10-22T13:30:20.700Z",
    "tries_at": 1
   },
@@ -13184,7 +13189,8 @@
    "map": "corners",
    "opp": "ggez",
    "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 23,
    "time": "2026-10-22T13:30:20.700Z",
    "tries_at": 4
   },
@@ -13200,7 +13206,8 @@
    "map": "hooks",
    "opp": "Campfire Codex",
    "oppId": "38c6d7ee-43e1-46dd-855e-09e0ffcc58db",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 23,
    "time": "2026-10-22T13:50:11.489Z",
    "tries_at": 2
   },
@@ -13217,7 +13224,8 @@
    "map": "corridors",
    "opp": "Campfire Codex",
    "oppId": "38c6d7ee-43e1-46dd-855e-09e0ffcc58db",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 23,
    "time": "2026-10-22T13:50:11.489Z",
    "tries_at": 1
   },
@@ -13233,7 +13241,8 @@
    "map": "rushbait-v2",
    "opp": "Campfire Codex",
    "oppId": "38c6d7ee-43e1-46dd-855e-09e0ffcc58db",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 23,
    "time": "2026-10-22T13:50:11.489Z",
    "tries_at": 4
   },
@@ -13250,7 +13259,8 @@
    "map": "fragment",
    "opp": "Campfire Codex",
    "oppId": "38c6d7ee-43e1-46dd-855e-09e0ffcc58db",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 23,
    "time": "2026-10-22T13:50:11.489Z",
    "tries_at": 10
   },
@@ -13267,7 +13277,8 @@
    "map": "lanes",
    "opp": "Campfire Codex",
    "oppId": "38c6d7ee-43e1-46dd-855e-09e0ffcc58db",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 23,
    "time": "2026-10-22T13:50:11.489Z",
    "tries_at": 4
   },
@@ -13284,7 +13295,8 @@
    "map": "broken-curve",
    "opp": "Bristol Bulls",
    "oppId": "16d93910-669e-428f-8163-94da73d48eca",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 23,
    "time": "2026-10-22T13:40:13.351Z",
    "tries_at": 4
   },
@@ -13301,7 +13313,8 @@
    "map": "corners",
    "opp": "Bristol Bulls",
    "oppId": "16d93910-669e-428f-8163-94da73d48eca",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 23,
    "time": "2026-10-22T13:40:13.350Z",
    "tries_at": 4
   },
@@ -13318,7 +13331,8 @@
    "map": "lost-world",
    "opp": "Bristol Bulls",
    "oppId": "16d93910-669e-428f-8163-94da73d48eca",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 23,
    "time": "2026-10-22T13:40:13.350Z",
    "tries_at": 3
   },
@@ -13334,7 +13348,8 @@
    "map": "collision",
    "opp": "tRust me bro",
    "oppId": "4fbe2b8b-0a69-4dd5-b3f0-d8787101d7bc",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 23,
    "time": "2026-10-22T14:00:12.312Z",
    "tries_at": 6
   },
@@ -13350,7 +13365,8 @@
    "map": "gemfight",
    "opp": "tRust me bro",
    "oppId": "4fbe2b8b-0a69-4dd5-b3f0-d8787101d7bc",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 23,
    "time": "2026-10-22T14:00:12.311Z",
    "tries_at": 4
   },
@@ -13367,7 +13383,8 @@
    "map": "rushbait-v2",
    "opp": "Worldwide Gem Thieves",
    "oppId": "f73c4710-c1c1-41c1-b59a-6165b02a1be9",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 23,
    "time": "2026-10-22T14:10:08.632Z",
    "tries_at": 4
   },
@@ -13384,7 +13401,8 @@
    "map": "split",
    "opp": "Worldwide Gem Thieves",
    "oppId": "f73c4710-c1c1-41c1-b59a-6165b02a1be9",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 23,
    "time": "2026-10-22T14:10:08.630Z",
    "tries_at": 4
   },
@@ -13401,7 +13419,8 @@
    "map": "lost-world",
    "opp": "Worldwide Gem Thieves",
    "oppId": "f73c4710-c1c1-41c1-b59a-6165b02a1be9",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 23,
    "time": "2026-10-22T14:10:08.630Z",
    "tries_at": 3
   },
@@ -13418,7 +13437,8 @@
    "map": "ambush",
    "opp": "Worldwide Gem Thieves",
    "oppId": "f73c4710-c1c1-41c1-b59a-6165b02a1be9",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 23,
    "time": "2026-10-22T14:10:08.630Z",
    "tries_at": 4
   }
@@ -13720,6 +13740,15 @@
    "reason": "ladder loss since the last upload",
    "time": "2026-10-22T13:25:24Z",
    "version": 22
+  },
+  {
+   "bot": "lg-v23",
+   "host": "DESKTOP-QVEMEEE",
+   "ok": true,
+   "output": "Uploading D:\\Code\\battlecode\\bots\\lg-v23 (160842 bytes)...\nSubmitted bot version 20. View submissions at https://2026a.battlecode.co.uk/game/submissions",
+   "reason": "fast upload: v22 won 8/25 ranked games (expected 0.62)",
+   "time": "2026-10-22T14:22:46Z",
+   "version": 23
   }
  ],
  "top": [
