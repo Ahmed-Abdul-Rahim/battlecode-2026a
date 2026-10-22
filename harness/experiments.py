@@ -203,8 +203,28 @@ def screen_passes(p: dict) -> bool:
     return p["pairs"] > 0 and p["mean"] >= -SCREEN_Z * p["se"]
 
 
-def full_passes(live: dict, var: dict, h2h: float) -> bool:
-    return var["win"] >= live["win"] and var["fitness"] >= live["fitness"] and h2h >= H2H_MIN
+def full_passes(live: dict, var: dict, h2h: float, sparring: dict | None = None) -> bool:
+    """Win and fitness at least the live bot's, head-to-head >= H2H_MIN, and (third test) not
+    worse beyond noise against the exploiters and our past versions."""
+    ok = var["win"] >= live["win"] and var["fitness"] >= live["fitness"] and h2h >= H2H_MIN
+    return ok and (sparring is None or sparring["pairs"] == 0 or screen_passes(sparring))
+
+
+def sparring_games(var: str, maps: dict, out: Path) -> list[runner.MatchResult]:
+    """Live and variant against each exploiter on its own map and the 2 newest past versions."""
+    res = []
+    for mp, bot in L.ensure_exploiters().items():
+        if mp in maps:
+            res += runner.run_pairs(
+                [p for b in ("main", var) for p in ((b, bot), (bot, b))],
+                [maps[mp]],
+                out / f"xpl-{mp}",
+                release=True,
+            )
+    past = L.past_versions(2)
+    if past:
+        res += L.play(["main", var], past, list(maps.values()), out / "past")
+    return res
 
 
 def clean_outputs() -> None:
@@ -252,8 +272,15 @@ def _evaluate(e: dict, reg: dict, push: bool) -> dict:
     live, mine = stats(res, "main"), stats(res, var)
     h2h_res = runner.run_matches(var, "main", maps=list(maps.values()), out_dir=out / "h2h", release=True)
     h2h = round(sum(r.score_for(var) for r in h2h_res) / max(len(h2h_res), 1), 3)
-    e["results"]["full"] = {"live": live, "variant": mine, "h2h": h2h, "h2h_games": len(h2h_res)}
-    e["status"] = "passed" if full_passes(live, mine, h2h) else "rejected"
+    spar = paired(sparring_games(var, maps, out / "sparring"), "main", var)
+    e["results"]["full"] = {
+        "live": live,
+        "variant": mine,
+        "h2h": h2h,
+        "h2h_games": len(h2h_res),
+        "sparring": spar,
+    }
+    e["status"] = "passed" if full_passes(live, mine, h2h, spar) else "rejected"
     return finish(e, reg, push)
 
 

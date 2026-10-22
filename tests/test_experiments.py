@@ -131,6 +131,15 @@ def test_release_requeues_only_this_pcs_unfinished_claims():
     assert b["status"] == "screening" and done["status"] == "rejected"
 
 
+def test_gate_third_test_on_sparring_partners():
+    live = {"win": 0.55, "fitness": 0.37}
+    var = {"win": 0.56, "fitness": 0.38}
+    assert X.full_passes(live, var, 0.5, None)
+    assert X.full_passes(live, var, 0.5, {"pairs": 0, "mean": 0.0, "se": 0.0})  # no partners yet
+    assert X.full_passes(live, var, 0.5, {"pairs": 80, "mean": -0.01, "se": 0.03})
+    assert not X.full_passes(live, var, 0.5, {"pairs": 80, "mean": -0.10, "se": 0.03})  # exploited
+
+
 def test_tex_escapes_backslashes_and_braces():
     reg = {"experiments": []}
     X.add(reg, "err", "x", knobs={"A": 1}, notes="error: ValueError('a\\tb {c}')")

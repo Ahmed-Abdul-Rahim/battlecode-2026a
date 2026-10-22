@@ -42,6 +42,7 @@ bots/*/target/
 bots/_*/
 bots/mimic-*/
 bots/lg-v*/
+bots/xpl-*/
 bots/main-v*/
 bots/co?-v*/
 bots/lin-*/

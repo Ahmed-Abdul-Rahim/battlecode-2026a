@@ -352,3 +352,18 @@ def test_disk_guard_waits_when_nothing_left_to_prune(tmp_path):
     waits = []
     league.ensure_space(free=free, sleep=lambda s: waits.append(s), scratch=tmp_path)
     assert waits and waits[0] == 600
+
+
+def test_exploiter_acceptance():
+    assert league.exploit_accepts(0.6, 0.5, None)  # first generation: just beat main
+    assert not league.exploit_accepts(0.5, 0.5, None)
+    assert league.exploit_accepts(0.6, 0.53, 0.5)
+    assert not league.exploit_accepts(0.6, 0.51, 0.5)  # not better than the current exploiter
+
+
+def test_past_versions_newest_first(tmp_path, monkeypatch):
+    for n in (1, 9, 10, 15, 3):
+        (tmp_path / "bots" / f"lg-v{n}").mkdir(parents=True)
+    (tmp_path / "bots" / "lg-vx").mkdir()
+    monkeypatch.setattr(league, "ROOT", tmp_path)
+    assert league.past_versions(3) == ["lg-v15", "lg-v10", "lg-v9"]

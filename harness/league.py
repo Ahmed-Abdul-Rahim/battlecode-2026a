@@ -75,6 +75,7 @@ LEDGER = LEAGUE / "ledger.json"
 REVIEW = LEAGUE / "review"
 MIMICS = ROOT / "data" / "mimic"
 EVOLVED = LEAGUE / "mimics"  # evolved mimics: per-team θ trained to beat our champion
+EXPLOITERS = LEAGUE / "exploiters"  # per-map θ trained only to beat our champion (bots/xpl-<map>)
 FINGERPRINTS = ROOT / "data" / "fingerprints.json"
 GEOMETRY = ROOT / "data" / "map_geometry.json"
 PACK = ROOT / "bots" / "main" / "src" / "pack" / "pack.bin"
@@ -122,8 +123,15 @@ HEARTBEAT = 1800  # push try counts at least this often, so the lead sees stuck 
 #: floor of this fraction of the top pressure, so no map is starved.
 PRESSURE_TAU = 24 * 3600
 PRESSURE_FLOOR = 0.1
-# Evolved mimics: every MIMIC_EVERY-th cycle trains an opponent instead of the champion.
+# Evolved mimics: every MIMIC_EVERY-th cycle trains an opponent instead of the champion
+# (every 2*MIMIC_EVERY-th while new maps still bootstrap, so they never stop entirely).
 MIMIC_EVERY = int(os.environ.get("LEAGUE_MIMIC_EVERY", "3"))
+MIMIC_ACCEPT = 0.02  # an evolved mimic generation must beat the current one by this much
+# Exploiters: every EXPLOIT_EVERY-th cycle (offset by one from mimic cycles) trains a bot whose only
+# goal is to beat main on one map; it then joins the opponents on that map and the experiment gate.
+EXPLOIT_EVERY = int(os.environ.get("LEAGUE_EXPLOIT_EVERY", "4"))
+EXPLOIT_WIN = 0.55  # an exploiter generation must beat main at least this often
+PAST_VERSIONS = 4  # newest bots/lg-vN snapshots (our uploaded versions) that join the anchors
 #: θ entries an evolved mimic may not change: the team's observed cadence (W recall_gold,
 #: tribute_min, tribute_max), so it keeps the real team's macro while its micro evolves.
 LOCKED = frozenset(params.W_NAMES.index(n) for n in ("recall_gold", "tribute_min", "tribute_max"))
@@ -437,6 +445,49 @@ def load_evolved(slug: str, base: str | None) -> dict:
     return mx
 
 
+def load_exploiter(mp: str) -> dict:
+    """league/exploiters/<map>.json: {map, theta (search space), gen, win, history}."""
+    return {
+        "map": mp,
+        "theta": None,
+        "gen": 0,
+        "win": 0.0,
+        "history": [],
+        **load_json(EXPLOITERS / f"{mp}.json", {}),
+    }
+
+
+def ensure_exploiters() -> dict[str, str]:
+    """Build bots/xpl-<map> for every map with an accepted exploiter: map -> bot name."""
+    out = {}
+    for p in sorted(EXPLOITERS.glob("*.json")) if EXPLOITERS.exists() else []:
+        ex = load_exploiter(p.stem)
+        if ex["gen"] < 1 or not ex["theta"]:
+            continue
+        name = f"xpl-{p.stem}"
+        key = json.dumps(ex["theta"]).encode()
+        build_stamped(name, key, lambda ex=ex, mp=p.stem: pack_bytes_for({mp: ex["theta"]}))
+        out[p.stem] = name
+    return out
+
+
+def past_versions(n: int = PAST_VERSIONS) -> list[str]:
+    """Our newest uploaded versions still on disk (bots/lg-vN, kept for reverts)."""
+    found = []
+    for p in (ROOT / "bots").glob("lg-v*"):
+        try:
+            found.append((int(p.name[4:]), p.name))
+        except ValueError:
+            continue
+    return [name for _, name in sorted(found, reverse=True)[:n]]
+
+
+def exploit_accepts(win: float, best_f: float, cur_f: float | None) -> bool:
+    """A new exploiter generation beats main often enough and, if one exists, beats the current
+    exploiter's fitness against main by MIMIC_ACCEPT."""
+    return win >= EXPLOIT_WIN and (cur_f is None or best_f >= cur_f + MIMIC_ACCEPT)
+
+
 def spec_theta(spec: dict, mp: str) -> list[float]:
     """The faithful mimic's θ on a map, in search space (spec θ is bot space, maybe shorter)."""
     th = ((spec.get("maps") or {}).get(mp) or {}).get("theta")
@@ -584,6 +635,10 @@ def resolve_conflicts(decide) -> bool:
             # In a rebase ':2' is upstream, ':3' is our commit being replayed.
             merged = merge_champion(show(":1", f), show(":2", f), show(":3", f), decide)
             save_json(CHAMPION, merged)
+        elif f.startswith("league/exploiters/"):
+            # Two PCs attacked the same map: keep the newer generation.
+            a, b = show(":2", f) or {}, show(":3", f) or {}
+            save_json(ROOT / f, a if a.get("gen", 0) >= b.get("gen", 0) else b)
         elif f.startswith("league/mimics/"):
             # Evolved mimic raced on the same map: keep ours (both are fine sparring partners).
             save_json(
@@ -1302,8 +1357,11 @@ def train(ch: dict, led: dict, local: dict, rng: random.Random, cyc: Path) -> di
     mpath = trainable_maps(led)[mp]
     faithful, evolved = ensure_mimics(led)
     mimics = faithful + evolved  # PFSP over both: the evolved ones keep pressure on static teams
-    anchors = [a for a in ANCHORS if (ROOT / "bots" / a).exists()]
-    opps = pfsp(local, mimics, N_OPPS, rng) + rng.sample(anchors, min(N_ANCHORS, len(anchors)))
+    anchors = [a for a in ANCHORS if (ROOT / "bots" / a).exists()] + past_versions()
+    opps = pfsp(local, mimics, N_OPPS, rng) + pfsp(local, anchors, N_ANCHORS, rng)
+    xpl = ensure_exploiters().get(mp)
+    if xpl:  # the bot trained to beat us on this map
+        opps.append(xpl)
     if not mimics:
         log("no mimics yet (the lead's first sync builds them): training against anchors only")
         opps = rng.sample(anchors, min(N_OPPS, len(anchors)))
@@ -1438,7 +1496,7 @@ def evolve_mimic(ch: dict, led: dict, local: dict, rng: random.Random, cyc: Path
         "best": round(best_f, 3),
         "gain": round(best_f - cur_f, 3),
     }
-    if best_f < cur_f + ACCEPT_GAIN:
+    if best_f < cur_f + MIMIC_ACCEPT:
         return entry
     h2h = runner.run_matches(best, cur, maps=[mpath], out_dir=cyc / "mimic-h2h", release=True)
     hw = sum(r.score_for(best) for r in h2h) / max(len(h2h), 1)
@@ -1460,6 +1518,49 @@ def evolve_mimic(ch: dict, led: dict, local: dict, rng: random.Random, cyc: Path
     mx.update(version=len(mx["history"]), base=team.get("macro_hash"), slug=slug)
     save_json(EVOLVED / f"{slug}.json", mx)
     entry["evolved"] = mx["version"]
+    return entry
+
+
+def exploit_step(ch: dict, led: dict, local: dict, rng: random.Random, cyc: Path) -> dict:
+    """Train a bot whose only goal is to beat main on one map: ES from main's θ (all of it free),
+    candidates played against main only. Accepted generations become bots/xpl-<map>, an opponent
+    in training on that map and in the experiment gate, so holes in our play get found and fixed."""
+    maps = trainable_maps(led)
+    if not maps:
+        return {"exploit": None, "skipped": "no maps"}
+    last = local.setdefault("xlast", {})
+    mp = min(sorted(maps), key=lambda m: last.get(m, -1))  # least recently attacked map
+    last[mp] = local["cycle"]
+    ex = load_exploiter(mp)
+    cur = ensure_exploiters().get(mp)
+    theta = full_theta(ex["theta"] or ch["maps"].get(mp))
+    s0 = params.sigma0()
+    sigma = list(local.setdefault("xsigma", {}).get(mp, s0))
+    cands = []
+    for k in range(LAMBDA // 2):
+        eps = [rng.gauss(0, 1) for _ in theta]
+        for sgn in (1, -1):
+            th = clip_search([t + sgn * s * e for t, s, e in zip(theta, sigma, eps, strict=False)])
+            name = f"_lg-x{k}{'p' if sgn > 0 else 'n'}"
+            cands.append((make_bot(name, pack_bytes_for({mp: th})), th))
+    res = play([b for b, _ in cands] + ([cur] if cur else []), ["main"], [maps[mp]], cyc / "exploit")
+    cur_f = fitness(res, cur)[0] if cur else None
+    scored = sorted(
+        ((fitness(res, b)[0], score(res, b, "main"), b, th) for b, th in cands), key=lambda x: -x[0]
+    )
+    best_f, win, _best, best_th = scored[0]
+    ref = cur_f if cur_f is not None else fitness(res, "main")[0]
+    local["xsigma"][mp] = [
+        min(max(s * (1.15 if best_f > ref else 0.85), 0.25 * z), 2.0 * z)
+        for s, z in zip(sigma, s0, strict=False)
+    ]
+    entry = {"exploit": mp, "best": round(best_f, 3), "win": round(win, 2), "cur": cur_f and round(cur_f, 3)}
+    if not exploit_accepts(win, best_f, cur_f):
+        return entry
+    ex.update(theta=[round(x, 5) for x in best_th], gen=ex["gen"] + 1, win=round(win, 3))
+    ex["history"].append({"gen": ex["gen"], "host": HOST, "time": now_iso(), "win": round(win, 3)})
+    save_json(EXPLOITERS / f"{mp}.json", ex)
+    entry["exploiter"] = ex["gen"]
     return entry
 
 
@@ -1560,7 +1661,16 @@ def cycle(a: argparse.Namespace, rng: random.Random) -> None:
     bootstrap = any(
         m not in trained_maps(ch) and tries_now(ch, local, m) < BOOTSTRAP_TRIES for m in trainable_maps(led)
     )
-    if MIMIC_EVERY and local["cycle"] % MIMIC_EVERY == 0 and led["pool"] and not bootstrap:
+    if EXPLOIT_EVERY and local["cycle"] % EXPLOIT_EVERY == 1:
+        entry = exploit_step(ch, led, local, rng, cyc)
+        log(f"cycle {local['cycle']} exploit ({round(time.time() - t0)}s): {json.dumps(entry)}")
+        if "exploiter" in entry and use_git:
+            msg = f"league: xpl-{entry['exploit']} g{entry['exploiter']} (beats main {entry['win']:.2f})"
+            publish([EXPLOITERS], msg, h2h_decider(cyc, ch["maps"]))
+        save_json(LOCAL, local)
+        return
+    every = MIMIC_EVERY * (2 if bootstrap else 1)  # bootstrap slows mimic evolution, never stops it
+    if every and local["cycle"] % every == 0 and led["pool"]:
         entry = evolve_mimic(ch, led, local, rng, cyc)
         log(f"cycle {local['cycle']} mimic ({round(time.time() - t0)}s): {json.dumps(entry)}")
         if "evolved" in entry and use_git:
