@@ -639,6 +639,15 @@
    "time": "2026-10-20T17:30:07.063Z",
    "win": false
   },
+  "1ff86ca3-a6d2-466c-9023-a24af5e98540": {
+   "kind": "unranked",
+   "live": 17,
+   "map": "contest",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-22T09:01:09.000Z",
+   "win": true
+  },
   "1ffe702f-6976-472f-9e91-8416744833af": {
    "kind": "ranked",
    "live": 15,
@@ -736,6 +745,15 @@
    "opp": "Seacaps",
    "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
    "time": "2026-10-22T04:20:14.332Z",
+   "win": false
+  },
+  "2456ee4a-4177-43a4-8969-286fe861e1cf": {
+   "kind": "unranked",
+   "live": 17,
+   "map": "corridors",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-22T08:56:57.669Z",
    "win": false
   },
   "24597701-33bc-4a4f-bf6e-5d9a9d0ddebc": {
@@ -2277,6 +2295,15 @@
    "time": "2026-10-22T05:10:13.284Z",
    "win": true
   },
+  "6ebf5dc9-d7c2-4d64-9eb9-ca57a90d9455": {
+   "kind": "unranked",
+   "live": 17,
+   "map": "concentrated-wealth",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-22T08:56:57.685Z",
+   "win": false
+  },
   "6edf30b8-41f6-46b1-931e-94b50827b06e": {
    "kind": "ranked",
    "live": 1,
@@ -2502,6 +2529,15 @@
    "time": "2026-10-20T22:20:11.555Z",
    "win": true
   },
+  "7a695ff0-6ea6-4a08-922c-9fb924d59301": {
+   "kind": "unranked",
+   "live": 17,
+   "map": "collision",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-22T09:01:09.039Z",
+   "win": false
+  },
   "7aa60547-bd36-48cd-abd9-bee76fa40d36": {
    "kind": "ranked",
    "live": 1,
@@ -2716,6 +2752,15 @@
    "opp": "Gilded Fog Walkers",
    "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
    "time": "2026-10-22T08:52:34.531Z",
+   "win": true
+  },
+  "86780620-e6a0-483b-93c6-06f1c6a767d4": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "islands",
+   "opp": "Pikachu",
+   "oppId": "dc24ee25-0f21-4353-8ebf-1ce5a82e22bb",
+   "time": "2026-10-22T09:00:17.841Z",
    "win": true
   },
   "86b6cc95-0eb3-45ba-954f-af8e95e42af3": {
@@ -2979,6 +3024,15 @@
    "time": "2026-10-21T14:10:17.167Z",
    "win": true
   },
+  "941cc6e4-e945-425b-b435-6a611c3cbb2f": {
+   "kind": "unranked",
+   "live": 17,
+   "map": "contest",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-22T08:56:57.627Z",
+   "win": true
+  },
   "94e9e58f-4c0f-4b1c-ab0a-ab7314473c3c": {
    "kind": "ranked",
    "live": 1,
@@ -3032,6 +3086,15 @@
    "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
    "time": "2026-10-22T07:06:57.869Z",
    "win": false
+  },
+  "9776bdff-5227-4e03-80f8-d8c3df627bf9": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "eight",
+   "opp": "Pikachu",
+   "oppId": "dc24ee25-0f21-4353-8ebf-1ce5a82e22bb",
+   "time": "2026-10-22T09:00:17.841Z",
+   "win": true
   },
   "98370cfa-e25f-40a6-8afc-ce928a452fe0": {
    "kind": "ranked",
@@ -3130,6 +3193,15 @@
    "opp": "Patient Gem Thieves",
    "oppId": "cfd44d0a-4d7b-42db-a1e6-e04ff397f391",
    "time": "2026-10-20T20:30:13.466Z",
+   "win": false
+  },
+  "9beacc5a-75cc-4e99-82c3-cd207218b566": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "broken-curve",
+   "opp": "Pikachu",
+   "oppId": "dc24ee25-0f21-4353-8ebf-1ce5a82e22bb",
+   "time": "2026-10-22T09:00:17.840Z",
    "win": false
   },
   "9c320b1c-a607-4a91-80db-fb2b36928b1e": {
@@ -3563,6 +3635,15 @@
    "oppId": "4f895cf2-77c0-4d65-91a6-320d46ecca54",
    "time": "2026-10-22T07:00:15.627Z",
    "win": false
+  },
+  "b0310ec6-b68e-4268-b49a-2c8097da4846": {
+   "kind": "unranked",
+   "live": 17,
+   "map": "collision",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-22T08:56:57.644Z",
+   "win": true
   },
   "b0c85ad7-b1cb-4c07-83a5-87645cd1a055": {
    "kind": "ranked",
@@ -4005,6 +4086,15 @@
    "time": "2026-10-20T16:00:07.665Z",
    "win": true
   },
+  "c3b21b1d-111c-448f-b038-f711d583af47": {
+   "kind": "unranked",
+   "live": 17,
+   "map": "islands",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-22T08:56:57.655Z",
+   "win": true
+  },
   "c5109b03-c737-4f8e-a144-34ecb5302422": {
    "kind": "ranked",
    "live": 17,
@@ -4392,6 +4482,15 @@
    "time": "2026-10-20T19:00:08.517Z",
    "win": true
   },
+  "d93ec963-5bf6-49ed-9c81-b74c047db443": {
+   "kind": "unranked",
+   "live": 17,
+   "map": "corridors",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-22T09:01:09.097Z",
+   "win": false
+  },
   "d9490e63-ec87-4ac6-8e3c-ef68450d0582": {
    "kind": "unranked",
    "live": 17,
@@ -4707,6 +4806,15 @@
    "time": "2026-10-20T18:10:10.515Z",
    "win": false
   },
+  "e4f03bed-01c6-4bec-89a6-99a46d0779e9": {
+   "kind": "unranked",
+   "live": 17,
+   "map": "islands",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-22T09:01:09.069Z",
+   "win": true
+  },
   "e5641c81-dc05-4150-8caa-64efc13e765e": {
    "kind": "unranked",
    "live": 1,
@@ -4733,6 +4841,15 @@
    "oppId": "0580c098-a7c9-46d7-b414-bf39c02c3dcc",
    "time": "2026-10-20T20:50:10.904Z",
    "win": true
+  },
+  "e5ef5f88-26f4-4c13-ac4d-35c02b59a0c6": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "hooks",
+   "opp": "Pikachu",
+   "oppId": "dc24ee25-0f21-4353-8ebf-1ce5a82e22bb",
+   "time": "2026-10-22T09:00:17.841Z",
+   "win": false
   },
   "e602660e-6c66-4c75-8ea3-21df7ad01d2a": {
    "kind": "ranked",
@@ -5085,6 +5202,15 @@
    "time": "2026-10-21T16:50:14.905Z",
    "win": false
   },
+  "f292480f-32e8-48c6-9fdb-745c1869bdd0": {
+   "kind": "unranked",
+   "live": 17,
+   "map": "concentrated-wealth",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-22T09:01:09.127Z",
+   "win": false
+  },
   "f3fa1011-999d-4ec5-b282-5cc020291c16": {
    "kind": "ranked",
    "live": null,
@@ -5219,6 +5345,15 @@
    "oppId": "1a73e547-36f0-42df-aba5-698de2d22685",
    "time": "2026-10-21T17:10:14.313Z",
    "win": false
+  },
+  "f9f9a652-a672-45e6-872e-3d31e7562215": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "gemfight",
+   "opp": "Pikachu",
+   "oppId": "dc24ee25-0f21-4353-8ebf-1ce5a82e22bb",
+   "time": "2026-10-22T09:00:17.841Z",
+   "win": true
   },
   "fac53974-8eb7-4760-b824-6ab79d29b193": {
    "kind": "ranked",
@@ -10440,6 +10575,125 @@
    "status": "open",
    "time": "2026-10-22T08:40:12.340Z",
    "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 24,
+    "Unknown entity kind (2)": 1
+   },
+   "deaths_them": 13,
+   "deaths_us": 25,
+   "gems_them": "725",
+   "gems_us": "627",
+   "id": "f292480f-32e8-48c6-9fdb-745c1869bdd0",
+   "map": "concentrated-wealth",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "status": "open",
+   "time": "2026-10-22T09:01:09.127Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 1,
+    "Unknown entity kind (2)": 47
+   },
+   "deaths_them": 5,
+   "deaths_us": 48,
+   "gems_them": "1052",
+   "gems_us": "508",
+   "id": "d93ec963-5bf6-49ed-9c81-b74c047db443",
+   "map": "corridors",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "status": "open",
+   "time": "2026-10-22T09:01:09.097Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 24,
+    "Unknown entity kind (2)": 2
+   },
+   "deaths_them": 15,
+   "deaths_us": 26,
+   "gems_them": "880",
+   "gems_us": "651",
+   "id": "7a695ff0-6ea6-4a08-922c-9fb924d59301",
+   "map": "collision",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "status": "open",
+   "time": "2026-10-22T09:01:09.039Z",
+   "tries_at": 6
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 26,
+    "Unknown entity kind (2)": 8
+   },
+   "deaths_them": 7,
+   "deaths_us": 34,
+   "gems_them": "946",
+   "gems_us": "110",
+   "id": "e5ef5f88-26f4-4c13-ac4d-35c02b59a0c6",
+   "map": "hooks",
+   "opp": "Pikachu",
+   "oppId": "dc24ee25-0f21-4353-8ebf-1ce5a82e22bb",
+   "status": "open",
+   "time": "2026-10-22T09:00:17.841Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 1,
+    "Unknown entity kind (2)": 4
+   },
+   "deaths_them": 18,
+   "deaths_us": 5,
+   "gems_them": "1003",
+   "gems_us": "734",
+   "id": "9beacc5a-75cc-4e99-82c3-cd207218b566",
+   "map": "broken-curve",
+   "opp": "Pikachu",
+   "oppId": "dc24ee25-0f21-4353-8ebf-1ce5a82e22bb",
+   "status": "open",
+   "time": "2026-10-22T09:00:17.840Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 21,
+    "Unknown entity kind (2)": 1
+   },
+   "deaths_them": 21,
+   "deaths_us": 22,
+   "gems_them": "946",
+   "gems_us": "472",
+   "id": "6ebf5dc9-d7c2-4d64-9eb9-ca57a90d9455",
+   "map": "concentrated-wealth",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "status": "open",
+   "time": "2026-10-22T08:56:57.685Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 1,
+    "Unknown entity kind (2)": 47
+   },
+   "deaths_them": 5,
+   "deaths_us": 48,
+   "gems_them": "1052",
+   "gems_us": "508",
+   "id": "2456ee4a-4177-43a4-8969-286fe861e1cf",
+   "map": "corridors",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "status": "open",
+   "time": "2026-10-22T08:56:57.669Z",
+   "tries_at": 1
   }
  ],
  "map_files": {
