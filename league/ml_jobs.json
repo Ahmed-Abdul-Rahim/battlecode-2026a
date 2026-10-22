@@ -1396,6 +1396,18 @@
     "error": "KeyError('y is not a file in the archive')"
    },
    "status": "failed"
+  },
+  {
+   "added": "2026-10-22T05:52:12Z",
+   "claimed": "2026-10-22T05:52:12Z",
+   "host": "DESKTOP-QVEMEEE",
+   "id": 57,
+   "kind": "rlinit",
+   "params": {
+    "arm": 2
+   },
+   "result": {},
+   "status": "running"
   }
  ]
 }
