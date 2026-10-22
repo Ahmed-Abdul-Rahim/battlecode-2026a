@@ -2895,16 +2895,39 @@
    "added": "2026-10-21T15:12:04Z",
    "area": "farming",
    "claimed": "2026-10-22T02:00:40Z",
+   "finished": "2026-10-22T02:07:44Z",
    "host": "muhammad-usman-Inspiron-14-5410-2-in-1",
    "id": 39,
-   "notes": "",
-   "results": {},
+   "notes": "Screen: win 0.495 vs 0.555, fitness 0.275 vs 0.39 (paired -0.115 +- 0.052).",
+   "results": {
+    "screen": {
+     "live": {
+      "deaths": 16.52,
+      "fitness": 0.39,
+      "games": 182,
+      "gem_margin": -0.0,
+      "win": 0.555
+     },
+     "paired": {
+      "mean": -0.1148,
+      "pairs": 182,
+      "se": 0.0523
+     },
+     "variant": {
+      "deaths": 21.23,
+      "fitness": 0.275,
+      "games": 182,
+      "gem_margin": -0.029,
+      "win": 0.495
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "VALUE_PROFILE": 1
     }
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "Camp value: gems + gold/10"
   },
   {
