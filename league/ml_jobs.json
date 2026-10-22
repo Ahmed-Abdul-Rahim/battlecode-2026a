@@ -6064,6 +6064,7 @@
   {
    "added": "2026-10-22T08:47:23Z",
    "claimed": "2026-10-22T08:47:23Z",
+   "finished": "2026-10-22T08:48:36Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 240,
    "kind": "rollout",
@@ -6072,8 +6073,19 @@
     "it": 20,
     "part": 0
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "arm": 2,
+    "decisions": 4852,
+    "games": 80,
+    "it": 20,
+    "maps": [
+     "ambush",
+     "big-world",
+     "boss-battle"
+    ],
+    "win": 0.688
+   },
+   "status": "done"
   }
  ]
 }
