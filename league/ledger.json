@@ -162,6 +162,15 @@
    "time": "2026-10-20T18:40:10.897Z",
    "win": false
   },
+  "0708f195-e9dc-4d7f-994b-1a4bd3f810cd": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "gemfight",
+   "opp": "I told chatgpt about her",
+   "oppId": "f55b4e8c-91d3-47d7-9539-88cabea848fc",
+   "time": "2026-10-22T07:30:19.642Z",
+   "win": true
+  },
   "077f8383-b95f-4834-b982-3305b6b04e85": {
    "kind": "ranked",
    "live": null,
@@ -179,6 +188,15 @@
    "oppId": "d88df6e3-53c7-44ed-874f-67f3caa0578c",
    "time": "2026-10-20T18:50:08.433Z",
    "win": false
+  },
+  "07f20067-ebe6-48d3-901b-88189ac2981b": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "quadrants",
+   "opp": "fa_kyuu",
+   "oppId": "605c150e-bd88-4cb3-b77a-8140a3915609",
+   "time": "2026-10-22T07:40:13.075Z",
+   "win": true
   },
   "08a34fe6-84bd-4b17-9214-be0619aa9503": {
    "kind": "unranked",
@@ -972,6 +990,15 @@
    "time": "2026-10-21T13:20:11.646Z",
    "win": false
   },
+  "310ecb19-d9de-4758-98db-d966c064bcaa": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "swirl",
+   "opp": "fa_kyuu",
+   "oppId": "605c150e-bd88-4cb3-b77a-8140a3915609",
+   "time": "2026-10-22T07:40:13.075Z",
+   "win": false
+  },
   "31140d2c-0f7f-431b-947e-b3a25bb67545": {
    "kind": "ranked",
    "live": null,
@@ -1069,6 +1096,15 @@
    "opp": "Stubborn Altar Keepers",
    "oppId": "625bb51a-8d9e-4035-a16e-ce4eea8eb739",
    "time": "2026-10-20T17:40:07.590Z",
+   "win": true
+  },
+  "3697a336-cfe0-4c5e-93e5-45e1d5da0e0b": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "concentrated-wealth",
+   "opp": "I told chatgpt about her",
+   "oppId": "f55b4e8c-91d3-47d7-9539-88cabea848fc",
+   "time": "2026-10-22T07:30:19.642Z",
    "win": true
   },
   "3699a292-8f4f-4b05-8f92-0f9c5b3d4e84": {
@@ -2277,6 +2313,15 @@
    "time": "2026-10-21T14:40:12.891Z",
    "win": false
   },
+  "7594dd35-67f3-488a-996d-f4234aa0e3b3": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "corners",
+   "opp": "fa_kyuu",
+   "oppId": "605c150e-bd88-4cb3-b77a-8140a3915609",
+   "time": "2026-10-22T07:40:13.075Z",
+   "win": true
+  },
   "75aa6331-ed82-4e09-8a38-b4aa13e8cdbd": {
    "kind": "ranked",
    "live": 1,
@@ -2421,6 +2466,15 @@
    "time": "2026-10-20T21:30:09.967Z",
    "win": false
   },
+  "7f61c645-d61f-4f80-a2bf-7ba6546c6af5": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "fracture",
+   "opp": "fa_kyuu",
+   "oppId": "605c150e-bd88-4cb3-b77a-8140a3915609",
+   "time": "2026-10-22T07:40:13.075Z",
+   "win": false
+  },
   "80ae5361-dfd6-4144-92ad-a71268b3588c": {
    "kind": "ranked",
    "live": 1,
@@ -2464,6 +2518,15 @@
    "opp": "Intercontinental Fish",
    "oppId": "1890540d-1ffc-4847-adbf-d0d08772f268",
    "time": "2026-10-20T17:51:26.756Z",
+   "win": false
+  },
+  "832d359a-c4ce-4889-9ed3-28e608be85c6": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "lost-world",
+   "opp": "I told chatgpt about her",
+   "oppId": "f55b4e8c-91d3-47d7-9539-88cabea848fc",
+   "time": "2026-10-22T07:30:19.642Z",
    "win": false
   },
   "8342e253-f3b3-432a-95b5-fc6730cd265f": {
@@ -3240,6 +3303,15 @@
    "time": "2026-10-20T16:30:26.059Z",
    "win": true
   },
+  "ae03ea7d-a87d-4f86-a46f-2e44969e7a42": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "rows",
+   "opp": "I told chatgpt about her",
+   "oppId": "f55b4e8c-91d3-47d7-9539-88cabea848fc",
+   "time": "2026-10-22T07:30:19.642Z",
+   "win": true
+  },
   "ae1c093f-5ec1-4e4a-b785-6bc2554f37d2": {
    "kind": "ranked",
    "live": null,
@@ -3706,6 +3778,15 @@
    "opp": "NameTBD",
    "oppId": "fc41f0e7-97a3-4ac1-ac0b-1019bc4f749b",
    "time": "2026-10-22T04:00:12.891Z",
+   "win": true
+  },
+  "c796ff15-58d1-4100-87ec-433fe3c60d65": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "reverse-spiral",
+   "opp": "I told chatgpt about her",
+   "oppId": "f55b4e8c-91d3-47d7-9539-88cabea848fc",
+   "time": "2026-10-22T07:30:19.642Z",
    "win": true
   },
   "c7980ae3-7bf1-494a-b04b-c33bf8ccff8e": {
@@ -4427,6 +4508,15 @@
    "oppId": "e89db5d4-c0a7-43eb-9d6d-23732bae07a5",
    "time": "2026-10-20T16:40:04.457Z",
    "win": true
+  },
+  "ead5414e-32d4-4b3b-9b12-50e4c71d14ed": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "starvation",
+   "opp": "fa_kyuu",
+   "oppId": "605c150e-bd88-4cb3-b77a-8140a3915609",
+   "time": "2026-10-22T07:40:13.075Z",
+   "win": false
   },
   "ebd29af3-1093-488f-8b33-f8215513f5fd": {
    "kind": "ranked",
@@ -9245,13 +9335,14 @@
    },
    "deaths_them": 0,
    "deaths_us": 18,
+   "fixed_in": 18,
    "gems_them": "1089",
    "gems_us": "309",
    "id": "9f4f9ff3-b56a-4687-b0f2-113f22dffb15",
    "map": "big-world",
    "opp": "prism best girl",
    "oppId": "38e6d8c4-1608-44f5-956b-08390f564336",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-22T06:56:06.308Z",
    "tries_at": 3
   },
@@ -9461,13 +9552,14 @@
    },
    "deaths_them": 21,
    "deaths_us": 35,
+   "fixed_in": 18,
    "gems_them": "1011",
    "gems_us": "417",
    "id": "e0c3dc20-0e12-4d27-b647-2936eafde58d",
    "map": "big-world",
    "opp": "Pawsibble",
    "oppId": "dcc95611-f947-4e73-ac58-7e3e62574bcf",
-   "status": "open",
+   "status": "fixed",
    "time": "2026-10-22T07:10:14.654Z",
    "tries_at": 3
   },
@@ -9487,6 +9579,74 @@
    "status": "open",
    "time": "2026-10-22T07:10:14.653Z",
    "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 24,
+    "Unknown entity kind (2)": 11
+   },
+   "deaths_them": 21,
+   "deaths_us": 35,
+   "gems_them": "1084",
+   "gems_us": "951",
+   "id": "310ecb19-d9de-4758-98db-d966c064bcaa",
+   "map": "swirl",
+   "opp": "fa_kyuu",
+   "oppId": "605c150e-bd88-4cb3-b77a-8140a3915609",
+   "status": "open",
+   "time": "2026-10-22T07:40:13.075Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 6,
+    "Unknown entity kind (2)": 15
+   },
+   "deaths_them": 5,
+   "deaths_us": 21,
+   "gems_them": "976",
+   "gems_us": "488",
+   "id": "7f61c645-d61f-4f80-a2bf-7ba6546c6af5",
+   "map": "fracture",
+   "opp": "fa_kyuu",
+   "oppId": "605c150e-bd88-4cb3-b77a-8140a3915609",
+   "status": "open",
+   "time": "2026-10-22T07:40:13.075Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 26,
+    "Unknown entity kind (2)": 1
+   },
+   "deaths_them": 10,
+   "deaths_us": 27,
+   "gems_them": "430",
+   "gems_us": "176",
+   "id": "ead5414e-32d4-4b3b-9b12-50e4c71d14ed",
+   "map": "starvation",
+   "opp": "fa_kyuu",
+   "oppId": "605c150e-bd88-4cb3-b77a-8140a3915609",
+   "status": "open",
+   "time": "2026-10-22T07:40:13.075Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 12,
+    "Unknown entity kind (2)": 3
+   },
+   "deaths_them": 23,
+   "deaths_us": 15,
+   "gems_them": "1019",
+   "gems_us": "229",
+   "id": "832d359a-c4ce-4889-9ed3-28e608be85c6",
+   "map": "lost-world",
+   "opp": "I told chatgpt about her",
+   "oppId": "f55b4e8c-91d3-47d7-9539-88cabea848fc",
+   "status": "open",
+   "time": "2026-10-22T07:30:19.642Z",
+   "tries_at": 0
   }
  ],
  "map_files": {
