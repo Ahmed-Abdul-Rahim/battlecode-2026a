@@ -4777,6 +4777,7 @@
   {
    "added": "2026-10-22T07:59:21Z",
    "claimed": "2026-10-22T07:59:21Z",
+   "finished": "2026-10-22T08:00:29Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 190,
    "kind": "rollout",
@@ -4785,8 +4786,19 @@
     "it": 28,
     "part": 1
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "arm": 1,
+    "decisions": 18216,
+    "games": 78,
+    "it": 28,
+    "maps": [
+     "elkring",
+     "expanse",
+     "fracture"
+    ],
+    "win": 0.154
+   },
+   "status": "done"
   }
  ]
 }
