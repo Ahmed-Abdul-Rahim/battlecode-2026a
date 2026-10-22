@@ -199,6 +199,92 @@ const PRECOMPUTE_REST_FUEL: u64 = 45_000;
 const TARGET_REST_FUEL: u64 = 55_000;
 /// Most turns in a row a target is kept unscored when fuel is short.
 const TARGET_KEEP_MAX: u8 = 8;
+/// Inputs per group and per decision (ml/targeting/features.py).
+const SWEEP_GROUP: usize = 39;
+const SWEEP_GLOBAL: usize = 16;
+/// knob2 TARGET_NET: fuel needed to start the network for a decision, and left after the
+/// formula's loop to re-rank its 3 best (otherwise the formula's choice stands).
+const TARGET_NET_MIN_FUEL: u64 = 50_000;
+const TARGET_NET_RANK_FUEL: u64 = 25_000;
+/// knob2 TARGET_NET: score bonus (normalised outcome units) for keeping the current target.
+const TARGET_NET_KEEP: f32 = 0.1;
+
+fn q8(v: f32) -> i8 {
+    (v.clamp(-1.0, 1.0) * 127.0).round() as i8
+}
+
+fn hex8(v: &[f32]) -> String {
+    v.iter().map(|&x| format!("{:02x}", q8(x) as u8)).collect()
+}
+
+/// knob2 TARGET_NET: which inputs the network reads (weights/target_inputs.bin: n_group u8,
+/// group indices, n_global u8, global indices).
+struct NetInputs {
+    group: Vec<usize>,
+    global: Vec<usize>,
+}
+
+/// The learned target scorer and its inputs, or None when absent or malformed.
+fn target_net() -> Option<(&'static Mlp, &'static NetInputs)> {
+    TARGET_NET.with(|cell| {
+        let net = cell.get_or_init(|| {
+            let b = TARGET_INPUTS;
+            let ng = usize::from(*b.first()?);
+            let group: Vec<usize> = b.get(1..1 + ng)?.iter().map(|&k| usize::from(k)).collect();
+            let nx = usize::from(*b.get(1 + ng)?);
+            let global: Vec<usize> =
+                b.get(2 + ng..2 + ng + nx)?.iter().map(|&k| usize::from(k)).collect();
+            let mlp = Mlp::parse_for_schema(TARGET_BLOB, TARGET_SCHEMA).ok()?;
+            let ok = mlp.input_len() == ng + nx
+                && mlp.output_len() == 1
+                && group.iter().all(|&k| k < SWEEP_GROUP)
+                && global.iter().all(|&k| k < SWEEP_GLOBAL);
+            ok.then(|| {
+                Box::leak(Box::new((mlp, NetInputs { group, global }))) as &'static (Mlp, NetInputs)
+            })
+        });
+        net.map(|n| (&n.0, &n.1))
+    })
+}
+
+/// Learned target scorer (ml/targeting/train.py); empty until one is trained.
+static TARGET_BLOB: &[u8] = include_bytes!("weights/target.bin");
+static TARGET_INPUTS: &[u8] = include_bytes!("weights/target_inputs.bin");
+const TARGET_SCHEMA: u16 = 0x7A61;
+
+/// Target data builds: rounds between a champion's `S` lines, hash seed, sighting age.
+const SWEEP_LOG_EVERY: u32 = 4;
+const SWEEP_SEED: u8 = 113;
+const SWEEP_SIGHTING_AGE: u32 = 20;
+
+/// Target data builds: the per-group values the scoring loop already has.
+#[derive(Clone, Copy)]
+struct SweepRaw {
+    state: GroupState,
+    dist: f32,
+    eta: f32,
+    clear: f32,
+    others: usize,
+    claimable: bool,
+    buddy: bool,
+    group_hp: f32,
+    value0: f32,
+    value: f32,
+    bias: f32,
+    score: f32,
+    /// infeasible, solo cap, early-ramp factor, strength factor.
+    flags: [f32; 4],
+    /// Fraction of the group's camps in sight.
+    seen: f32,
+}
+
+#[derive(Default)]
+struct SweepCtx {
+    sightings: Vec<Pos>,
+    live: Vec<f32>,
+    target_cluster: Option<usize>,
+}
+
 /// knob2 ROUTES: a respawning group counts as live when it is back within this many rounds.
 const ROUTE_UP_SOON: u32 = 15;
 /// knob2 ROUTES: rounds assumed per cluster visit (clear + capture) when ranking routes.
@@ -488,7 +574,9 @@ impl Bot {
             mark = self.charge(Stage::Brain, mark);
             // First turns: get the fields we need right now.
             let gov = &self.gov;
-            self.world.fields.precompute(&|cost| gov.turn_allows(cost + PRECOMPUTE_REST_FUEL, fuel()))?;
+            self.world
+                .fields
+                .precompute(&|cost| gov.turn_allows(cost + PRECOMPUTE_REST_FUEL, fuel()))?;
             mark = self.charge(Stage::Precompute, mark);
 
             let mut ctx = self.context(round, my_pos, hp, max_hp, &vis, &chan, state, me)?;
@@ -1865,14 +1953,22 @@ impl Bot {
             .enumerate()
             .filter(|&(s, _)| s != self.slot as usize)
             .filter_map(|(_, c)| *c)
-            .filter_map(|pi| self.theta.camp_priority.get(usize::from(pi)).map(|&(g, _)| usize::from(g)))
+            .filter_map(|pi| {
+                self.theta.camp_priority.get(usize::from(pi)).map(|&(g, _)| usize::from(g))
+            })
             .collect()
     }
 
     /// Per cluster: value of its groups that are up (or back within ROUTE_UP_SOON rounds), not
     /// claimed by an ally and reachable on foot (a ready field that reaches us; groups whose
     /// field isn't ready yet count, as in target scoring).
-    fn cluster_live(&self, r: &crate::pack::Routes, round: u32, claimed: &[usize], me: Pos) -> Vec<f32> {
+    fn cluster_live(
+        &self,
+        r: &crate::pack::Routes,
+        round: u32,
+        claimed: &[usize],
+        me: Pos,
+    ) -> Vec<f32> {
         let mut live = vec![0.0f32; r.clusters];
         for (i, g) in self.world.groups.iter().enumerate() {
             let down = self.belief.expected_state(i, round) == GroupState::Respawning
@@ -2093,6 +2189,45 @@ impl Bot {
         let mut f = String::new();
         let (mut t0, mut t1) = (0u64, 0u64);
         why!(t0 = fuel());
+        // Target data builds (knob2 TARGET_EXPLORE, ml/targeting): exploration among the 3 best,
+        // and every 4th round per champion an `S` line with every scored group's inputs.
+        let explore = self.theta.knob2(knob2::TARGET_EXPLORE);
+        let mut scored: Vec<(f32, usize)> = Vec::new();
+        let slog = explore > 0 && round % SWEEP_LOG_EVERY == u32::from(self.slot) % SWEEP_LOG_EVERY;
+        let mut srows: Vec<String> = Vec::new();
+        let mut sctx = SweepCtx::default();
+        cambc::debug_block! {
+            if slog {
+                sctx = self.sweep_ctx(round, chan, &[true; SWEEP_GROUP]);
+            }
+        }
+        // knob2 TARGET_NET: the learned per-group scorer (ml/targeting) replaces the formula.
+        // Never at the cost of the turn: below TARGET_NET_MIN_FUEL the formula decides alone.
+        let net = if self.theta.knob2(knob2::TARGET_NET) > 0 && fuel() > TARGET_NET_MIN_FUEL {
+            target_net()
+        } else {
+            None
+        };
+        // Inputs to compute: all when logging, else only the network's (some cost a scan).
+        let mut need = [slog; SWEEP_GROUP];
+        if let Some((_, sel)) = net {
+            for &k in &sel.group {
+                need[k] = true;
+            }
+        }
+        let mut cands: Vec<(f32, usize, SweepRaw)> = Vec::new();
+        let mut net_in: Vec<i8> = Vec::new();
+        // 1 = the network scores every group; 2 = it picks among the formula's 3 best (the
+        // choices its training data covered).
+        let net_mode = self.theta.knob2(knob2::TARGET_NET);
+        let mut reranked: Vec<(f32, f32, usize)> = Vec::new();
+        let mut net_global = [0.0f32; SWEEP_GLOBAL];
+        if net.is_some() {
+            if !slog {
+                sctx = self.sweep_ctx(round, chan, &need);
+            }
+            net_global = self.sweep_global_values(round, my_pos, chan);
+        }
         for (i, g) in self.world.groups.iter().enumerate() {
             if let (Some(c), Some(r)) = (only, routes) {
                 if r.cluster_of(i) != c {
@@ -2192,6 +2327,8 @@ impl Bot {
                 value += b;
                 why!(f.push_str(&format!("\"cluster\":{b:.1},")));
             }
+            let value0 = value;
+            let (mut f_inf, mut f_solo, mut f_ramp) = (0.0f32, 0.0f32, 1.0f32);
             why!(f.push_str(&format!("\"v0\":{value:.1},")));
             let pi = self.priority_index(i);
             let others = pi.map_or(0, |pi| chan.claimants(pi, slot));
@@ -2214,6 +2351,7 @@ impl Bot {
             // Stronger camps hurt: discount by expected damage taken.
             let k = 1.0 + g.max_strength / 100.0 * w_strength;
             value /= k;
+            let f_strength = 1.0 / k;
             why!(f.push_str(&format!("\"strength\":{:.2},", 1.0 / k)));
             // Can the champions on it clear it before the tank dies? Gear up on others first.
             if camp_feasible & 1 != 0 && state != GroupState::RewardAvailable {
@@ -2222,6 +2360,7 @@ impl Bot {
                 let kill = group_hp / (self.cur_dps.max(my_dps) * helpers as f32).max(1.0);
                 if kill > survive * CAMP_FEASIBLE_SLACK {
                     value *= CAMP_INFEASIBLE_VALUE;
+                    f_inf = 1.0;
                     why!(f.push_str(&format!("\"infeasible\":{CAMP_INFEASIBLE_VALUE},")));
                 }
             }
@@ -2237,6 +2376,7 @@ impl Bot {
                 let kill = group_hp / self.cur_dps.max(my_dps).max(1.0);
                 if kill * SOLO_GEARED_MARGIN > survive {
                     value *= CAMP_INFEASIBLE_VALUE;
+                    f_solo = 1.0;
                     why!(f.push_str(&format!("\"solo_cap\":{CAMP_INFEASIBLE_VALUE},")));
                 }
             }
@@ -2256,6 +2396,7 @@ impl Bot {
             if camp_feasible & 2 != 0 && early {
                 let k = 1.0 + (clear - EARLY_RAMP_KNEE).max(0.0) / EARLY_RAMP_KNEE;
                 value /= k;
+                f_ramp = 1.0 / k;
                 why!(f.push_str(&format!("\"early_ramp\":{:.2},", 1.0 / k)));
             }
             let mut score = value / (dist * dist_w + clear * w_clear + (eta - dist).max(0.0) + 5.0);
@@ -2269,8 +2410,110 @@ impl Bot {
                 "[{i},{{{f}\"v\":{value:.1},\"dist\":{dist:.0},\"clear\":{clear:.0},\"wait\":{:.0},\"bias\":{bias:.2},\"score\":{score:.3}}}]",
                 (eta - dist).max(0.0)
             )));
+            let raw = (slog || net.is_some()).then(|| SweepRaw {
+                state,
+                dist,
+                eta,
+                clear,
+                others,
+                claimable: pi.is_some(),
+                buddy: pi.is_some() && buddy_claim == pi,
+                group_hp,
+                value0,
+                value,
+                bias,
+                score,
+                flags: [f_inf, f_solo, f_ramp, f_strength],
+                seen: if need[18] {
+                    vis.camps.iter().filter(|c| c.group == Some(i)).count() as f32
+                        / g.tiles.len().max(1) as f32
+                } else {
+                    0.0
+                },
+            });
+            let mut score = score;
+            if net_mode >= 2 {
+                if let Some(raw) = raw {
+                    cands.push((score, i, raw));
+                }
+            } else if let (Some((mlp, sel)), Some(raw)) = (net, raw.as_ref()) {
+                net_in.clear();
+                net_in.extend(
+                    sel.group.iter().map(|&k| q8(self.sweep_value(k, i, g, raw, &sctx, my_pos))),
+                );
+                net_in.extend(sel.global.iter().map(|&k| q8(net_global[k])));
+                let mut out = [0i32; 1];
+                mlp.forward(&net_in, None, &mut out);
+                let shift = mlp.layers.last().map_or(0, |l| l.shift);
+                let mut learned = out[0] as f32 / (1u64 << shift) as f32;
+                if self.target == Some(i) {
+                    learned += TARGET_NET_KEEP;
+                }
+                score = learned;
+            }
+            if explore > 0 {
+                scored.push((score, i));
+            }
+            cambc::debug_block! {
+                if slog {
+                    if let Some(raw) = raw.as_ref().or(cands.last().map(|c| &c.2)) {
+                        let v = self.sweep_values(i, g, raw, &sctx, my_pos);
+                        srows.push(format!("[{i},\"{}\"]", hex8(&v)));
+                    }
+                }
+            }
             if best.is_none_or(|(b, _)| score > b) {
                 best = Some((score, i));
+            }
+        }
+        // TARGET_NET 2: the network only runs on the formula's 3 best.
+        let fuel_ok = fuel() > TARGET_NET_RANK_FUEL;
+        if let (Some((mlp, sel)), true) = (net, net_mode >= 2 && !cands.is_empty() && fuel_ok) {
+            // The 3 best by the formula: a scan, not a sort (cheap with ~30 entries).
+            let mut top: [Option<usize>; 3] = [None; 3];
+            for (k, c) in cands.iter().enumerate() {
+                for slot in 0..3 {
+                    if top[slot].is_none_or(|t| c.0 > cands[t].0) {
+                        for j in (slot + 1..3).rev() {
+                            top[j] = top[j - 1];
+                        }
+                        top[slot] = Some(k);
+                        break;
+                    }
+                }
+            }
+            for &k in top.iter().flatten() {
+                let (rule, i, raw) = (&cands[k].0, &cands[k].1, &cands[k].2);
+                let g = &self.world.groups[*i];
+                net_in.clear();
+                net_in.extend(
+                    sel.group.iter().map(|&k| q8(self.sweep_value(k, *i, g, raw, &sctx, my_pos))),
+                );
+                net_in.extend(sel.global.iter().map(|&k| q8(net_global[k])));
+                let mut out = [0i32; 1];
+                mlp.forward(&net_in, None, &mut out);
+                let shift = mlp.layers.last().map_or(0, |l| l.shift);
+                let mut learned = out[0] as f32 / (1u64 << shift) as f32;
+                if self.target == Some(*i) {
+                    learned += TARGET_NET_KEEP;
+                }
+                reranked.push((*rule, learned, *i));
+            }
+            if let Some(&(rule, _, i)) = reranked.iter().max_by(|a, b| a.1.total_cmp(&b.1)) {
+                best = Some((rule, i));
+            }
+        }
+        // Exploration (data builds): on `explore` percent of decisions one of the 3 best.
+        let mut explored = false;
+        if explore > 0 && scored.len() >= 2 {
+            let u = crate::bc_brain::rl::uniform(self.turns, self.slot, SWEEP_SEED, 6);
+            if u * 100.0 < f32::from(explore) {
+                scored.sort_by(|a, b| b.0.total_cmp(&a.0));
+                let n = scored.len().min(3);
+                let k = (crate::bc_brain::rl::uniform(self.turns, self.slot, SWEEP_SEED, 7)
+                    * n as f32) as usize;
+                best = Some(scored[k.min(n - 1)]);
+                explored = true;
             }
         }
         why!(t1 = fuel());
@@ -2292,7 +2535,138 @@ impl Bot {
             t1.saturating_sub(fuel()),
             rows.join(",")
         ));
+        cambc::debug_block! {
+            if slog && !srows.is_empty() {
+                println!(
+                    "S {{\"r\":{round},\"c\":\"{}\",\"x\":\"{}\",\"pick\":{},\"exp\":{},\"g\":[{}]}}",
+                    champ_name(self.kind),
+                    hex8(&self.sweep_global_values(round, my_pos, chan)),
+                    best.map_or(-1, |(_, i)| i as i64),
+                    u8::from(explored),
+                    srows.join(",")
+                );
+            }
+        }
         self.target = best.map(|(_, i)| i);
+    }
+
+    /// Target data builds: context shared by every group's `S` row (debug runs only).
+    fn sweep_ctx(&self, round: u32, chan: &TeamChannel, need: &[bool; SWEEP_GROUP]) -> SweepCtx {
+        let live = if need[29] {
+            let claimed = self.claimed_groups(chan);
+            self.routes
+                .map(|r| self.cluster_live(&r, round, &claimed, self.last_pos))
+                .unwrap_or_default()
+        } else {
+            Vec::new()
+        };
+        let sightings = if need[34] || need[35] {
+            self.belief.recent(round, SWEEP_SIGHTING_AGE).map(|s| s.pos).collect()
+        } else {
+            Vec::new()
+        };
+        SweepCtx {
+            sightings,
+            live,
+            target_cluster: self.target.zip(self.routes).map(|(t, r)| r.cluster_of(t)),
+        }
+    }
+
+    /// One group's inputs, scaled to about -1..1 (ml/targeting/features.py GROUP; keep the order).
+    fn sweep_values(
+        &self,
+        i: usize,
+        g: &crate::world::GroupStatic,
+        s: &SweepRaw,
+        c: &SweepCtx,
+        me: Pos,
+    ) -> [f32; SWEEP_GROUP] {
+        core::array::from_fn(|k| self.sweep_value(k, i, g, s, c, me))
+    }
+
+    /// Input `k` of one group (the network computes only the ones it reads; some scan lists).
+    #[allow(clippy::too_many_arguments)]
+    fn sweep_value(
+        &self,
+        k: usize,
+        i: usize,
+        g: &crate::world::GroupStatic,
+        s: &SweepRaw,
+        c: &SweepCtx,
+        me: Pos,
+    ) -> f32 {
+        let st = |x: GroupState| f32::from(u8::from(s.state == x));
+        let r = self.routes;
+        let cl = || r.map(|r| r.cluster_of(i));
+        let plan_pos =
+            || cl().and_then(|cl| self.route_plan.iter().position(|&p| usize::from(p) == cl));
+        match k {
+            0 => g.gems as f32 / 200.0,
+            1 => g.gold as f32 / 300.0,
+            2 => g.total_hp / 20000.0,
+            3 => g.max_strength / 200.0,
+            4 => g.total_strength / 400.0,
+            5 => g.tiles.len() as f32 / 16.0,
+            6 => f32::from(u8::from(g.has_monolith)),
+            7 => s.dist / 100.0,
+            8 => s.clear / 150.0,
+            9 => s.eta / 150.0,
+            10 => st(GroupState::Alive),
+            11 => st(GroupState::Unknown),
+            12 => st(GroupState::RewardAvailable),
+            13 => st(GroupState::Respawning),
+            14 => s.others as f32 / 3.0,
+            15 => f32::from(u8::from(s.claimable)),
+            16 => f32::from(u8::from(s.buddy)),
+            17 => s.group_hp / 20000.0,
+            18 => s.seen,
+            19 => s.value0 / 300.0,
+            20 => s.value / 300.0,
+            21 => s.bias.max(1e-6).ln() / 4.0,
+            22 => s.score / 2.0,
+            23..=26 => s.flags[k - 23],
+            27 => f32::from(u8::from(self.target == Some(i))),
+            28 => f32::from(u8::from(cl().is_some() && cl() == c.target_cluster)),
+            29 => cl().and_then(|cl| c.live.get(cl)).copied().unwrap_or(0.0) / 400.0,
+            30 => cl().zip(r).map_or(0.0, |(cl, r)| {
+                (0..r.groups).filter(|&j| r.cluster_of(j) == cl).count() as f32 / 8.0
+            }),
+            31 => cl().zip(r).map_or(1.0, |(cl, r)| r.home(cl) as f32 / 100.0),
+            32 => f32::from(u8::from(plan_pos().is_some())),
+            33 => plan_pos().map_or(1.0, |p| p as f32 / 4.0),
+            34 => {
+                c.sightings.iter().map(|p| p.cheb(g.center)).min().map_or(1.0, |d| d as f32 / 30.0)
+            }
+            35 => c.sightings.iter().filter(|p| p.cheb(g.center) <= 8).count() as f32 / 3.0,
+            36 => self.hotspots.iter().filter(|(p, _)| p.cheb(g.center) <= 3).map(|(_, w)| w).sum(),
+            37 => {
+                self.world.altars.iter().map(|a| a.cheb(g.center)).min().unwrap_or(99) as f32 / 50.0
+            }
+            38 => me.cheb(g.center) as f32 / 50.0,
+            _ => 0.0,
+        }
+    }
+
+    /// The decision's global inputs, scaled (ml/targeting/features.py GLOBAL; keep the order).
+    fn sweep_global_values(&self, round: u32, me: Pos, chan: &TeamChannel) -> [f32; SWEEP_GLOBAL] {
+        [
+            round as f32 / 2000.0,
+            self.last_hp / self.cur_max_hp.max(1.0),
+            self.cur_dps / 200.0,
+            self.cur_max_hp / 3000.0,
+            self.ledger.gold as f32 / 300.0,
+            self.ledger.gems as f32 / 100.0,
+            self.emblems() as f32 / 6.0,
+            self.team_size as f32 / 6.0,
+            self.ledger.ally_tributed as f32 / 1000.0,
+            self.ledger.enemy_tributed as f32 / 1000.0,
+            f32::from(u8::from(self.world.spawn_hint.cheb(me) <= 3)),
+            f32::from(self.slot) / 6.0,
+            self.kind as u8 as f32 / 13.0,
+            f32::from(u8::from(round <= PACK_OPENING_ROUNDS)),
+            self.world.groups.len() as f32 / 50.0,
+            f32::from(chan.aggression) / 255.0,
+        ]
     }
 
     /// Policy-pack opening: the next group of this champion's opening route while it is up,
@@ -2687,6 +3061,8 @@ const LEARNED_MIN_FUEL: u64 = 65_000;
 thread_local! {
     static LEARNED: std::cell::OnceCell<Option<Mlp>> = const { std::cell::OnceCell::new() };
     static MICRO: std::cell::OnceCell<Option<Mlp>> = const { std::cell::OnceCell::new() };
+    static TARGET_NET: std::cell::OnceCell<Option<&'static (Mlp, NetInputs)>> =
+        const { std::cell::OnceCell::new() };
 }
 
 /// An expert the situation allows (exploration and the learned router never pick nonsense).

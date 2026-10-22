@@ -115,8 +115,15 @@ pub mod knob2 {
     /// clusters and only score the groups of its current cluster. 1 = best route by live value
     /// per walking round; n > 1 = sample routes with temperature (n - 1) / 10.
     pub const ROUTES: usize = 26;
+    /// Target data builds (ml/targeting): on this percent of full target decisions pick at random
+    /// among the 3 best-scored groups, and (debug runs) log every group's inputs as `S` lines.
+    pub const TARGET_EXPLORE: usize = 27;
+    /// Score camp groups with the learned per-group network (weights/target.bin, ml/targeting):
+    /// 1 = instead of the hand formula, 2 = pick among the formula's 3 best (what the training
+    /// data covered); off (or no weights) = the formula.
+    pub const TARGET_NET: usize = 28;
 
-    pub const DEFAULTS: [(usize, u8); 27] = [
+    pub const DEFAULTS: [(usize, u8); 29] = [
         (PASSIVE_AWARE, 0),
         (FOCUS, 1),
         (ENDGAME, 1),
@@ -144,6 +151,8 @@ pub mod knob2 {
         (CLUSTER, 0),
         (KEEP_BUYING, 1),
         (ROUTES, 0),
+        (TARGET_EXPLORE, 0),
+        (TARGET_NET, 0),
     ];
 }
 
