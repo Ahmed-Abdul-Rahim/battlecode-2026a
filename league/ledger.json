@@ -3150,6 +3150,15 @@
    "time": "2026-10-20T21:50:14.541Z",
    "win": false
   },
+  "7c342c78-7490-4a7b-a088-00d7a606e86c": {
+   "kind": "ranked",
+   "live": 22,
+   "map": "expanse",
+   "opp": "tRust me bro",
+   "oppId": "4fbe2b8b-0a69-4dd5-b3f0-d8787101d7bc",
+   "time": "2026-10-22T14:00:12.311Z",
+   "win": true
+  },
   "7cb76357-8c00-461c-8e41-bef6791229c3": {
    "kind": "ranked",
    "live": null,
@@ -4077,6 +4086,15 @@
    "time": "2026-10-22T12:30:23.032Z",
    "win": false
   },
+  "9ff8b888-57d5-4b46-9c50-2fe75e6b5942": {
+   "kind": "ranked",
+   "live": 22,
+   "map": "packs",
+   "opp": "tRust me bro",
+   "oppId": "4fbe2b8b-0a69-4dd5-b3f0-d8787101d7bc",
+   "time": "2026-10-22T14:00:12.312Z",
+   "win": true
+  },
   "a01623d2-751c-432d-bf30-56c2e5c6159e": {
    "kind": "ranked",
    "live": 15,
@@ -4436,6 +4454,15 @@
    "oppId": "4f895cf2-77c0-4d65-91a6-320d46ecca54",
    "time": "2026-10-22T07:00:15.627Z",
    "win": false
+  },
+  "af27d311-4b42-49a1-8850-8927164f03ef": {
+   "kind": "ranked",
+   "live": 22,
+   "map": "split",
+   "opp": "tRust me bro",
+   "oppId": "4fbe2b8b-0a69-4dd5-b3f0-d8787101d7bc",
+   "time": "2026-10-22T14:00:12.313Z",
+   "win": true
   },
   "b021e54f-531a-49dd-b5a8-7dd71f6417bc": {
    "kind": "ranked",
@@ -5742,6 +5769,15 @@
    "time": "2026-10-20T16:10:05.811Z",
    "win": false
   },
+  "df27da68-ab0d-432e-b4d6-1693d7b00f57": {
+   "kind": "ranked",
+   "live": 22,
+   "map": "gemfight",
+   "opp": "tRust me bro",
+   "oppId": "4fbe2b8b-0a69-4dd5-b3f0-d8787101d7bc",
+   "time": "2026-10-22T14:00:12.311Z",
+   "win": false
+  },
   "df37b4b5-d78c-4006-bf63-313af8cba9fc": {
    "kind": "ranked",
    "live": 22,
@@ -6056,6 +6092,15 @@
    "oppId": "fd795986-cfd3-4732-9fa9-94caba40067a",
    "time": "2026-10-21T18:50:18.155Z",
    "win": true
+  },
+  "e9129765-5bec-48e6-a755-e2ed44d7c796": {
+   "kind": "ranked",
+   "live": 22,
+   "map": "collision",
+   "opp": "tRust me bro",
+   "oppId": "4fbe2b8b-0a69-4dd5-b3f0-d8787101d7bc",
+   "time": "2026-10-22T14:00:12.312Z",
+   "win": false
   },
   "e93c6319-750a-428a-894f-723faf5ccb4c": {
    "kind": "ranked",
@@ -13230,6 +13275,38 @@
    "status": "open",
    "time": "2026-10-22T13:40:13.350Z",
    "tries_at": 3
+  },
+  {
+   "contexts": {
+    "champion": 51
+   },
+   "deaths_them": 30,
+   "deaths_us": 51,
+   "gems_them": "988",
+   "gems_us": "233",
+   "id": "e9129765-5bec-48e6-a755-e2ed44d7c796",
+   "map": "collision",
+   "opp": "tRust me bro",
+   "oppId": "4fbe2b8b-0a69-4dd5-b3f0-d8787101d7bc",
+   "status": "open",
+   "time": "2026-10-22T14:00:12.312Z",
+   "tries_at": 6
+  },
+  {
+   "contexts": {
+    "champion": 42
+   },
+   "deaths_them": 16,
+   "deaths_us": 42,
+   "gems_them": "1000",
+   "gems_us": "480",
+   "id": "df27da68-ab0d-432e-b4d6-1693d7b00f57",
+   "map": "gemfight",
+   "opp": "tRust me bro",
+   "oppId": "4fbe2b8b-0a69-4dd5-b3f0-d8787101d7bc",
+   "status": "open",
+   "time": "2026-10-22T14:00:12.311Z",
+   "tries_at": 4
   }
  ],
  "map_files": {
