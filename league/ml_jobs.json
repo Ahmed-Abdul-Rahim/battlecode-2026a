@@ -7428,6 +7428,7 @@
   {
    "added": "2026-10-22T09:39:07Z",
    "claimed": "2026-10-22T09:39:07Z",
+   "finished": "2026-10-22T09:40:52Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 293,
    "kind": "rollout",
@@ -7436,8 +7437,19 @@
     "it": 51,
     "part": 1
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "arm": 1,
+    "decisions": 40593,
+    "games": 78,
+    "it": 51,
+    "maps": [
+     "road-of-riches",
+     "rows",
+     "rushbait-v2"
+    ],
+    "win": 0.038
+   },
+   "status": "done"
   }
  ]
 }
