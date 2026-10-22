@@ -7426,7 +7426,8 @@
    "map": "gold-rush",
    "opp": "The Onkeys",
    "oppId": "aa795cbd-97f0-489d-868b-2988d7b2e394",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 16,
    "time": "2026-10-21T18:20:17.186Z",
    "tries_at": 1
   },
@@ -7443,7 +7444,8 @@
    "map": "concentrated-wealth",
    "opp": "The Onkeys",
    "oppId": "aa795cbd-97f0-489d-868b-2988d7b2e394",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 16,
    "time": "2026-10-21T18:20:17.185Z",
    "tries_at": 3
   },
@@ -7460,7 +7462,8 @@
    "map": "corridors",
    "opp": "The Onkeys",
    "oppId": "aa795cbd-97f0-489d-868b-2988d7b2e394",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 16,
    "time": "2026-10-21T18:20:17.185Z",
    "tries_at": 1
   },
@@ -7477,7 +7480,8 @@
    "map": "the-farm",
    "opp": "V4.1 Flash",
    "oppId": "fd795986-cfd3-4732-9fa9-94caba40067a",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 16,
    "time": "2026-10-21T18:50:18.155Z",
    "tries_at": 4
   },
@@ -7494,7 +7498,8 @@
    "map": "fragment",
    "opp": "V4.1 Flash",
    "oppId": "fd795986-cfd3-4732-9fa9-94caba40067a",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 16,
    "time": "2026-10-21T18:50:18.155Z",
    "tries_at": 4
   }
@@ -7756,6 +7761,15 @@
    "reason": "ladder loss since the last upload",
    "time": "2026-10-21T18:27:52Z",
    "version": 15
+  },
+  {
+   "bot": "lg-v16",
+   "host": "DESKTOP-QVEMEEE",
+   "ok": true,
+   "output": "Uploading D:\\Code\\battlecode\\bots\\lg-v16 (150524 bytes)...\nSubmitted bot version 16. View submissions at https://2026a.battlecode.co.uk/game/submissions\nA newer version of cambc is available for windows-x64. Download: https://2026a.battlecode.co.uk/game/download\nIf installed with pip, run `python -m",
+   "reason": "ladder loss since the last upload",
+   "time": "2026-10-22T05:34:34Z",
+   "version": 16
   }
  ],
  "top": [
