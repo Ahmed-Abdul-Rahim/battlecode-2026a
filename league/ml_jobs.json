@@ -4928,6 +4928,19 @@
     "win": 0.423
    },
    "status": "done"
+  },
+  {
+   "added": "2026-10-22T08:04:31Z",
+   "claimed": "2026-10-22T08:04:31Z",
+   "host": "DESKTOP-QVEMEEE",
+   "id": 196,
+   "kind": "update",
+   "params": {
+    "arm": 1,
+    "it": 29
+   },
+   "result": {},
+   "status": "running"
   }
  ]
 }
