@@ -1,5 +1,14 @@
 {
  "ladder": {
+  "002610ca-dcc0-4e64-8290-ac316c9e6ea6": {
+   "kind": "unranked",
+   "live": 17,
+   "map": "yellow-brick-road",
+   "opp": "prism best girl",
+   "oppId": "38e6d8c4-1608-44f5-956b-08390f564336",
+   "time": "2026-10-22T06:56:06.323Z",
+   "win": false
+  },
   "00d6a4d3-a826-43b6-9b84-1b48cf2b3b46": {
    "kind": "ranked",
    "live": 1,
@@ -70,6 +79,15 @@
    "opp": "Mousa",
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
    "time": "2026-10-20T16:00:07.664Z",
+   "win": false
+  },
+  "04699660-cfa1-49ee-837e-7f86d9512e3e": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "broken-curve",
+   "opp": "BigHero6",
+   "oppId": "f06e2db0-f987-4960-93c8-26cf6969c216",
+   "time": "2026-10-22T06:50:20.044Z",
    "win": false
   },
   "04a9e326-cb30-4b4c-a790-db3ebfb064a6": {
@@ -160,6 +178,15 @@
    "opp": "ggez",
    "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
    "time": "2026-10-21T15:30:43.130Z",
+   "win": false
+  },
+  "08ee5d63-6b31-49fe-acaa-913de678538a": {
+   "kind": "unranked",
+   "live": 17,
+   "map": "road-of-riches",
+   "opp": "prism best girl",
+   "oppId": "38e6d8c4-1608-44f5-956b-08390f564336",
+   "time": "2026-10-22T06:56:06.300Z",
    "win": false
   },
   "09053907-d358-42a4-aed1-9675fc63dcdc": {
@@ -837,6 +864,15 @@
    "time": "2026-10-21T18:00:19.738Z",
    "win": false
   },
+  "2cab43e1-c864-421c-b722-c2be0e1d9d78": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "yellow-brick-road",
+   "opp": "BigHero6",
+   "oppId": "f06e2db0-f987-4960-93c8-26cf6969c216",
+   "time": "2026-10-22T06:50:20.044Z",
+   "win": false
+  },
   "2d2668f0-940b-4838-8a6b-f829100e6fee": {
    "kind": "ranked",
    "live": 1,
@@ -972,6 +1008,15 @@
    "time": "2026-10-21T18:10:15.060Z",
    "win": false
   },
+  "3510a110-fcd4-4f33-92ec-f9b1e63d48fa": {
+   "kind": "unranked",
+   "live": 17,
+   "map": "starfish",
+   "opp": "prism best girl",
+   "oppId": "38e6d8c4-1608-44f5-956b-08390f564336",
+   "time": "2026-10-22T06:56:06.315Z",
+   "win": false
+  },
   "35fc7014-ee3b-4d22-adb3-1595794d7499": {
    "kind": "ranked",
    "live": 1,
@@ -1061,6 +1106,15 @@
    "oppId": "d88df6e3-53c7-44ed-874f-67f3caa0578c",
    "time": "2026-10-20T18:50:08.433Z",
    "win": true
+  },
+  "3a15a8c2-b141-4a5e-9904-05c8de0e0125": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "pilgrimage",
+   "opp": "BigHero6",
+   "oppId": "f06e2db0-f987-4960-93c8-26cf6969c216",
+   "time": "2026-10-22T06:50:20.044Z",
+   "win": false
   },
   "3a320f21-2229-4517-906d-0464a173e2f9": {
    "kind": "ranked",
@@ -2403,6 +2457,15 @@
    "time": "2026-10-21T15:20:15.263Z",
    "win": false
   },
+  "85234394-39c4-42b3-8573-35bd4b90e2ea": {
+   "kind": "unranked",
+   "live": 17,
+   "map": "gold-rush",
+   "opp": "prism best girl",
+   "oppId": "38e6d8c4-1608-44f5-956b-08390f564336",
+   "time": "2026-10-22T06:56:06.329Z",
+   "win": false
+  },
   "86b6cc95-0eb3-45ba-954f-af8e95e42af3": {
    "kind": "ranked",
    "live": 1,
@@ -2834,6 +2897,15 @@
    "oppId": "5e0c725a-b9b4-4523-8739-4427f20b9ce5",
    "time": "2026-10-22T05:40:12.635Z",
    "win": true
+  },
+  "9f4f9ff3-b56a-4687-b0f2-113f22dffb15": {
+   "kind": "unranked",
+   "live": 17,
+   "map": "big-world",
+   "opp": "prism best girl",
+   "oppId": "38e6d8c4-1608-44f5-956b-08390f564336",
+   "time": "2026-10-22T06:56:06.308Z",
+   "win": false
   },
   "9f9f807a-4769-4651-86ed-7547e5e5b51e": {
    "kind": "ranked",
@@ -3490,6 +3562,15 @@
    "opp": "What Are We Doing",
    "oppId": "1a73e547-36f0-42df-aba5-698de2d22685",
    "time": "2026-10-21T17:10:14.313Z",
+   "win": true
+  },
+  "c720b8c6-ab06-4602-b9e8-284ff8881d9b": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "rushbait-v2",
+   "opp": "BigHero6",
+   "oppId": "f06e2db0-f987-4960-93c8-26cf6969c216",
+   "time": "2026-10-22T06:50:20.044Z",
    "win": true
   },
   "c7620b9f-30c7-43ec-902a-41a25e26d4af": {
@@ -4399,6 +4480,15 @@
    "opp": "Hidden Lock Pickers",
    "oppId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
    "time": "2026-10-20T20:00:10.344Z",
+   "win": false
+  },
+  "f560744f-04de-4c87-a515-dc3051ceb937": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "starvation",
+   "opp": "BigHero6",
+   "oppId": "f06e2db0-f987-4960-93c8-26cf6969c216",
+   "time": "2026-10-22T06:50:20.044Z",
    "win": false
   },
   "f5837cb3-68fa-414d-b459-6439bd37fcec": {
@@ -8917,6 +9007,154 @@
    "superseded_by": 17,
    "time": "2026-10-22T06:40:14.275Z",
    "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 13,
+    "Unknown entity kind (2)": 7
+   },
+   "deaths_them": 2,
+   "deaths_us": 20,
+   "gems_them": "1163",
+   "gems_us": "66",
+   "id": "85234394-39c4-42b3-8573-35bd4b90e2ea",
+   "map": "gold-rush",
+   "opp": "prism best girl",
+   "oppId": "38e6d8c4-1608-44f5-956b-08390f564336",
+   "status": "open",
+   "time": "2026-10-22T06:56:06.329Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 55,
+    "Unknown entity kind (2)": 3
+   },
+   "deaths_them": 7,
+   "deaths_us": 58,
+   "gems_them": "1020",
+   "gems_us": "135",
+   "id": "002610ca-dcc0-4e64-8290-ac316c9e6ea6",
+   "map": "yellow-brick-road",
+   "opp": "prism best girl",
+   "oppId": "38e6d8c4-1608-44f5-956b-08390f564336",
+   "status": "open",
+   "time": "2026-10-22T06:56:06.323Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 33,
+    "Unknown entity kind (2)": 16
+   },
+   "deaths_them": 3,
+   "deaths_us": 49,
+   "gems_them": "1055",
+   "gems_us": "32",
+   "id": "3510a110-fcd4-4f33-92ec-f9b1e63d48fa",
+   "map": "starfish",
+   "opp": "prism best girl",
+   "oppId": "38e6d8c4-1608-44f5-956b-08390f564336",
+   "status": "open",
+   "time": "2026-10-22T06:56:06.315Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (2)": 18
+   },
+   "deaths_them": 0,
+   "deaths_us": 18,
+   "gems_them": "1089",
+   "gems_us": "309",
+   "id": "9f4f9ff3-b56a-4687-b0f2-113f22dffb15",
+   "map": "big-world",
+   "opp": "prism best girl",
+   "oppId": "38e6d8c4-1608-44f5-956b-08390f564336",
+   "status": "open",
+   "time": "2026-10-22T06:56:06.308Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {},
+   "deaths_them": 0,
+   "deaths_us": 0,
+   "gems_them": "1078",
+   "gems_us": "0",
+   "id": "08ee5d63-6b31-49fe-acaa-913de678538a",
+   "map": "road-of-riches",
+   "opp": "prism best girl",
+   "oppId": "38e6d8c4-1608-44f5-956b-08390f564336",
+   "status": "open",
+   "time": "2026-10-22T06:56:06.300Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 4,
+    "Unknown entity kind (2)": 13
+   },
+   "deaths_them": 2,
+   "deaths_us": 17,
+   "gems_them": "1010",
+   "gems_us": "856",
+   "id": "04699660-cfa1-49ee-837e-7f86d9512e3e",
+   "map": "broken-curve",
+   "opp": "BigHero6",
+   "oppId": "f06e2db0-f987-4960-93c8-26cf6969c216",
+   "status": "open",
+   "time": "2026-10-22T06:50:20.044Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 39,
+    "Unknown entity kind (2)": 12
+   },
+   "deaths_them": 33,
+   "deaths_us": 51,
+   "gems_them": "625",
+   "gems_us": "414",
+   "id": "3a15a8c2-b141-4a5e-9904-05c8de0e0125",
+   "map": "pilgrimage",
+   "opp": "BigHero6",
+   "oppId": "f06e2db0-f987-4960-93c8-26cf6969c216",
+   "status": "open",
+   "time": "2026-10-22T06:50:20.044Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 40
+   },
+   "deaths_them": 15,
+   "deaths_us": 40,
+   "gems_them": "1022",
+   "gems_us": "176",
+   "id": "f560744f-04de-4c87-a515-dc3051ceb937",
+   "map": "starvation",
+   "opp": "BigHero6",
+   "oppId": "f06e2db0-f987-4960-93c8-26cf6969c216",
+   "status": "open",
+   "time": "2026-10-22T06:50:20.044Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 32,
+    "Unknown entity kind (2)": 5
+   },
+   "deaths_them": 7,
+   "deaths_us": 37,
+   "gems_them": "1017",
+   "gems_us": "60",
+   "id": "2cab43e1-c864-421c-b722-c2be0e1d9d78",
+   "map": "yellow-brick-road",
+   "opp": "BigHero6",
+   "oppId": "f06e2db0-f987-4960-93c8-26cf6969c216",
+   "status": "open",
+   "time": "2026-10-22T06:50:20.044Z",
+   "tries_at": 1
   }
  ],
  "map_files": {
