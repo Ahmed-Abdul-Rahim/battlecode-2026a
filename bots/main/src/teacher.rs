@@ -12,7 +12,7 @@
 //! - cast (2): no / yes at the attack target (only with a manual step).
 
 use super::Bot;
-use crate::act::{occupied_tiles, Outcome, Visible};
+use crate::act::{occupied_tiles, Visible};
 use crate::bc_brain::nn::{self, Net};
 use crate::bc_brain::rl;
 use crate::bc_brain::{Context, Intent};
@@ -73,6 +73,7 @@ pub struct Obs {
     pub steps: [Pos; 9],
     pub masks: [u32; 4],
     pub rule_goal: usize,
+    #[allow(dead_code)]
     pub fight_near: bool,
 }
 
@@ -407,29 +408,10 @@ impl Bot {
         })
     }
 
-    /// The rules' choice as labels, from the rules' intent and what the executor did.
-    pub(super) fn teacher_labels(obs: &Obs, my_pos: Pos, out: &Outcome, new_pos: Pos) -> Choice {
-        // Manual steps only when the rules were fighting a champion: other intents (farming next
-        // to an enemy, say) need the executor's camp attacks, which the micro heads can't name.
-        let fighting = (G_ENGAGE..=G_KITE).contains(&obs.rule_goal);
-        let step = if !obs.fight_near || !fighting {
-            0
-        } else if out.moved {
-            obs.steps.iter().position(|&s| s == new_pos).map_or(1, |i| i as i32 + 1)
-        } else {
-            1
-        };
-        let _ = my_pos;
-        let (attack, cast) = if step == 0 {
-            (-1, -1)
-        } else {
-            let slot = out
-                .attacked_at
-                .and_then(|p| obs.enemies.iter().position(|&e| e == Some(p)))
-                .map_or(0, |k| k as i32 + 1);
-            (slot, i32::from(out.cast))
-        };
-        Choice { a: [obs.rule_goal as i32, step, attack, cast], logp: 0.0 }
+    /// The rules' choice as labels: their goal, executed by the executor (step "auto").
+    /// Copying their fight moves through the manual heads loses (nn/train.py STEP_SMOOTH).
+    pub(super) fn teacher_labels(obs: &Obs) -> Choice {
+        Choice { a: [obs.rule_goal as i32, 0, -1, -1], logp: 0.0 }
     }
 
     /// Print the `N` line (debug runs only).

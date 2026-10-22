@@ -927,6 +927,12 @@ impl Bot {
                 // 3 = diagnostic: the rules' own goal through the teacher's control path.
                 let pick = if teach == 3 {
                     Some(teacher::Choice { a: [o.rule_goal as i32, 0, -1, -1], logp: 0.0 })
+                } else if teach == 4 {
+                    // 4 = diagnostic: the network's goal, the executor's own moves.
+                    self.teacher_pick(o, &self.nn_hist).map(|mut c| {
+                        c.a = [c.a[0], 0, -1, -1];
+                        c
+                    })
                 } else {
                     self.teacher_pick(o, &self.nn_hist)
                 };
@@ -1022,8 +1028,7 @@ impl Bot {
                 self.last_pos = pos(me.position()?);
             }
             if let Some(o) = &nn_obs {
-                let new_pos = if exec_out.moved { self.last_pos } else { my_pos };
-                let c = nn_choice.unwrap_or_else(|| Self::teacher_labels(o, my_pos, &exec_out, new_pos));
+                let c = nn_choice.unwrap_or_else(|| Self::teacher_labels(o));
                 self.teacher_log(round, o, &c, teach);
                 self.nn_hist.push(&o.s);
             }

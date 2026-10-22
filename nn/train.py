@@ -113,8 +113,16 @@ def save(out: Path, pol, val, meta: dict) -> None:
     model.export_bcn1(pol, out / "teacher.bin")
 
 
+#: Imitation: the rules' fights go through the executor (step "auto"); copying their moves
+#: through the manual heads lost ~120 gems a game (2026-10-23). Manual control stays available
+#: with a little probability (label smoothing) so PPO tries it and keeps it where it wins.
+STEP_SMOOTH = 0.1
+
+
 def bc(a) -> dict:
     d = data.load([Path(p) for p in a.data])
+    d["A"][:, 1] = 0
+    d["A"][:, 2:] = -1
     pol, val, meta = load_nets(Path(a.init) if a.init else None, a.arch, a.width)
     traj = d["TRAJ"]
     held = (traj % 10) == 0  # every 10th champion-game held out
@@ -127,8 +135,14 @@ def bc(a) -> dict:
     for ep in range(a.epochs):
         pol.train()
         for idx in tr[torch.randperm(len(tr), device=DEV)].split(a.batch):
-            lp, _, _ = model.head_logp(pol(b.x(idx)), b.M[idx], b.A[idx])
-            loss = -lp.mean()
+            lp, _, lsms = model.head_logp(pol(b.x(idx)), b.M[idx], b.A[idx])
+            allowed = ((b.M[idx, 1:2] >> torch.arange(spec.HEADS[1], device=DEV)) & 1).bool()
+            manual = allowed.clone()
+            manual[:, 0] = False
+            n_manual = manual.sum(1)
+            smooth = (lsms[1] * manual).sum(1) / n_manual.clamp(min=1)
+            has = (n_manual > 0).float()
+            loss = -lp.mean() - STEP_SMOOTH * (has * (smooth - lsms[1][:, 0])).mean()
             opt.zero_grad()
             loss.backward()
             torch.nn.utils.clip_grad_norm_(pol.parameters(), 1.0)
