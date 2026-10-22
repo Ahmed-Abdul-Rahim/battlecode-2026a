@@ -1818,6 +1818,15 @@
    "time": "2026-10-22T04:50:12.345Z",
    "win": true
   },
+  "6aedc011-c98e-4ed4-8fb1-5810952f3f2c": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "corners",
+   "opp": "Sneaky Bush Campers",
+   "oppId": "5e0c725a-b9b4-4523-8739-4427f20b9ce5",
+   "time": "2026-10-22T05:40:12.635Z",
+   "win": false
+  },
   "6b5c0a35-2105-4819-9c75-fc9da686bb7f": {
    "kind": "ranked",
    "live": 1,
@@ -2547,6 +2556,15 @@
    "time": "2026-10-21T13:50:14.700Z",
    "win": true
   },
+  "9ad90878-9616-4991-beb0-c0b8c6c211c7": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "fracture",
+   "opp": "Sneaky Bush Campers",
+   "oppId": "5e0c725a-b9b4-4523-8739-4427f20b9ce5",
+   "time": "2026-10-22T05:40:12.635Z",
+   "win": false
+  },
   "9b13c5fa-8744-4070-b1b5-e8ec9312f973": {
    "kind": "ranked",
    "live": 1,
@@ -2554,6 +2572,15 @@
    "opp": "Argon enjoyers",
    "oppId": "5d6858ca-2352-4585-af55-3d79b614f824",
    "time": "2026-10-20T18:20:10.477Z",
+   "win": true
+  },
+  "9b746a24-fce9-4899-bb9e-dcfd0d28778e": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "rows",
+   "opp": "Sneaky Bush Campers",
+   "oppId": "5e0c725a-b9b4-4523-8739-4427f20b9ce5",
+   "time": "2026-10-22T05:40:12.635Z",
    "win": true
   },
   "9be91c94-03cc-4b83-bf45-96047e119f8d": {
@@ -2636,6 +2663,15 @@
    "oppId": "2aa08e1e-f986-4c2a-a15f-e10b10f159ba",
    "time": "2026-10-20T21:20:10.858Z",
    "win": false
+  },
+  "9e707e6f-b168-4925-bdc5-5514f23e6506": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "concentrated-wealth",
+   "opp": "Sneaky Bush Campers",
+   "oppId": "5e0c725a-b9b4-4523-8739-4427f20b9ce5",
+   "time": "2026-10-22T05:40:12.635Z",
+   "win": true
   },
   "9f9f807a-4769-4651-86ed-7547e5e5b51e": {
    "kind": "ranked",
@@ -3644,6 +3680,15 @@
    "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
    "time": "2026-10-22T04:20:14.332Z",
    "win": false
+  },
+  "dd84f55b-cc39-448b-91a6-6ebb0a7530ca": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "quadrants",
+   "opp": "Sneaky Bush Campers",
+   "oppId": "5e0c725a-b9b4-4523-8739-4427f20b9ce5",
+   "time": "2026-10-22T05:40:12.635Z",
+   "win": true
   },
   "ddc4e992-d884-45ea-a59e-07739bc3be96": {
    "kind": "ranked",
@@ -8210,6 +8255,40 @@
    "status": "open",
    "time": "2026-10-22T04:00:12.891Z",
    "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 22,
+    "Unknown entity kind (2)": 5
+   },
+   "deaths_them": 7,
+   "deaths_us": 27,
+   "gems_them": "1003",
+   "gems_us": "588",
+   "id": "6aedc011-c98e-4ed4-8fb1-5810952f3f2c",
+   "map": "corners",
+   "opp": "Sneaky Bush Campers",
+   "oppId": "5e0c725a-b9b4-4523-8739-4427f20b9ce5",
+   "status": "open",
+   "time": "2026-10-22T05:40:12.635Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 1,
+    "Unknown entity kind (2)": 27
+   },
+   "deaths_them": 16,
+   "deaths_us": 28,
+   "gems_them": "1012",
+   "gems_us": "640",
+   "id": "9ad90878-9616-4991-beb0-c0b8c6c211c7",
+   "map": "fracture",
+   "opp": "Sneaky Bush Campers",
+   "oppId": "5e0c725a-b9b4-4523-8739-4427f20b9ce5",
+   "status": "open",
+   "time": "2026-10-22T05:40:12.635Z",
+   "tries_at": 4
   }
  ],
  "map_files": {
