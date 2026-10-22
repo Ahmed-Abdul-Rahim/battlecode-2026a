@@ -2990,6 +2990,8 @@
   {
    "added": "2026-10-21T17:23:47Z",
    "area": "learning",
+   "claimed": "2026-10-22T02:50:57Z",
+   "host": "muhammad-usman-Inspiron-14-5410-2-in-1",
    "id": 50,
    "notes": "Offline RL on 12 shards; train agreement 0.813.",
    "results": {},
@@ -3001,7 +3003,7 @@
      "ROUTER": 1
     }
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Learned router #14 (1868234 rows, AWR)"
   }
  ]
