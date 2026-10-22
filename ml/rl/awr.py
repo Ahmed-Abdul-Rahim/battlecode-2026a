@@ -19,6 +19,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import zipfile
 from collections import defaultdict
 from pathlib import Path
 
@@ -104,9 +105,18 @@ def save_rows(data: dict[str, np.ndarray], path: Path) -> int:
     return len(data["y"])
 
 
+def read_shard(p: Path, keys: tuple[str, ...]) -> dict[str, np.ndarray] | None:
+    """A shard's arrays, or None if it is unreadable or incomplete (e.g. written on a full disk)."""
+    try:
+        d = np.load(p)
+        return {k: d[k] for k in keys}
+    except (OSError, KeyError, ValueError, zipfile.BadZipFile, EOFError):
+        return None
+
+
 def load_shards(paths: list[Path]) -> dict[str, np.ndarray]:
-    parts = [np.load(p) for p in paths]
-    parts = [d for d in parts if len(d["y"])]
+    parts = [read_shard(p, ("X", "y", "R")) for p in paths]
+    parts = [d for d in parts if d is not None and len(d["y"])]
     if not parts:
         return {"X": np.zeros((0, 0), np.int8), "y": np.zeros(0, int), "R": np.zeros(0)}
     return {k: np.concatenate([d[k] for d in parts]) for k in ("X", "y", "R")}

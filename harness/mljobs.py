@@ -385,7 +385,8 @@ def run_update(j: dict, reg: dict, push: bool) -> dict:
     spec = ppo.ARMS[arm]
     store = store_ready()
     shards = sorted((store / "rl" / f"arm{arm}").glob(f"it{it:04d}-p*.npz"))
-    data = reward.concat([dict(np.load(s)) for s in shards])
+    keys = ("X", "A", "LP", "M", "R", "DONE", "TRAJ")
+    data = reward.concat([d for d in (awr.read_shard(s, keys) for s in shards) if d])
     if not data:
         return {"arm": arm, "it": it, "skipped": "no decisions logged"}
     policy = ppo.load(rl_path(arm, f"policy-{it:04d}.npz"))

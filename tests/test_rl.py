@@ -137,3 +137,14 @@ def test_thinning_keeps_total_reward(tmp_path):
     thin = reward.game_samples(bundle, stats, "a", 1, 1.0, 0.0, every=4)
     assert len(full["R"]) == 8 and len(thin["R"]) == 3  # decisions 0, 4 and the last
     assert abs(full["R"].sum() - thin["R"].sum()) < 1e-4
+
+
+def test_broken_shards_are_skipped(tmp_path):
+    from ml.rl import awr
+
+    good = tmp_path / "a.npz"
+    np.savez_compressed(good, X=np.zeros((3, 109), np.int8), y=np.zeros(3, int), R=np.zeros(3))
+    (tmp_path / "b.npz").write_bytes(b"PK truncated")
+    np.savez_compressed(tmp_path / "c.npz", X=np.zeros((2, 109), np.int8))  # no y / R
+    d = awr.load_shards(sorted(tmp_path.glob("*.npz")))
+    assert len(d["y"]) == 3
