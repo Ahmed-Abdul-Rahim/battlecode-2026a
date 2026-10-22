@@ -4413,6 +4413,20 @@
     "win": 0.115
    },
    "status": "done"
+  },
+  {
+   "added": "2026-10-22T07:46:15Z",
+   "claimed": "2026-10-22T07:46:15Z",
+   "host": "DESKTOP-QVEMEEE",
+   "id": 176,
+   "kind": "rollout",
+   "params": {
+    "arm": 1,
+    "it": 25,
+    "part": 1
+   },
+   "result": {},
+   "status": "running"
   }
  ]
 }
