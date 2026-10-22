@@ -360,6 +360,15 @@
    "time": "2026-10-21T17:30:26.108Z",
    "win": false
   },
+  "0cdf0541-61d2-414b-b4a4-c199947f3f82": {
+   "kind": "ranked",
+   "live": 22,
+   "map": "hooks",
+   "opp": "Campfire Codex",
+   "oppId": "38c6d7ee-43e1-46dd-855e-09e0ffcc58db",
+   "time": "2026-10-22T13:50:11.489Z",
+   "win": false
+  },
   "0dd47975-429a-4559-a358-537b0afe2da1": {
    "kind": "ranked",
    "live": 1,
@@ -403,6 +412,15 @@
    "opp": "knownasjason",
    "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
    "time": "2026-10-21T15:40:12.911Z",
+   "win": false
+  },
+  "101af71d-44ed-48a1-95c3-6bfe912480fc": {
+   "kind": "ranked",
+   "live": 22,
+   "map": "lanes",
+   "opp": "Campfire Codex",
+   "oppId": "38c6d7ee-43e1-46dd-855e-09e0ffcc58db",
+   "time": "2026-10-22T13:50:11.489Z",
    "win": false
   },
   "108f9ca9-6661-410b-9085-35aa14688ca1": {
@@ -484,6 +502,15 @@
    "opp": "knownasjason",
    "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
    "time": "2026-10-20T15:00:17.844Z",
+   "win": false
+  },
+  "122d8058-2fff-4e02-8e3a-58d5d7f0355f": {
+   "kind": "ranked",
+   "live": 22,
+   "map": "fragment",
+   "opp": "Campfire Codex",
+   "oppId": "38c6d7ee-43e1-46dd-855e-09e0ffcc58db",
+   "time": "2026-10-22T13:50:11.489Z",
    "win": false
   },
   "12471f60-e6aa-4c5e-9cef-ec4c1c915fd7": {
@@ -1827,6 +1854,15 @@
    "time": "2026-10-20T16:10:05.812Z",
    "win": true
   },
+  "4ada218e-c3d4-46c0-8b89-0ee03dcd7f0a": {
+   "kind": "ranked",
+   "live": 22,
+   "map": "lost-world",
+   "opp": "Bristol Bulls",
+   "oppId": "16d93910-669e-428f-8163-94da73d48eca",
+   "time": "2026-10-22T13:40:13.350Z",
+   "win": false
+  },
   "4adde4ad-bad9-4536-acc0-e4da3207a7fd": {
    "kind": "ranked",
    "live": 1,
@@ -2060,6 +2096,15 @@
    "oppId": "d48d65ef-625c-4966-b2cc-a7b1b02fafec",
    "time": "2026-10-21T15:10:10.876Z",
    "win": false
+  },
+  "549be792-5cff-4971-990d-68734f3d707f": {
+   "kind": "ranked",
+   "live": 22,
+   "map": "reverse-spiral",
+   "opp": "Bristol Bulls",
+   "oppId": "16d93910-669e-428f-8163-94da73d48eca",
+   "time": "2026-10-22T13:40:13.351Z",
+   "win": true
   },
   "54ab9b5a-5a8b-4e2a-805d-68915e5fb32c": {
    "kind": "ranked",
@@ -2779,6 +2824,15 @@
    "opp": "jazz",
    "oppId": "96b0be30-6a0e-45b3-8d4b-cd2a910d6bf8",
    "time": "2026-10-21T17:00:20.987Z",
+   "win": false
+  },
+  "6e59017c-31be-4762-9776-23224dfbab95": {
+   "kind": "ranked",
+   "live": 22,
+   "map": "corners",
+   "opp": "Bristol Bulls",
+   "oppId": "16d93910-669e-428f-8163-94da73d48eca",
+   "time": "2026-10-22T13:40:13.350Z",
    "win": false
   },
   "6e7ac568-395b-41c7-bfe7-4fb31e2a26cd": {
@@ -4095,6 +4149,15 @@
    "time": "2026-10-21T14:50:14.151Z",
    "win": true
   },
+  "a2b6ae88-5ceb-453f-85ef-1f8f4166c6e5": {
+   "kind": "ranked",
+   "live": 22,
+   "map": "rushbait-v2",
+   "opp": "Campfire Codex",
+   "oppId": "38c6d7ee-43e1-46dd-855e-09e0ffcc58db",
+   "time": "2026-10-22T13:50:11.489Z",
+   "win": false
+  },
   "a2f2998c-ebd1-4cc4-b42e-0e95476991dc": {
    "kind": "ranked",
    "live": 1,
@@ -4490,6 +4553,15 @@
    "oppId": "625bb51a-8d9e-4035-a16e-ce4eea8eb739",
    "time": "2026-10-20T19:00:08.517Z",
    "win": true
+  },
+  "b4f07aeb-2db8-46c0-872f-508a0a5cdf43": {
+   "kind": "ranked",
+   "live": 22,
+   "map": "broken-curve",
+   "opp": "Bristol Bulls",
+   "oppId": "16d93910-669e-428f-8163-94da73d48eca",
+   "time": "2026-10-22T13:40:13.351Z",
+   "win": false
   },
   "b506c246-2cc5-48c7-ba33-fdad66437855": {
    "kind": "ranked",
@@ -5076,6 +5148,15 @@
    "time": "2026-10-20T17:40:07.589Z",
    "win": true
   },
+  "c9d93c4d-b94e-405e-9475-9c1aeecbcd45": {
+   "kind": "ranked",
+   "live": 22,
+   "map": "concentrated-wealth",
+   "opp": "Bristol Bulls",
+   "oppId": "16d93910-669e-428f-8163-94da73d48eca",
+   "time": "2026-10-22T13:40:13.351Z",
+   "win": true
+  },
   "c9e3da89-b930-4ce9-8682-468924707653": {
    "kind": "ranked",
    "live": 1,
@@ -5273,6 +5354,15 @@
    "oppId": "d5e1fbdf-184c-4e9c-9ccc-e13c53841b14",
    "time": "2026-10-21T13:40:14.980Z",
    "win": true
+  },
+  "d379d1e7-f195-4bf9-8aee-c57d5b5cda68": {
+   "kind": "ranked",
+   "live": 22,
+   "map": "corridors",
+   "opp": "Campfire Codex",
+   "oppId": "38c6d7ee-43e1-46dd-855e-09e0ffcc58db",
+   "time": "2026-10-22T13:50:11.489Z",
+   "win": false
   },
   "d3a57db5-a4f7-40b0-afa6-f35c3bccda05": {
    "kind": "ranked",
@@ -13006,6 +13096,140 @@
    "status": "open",
    "time": "2026-10-22T13:30:20.700Z",
    "tries_at": 4
+  },
+  {
+   "contexts": {
+    "champion": 45
+   },
+   "deaths_them": 23,
+   "deaths_us": 45,
+   "gems_them": "1012",
+   "gems_us": "264",
+   "id": "0cdf0541-61d2-414b-b4a4-c199947f3f82",
+   "map": "hooks",
+   "opp": "Campfire Codex",
+   "oppId": "38c6d7ee-43e1-46dd-855e-09e0ffcc58db",
+   "status": "open",
+   "time": "2026-10-22T13:50:11.489Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "camp": 58,
+    "champion": 4
+   },
+   "deaths_them": 24,
+   "deaths_us": 62,
+   "gems_them": "788",
+   "gems_us": "522",
+   "id": "d379d1e7-f195-4bf9-8aee-c57d5b5cda68",
+   "map": "corridors",
+   "opp": "Campfire Codex",
+   "oppId": "38c6d7ee-43e1-46dd-855e-09e0ffcc58db",
+   "status": "open",
+   "time": "2026-10-22T13:50:11.489Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "champion": 14
+   },
+   "deaths_them": 10,
+   "deaths_us": 14,
+   "gems_them": "1008",
+   "gems_us": "720",
+   "id": "a2b6ae88-5ceb-453f-85ef-1f8f4166c6e5",
+   "map": "rushbait-v2",
+   "opp": "Campfire Codex",
+   "oppId": "38c6d7ee-43e1-46dd-855e-09e0ffcc58db",
+   "status": "open",
+   "time": "2026-10-22T13:50:11.489Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 3,
+    "champion": 55
+   },
+   "deaths_them": 9,
+   "deaths_us": 58,
+   "gems_them": "1004",
+   "gems_us": "130",
+   "id": "122d8058-2fff-4e02-8e3a-58d5d7f0355f",
+   "map": "fragment",
+   "opp": "Campfire Codex",
+   "oppId": "38c6d7ee-43e1-46dd-855e-09e0ffcc58db",
+   "status": "open",
+   "time": "2026-10-22T13:50:11.489Z",
+   "tries_at": 10
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 21
+   },
+   "deaths_them": 23,
+   "deaths_us": 23,
+   "gems_them": "1004",
+   "gems_us": "742",
+   "id": "101af71d-44ed-48a1-95c3-6bfe912480fc",
+   "map": "lanes",
+   "opp": "Campfire Codex",
+   "oppId": "38c6d7ee-43e1-46dd-855e-09e0ffcc58db",
+   "status": "open",
+   "time": "2026-10-22T13:50:11.489Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 5
+   },
+   "deaths_them": 4,
+   "deaths_us": 7,
+   "gems_them": "1002",
+   "gems_us": "487",
+   "id": "b4f07aeb-2db8-46c0-872f-508a0a5cdf43",
+   "map": "broken-curve",
+   "opp": "Bristol Bulls",
+   "oppId": "16d93910-669e-428f-8163-94da73d48eca",
+   "status": "open",
+   "time": "2026-10-22T13:40:13.351Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 13,
+    "champion": 1
+   },
+   "deaths_them": 4,
+   "deaths_us": 14,
+   "gems_them": "1019",
+   "gems_us": "580",
+   "id": "6e59017c-31be-4762-9776-23224dfbab95",
+   "map": "corners",
+   "opp": "Bristol Bulls",
+   "oppId": "16d93910-669e-428f-8163-94da73d48eca",
+   "status": "open",
+   "time": "2026-10-22T13:40:13.350Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 5,
+    "champion": 29
+   },
+   "deaths_them": 9,
+   "deaths_us": 34,
+   "gems_them": "1008",
+   "gems_us": "21",
+   "id": "4ada218e-c3d4-46c0-8b89-0ee03dcd7f0a",
+   "map": "lost-world",
+   "opp": "Bristol Bulls",
+   "oppId": "16d93910-669e-428f-8163-94da73d48eca",
+   "status": "open",
+   "time": "2026-10-22T13:40:13.350Z",
+   "tries_at": 3
   }
  ],
  "map_files": {
