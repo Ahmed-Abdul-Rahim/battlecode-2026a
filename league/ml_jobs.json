@@ -6296,6 +6296,7 @@
   {
    "added": "2026-10-22T08:55:22Z",
    "claimed": "2026-10-22T08:55:22Z",
+   "finished": "2026-10-22T08:56:59Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 249,
    "kind": "rollout",
@@ -6304,8 +6305,19 @@
     "it": 21,
     "part": 0
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "arm": 2,
+    "decisions": 7016,
+    "games": 80,
+    "it": 21,
+    "maps": [
+     "contest",
+     "corners",
+     "corridors"
+    ],
+    "win": 0.425
+   },
+   "status": "done"
   }
  ]
 }
