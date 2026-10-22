@@ -4958,6 +4958,7 @@
   {
    "added": "2026-10-22T08:04:55Z",
    "claimed": "2026-10-22T08:04:55Z",
+   "finished": "2026-10-22T08:06:40Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 197,
    "kind": "rollout",
@@ -4966,8 +4967,19 @@
     "it": 30,
     "part": 0
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "arm": 1,
+    "decisions": 14059,
+    "games": 78,
+    "it": 30,
+    "maps": [
+     "interlock",
+     "islands",
+     "lanes"
+    ],
+    "win": 0.397
+   },
+   "status": "done"
   }
  ]
 }
