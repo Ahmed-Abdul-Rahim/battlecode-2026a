@@ -216,6 +216,15 @@
    "time": "2026-10-20T15:50:11.039Z",
    "win": false
   },
+  "0b11e144-1721-4247-bcfe-9baef089a27c": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "fragment",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "time": "2026-10-22T06:30:13.246Z",
+   "win": false
+  },
   "0b379936-fce4-4dd9-a829-1df244af3975": {
    "kind": "ranked",
    "live": 1,
@@ -1530,6 +1539,15 @@
    "time": "2026-10-21T18:10:15.060Z",
    "win": false
   },
+  "5636bed5-9fc7-4472-8d23-1f012a198de4": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "quadrants",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "time": "2026-10-22T06:30:13.246Z",
+   "win": false
+  },
   "56467df2-ee7a-4b36-87ac-3223083b8280": {
    "kind": "ranked",
    "live": 1,
@@ -1637,6 +1655,15 @@
    "oppId": "96b0be30-6a0e-45b3-8d4b-cd2a910d6bf8",
    "time": "2026-10-21T17:00:20.987Z",
    "win": true
+  },
+  "5b3b1cd8-0c30-41a7-a3ba-f28f461fca82": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "pilgrimage",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "time": "2026-10-22T06:30:13.247Z",
+   "win": false
   },
   "5c372318-2a1f-4bf5-939c-4e7409133894": {
    "kind": "ranked",
@@ -3780,6 +3807,15 @@
    "time": "2026-10-20T16:10:05.812Z",
    "win": true
   },
+  "dc3dee59-ed37-40d1-b9e7-9478b68ce43f": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "split",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "time": "2026-10-22T06:30:13.246Z",
+   "win": false
+  },
   "dc5260af-1d8f-48c7-896b-38b0b26de15d": {
    "kind": "ranked",
    "live": null,
@@ -4336,6 +4372,15 @@
    "opp": "The Onkeys",
    "oppId": "aa795cbd-97f0-489d-868b-2988d7b2e394",
    "time": "2026-10-21T18:20:17.185Z",
+   "win": false
+  },
+  "f742d729-30f9-4fda-b6ed-685ec506eb0b": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "shortcut",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "time": "2026-10-22T06:30:13.247Z",
    "win": false
   },
   "f7939e70-0621-4114-9f46-dcc8b4319d27": {
@@ -8632,6 +8677,91 @@
    "oppId": "fa2b8732-ebdd-4618-8d5d-47be4a1c1ed5",
    "status": "open",
    "time": "2026-10-22T06:10:11.799Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 43,
+    "Unknown entity kind (2)": 10
+   },
+   "deaths_them": 40,
+   "deaths_us": 53,
+   "gems_them": "614",
+   "gems_us": "248",
+   "id": "5b3b1cd8-0c30-41a7-a3ba-f28f461fca82",
+   "map": "pilgrimage",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "status": "open",
+   "time": "2026-10-22T06:30:13.247Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 14,
+    "Unknown entity kind (2)": 24
+   },
+   "deaths_them": 20,
+   "deaths_us": 38,
+   "gems_them": "1064",
+   "gems_us": "611",
+   "id": "f742d729-30f9-4fda-b6ed-685ec506eb0b",
+   "map": "shortcut",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "status": "open",
+   "time": "2026-10-22T06:30:13.247Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 65,
+    "Unknown entity kind (2)": 3
+   },
+   "deaths_them": 25,
+   "deaths_us": 68,
+   "gems_them": "934",
+   "gems_us": "126",
+   "id": "0b11e144-1721-4247-bcfe-9baef089a27c",
+   "map": "fragment",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "status": "open",
+   "time": "2026-10-22T06:30:13.246Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 16,
+    "Unknown entity kind (2)": 9
+   },
+   "deaths_them": 12,
+   "deaths_us": 25,
+   "gems_them": "1013",
+   "gems_us": "946",
+   "id": "5636bed5-9fc7-4472-8d23-1f012a198de4",
+   "map": "quadrants",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "status": "open",
+   "time": "2026-10-22T06:30:13.246Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 18,
+    "Unknown entity kind (2)": 19
+   },
+   "deaths_them": 31,
+   "deaths_us": 37,
+   "gems_them": "1007",
+   "gems_us": "648",
+   "id": "dc3dee59-ed37-40d1-b9e7-9478b68ce43f",
+   "map": "split",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "status": "open",
+   "time": "2026-10-22T06:30:13.246Z",
    "tries_at": 3
   }
  ],
