@@ -8096,6 +8096,7 @@
   {
    "added": "2026-10-22T10:00:28Z",
    "claimed": "2026-10-22T10:00:28Z",
+   "finished": "2026-10-22T10:01:18Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 319,
    "kind": "rollout",
@@ -8104,8 +8105,19 @@
     "it": 57,
     "part": 0
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "arm": 1,
+    "decisions": 4375,
+    "games": 78,
+    "it": 57,
+    "maps": [
+     "lanes",
+     "lost-world",
+     "monolith"
+    ],
+    "win": 0.41
+   },
+   "status": "done"
   }
  ]
 }
