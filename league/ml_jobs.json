@@ -6707,6 +6707,7 @@
   {
    "added": "2026-10-22T09:13:20Z",
    "claimed": "2026-10-22T09:13:20Z",
+   "finished": "2026-10-22T09:14:33Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 265,
    "kind": "rollout",
@@ -6715,8 +6716,19 @@
     "it": 45,
     "part": 0
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "arm": 1,
+    "decisions": 39132,
+    "games": 78,
+    "it": 45,
+    "maps": [
+     "rows",
+     "rushbait-v2",
+     "shortcut"
+    ],
+    "win": 0.154
+   },
+   "status": "done"
   }
  ]
 }
