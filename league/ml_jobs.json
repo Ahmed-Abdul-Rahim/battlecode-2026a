@@ -7300,6 +7300,7 @@
   {
    "added": "2026-10-22T09:35:41Z",
    "claimed": "2026-10-22T09:35:41Z",
+   "finished": "2026-10-22T09:36:35Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 288,
    "kind": "rollout",
@@ -7308,8 +7309,19 @@
     "it": 25,
     "part": 1
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "arm": 2,
+    "decisions": 8455,
+    "games": 78,
+    "it": 25,
+    "maps": [
+     "split",
+     "stampede",
+     "starfish"
+    ],
+    "win": 0.577
+   },
+   "status": "done"
   }
  ]
 }
