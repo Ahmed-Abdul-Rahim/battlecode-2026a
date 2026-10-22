@@ -3722,6 +3722,8 @@
   {
    "added": "2026-10-22T10:11:06Z",
    "area": "learning",
+   "claimed": "2026-10-22T10:15:04Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 85,
    "notes": "PPO on 36982 decisions; rollout win 0.352; reward -0.2729.",
    "results": {},
@@ -3733,7 +3735,7 @@
      "ROUTER": 1
     }
    },
-   "status": "queued",
+   "status": "screening",
    "title": "RL arm 1 (experts+target) iteration 60"
   },
   {
