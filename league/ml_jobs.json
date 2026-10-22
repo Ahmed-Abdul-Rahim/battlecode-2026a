@@ -7531,6 +7531,7 @@
   {
    "added": "2026-10-22T09:43:57Z",
    "claimed": "2026-10-22T09:43:57Z",
+   "finished": "2026-10-22T09:44:55Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 297,
    "kind": "rollout",
@@ -7539,8 +7540,19 @@
     "it": 26,
     "part": 1
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "arm": 2,
+    "decisions": 5963,
+    "games": 80,
+    "it": 26,
+    "maps": [
+     "yellow-brick-road",
+     "ambush",
+     "big-world"
+    ],
+    "win": 0.675
+   },
+   "status": "done"
   }
  ]
 }
