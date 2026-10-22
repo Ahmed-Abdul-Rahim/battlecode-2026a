@@ -1107,6 +1107,15 @@
    "time": "2026-10-21T18:10:15.060Z",
    "win": false
   },
+  "34f1834b-684e-4f0b-82db-6bd86e5a3564": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "elkring",
+   "opp": "Azerbaijan Technologies",
+   "oppId": "7218a6a8-8211-4587-bdf8-3bae779e930e",
+   "time": "2026-10-22T08:50:14.542Z",
+   "win": true
+  },
   "3510a110-fcd4-4f33-92ec-f9b1e63d48fa": {
    "kind": "unranked",
    "live": 17,
@@ -1314,6 +1323,15 @@
    "time": "2026-10-20T21:30:09.967Z",
    "win": false
   },
+  "3e734656-9626-455b-a736-2b0d99036730": {
+   "kind": "unranked",
+   "live": 17,
+   "map": "corridors",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-22T08:52:34.543Z",
+   "win": false
+  },
   "3e73e89f-7896-42fe-8bc3-8f86a4afe51f": {
    "kind": "ranked",
    "live": 1,
@@ -1431,6 +1449,15 @@
    "time": "2026-10-22T04:50:12.344Z",
    "win": true
   },
+  "45f3e401-2c1e-40b8-886a-f90669b52b5d": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "ambush",
+   "opp": "larp",
+   "oppId": "86e4dc35-835d-409f-b576-b423b3897c52",
+   "time": "2026-10-22T08:40:12.340Z",
+   "win": false
+  },
   "461bd238-0fd0-4dff-926b-044ec0428eb8": {
    "kind": "ranked",
    "live": 1,
@@ -1484,6 +1511,15 @@
    "oppId": "db94d858-5170-41ef-ad90-b2faf85dd5e8",
    "time": "2026-10-20T15:40:12.934Z",
    "win": true
+  },
+  "491d7383-d55c-41b3-9c55-73234da6ca23": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "broken-curve",
+   "opp": "larp",
+   "oppId": "86e4dc35-835d-409f-b576-b423b3897c52",
+   "time": "2026-10-22T08:40:12.340Z",
+   "win": false
   },
   "49208c8b-74c0-4285-851e-58c3ce3e2587": {
    "kind": "ranked",
@@ -2592,6 +2628,15 @@
    "time": "2026-10-20T19:50:11.277Z",
    "win": true
   },
+  "82010df7-a319-4773-aa19-3e81c6024458": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "shortcut",
+   "opp": "larp",
+   "oppId": "86e4dc35-835d-409f-b576-b423b3897c52",
+   "time": "2026-10-22T08:40:12.339Z",
+   "win": true
+  },
   "83195c85-9f88-4e0b-91d9-e306c667d003": {
    "kind": "unranked",
    "live": 1,
@@ -2663,6 +2708,15 @@
    "oppId": "38e6d8c4-1608-44f5-956b-08390f564336",
    "time": "2026-10-22T06:56:06.329Z",
    "win": false
+  },
+  "858bbbfb-7c63-43d5-b53c-bc73c1dea10f": {
+   "kind": "unranked",
+   "live": 17,
+   "map": "islands",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-22T08:52:34.531Z",
+   "win": true
   },
   "86b6cc95-0eb3-45ba-954f-af8e95e42af3": {
    "kind": "ranked",
@@ -2744,6 +2798,15 @@
    "oppId": "598ea864-6da9-41d1-984f-63136069bc50",
    "time": "2026-10-22T05:20:12.743Z",
    "win": false
+  },
+  "8b9ac0e5-92bf-40ad-9296-68c870f263bb": {
+   "kind": "unranked",
+   "live": 17,
+   "map": "contest",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-22T08:52:34.499Z",
+   "win": true
   },
   "8d1fa7c0-1956-4cc6-a132-1015f9d1ba85": {
    "kind": "ranked",
@@ -3537,6 +3600,15 @@
    "time": "2026-10-22T08:20:16.706Z",
    "win": false
   },
+  "b2028890-2dce-4c35-8b91-f2fdd21aabdc": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "fragment",
+   "opp": "Azerbaijan Technologies",
+   "oppId": "7218a6a8-8211-4587-bdf8-3bae779e930e",
+   "time": "2026-10-22T08:50:14.542Z",
+   "win": true
+  },
   "b20d372d-fd85-41ac-a265-a561f5b136b6": {
    "kind": "ranked",
    "live": 1,
@@ -3627,6 +3699,15 @@
    "time": "2026-10-22T06:10:11.799Z",
    "win": true
   },
+  "b5fd9149-3469-4d41-8774-f92b3760caeb": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "great-wall",
+   "opp": "larp",
+   "oppId": "86e4dc35-835d-409f-b576-b423b3897c52",
+   "time": "2026-10-22T08:40:12.340Z",
+   "win": false
+  },
   "b644f589-acb7-4633-9ec8-6689452f7cf4": {
    "kind": "ranked",
    "live": 17,
@@ -3643,6 +3724,15 @@
    "opp": "Rogue Lock Pickers",
    "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
    "time": "2026-10-20T19:40:10.999Z",
+   "win": true
+  },
+  "b7136892-ff95-4545-b9c1-7c70241134dd": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "hooks",
+   "opp": "Azerbaijan Technologies",
+   "oppId": "7218a6a8-8211-4587-bdf8-3bae779e930e",
+   "time": "2026-10-22T08:50:14.543Z",
    "win": true
   },
   "b75016d3-49be-470d-b37f-438a2e143f7f": {
@@ -3870,6 +3960,15 @@
    "time": "2026-10-21T15:10:10.876Z",
    "win": false
   },
+  "c06bc1dc-b34a-4542-9abb-60e6d7bc7e45": {
+   "kind": "unranked",
+   "live": 17,
+   "map": "concentrated-wealth",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-22T08:52:34.577Z",
+   "win": false
+  },
   "c140b99c-5f35-4476-a685-937936d7627e": {
    "kind": "ranked",
    "live": 1,
@@ -3904,6 +4003,15 @@
    "opp": "Mousa",
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
    "time": "2026-10-20T16:00:07.665Z",
+   "win": true
+  },
+  "c5109b03-c737-4f8e-a144-34ecb5302422": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "islands",
+   "opp": "Azerbaijan Technologies",
+   "oppId": "7218a6a8-8211-4587-bdf8-3bae779e930e",
+   "time": "2026-10-22T08:50:14.543Z",
    "win": true
   },
   "c5aba51e-604f-4c18-8505-b91d6cf55685": {
@@ -4048,6 +4156,15 @@
    "opp": "Silent Fog Walkers",
    "oppId": "0e2abba9-e657-4025-a4e6-a1eed7c5dea0",
    "time": "2026-10-20T16:20:07.815Z",
+   "win": true
+  },
+  "cc8ad0d7-4153-4b26-a741-fe184b167430": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "rushbait-v2",
+   "opp": "larp",
+   "oppId": "86e4dc35-835d-409f-b576-b423b3897c52",
+   "time": "2026-10-22T08:40:12.340Z",
    "win": true
   },
   "cd2beb3d-227d-4feb-834d-0014289c966a": {
@@ -4300,6 +4417,15 @@
    "opp": "Agent Perry the Platypus Gang",
    "oppId": "598ea864-6da9-41d1-984f-63136069bc50",
    "time": "2026-10-22T05:20:12.743Z",
+   "win": false
+  },
+  "da92a8a5-e6d1-4147-95fd-1d9c7602cdbf": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "yellow-brick-road",
+   "opp": "Azerbaijan Technologies",
+   "oppId": "7218a6a8-8211-4587-bdf8-3bae779e930e",
+   "time": "2026-10-22T08:50:14.543Z",
    "win": false
   },
   "daf3d119-3a50-4452-821e-4837e55bf0bf": {
@@ -4984,6 +5110,15 @@
    "opp": "Hidden Lock Pickers",
    "oppId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
    "time": "2026-10-20T20:00:10.344Z",
+   "win": false
+  },
+  "f48b0cd8-1c0a-4500-ad66-cd7f3d191ed9": {
+   "kind": "unranked",
+   "live": 17,
+   "map": "collision",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-22T08:52:34.520Z",
    "win": false
   },
   "f52415ed-eaaa-4a6d-87b3-fecfbc16595d": {
@@ -10187,6 +10322,124 @@
    "status": "open",
    "time": "2026-10-22T08:30:15.402Z",
    "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 21,
+    "Unknown entity kind (2)": 1
+   },
+   "deaths_them": 21,
+   "deaths_us": 22,
+   "gems_them": "946",
+   "gems_us": "472",
+   "id": "c06bc1dc-b34a-4542-9abb-60e6d7bc7e45",
+   "map": "concentrated-wealth",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "status": "open",
+   "time": "2026-10-22T08:52:34.577Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 1,
+    "Unknown entity kind (2)": 47
+   },
+   "deaths_them": 5,
+   "deaths_us": 48,
+   "gems_them": "1052",
+   "gems_us": "508",
+   "id": "3e734656-9626-455b-a736-2b0d99036730",
+   "map": "corridors",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "status": "open",
+   "time": "2026-10-22T08:52:34.543Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 24,
+    "Unknown entity kind (2)": 2
+   },
+   "deaths_them": 15,
+   "deaths_us": 26,
+   "gems_them": "880",
+   "gems_us": "651",
+   "id": "f48b0cd8-1c0a-4500-ad66-cd7f3d191ed9",
+   "map": "collision",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "status": "open",
+   "time": "2026-10-22T08:52:34.520Z",
+   "tries_at": 6
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 11,
+    "Unknown entity kind (2)": 7
+   },
+   "deaths_them": 3,
+   "deaths_us": 18,
+   "gems_them": "1012",
+   "gems_us": "300",
+   "id": "da92a8a5-e6d1-4147-95fd-1d9c7602cdbf",
+   "map": "yellow-brick-road",
+   "opp": "Azerbaijan Technologies",
+   "oppId": "7218a6a8-8211-4587-bdf8-3bae779e930e",
+   "status": "open",
+   "time": "2026-10-22T08:50:14.543Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 5,
+    "Unknown entity kind (2)": 8
+   },
+   "deaths_them": 3,
+   "deaths_us": 13,
+   "gems_them": "1039",
+   "gems_us": "990",
+   "id": "45f3e401-2c1e-40b8-886a-f90669b52b5d",
+   "map": "ambush",
+   "opp": "larp",
+   "oppId": "86e4dc35-835d-409f-b576-b423b3897c52",
+   "status": "open",
+   "time": "2026-10-22T08:40:12.340Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 20,
+    "Unknown entity kind (2)": 21
+   },
+   "deaths_them": 37,
+   "deaths_us": 41,
+   "gems_them": "347",
+   "gems_us": "335",
+   "id": "b5fd9149-3469-4d41-8774-f92b3760caeb",
+   "map": "great-wall",
+   "opp": "larp",
+   "oppId": "86e4dc35-835d-409f-b576-b423b3897c52",
+   "status": "open",
+   "time": "2026-10-22T08:40:12.340Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (2)": 4
+   },
+   "deaths_them": 5,
+   "deaths_us": 4,
+   "gems_them": "644",
+   "gems_us": "501",
+   "id": "491d7383-d55c-41b3-9c55-73234da6ca23",
+   "map": "broken-curve",
+   "opp": "larp",
+   "oppId": "86e4dc35-835d-409f-b576-b423b3897c52",
+   "status": "open",
+   "time": "2026-10-22T08:40:12.340Z",
+   "tries_at": 4
   }
  ],
  "map_files": {
