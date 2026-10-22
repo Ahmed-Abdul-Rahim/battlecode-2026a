@@ -7166,6 +7166,20 @@
     "teacher": "512x512"
    },
    "status": "done"
+  },
+  {
+   "added": "2026-10-22T09:31:23Z",
+   "claimed": "2026-10-22T09:31:23Z",
+   "host": "DESKTOP-QVEMEEE",
+   "id": 283,
+   "kind": "rollout",
+   "params": {
+    "arm": 1,
+    "it": 49,
+    "part": 0
+   },
+   "result": {},
+   "status": "running"
   }
  ]
 }
