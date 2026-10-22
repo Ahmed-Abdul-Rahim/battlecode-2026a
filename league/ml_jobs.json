@@ -1400,14 +1400,19 @@
   {
    "added": "2026-10-22T05:52:12Z",
    "claimed": "2026-10-22T05:52:12Z",
+   "finished": "2026-10-22T05:52:19Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 57,
    "kind": "rlinit",
    "params": {
     "arm": 2
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "arm": 2,
+    "it": 0,
+    "warm_rows": 2000
+   },
+   "status": "done"
   }
  ]
 }
