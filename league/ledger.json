@@ -1854,6 +1854,15 @@
    "time": "2026-10-21T16:30:13.511Z",
    "win": false
   },
+  "675b4e14-1fa3-4c77-9ac5-e41776cf80f7": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "collision",
+   "opp": "Veni Vidi Inti",
+   "oppId": "c7ab1030-abf5-4f1b-89d5-f8b930f96265",
+   "time": "2026-10-22T06:40:14.275Z",
+   "win": true
+  },
   "67af3823-022b-46b9-a319-ea3e9e8eed46": {
    "kind": "ranked",
    "live": null,
@@ -2718,6 +2727,15 @@
    "time": "2026-10-20T18:20:10.477Z",
    "win": true
   },
+  "9b197889-9001-47b8-9eee-10f5aa64ca32": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "corridors",
+   "opp": "Veni Vidi Inti",
+   "oppId": "c7ab1030-abf5-4f1b-89d5-f8b930f96265",
+   "time": "2026-10-22T06:40:14.275Z",
+   "win": false
+  },
   "9b746a24-fce9-4899-bb9e-dcfd0d28778e": {
    "kind": "ranked",
    "live": 16,
@@ -3348,6 +3366,15 @@
    "time": "2026-10-21T15:10:26.195Z",
    "win": true
   },
+  "bd3de1c2-2cd6-4988-b747-0a12ea74732b": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "expanse",
+   "opp": "Veni Vidi Inti",
+   "oppId": "c7ab1030-abf5-4f1b-89d5-f8b930f96265",
+   "time": "2026-10-22T06:40:14.275Z",
+   "win": false
+  },
   "bd6f80d3-e3d9-44f3-9208-cfec933eb895": {
    "kind": "ranked",
    "live": 1,
@@ -3373,6 +3400,15 @@
    "opp": "Mackey",
    "oppId": "d5e1fbdf-184c-4e9c-9ccc-e13c53841b14",
    "time": "2026-10-22T04:30:13.405Z",
+   "win": false
+  },
+  "be7fe22d-fd9d-48c5-b2eb-6d5ab7ca9763": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "contest",
+   "opp": "Veni Vidi Inti",
+   "oppId": "c7ab1030-abf5-4f1b-89d5-f8b930f96265",
+   "time": "2026-10-22T06:40:14.275Z",
    "win": false
   },
   "bf31eb4d-39a2-45bc-b693-87dcd0913394": {
@@ -3931,6 +3967,15 @@
    "opp": "knownasjason",
    "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
    "time": "2026-10-20T17:00:08.372Z",
+   "win": false
+  },
+  "e005601a-8fa0-4520-a29c-6f22ac193b2f": {
+   "kind": "ranked",
+   "live": 16,
+   "map": "starvation",
+   "opp": "Veni Vidi Inti",
+   "oppId": "c7ab1030-abf5-4f1b-89d5-f8b930f96265",
+   "time": "2026-10-22T06:40:14.275Z",
    "win": false
   },
   "e02a8a75-b304-489f-8ec8-4038b4436fda": {
@@ -8763,6 +8808,74 @@
    "status": "open",
    "time": "2026-10-22T06:30:13.246Z",
    "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 2,
+    "Unknown entity kind (2)": 48
+   },
+   "deaths_them": 55,
+   "deaths_us": 50,
+   "gems_them": "896",
+   "gems_us": "440",
+   "id": "9b197889-9001-47b8-9eee-10f5aa64ca32",
+   "map": "corridors",
+   "opp": "Veni Vidi Inti",
+   "oppId": "c7ab1030-abf5-4f1b-89d5-f8b930f96265",
+   "status": "open",
+   "time": "2026-10-22T06:40:14.275Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 14,
+    "Unknown entity kind (2)": 4
+   },
+   "deaths_them": 41,
+   "deaths_us": 18,
+   "gems_them": "708",
+   "gems_us": "220",
+   "id": "e005601a-8fa0-4520-a29c-6f22ac193b2f",
+   "map": "starvation",
+   "opp": "Veni Vidi Inti",
+   "oppId": "c7ab1030-abf5-4f1b-89d5-f8b930f96265",
+   "status": "open",
+   "time": "2026-10-22T06:40:14.275Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 22,
+    "Unknown entity kind (2)": 2
+   },
+   "deaths_them": 21,
+   "deaths_us": 24,
+   "gems_them": "1011",
+   "gems_us": "957",
+   "id": "bd3de1c2-2cd6-4988-b747-0a12ea74732b",
+   "map": "expanse",
+   "opp": "Veni Vidi Inti",
+   "oppId": "c7ab1030-abf5-4f1b-89d5-f8b930f96265",
+   "status": "open",
+   "time": "2026-10-22T06:40:14.275Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 92,
+    "Unknown entity kind (2)": 4
+   },
+   "deaths_them": 16,
+   "deaths_us": 96,
+   "gems_them": "0",
+   "gems_us": "0",
+   "id": "be7fe22d-fd9d-48c5-b2eb-6d5ab7ca9763",
+   "map": "contest",
+   "opp": "Veni Vidi Inti",
+   "oppId": "c7ab1030-abf5-4f1b-89d5-f8b930f96265",
+   "status": "open",
+   "time": "2026-10-22T06:40:14.275Z",
+   "tries_at": 0
   }
  ],
  "map_files": {
