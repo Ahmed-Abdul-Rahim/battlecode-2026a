@@ -252,7 +252,7 @@
   ]
  },
  "cadence": {
-  "bag": 31.4,
+  "bag": 31.7,
   "first_emblem": 210,
   "shops_per_100r": 0.86
  },
@@ -276,7 +276,7 @@
    6
   ]
  },
- "games": 95,
+ "games": 110,
  "opening": {
   "ambush": [
    {
@@ -811,5 +811,5 @@
   ]
  },
  "team": "procless",
- "win_rate": 0.537
+ "win_rate": 0.555
 }

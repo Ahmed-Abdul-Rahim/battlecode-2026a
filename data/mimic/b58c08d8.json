@@ -1,32 +1,32 @@
 {
  "build": {},
  "cadence": {
-  "bag": 23.2,
+  "bag": 25.6,
   "first_emblem": null,
   "shops_per_100r": null
  },
  "draft": {
   "3": [
-   11,
-   6,
-   1
+   4,
+   9,
+   10
   ],
   "4": [
-   11,
-   6,
-   1,
-   0
+   4,
+   9,
+   10,
+   1
   ],
   "5": [
-   11,
-   6,
+   4,
+   9,
+   10,
    1,
-   0,
-   4
+   0
   ]
  },
- "games": 30,
+ "games": 10,
  "opening": {},
- "team": "Pantheon",
+ "team": "\u200e",
  "win_rate": 0.6
 }

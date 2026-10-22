@@ -252,7 +252,7 @@
   ]
  },
  "cadence": {
-  "bag": 38.0,
+  "bag": 38.5,
   "first_emblem": 220,
   "shops_per_100r": 0.68
  },
@@ -276,7 +276,7 @@
    9
   ]
  },
- "games": 145,
+ "games": 150,
  "opening": {
   "big-world": [
    {
@@ -999,5 +999,5 @@
   ]
  },
  "team": "Sponge(Albert and Bob)",
- "win_rate": 0.669
+ "win_rate": 0.673
 }

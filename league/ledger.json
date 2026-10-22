@@ -18,6 +18,15 @@
    "time": "2026-10-20T15:40:12.933Z",
    "win": true
   },
+  "02c536a2-20a3-4b8f-b0cb-99f0c1d4deb3": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "corridors",
+   "opp": "chatswood rsl",
+   "oppId": "895285b0-fee7-4543-ac50-401017b951eb",
+   "time": "2026-10-22T05:00:13.359Z",
+   "win": true
+  },
   "02e642d4-79bb-4b6a-96ee-ea27790fc16e": {
    "kind": "ranked",
    "live": 1,
@@ -25,6 +34,15 @@
    "opp": "Turbo Bush Campers",
    "oppId": "b2981f3c-2006-4307-b745-45086626336b",
    "time": "2026-10-20T22:20:11.555Z",
+   "win": false
+  },
+  "0307fcfd-dca6-4337-a929-2607cb010738": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "starfish",
+   "opp": "Velvet Wolves",
+   "oppId": "47a066ba-5cc9-4ee9-ad57-ab0c0fcc1b59",
+   "time": "2026-10-22T04:50:12.344Z",
    "win": false
   },
   "03ea9a96-e109-4418-9614-617e51d0e37d": {
@@ -143,6 +161,15 @@
    "oppId": "e39c3d57-1813-4a18-a7e7-2b1df6bb3594",
    "time": "2026-10-21T14:10:17.167Z",
    "win": true
+  },
+  "09725fdf-72ad-4884-a821-397fcd374b4f": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "swirl",
+   "opp": "NameTBD",
+   "oppId": "fc41f0e7-97a3-4ac1-ac0b-1019bc4f749b",
+   "time": "2026-10-22T04:00:12.891Z",
+   "win": false
   },
   "09783ac3-b8c9-48b5-b0b8-e1da7b650d8f": {
    "kind": "ranked",
@@ -315,6 +342,15 @@
    "time": "2026-10-20T21:50:14.541Z",
    "win": false
   },
+  "12823d4f-2d4f-4c4a-aebf-3011ec26411a": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "swirl",
+   "opp": "3 Treasure",
+   "oppId": "90ddaf0d-1cf1-4110-a127-d14da2ce2c66",
+   "time": "2026-10-22T04:10:14.351Z",
+   "win": false
+  },
   "14d56491-2408-4223-a389-825b240f9356": {
    "kind": "ranked",
    "live": 1,
@@ -360,6 +396,15 @@
    "time": "2026-10-21T15:30:12.915Z",
    "win": true
   },
+  "18e42fa3-b54c-4316-9628-9177b87e9f77": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "gem-fields",
+   "opp": "Mackey",
+   "oppId": "d5e1fbdf-184c-4e9c-9ccc-e13c53841b14",
+   "time": "2026-10-22T04:30:13.405Z",
+   "win": true
+  },
   "18fa18fe-707b-48ea-add4-336dd428e73f": {
    "kind": "ranked",
    "live": 1,
@@ -367,6 +412,15 @@
    "opp": "Slough Reps",
    "oppId": "fd3a404c-954b-4628-a418-7a8e57fb3783",
    "time": "2026-10-20T17:50:06.264Z",
+   "win": true
+  },
+  "19301d74-ada0-4003-a7da-fe0082f965ff": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "split",
+   "opp": "Agent Perry the Platypus Gang",
+   "oppId": "598ea864-6da9-41d1-984f-63136069bc50",
+   "time": "2026-10-22T05:20:12.743Z",
    "win": true
   },
   "19966849-be46-4daa-b6a7-2e34049ce74e": {
@@ -423,6 +477,15 @@
    "time": "2026-10-20T17:30:07.063Z",
    "win": false
   },
+  "1ffe702f-6976-472f-9e91-8416744833af": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "gemfight",
+   "opp": "Velvet Wolves",
+   "oppId": "47a066ba-5cc9-4ee9-ad57-ab0c0fcc1b59",
+   "time": "2026-10-22T04:50:12.345Z",
+   "win": true
+  },
   "20f9db92-3cd3-4fd9-b9a0-dd2e7eef7f56": {
    "kind": "ranked",
    "live": 1,
@@ -448,6 +511,15 @@
    "opp": "meowest",
    "oppId": "2aa08e1e-f986-4c2a-a15f-e10b10f159ba",
    "time": "2026-10-20T21:20:10.859Z",
+   "win": true
+  },
+  "2286419f-e1d0-4f89-abef-98467465c9e9": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "corners",
+   "opp": "chatswood rsl",
+   "oppId": "895285b0-fee7-4543-ac50-401017b951eb",
+   "time": "2026-10-22T05:00:13.359Z",
    "win": true
   },
   "229095ae-e09b-4b26-9930-311a9aeb27a7": {
@@ -493,6 +565,15 @@
    "opp": "Rataturing",
    "oppId": "0a7f58a2-84f8-4c83-abdc-82d7fe4d4558",
    "time": "2026-10-20T19:20:09.080Z",
+   "win": false
+  },
+  "241acf6c-6076-4c94-a6ee-90ab4c616abc": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "gold-rush",
+   "opp": "Seacaps",
+   "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
+   "time": "2026-10-22T04:20:14.332Z",
    "win": false
   },
   "24597701-33bc-4a4f-bf6e-5d9a9d0ddebc": {
@@ -565,6 +646,15 @@
    "opp": "Divide and Conquer",
    "oppId": "da1c0f93-a0cc-43df-8aca-059e15923cda",
    "time": "2026-10-21T15:30:12.916Z",
+   "win": true
+  },
+  "267a3696-c1b7-4fcd-a789-e77000f2969b": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "broken-curve",
+   "opp": "3 Treasure",
+   "oppId": "90ddaf0d-1cf1-4110-a127-d14da2ce2c66",
+   "time": "2026-10-22T04:10:14.351Z",
    "win": true
   },
   "27389ff4-3d6b-492f-a655-86bcd027c884": {
@@ -999,6 +1089,24 @@
    "time": "2026-10-21T13:20:11.646Z",
    "win": true
   },
+  "3f4794d0-e256-4065-8f68-46f0da5ecd05": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "broken-curve",
+   "opp": "Kukuku",
+   "oppId": "775572bb-1052-4089-883d-61943e261640",
+   "time": "2026-10-22T04:40:12.087Z",
+   "win": true
+  },
+  "3fce117d-4726-4e87-9223-147f36cefba3": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "lanes",
+   "opp": "3 Treasure",
+   "oppId": "90ddaf0d-1cf1-4110-a127-d14da2ce2c66",
+   "time": "2026-10-22T04:10:14.352Z",
+   "win": false
+  },
   "405ca27c-0398-48b6-ab1c-56f4de89458c": {
    "kind": "ranked",
    "live": 1,
@@ -1044,6 +1152,24 @@
    "time": "2026-10-21T16:50:14.905Z",
    "win": true
   },
+  "45040f85-3231-49bb-804a-0afd1044f4f8": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "shortcut",
+   "opp": "Agent Perry the Platypus Gang",
+   "oppId": "598ea864-6da9-41d1-984f-63136069bc50",
+   "time": "2026-10-22T05:20:12.742Z",
+   "win": true
+  },
+  "45c2a333-9fae-4356-88ef-4653a4393d44": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "rushbait-v2",
+   "opp": "Velvet Wolves",
+   "oppId": "47a066ba-5cc9-4ee9-ad57-ab0c0fcc1b59",
+   "time": "2026-10-22T04:50:12.344Z",
+   "win": true
+  },
   "461bd238-0fd0-4dff-926b-044ec0428eb8": {
    "kind": "ranked",
    "live": 1,
@@ -1060,6 +1186,15 @@
    "opp": "ggez",
    "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
    "time": "2026-10-21T15:10:26.221Z",
+   "win": true
+  },
+  "4814d77b-a3d7-4913-94fa-bfa0a1095196": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "broken-curve",
+   "opp": "fa_kyuu",
+   "oppId": "605c150e-bd88-4cb3-b77a-8140a3915609",
+   "time": "2026-10-22T05:10:13.284Z",
    "win": true
   },
   "481909ab-1a45-4898-95b3-c3dbee65e3e4": {
@@ -1079,6 +1214,15 @@
    "oppId": "db94d858-5170-41ef-ad90-b2faf85dd5e8",
    "time": "2026-10-20T15:40:12.934Z",
    "win": true
+  },
+  "49208c8b-74c0-4285-851e-58c3ce3e2587": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "rushbait-v2",
+   "opp": "\u200e",
+   "oppId": "b58c08d8-498a-4fc7-9585-f4fafaefa688",
+   "time": "2026-10-22T05:30:14.379Z",
+   "win": false
   },
   "4a008747-7c47-4b4e-a05b-b2d5dff35d41": {
    "kind": "ranked",
@@ -1233,6 +1377,15 @@
    "time": "2026-10-20T17:10:06.134Z",
    "win": false
   },
+  "536cdb45-2502-4c92-9f11-ce9cb902683b": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "fragment",
+   "opp": "Kukuku",
+   "oppId": "775572bb-1052-4089-883d-61943e261640",
+   "time": "2026-10-22T04:40:12.087Z",
+   "win": false
+  },
   "53f322df-51f4-4727-a9c3-9cd782b4c188": {
    "kind": "ranked",
    "live": 1,
@@ -1350,6 +1503,15 @@
    "time": "2026-10-20T16:10:05.811Z",
    "win": false
   },
+  "5981736e-6794-489b-9f7a-e3b88b17ae2d": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "packs",
+   "opp": "chatswood rsl",
+   "oppId": "895285b0-fee7-4543-ac50-401017b951eb",
+   "time": "2026-10-22T05:00:13.359Z",
+   "win": true
+  },
   "59e91f08-c61f-4dd7-bf14-485574e97044": {
    "kind": "ranked",
    "live": 1,
@@ -1404,6 +1566,15 @@
    "time": "2026-10-20T21:00:10.929Z",
    "win": false
   },
+  "5ce36189-3987-4a98-9530-988fd778a713": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "boss-battle",
+   "opp": "Kukuku",
+   "oppId": "775572bb-1052-4089-883d-61943e261640",
+   "time": "2026-10-22T04:40:12.087Z",
+   "win": false
+  },
   "5e7c2860-45d1-4196-8641-42a13638f9bf": {
    "kind": "ranked",
    "live": 1,
@@ -1430,6 +1601,15 @@
    "oppId": "90ddaf0d-1cf1-4110-a127-d14da2ce2c66",
    "time": "2026-10-21T14:40:12.891Z",
    "win": true
+  },
+  "5f28a228-6583-4707-9aa4-b547b74f277f": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "monolith",
+   "opp": "Seacaps",
+   "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
+   "time": "2026-10-22T04:20:14.332Z",
+   "win": false
   },
   "611c0dcc-9e06-4263-9e92-43e8be530b1e": {
    "kind": "ranked",
@@ -1467,6 +1647,15 @@
    "time": "2026-10-20T19:00:08.517Z",
    "win": false
   },
+  "6237f3c5-8d49-415a-87f1-7592fbb945d1": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "rushbait-v2",
+   "opp": "fa_kyuu",
+   "oppId": "605c150e-bd88-4cb3-b77a-8140a3915609",
+   "time": "2026-10-22T05:10:13.283Z",
+   "win": true
+  },
   "62877d72-4c09-4d1a-aee1-d28abaf963af": {
    "kind": "ranked",
    "live": 1,
@@ -1502,6 +1691,15 @@
    "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
    "time": "2026-10-21T15:40:12.911Z",
    "win": false
+  },
+  "6612ba99-465a-43f0-a41f-34863283cd24": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "packs",
+   "opp": "fa_kyuu",
+   "oppId": "605c150e-bd88-4cb3-b77a-8140a3915609",
+   "time": "2026-10-22T05:10:13.284Z",
+   "win": true
   },
   "6624bfda-b0e1-44c2-a11b-82d724e37231": {
    "kind": "ranked",
@@ -1611,6 +1809,15 @@
    "time": "2026-10-20T17:50:06.264Z",
    "win": true
   },
+  "6aa2a080-1ac6-41bc-97f6-25556315484e": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "contest",
+   "opp": "Velvet Wolves",
+   "oppId": "47a066ba-5cc9-4ee9-ad57-ab0c0fcc1b59",
+   "time": "2026-10-22T04:50:12.345Z",
+   "win": true
+  },
   "6b5c0a35-2105-4819-9c75-fc9da686bb7f": {
    "kind": "ranked",
    "live": 1,
@@ -1664,6 +1871,15 @@
    "oppId": "58e98a11-6404-4f00-83f2-3943c3b72e94",
    "time": "2026-10-20T21:30:09.967Z",
    "win": false
+  },
+  "6eb39dc5-5759-4511-8616-35f5d047f2b7": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "expanse",
+   "opp": "fa_kyuu",
+   "oppId": "605c150e-bd88-4cb3-b77a-8140a3915609",
+   "time": "2026-10-22T05:10:13.284Z",
+   "win": true
   },
   "6edf30b8-41f6-46b1-931e-94b50827b06e": {
    "kind": "ranked",
@@ -1719,6 +1935,15 @@
    "time": "2026-10-20T21:00:10.929Z",
    "win": true
   },
+  "72ba4b0e-ecad-4a8e-8335-7ba5cc6abf48": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "pilgrimage",
+   "opp": "Seacaps",
+   "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
+   "time": "2026-10-22T04:20:14.332Z",
+   "win": false
+  },
   "73536aa3-6bce-4294-89d5-bdf152dd66e2": {
    "kind": "ranked",
    "live": 1,
@@ -1754,6 +1979,15 @@
    "oppId": "f437e066-15f3-4a27-8ec3-9687cb68696b",
    "time": "2026-10-20T18:40:10.897Z",
    "win": false
+  },
+  "74d65cd6-3399-46ba-9658-90f8ea3cd55a": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "elkring",
+   "opp": "chatswood rsl",
+   "oppId": "895285b0-fee7-4543-ac50-401017b951eb",
+   "time": "2026-10-22T05:00:13.359Z",
+   "win": true
   },
   "74eda580-f978-4a55-9485-3b7138e091de": {
    "kind": "ranked",
@@ -1971,6 +2205,24 @@
    "time": "2026-10-20T17:51:26.756Z",
    "win": false
   },
+  "8342e253-f3b3-432a-95b5-fc6730cd265f": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "hooks",
+   "opp": "Velvet Wolves",
+   "oppId": "47a066ba-5cc9-4ee9-ad57-ab0c0fcc1b59",
+   "time": "2026-10-22T04:50:12.345Z",
+   "win": true
+  },
+  "8356bc7a-d7d5-4167-bc86-5f4248d55b10": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "quadrants",
+   "opp": "Mackey",
+   "oppId": "d5e1fbdf-184c-4e9c-9ccc-e13c53841b14",
+   "time": "2026-10-22T04:30:13.405Z",
+   "win": true
+  },
   "84d0cca1-44dd-4fd7-8f18-0386f9b14ef3": {
    "kind": "ranked",
    "live": 1,
@@ -2052,6 +2304,15 @@
    "time": "2026-10-20T20:10:09.725Z",
    "win": true
   },
+  "8b7e34af-91a6-4e5b-beb9-15def54884d1": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "elkring",
+   "opp": "Agent Perry the Platypus Gang",
+   "oppId": "598ea864-6da9-41d1-984f-63136069bc50",
+   "time": "2026-10-22T05:20:12.743Z",
+   "win": false
+  },
   "8d1fa7c0-1956-4cc6-a132-1015f9d1ba85": {
    "kind": "ranked",
    "live": 10,
@@ -2124,6 +2385,24 @@
    "time": "2026-10-20T21:20:10.858Z",
    "win": false
   },
+  "8fcbcd21-2a8a-45b3-972c-0ca02dfea84b": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "rows",
+   "opp": "3 Treasure",
+   "oppId": "90ddaf0d-1cf1-4110-a127-d14da2ce2c66",
+   "time": "2026-10-22T04:10:14.352Z",
+   "win": true
+  },
+  "904c029c-c670-4d4e-b3b5-e78c11d3125c": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "monolith",
+   "opp": "Kukuku",
+   "oppId": "775572bb-1052-4089-883d-61943e261640",
+   "time": "2026-10-22T04:40:12.087Z",
+   "win": true
+  },
   "908a1687-3a9e-41a7-b3cd-91902b28e0fd": {
    "kind": "ranked",
    "live": 1,
@@ -2132,6 +2411,15 @@
    "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
    "time": "2026-10-20T18:10:10.514Z",
    "win": true
+  },
+  "90c39c2f-92b1-4bd3-aab9-4e76cf459edb": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "corners",
+   "opp": "Mackey",
+   "oppId": "d5e1fbdf-184c-4e9c-9ccc-e13c53841b14",
+   "time": "2026-10-22T04:30:13.405Z",
+   "win": false
   },
   "91043463-7f4d-414a-b308-b17a636ecbec": {
    "kind": "ranked",
@@ -2203,6 +2491,15 @@
    "opp": "GPT dot",
    "oppId": "59ffaf30-962d-4729-8cde-f4732f04f436",
    "time": "2026-10-21T13:50:14.700Z",
+   "win": false
+  },
+  "96582c9a-54b0-43a6-92e5-cea7c846119d": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "gold-rush",
+   "opp": "Agent Perry the Platypus Gang",
+   "oppId": "598ea864-6da9-41d1-984f-63136069bc50",
+   "time": "2026-10-22T05:20:12.743Z",
    "win": false
   },
   "98370cfa-e25f-40a6-8afc-ce928a452fe0": {
@@ -2358,6 +2655,15 @@
    "time": "2026-10-21T15:30:43.147Z",
    "win": false
   },
+  "a01623d2-751c-432d-bf30-56c2e5c6159e": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "corners",
+   "opp": "3 Treasure",
+   "oppId": "90ddaf0d-1cf1-4110-a127-d14da2ce2c66",
+   "time": "2026-10-22T04:10:14.351Z",
+   "win": true
+  },
   "a11aaca8-28b5-403c-8109-e30d6e74bb48": {
    "kind": "ranked",
    "live": 1,
@@ -2365,6 +2671,15 @@
    "opp": "FF 15 pls",
    "oppId": "168564c3-2b32-4032-bb6c-b29b95ee61cd",
    "time": "2026-10-21T17:50:18.948Z",
+   "win": true
+  },
+  "a19a21ac-2399-4375-91e6-ef36138fe369": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "shortcut",
+   "opp": "NameTBD",
+   "oppId": "fc41f0e7-97a3-4ac1-ac0b-1019bc4f749b",
+   "time": "2026-10-22T04:00:12.891Z",
    "win": true
   },
   "a1c7055c-9472-44ea-a3af-bdad0701db49": {
@@ -2437,6 +2752,15 @@
    "opp": "Hidden Lock Pickers",
    "oppId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
    "time": "2026-10-21T15:20:15.262Z",
+   "win": true
+  },
+  "a5767983-3625-4c4b-a16d-59d29e4fe5b1": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "fracture",
+   "opp": "NameTBD",
+   "oppId": "fc41f0e7-97a3-4ac1-ac0b-1019bc4f749b",
+   "time": "2026-10-22T04:00:12.891Z",
    "win": true
   },
   "a6292051-d12d-4066-8718-fad21da0fb6b": {
@@ -2519,6 +2843,15 @@
    "oppId": "fd795986-cfd3-4732-9fa9-94caba40067a",
    "time": "2026-10-21T18:50:18.155Z",
    "win": false
+  },
+  "ab175b8e-b8e0-4718-b74b-ddd386450b30": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "lost-world",
+   "opp": "Seacaps",
+   "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
+   "time": "2026-10-22T04:20:14.332Z",
+   "win": true
   },
   "ac419fff-8ba2-4722-800c-8a67bf7a5340": {
    "kind": "ranked",
@@ -2790,6 +3123,15 @@
    "time": "2026-10-21T15:40:12.911Z",
    "win": false
   },
+  "bc7f1539-ab25-4206-83b1-9ec42c4fc0f4": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "stampede",
+   "opp": "Kukuku",
+   "oppId": "775572bb-1052-4089-883d-61943e261640",
+   "time": "2026-10-22T04:40:12.087Z",
+   "win": true
+  },
   "bce9bb09-568d-4218-8cc2-9d68bbc99722": {
    "kind": "ranked",
    "live": 1,
@@ -2825,6 +3167,15 @@
    "oppId": "db94d858-5170-41ef-ad90-b2faf85dd5e8",
    "time": "2026-10-20T15:40:12.934Z",
    "win": true
+  },
+  "be424b7a-806f-466a-809f-8e20666b52a0": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "eight",
+   "opp": "Mackey",
+   "oppId": "d5e1fbdf-184c-4e9c-9ccc-e13c53841b14",
+   "time": "2026-10-22T04:30:13.405Z",
+   "win": false
   },
   "bf31eb4d-39a2-45bc-b693-87dcd0913394": {
    "kind": "ranked",
@@ -2907,6 +3258,15 @@
    "time": "2026-10-20T21:10:08.566Z",
    "win": true
   },
+  "c78260ba-4dc4-4595-8533-f9ac5cdf7eb4": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "broken-curve",
+   "opp": "NameTBD",
+   "oppId": "fc41f0e7-97a3-4ac1-ac0b-1019bc4f749b",
+   "time": "2026-10-22T04:00:12.891Z",
+   "win": true
+  },
   "c7980ae3-7bf1-494a-b04b-c33bf8ccff8e": {
    "kind": "ranked",
    "live": 1,
@@ -2942,6 +3302,15 @@
    "oppId": "da1c0f93-a0cc-43df-8aca-059e15923cda",
    "time": "2026-10-21T15:30:12.915Z",
    "win": true
+  },
+  "c986444f-dce7-4448-a243-f25cab10760b": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "stampede",
+   "opp": "\u200e",
+   "oppId": "b58c08d8-498a-4fc7-9585-f4fafaefa688",
+   "time": "2026-10-22T05:30:14.379Z",
+   "win": false
   },
   "c9c01652-6530-4663-bece-73cb9e329e36": {
    "kind": "ranked",
@@ -3105,6 +3474,15 @@
    "time": "2026-10-21T13:40:14.980Z",
    "win": true
   },
+  "d3a57db5-a4f7-40b0-afa6-f35c3bccda05": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "concentrated-wealth",
+   "opp": "Mackey",
+   "oppId": "d5e1fbdf-184c-4e9c-9ccc-e13c53841b14",
+   "time": "2026-10-22T04:30:13.405Z",
+   "win": true
+  },
   "d498af3c-61ef-47a2-8864-4e9a0f485069": {
    "kind": "ranked",
    "live": 1,
@@ -3112,6 +3490,15 @@
    "opp": "preachers of ttts",
    "oppId": "2173d644-f134-4b10-8cd8-2f6d9bfc0696",
    "time": "2026-10-21T14:00:16.613Z",
+   "win": false
+  },
+  "d5c396ba-c00f-4980-a7ce-9871ef88492c": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "gem-fields",
+   "opp": "\u200e",
+   "oppId": "b58c08d8-498a-4fc7-9585-f4fafaefa688",
+   "time": "2026-10-22T05:30:14.380Z",
    "win": false
   },
   "d601acde-2dd5-46c0-82c8-1ba0ffa0d906": {
@@ -3168,6 +3555,15 @@
    "time": "2026-10-20T19:00:08.517Z",
    "win": true
   },
+  "da39e432-ee0c-4043-a5bc-d5c789d8eba4": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "gemfight",
+   "opp": "Agent Perry the Platypus Gang",
+   "oppId": "598ea864-6da9-41d1-984f-63136069bc50",
+   "time": "2026-10-22T05:20:12.743Z",
+   "win": false
+  },
   "daf3d119-3a50-4452-821e-4837e55bf0bf": {
    "kind": "ranked",
    "live": 15,
@@ -3222,6 +3618,15 @@
    "time": "2026-10-20T20:50:10.904Z",
    "win": true
   },
+  "dcdf81e6-edcb-4bde-848d-a760570856fc": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "broken-curve",
+   "opp": "chatswood rsl",
+   "oppId": "895285b0-fee7-4543-ac50-401017b951eb",
+   "time": "2026-10-22T05:00:13.359Z",
+   "win": false
+  },
   "dd0fd8c1-2c37-488f-8fe1-c89855dd568b": {
    "kind": "ranked",
    "live": 15,
@@ -3230,6 +3635,15 @@
    "oppId": "7d07c0f3-d4ef-4722-aad2-2531397e3be9",
    "time": "2026-10-21T18:40:17.384Z",
    "win": true
+  },
+  "dd2d7831-3321-42da-997f-7316c4858661": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "the-farm",
+   "opp": "Seacaps",
+   "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
+   "time": "2026-10-22T04:20:14.332Z",
+   "win": false
   },
   "ddc4e992-d884-45ea-a59e-07739bc3be96": {
    "kind": "ranked",
@@ -3275,6 +3689,15 @@
    "oppId": "88c01e3a-ac73-431d-8fb8-5dd482a5418b",
    "time": "2026-10-20T16:10:05.811Z",
    "win": false
+  },
+  "df460d6a-882c-47b2-ac82-aebc971bb5a8": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "quadrants",
+   "opp": "NameTBD",
+   "oppId": "fc41f0e7-97a3-4ac1-ac0b-1019bc4f749b",
+   "time": "2026-10-22T04:00:12.891Z",
+   "win": true
   },
   "df58cc4b-5ece-44cb-a33d-17d6730ada67": {
    "kind": "ranked",
@@ -3564,6 +3987,15 @@
    "time": "2026-10-20T19:10:09.463Z",
    "win": false
   },
+  "efcef28c-acf5-4627-a172-94038834bf2c": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "interlock",
+   "opp": "\u200e",
+   "oppId": "b58c08d8-498a-4fc7-9585-f4fafaefa688",
+   "time": "2026-10-22T05:30:14.379Z",
+   "win": false
+  },
   "f02347a5-5757-42c7-91ef-e74db4b06984": {
    "kind": "ranked",
    "live": 1,
@@ -3607,6 +4039,15 @@
    "opp": "MicroStella",
    "oppId": "f0415fa5-b2aa-4958-a47a-4422f74d9ede",
    "time": "2026-10-20T17:30:07.064Z",
+   "win": true
+  },
+  "f11f1774-4677-4fa5-ba2a-e0892ca9f6ea": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "starvation",
+   "opp": "fa_kyuu",
+   "oppId": "605c150e-bd88-4cb3-b77a-8140a3915609",
+   "time": "2026-10-22T05:10:13.283Z",
    "win": true
   },
   "f120bc92-c762-4455-9ebe-0ad43678658d": {
@@ -3779,6 +4220,15 @@
    "oppId": "1890540d-1ffc-4847-adbf-d0d08772f268",
    "time": "2026-10-20T17:51:26.747Z",
    "win": false
+  },
+  "ff68d078-3c53-4de1-8465-f5d2f37be381": {
+   "kind": "ranked",
+   "live": 15,
+   "map": "packs",
+   "opp": "\u200e",
+   "oppId": "b58c08d8-498a-4fc7-9585-f4fafaefa688",
+   "time": "2026-10-22T05:30:14.379Z",
+   "win": true
   }
  },
  "losses": [
@@ -7502,6 +7952,264 @@
    "superseded_by": 16,
    "time": "2026-10-21T18:50:18.155Z",
    "tries_at": 4
+  },
+  {
+   "id": "d5c396ba-c00f-4980-a7ce-9871ef88492c",
+   "map": "gem-fields",
+   "opp": "\u200e",
+   "oppId": "b58c08d8-498a-4fc7-9585-f4fafaefa688",
+   "status": "open",
+   "time": "2026-10-22T05:30:14.380Z",
+   "tries_at": 3
+  },
+  {
+   "id": "c986444f-dce7-4448-a243-f25cab10760b",
+   "map": "stampede",
+   "opp": "\u200e",
+   "oppId": "b58c08d8-498a-4fc7-9585-f4fafaefa688",
+   "status": "open",
+   "time": "2026-10-22T05:30:14.379Z",
+   "tries_at": 1
+  },
+  {
+   "id": "49208c8b-74c0-4285-851e-58c3ce3e2587",
+   "map": "rushbait-v2",
+   "opp": "\u200e",
+   "oppId": "b58c08d8-498a-4fc7-9585-f4fafaefa688",
+   "status": "open",
+   "time": "2026-10-22T05:30:14.379Z",
+   "tries_at": 1
+  },
+  {
+   "id": "efcef28c-acf5-4627-a172-94038834bf2c",
+   "map": "interlock",
+   "opp": "\u200e",
+   "oppId": "b58c08d8-498a-4fc7-9585-f4fafaefa688",
+   "status": "open",
+   "time": "2026-10-22T05:30:14.379Z",
+   "tries_at": 4
+  },
+  {
+   "id": "8b7e34af-91a6-4e5b-beb9-15def54884d1",
+   "map": "elkring",
+   "opp": "Agent Perry the Platypus Gang",
+   "oppId": "598ea864-6da9-41d1-984f-63136069bc50",
+   "status": "open",
+   "time": "2026-10-22T05:20:12.743Z",
+   "tries_at": 1
+  },
+  {
+   "id": "96582c9a-54b0-43a6-92e5-cea7c846119d",
+   "map": "gold-rush",
+   "opp": "Agent Perry the Platypus Gang",
+   "oppId": "598ea864-6da9-41d1-984f-63136069bc50",
+   "status": "open",
+   "time": "2026-10-22T05:20:12.743Z",
+   "tries_at": 1
+  },
+  {
+   "id": "da39e432-ee0c-4043-a5bc-d5c789d8eba4",
+   "map": "gemfight",
+   "opp": "Agent Perry the Platypus Gang",
+   "oppId": "598ea864-6da9-41d1-984f-63136069bc50",
+   "status": "open",
+   "time": "2026-10-22T05:20:12.743Z",
+   "tries_at": 1
+  },
+  {
+   "id": "dcdf81e6-edcb-4bde-848d-a760570856fc",
+   "map": "broken-curve",
+   "opp": "chatswood rsl",
+   "oppId": "895285b0-fee7-4543-ac50-401017b951eb",
+   "status": "open",
+   "time": "2026-10-22T05:00:13.359Z",
+   "tries_at": 3
+  },
+  {
+   "id": "0307fcfd-dca6-4337-a929-2607cb010738",
+   "map": "starfish",
+   "opp": "Velvet Wolves",
+   "oppId": "47a066ba-5cc9-4ee9-ad57-ab0c0fcc1b59",
+   "status": "open",
+   "time": "2026-10-22T04:50:12.344Z",
+   "tries_at": 1
+  },
+  {
+   "id": "536cdb45-2502-4c92-9f11-ce9cb902683b",
+   "map": "fragment",
+   "opp": "Kukuku",
+   "oppId": "775572bb-1052-4089-883d-61943e261640",
+   "status": "open",
+   "time": "2026-10-22T04:40:12.087Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (2)": 24
+   },
+   "deaths_them": 7,
+   "deaths_us": 24,
+   "gems_them": "0",
+   "gems_us": "0",
+   "id": "5ce36189-3987-4a98-9530-988fd778a713",
+   "map": "boss-battle",
+   "opp": "Kukuku",
+   "oppId": "775572bb-1052-4089-883d-61943e261640",
+   "status": "open",
+   "time": "2026-10-22T04:40:12.087Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 13,
+    "Unknown entity kind (2)": 9
+   },
+   "deaths_them": 14,
+   "deaths_us": 22,
+   "gems_them": "1007",
+   "gems_us": "754",
+   "id": "90c39c2f-92b1-4bd3-aab9-4e76cf459edb",
+   "map": "corners",
+   "opp": "Mackey",
+   "oppId": "d5e1fbdf-184c-4e9c-9ccc-e13c53841b14",
+   "status": "open",
+   "time": "2026-10-22T04:30:13.405Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 65,
+    "Unknown entity kind (2)": 3
+   },
+   "deaths_them": 47,
+   "deaths_us": 68,
+   "gems_them": "778",
+   "gems_us": "376",
+   "id": "be424b7a-806f-466a-809f-8e20666b52a0",
+   "map": "eight",
+   "opp": "Mackey",
+   "oppId": "d5e1fbdf-184c-4e9c-9ccc-e13c53841b14",
+   "status": "open",
+   "time": "2026-10-22T04:30:13.405Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 4,
+    "Unknown entity kind (2)": 21
+   },
+   "deaths_them": 19,
+   "deaths_us": 25,
+   "gems_them": "312",
+   "gems_us": "0",
+   "id": "dd2d7831-3321-42da-997f-7316c4858661",
+   "map": "the-farm",
+   "opp": "Seacaps",
+   "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
+   "status": "open",
+   "time": "2026-10-22T04:20:14.332Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 20
+   },
+   "deaths_them": 4,
+   "deaths_us": 20,
+   "gems_them": "1007",
+   "gems_us": "872",
+   "id": "5f28a228-6583-4707-9aa4-b547b74f277f",
+   "map": "monolith",
+   "opp": "Seacaps",
+   "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
+   "status": "open",
+   "time": "2026-10-22T04:20:14.332Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 11,
+    "Unknown entity kind (2)": 16
+   },
+   "deaths_them": 6,
+   "deaths_us": 27,
+   "gems_them": "938",
+   "gems_us": "547",
+   "id": "72ba4b0e-ecad-4a8e-8335-7ba5cc6abf48",
+   "map": "pilgrimage",
+   "opp": "Seacaps",
+   "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
+   "status": "open",
+   "time": "2026-10-22T04:20:14.332Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 7,
+    "Unknown entity kind (2)": 11
+   },
+   "deaths_them": 18,
+   "deaths_us": 18,
+   "gems_them": "413",
+   "gems_us": "187",
+   "id": "241acf6c-6076-4c94-a6ee-90ab4c616abc",
+   "map": "gold-rush",
+   "opp": "Seacaps",
+   "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
+   "status": "open",
+   "time": "2026-10-22T04:20:14.332Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 13,
+    "Unknown entity kind (2)": 5
+   },
+   "deaths_them": 2,
+   "deaths_us": 18,
+   "gems_them": "1012",
+   "gems_us": "697",
+   "id": "3fce117d-4726-4e87-9223-147f36cefba3",
+   "map": "lanes",
+   "opp": "3 Treasure",
+   "oppId": "90ddaf0d-1cf1-4110-a127-d14da2ce2c66",
+   "status": "open",
+   "time": "2026-10-22T04:10:14.352Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 54,
+    "Unknown entity kind (2)": 13
+   },
+   "deaths_them": 37,
+   "deaths_us": 67,
+   "gems_them": "1015",
+   "gems_us": "554",
+   "id": "12823d4f-2d4f-4c4a-aebf-3011ec26411a",
+   "map": "swirl",
+   "opp": "3 Treasure",
+   "oppId": "90ddaf0d-1cf1-4110-a127-d14da2ce2c66",
+   "status": "open",
+   "time": "2026-10-22T04:10:14.351Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 91,
+    "Unknown entity kind (2)": 8
+   },
+   "deaths_them": 35,
+   "deaths_us": 99,
+   "gems_them": "985",
+   "gems_us": "254",
+   "id": "09725fdf-72ad-4884-a821-397fcd374b4f",
+   "map": "swirl",
+   "opp": "NameTBD",
+   "oppId": "fc41f0e7-97a3-4ac1-ac0b-1019bc4f749b",
+   "status": "open",
+   "time": "2026-10-22T04:00:12.891Z",
+   "tries_at": 3
   }
  ],
  "map_files": {
@@ -7528,11 +8236,13 @@
   "interlock": "e8b3f42b3426",
   "islands": "bb68151dab04",
   "lanes": "a45acc301052",
+  "lost-world": "7181b6bde507",
   "monolith": "d6cbe522739e",
   "packs": "ca55fc499b7c",
   "pilgrimage": "1a7637f6da12",
   "quadrants": "013e2fa3deb6",
   "reverse-spiral": "a985c4f730af",
+  "road-of-riches": "b36dc2e6a0ad",
   "rows": "cd7278babb85",
   "rushbait-v2": "420bcb464188",
   "shortcut": "6dc8b8d77939",
@@ -7568,11 +8278,13 @@
   "interlock",
   "islands",
   "lanes",
+  "lost-world",
   "monolith",
   "packs",
   "pilgrimage",
   "quadrants",
   "reverse-spiral",
+  "road-of-riches",
   "rows",
   "rushbait-v2",
   "shortcut",
@@ -7586,133 +8298,133 @@
  ],
  "pool": [
   {
-   "games": 120,
-   "macro_hash": "263266eb1dd0",
-   "name": "Intercontinental Fish",
-   "since": "2026-10-21T17:53:35Z",
-   "slug": "intercontinental-fish",
+   "games": 5,
+   "macro_hash": "4bd97ce5d48b",
+   "name": "prism best girl",
+   "since": "2026-10-22T05:35:37Z",
+   "slug": "prism-best-girl",
    "static": false,
-   "teamId": "1890540d-1ffc-4847-adbf-d0d08772f268",
+   "teamId": "38e6d8c4-1608-44f5-956b-08390f564336",
    "why": "top1"
   },
   {
-   "games": 100,
-   "macro_hash": "dc5cb4512945",
-   "name": "EMPEROR Tung",
-   "since": "2026-10-21T14:48:10Z",
-   "slug": "emperor-tung",
-   "static": true,
-   "teamId": "a1e82708-dfd3-4609-8b9a-69f652d12185",
+   "games": 130,
+   "macro_hash": "e61be735fff9",
+   "name": "Intercontinental Fish",
+   "since": "2026-10-22T05:35:58Z",
+   "slug": "intercontinental-fish",
+   "static": false,
+   "teamId": "1890540d-1ffc-4847-adbf-d0d08772f268",
    "why": "top2"
   },
   {
-   "games": 95,
-   "macro_hash": "26b3c79d90ac",
+   "games": 110,
+   "macro_hash": "5c6e3a94f2ba",
    "name": "procless",
-   "since": "2026-10-21T14:47:57Z",
+   "since": "2026-10-22T05:36:13Z",
    "slug": "procless",
-   "static": true,
+   "static": false,
    "teamId": "8df7e1cd-0d60-413b-9331-f5427ce9ca88",
    "why": "top3"
   },
   {
-   "games": 136,
+   "games": 141,
    "macro_hash": "7eb6eda8707c",
    "name": ":3",
    "since": "2026-10-21T17:54:38Z",
    "slug": "3",
-   "static": false,
+   "static": true,
    "teamId": "bbe481a7-4575-4826-9a3e-f81c28205de8",
    "why": "top4"
   },
   {
-   "games": 145,
-   "macro_hash": "9c689bb0b56b",
-   "name": "Sponge(Albert and Bob)",
-   "since": "2026-10-21T17:55:01Z",
-   "slug": "sponge-albert-and-bob",
+   "games": 110,
+   "macro_hash": "8246fafa831b",
+   "name": "EMPEROR Tung",
+   "since": "2026-10-22T05:36:47Z",
+   "slug": "emperor-tung",
    "static": false,
-   "teamId": "26824601-d225-427f-bd2d-ce8aa9faa392",
+   "teamId": "a1e82708-dfd3-4609-8b9a-69f652d12185",
    "why": "top5"
   },
   {
-   "games": 30,
-   "macro_hash": "6bcde3a6b139",
-   "name": "Pantheon",
-   "since": "2026-10-21T14:48:52Z",
-   "slug": "pantheon",
-   "static": true,
-   "teamId": "547efb5b-57e5-4355-8501-3b331f506d62",
-   "why": "top6"
-  },
-  {
-   "games": 35,
-   "macro_hash": "e78731da739c",
+   "games": 45,
+   "macro_hash": "1d1c67f60510",
    "name": "policy wonk",
-   "since": "2026-10-21T17:56:09Z",
+   "since": "2026-10-22T05:37:07Z",
    "slug": "policy-wonk",
    "static": false,
    "teamId": "3ec4a701-a9b5-498f-9361-eea4a6dd1cde",
+   "why": "top6"
+  },
+  {
+   "games": 8,
+   "macro_hash": "8e77a400cf3a",
+   "name": "Univardisty of Shingtonwash",
+   "since": "2026-10-22T05:37:25Z",
+   "slug": "univardisty-of-shingtonwash",
+   "static": false,
+   "teamId": "a4350547-b7a1-47b1-9031-4f7f084ad0d8",
    "why": "top7"
   },
   {
-   "games": 22,
-   "macro_hash": "64e2f6556212",
-   "name": "Nanyang Technological University",
-   "since": "2026-10-21T17:56:42Z",
-   "slug": "nanyang-technological-university",
+   "games": 150,
+   "macro_hash": "5bc1e1d61b19",
+   "name": "Sponge(Albert and Bob)",
+   "since": "2026-10-22T05:37:40Z",
+   "slug": "sponge-albert-and-bob",
    "static": false,
-   "teamId": "93fd07ff-2f73-4ed4-9911-356cc1034ba5",
+   "teamId": "26824601-d225-427f-bd2d-ce8aa9faa392",
    "why": "top8"
   },
   {
-   "games": 85,
-   "macro_hash": "7ba2d4d72863",
+   "games": 95,
+   "macro_hash": "37aed8dd0b6f",
    "name": "Zarzorki",
-   "since": "2026-10-21T17:57:17Z",
+   "since": "2026-10-22T05:38:03Z",
    "slug": "zarzorki",
    "static": false,
    "teamId": "c0a5d0a5-eb8f-4aa7-8d6a-8e74ed78874c",
    "why": "top9"
   },
   {
-   "games": 160,
-   "macro_hash": "543e5e9601d3",
+   "games": 170,
+   "macro_hash": "91dc8e3048fc",
    "name": "Trzy Kwaterki",
-   "since": "2026-10-21T17:58:05Z",
+   "since": "2026-10-22T05:38:26Z",
    "slug": "trzy-kwaterki",
    "static": false,
    "teamId": "36258abf-3fd0-4827-8fa5-2a217438cf6f",
    "why": "top10"
   },
   {
-   "games": 15,
-   "macro_hash": "9bee1a90d9c5",
-   "name": "tvojtatko",
-   "since": "2026-10-21T17:58:42Z",
-   "slug": "tvojtatko",
+   "games": 10,
+   "macro_hash": "7a647ccd8564",
+   "name": "\u200e",
+   "since": "2026-10-22T05:38:47Z",
+   "slug": "b58c08d8",
    "static": false,
-   "teamId": "0263b3aa-28cf-469f-abd3-e07327c6e757",
+   "teamId": "b58c08d8-498a-4fc7-9585-f4fafaefa688",
    "why": "loss"
   },
   {
    "games": 10,
-   "macro_hash": "4c429ef56f3b",
-   "name": "gargantua",
-   "since": "2026-10-21T17:59:17Z",
-   "slug": "gargantua",
+   "macro_hash": "c3f04d03eb38",
+   "name": "Agent Perry the Platypus Gang",
+   "since": "2026-10-22T05:39:06Z",
+   "slug": "agent-perry-the-platypus-gang",
    "static": false,
-   "teamId": "61e5f5c0-3ba9-4c48-ba68-bf125f0fdfc0",
+   "teamId": "598ea864-6da9-41d1-984f-63136069bc50",
    "why": "loss"
   },
   {
    "games": 10,
-   "macro_hash": "e5f36bed824b",
-   "name": "Lucky Stunner",
-   "since": "2026-10-21T17:59:38Z",
-   "slug": "lucky-stunner",
+   "macro_hash": "4b512f3e67d2",
+   "name": "chatswood rsl",
+   "since": "2026-10-22T05:39:26Z",
+   "slug": "chatswood-rsl",
    "static": false,
-   "teamId": "d48d65ef-625c-4966-b2cc-a7b1b02fafec",
+   "teamId": "895285b0-fee7-4543-ac50-401017b951eb",
    "why": "loss"
   }
  ],
@@ -8672,6 +9384,81 @@
     }
    ],
    "time": "2026-10-21T17:52:25Z"
+  },
+  {
+   "teams": [
+    {
+     "name": "prism best girl",
+     "rank": 1,
+     "rating": 2221.4,
+     "slug": "prism-best-girl",
+     "teamId": "38e6d8c4-1608-44f5-956b-08390f564336"
+    },
+    {
+     "name": "Intercontinental Fish",
+     "rank": 2,
+     "rating": 2161.0,
+     "slug": "intercontinental-fish",
+     "teamId": "1890540d-1ffc-4847-adbf-d0d08772f268"
+    },
+    {
+     "name": "procless",
+     "rank": 3,
+     "rating": 2140.8,
+     "slug": "procless",
+     "teamId": "8df7e1cd-0d60-413b-9331-f5427ce9ca88"
+    },
+    {
+     "name": ":3",
+     "rank": 4,
+     "rating": 2137.2,
+     "slug": "3",
+     "teamId": "bbe481a7-4575-4826-9a3e-f81c28205de8"
+    },
+    {
+     "name": "EMPEROR Tung",
+     "rank": 5,
+     "rating": 2116.5,
+     "slug": "emperor-tung",
+     "teamId": "a1e82708-dfd3-4609-8b9a-69f652d12185"
+    },
+    {
+     "name": "policy wonk",
+     "rank": 6,
+     "rating": 2114.0,
+     "slug": "policy-wonk",
+     "teamId": "3ec4a701-a9b5-498f-9361-eea4a6dd1cde"
+    },
+    {
+     "name": "Univardisty of Shingtonwash",
+     "rank": 7,
+     "rating": 2107.5,
+     "slug": "univardisty-of-shingtonwash",
+     "teamId": "a4350547-b7a1-47b1-9031-4f7f084ad0d8"
+    },
+    {
+     "name": "Sponge(Albert and Bob)",
+     "rank": 8,
+     "rating": 2076.0,
+     "slug": "sponge-albert-and-bob",
+     "teamId": "26824601-d225-427f-bd2d-ce8aa9faa392"
+    },
+    {
+     "name": "Zarzorki",
+     "rank": 9,
+     "rating": 2075.0,
+     "slug": "zarzorki",
+     "teamId": "c0a5d0a5-eb8f-4aa7-8d6a-8e74ed78874c"
+    },
+    {
+     "name": "Trzy Kwaterki",
+     "rank": 10,
+     "rating": 2052.9,
+     "slug": "trzy-kwaterki",
+     "teamId": "36258abf-3fd0-4827-8fa5-2a217438cf6f"
+    }
+   ],
+   "time": "2026-10-22T05:35:16Z"
   }
  ]
 }

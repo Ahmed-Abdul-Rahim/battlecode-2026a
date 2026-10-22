@@ -1,27 +1,21 @@
 {
  "build": {},
  "cadence": {
-  "bag": 22.0,
+  "bag": 61.2,
   "first_emblem": null,
   "shops_per_100r": null
  },
  "draft": {
-  "4": [
-   0,
-   3,
-   4,
-   9
-  ],
   "5": [
+   5,
+   1,
    6,
    0,
-   3,
-   9,
-   4
+   11
   ]
  },
- "games": 10,
+ "games": 5,
  "opening": {},
- "team": "gargantua",
- "win_rate": 0.8
+ "team": "prism best girl",
+ "win_rate": 1.0
 }

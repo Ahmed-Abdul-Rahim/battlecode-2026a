@@ -1,32 +1,32 @@
 {
  "build": {},
  "cadence": {
-  "bag": 45.6,
+  "bag": 47.1,
   "first_emblem": null,
   "shops_per_100r": null
  },
  "draft": {
   "3": [
+   6,
    11,
-   0,
    1
   ],
   "4": [
-   2,
-   1,
+   6,
+   9,
    11,
-   6
+   2
   ],
   "5": [
-   2,
-   1,
-   11,
    6,
-   0
+   11,
+   1,
+   0,
+   10
   ]
  },
- "games": 22,
+ "games": 8,
  "opening": {},
- "team": "Nanyang Technological University",
- "win_rate": 0.909
+ "team": "Univardisty of Shingtonwash",
+ "win_rate": 0.75
 }
