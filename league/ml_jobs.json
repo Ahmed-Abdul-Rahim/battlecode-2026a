@@ -9677,6 +9677,20 @@
     "win": 0.436
    },
    "status": "done"
+  },
+  {
+   "added": "2026-10-22T11:08:54Z",
+   "claimed": "2026-10-22T11:08:54Z",
+   "host": "DESKTOP-QVEMEEE",
+   "id": 379,
+   "kind": "rollout",
+   "params": {
+    "arm": 1,
+    "it": 70,
+    "part": 1
+   },
+   "result": {},
+   "status": "running"
   }
  ]
 }
