@@ -117,6 +117,15 @@
    "time": "2026-10-21T15:20:15.263Z",
    "win": false
   },
+  "052acd04-e068-4f82-b91f-463ad86bf0ed": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "contest",
+   "opp": "Pawsibble",
+   "oppId": "dcc95611-f947-4e73-ac58-7e3e62574bcf",
+   "time": "2026-10-22T07:10:14.654Z",
+   "win": true
+  },
   "05dbb82e-5f97-436b-bb6a-8859820d4542": {
    "kind": "ranked",
    "live": 16,
@@ -522,6 +531,15 @@
    "time": "2026-10-21T18:30:14.995Z",
    "win": true
   },
+  "1a05fdb0-bbe4-48cd-8ae3-0566c595ba8c": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "corners",
+   "opp": "Pawsibble",
+   "oppId": "dcc95611-f947-4e73-ac58-7e3e62574bcf",
+   "time": "2026-10-22T07:10:14.654Z",
+   "win": true
+  },
   "1bfb2d1c-c351-40d7-97f7-41b525716554": {
    "kind": "ranked",
    "live": null,
@@ -529,6 +547,15 @@
    "opp": "Mousa",
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
    "time": "2026-10-20T16:00:07.664Z",
+   "win": true
+  },
+  "1c8459a2-cb19-4f64-8055-579ef02f73e6": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "hooks",
+   "opp": "John Doe",
+   "oppId": "a159726f-af79-424d-85ac-fcfd76f2ec1e",
+   "time": "2026-10-22T07:20:21.361Z",
    "win": true
   },
   "1c926c84-84da-4fb9-ae58-6ad7a1666c66": {
@@ -853,6 +880,15 @@
    "opp": "preachers of ttts",
    "oppId": "2173d644-f134-4b10-8cd8-2f6d9bfc0696",
    "time": "2026-10-21T14:00:16.613Z",
+   "win": false
+  },
+  "2b94aac3-894c-4bd6-a286-712cd59dfd5f": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "corners",
+   "opp": "John Doe",
+   "oppId": "a159726f-af79-424d-85ac-fcfd76f2ec1e",
+   "time": "2026-10-22T07:20:21.361Z",
    "win": false
   },
   "2c8f990b-7f77-48d8-ae09-a706ffcd2706": {
@@ -1989,6 +2025,15 @@
    "time": "2026-10-20T18:40:10.898Z",
    "win": true
   },
+  "6a5c4d1b-b9b0-431b-9c1a-f7129c79e941": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "lost-world",
+   "opp": "Pawsibble",
+   "oppId": "dcc95611-f947-4e73-ac58-7e3e62574bcf",
+   "time": "2026-10-22T07:10:14.654Z",
+   "win": true
+  },
   "6a605f93-fb00-4a39-88a4-92f2e935a134": {
    "kind": "unranked",
    "live": 1,
@@ -2907,6 +2952,15 @@
    "time": "2026-10-21T16:40:14.608Z",
    "win": true
   },
+  "9e0d7e7e-1262-499a-9674-266e7526f353": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "starfish",
+   "opp": "John Doe",
+   "oppId": "a159726f-af79-424d-85ac-fcfd76f2ec1e",
+   "time": "2026-10-22T07:20:21.361Z",
+   "win": true
+  },
   "9e2fcfc0-a78d-45ca-8e2c-c78128f035bd": {
    "kind": "ranked",
    "live": 1,
@@ -3194,6 +3248,15 @@
    "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
    "time": "2026-10-20T15:00:17.843Z",
    "win": false
+  },
+  "ae3bfdef-246a-4177-9946-debe09a2618a": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "reverse-spiral",
+   "opp": "John Doe",
+   "oppId": "a159726f-af79-424d-85ac-fcfd76f2ec1e",
+   "time": "2026-10-22T07:20:21.361Z",
+   "win": true
   },
   "ae521971-996c-46cd-b9e8-b897370844da": {
    "kind": "ranked",
@@ -3789,6 +3852,15 @@
    "time": "2026-10-20T15:50:11.039Z",
    "win": true
   },
+  "d00ff264-ceea-4f57-bf0a-2d7143ab3443": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "fragment",
+   "opp": "Pawsibble",
+   "oppId": "dcc95611-f947-4e73-ac58-7e3e62574bcf",
+   "time": "2026-10-22T07:10:14.653Z",
+   "win": false
+  },
   "d04818cf-3763-4b8a-975f-a48e307b0b46": {
    "kind": "ranked",
    "live": 1,
@@ -4158,6 +4230,15 @@
    "time": "2026-10-21T16:40:14.609Z",
    "win": true
   },
+  "e0c3dc20-0e12-4d27-b647-2936eafde58d": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "big-world",
+   "opp": "Pawsibble",
+   "oppId": "dcc95611-f947-4e73-ac58-7e3e62574bcf",
+   "time": "2026-10-22T07:10:14.654Z",
+   "win": false
+  },
   "e128a4cc-2b57-4e3f-9a03-4eeb056120b1": {
    "kind": "ranked",
    "live": null,
@@ -4318,6 +4399,15 @@
    "opp": "Rogue Lock Pickers",
    "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
    "time": "2026-10-20T19:40:10.999Z",
+   "win": true
+  },
+  "e94c6502-faf7-4aa3-80f0-9bf5e7aded65": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "contest",
+   "opp": "John Doe",
+   "oppId": "a159726f-af79-424d-85ac-fcfd76f2ec1e",
+   "time": "2026-10-22T07:20:21.361Z",
    "win": true
   },
   "e96328da-4770-420b-bda8-9a810ebe9837": {
@@ -9345,6 +9435,57 @@
    "oppId": "4f895cf2-77c0-4d65-91a6-320d46ecca54",
    "status": "open",
    "time": "2026-10-22T07:00:15.627Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 1,
+    "Unknown entity kind (2)": 3
+   },
+   "deaths_them": 2,
+   "deaths_us": 4,
+   "gems_them": "1017",
+   "gems_us": "566",
+   "id": "2b94aac3-894c-4bd6-a286-712cd59dfd5f",
+   "map": "corners",
+   "opp": "John Doe",
+   "oppId": "a159726f-af79-424d-85ac-fcfd76f2ec1e",
+   "status": "open",
+   "time": "2026-10-22T07:20:21.361Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 4,
+    "Unknown entity kind (2)": 31
+   },
+   "deaths_them": 21,
+   "deaths_us": 35,
+   "gems_them": "1011",
+   "gems_us": "417",
+   "id": "e0c3dc20-0e12-4d27-b647-2936eafde58d",
+   "map": "big-world",
+   "opp": "Pawsibble",
+   "oppId": "dcc95611-f947-4e73-ac58-7e3e62574bcf",
+   "status": "open",
+   "time": "2026-10-22T07:10:14.654Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 29,
+    "Unknown entity kind (2)": 3
+   },
+   "deaths_them": 3,
+   "deaths_us": 32,
+   "gems_them": "1014",
+   "gems_us": "76",
+   "id": "d00ff264-ceea-4f57-bf0a-2d7143ab3443",
+   "map": "fragment",
+   "opp": "Pawsibble",
+   "oppId": "dcc95611-f947-4e73-ac58-7e3e62574bcf",
+   "status": "open",
+   "time": "2026-10-22T07:10:14.653Z",
    "tries_at": 4
   }
  ],
