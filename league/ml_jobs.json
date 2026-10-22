@@ -9093,6 +9093,7 @@
   {
    "added": "2026-10-22T10:43:47Z",
    "claimed": "2026-10-22T10:43:47Z",
+   "finished": "2026-10-22T10:45:35Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 357,
    "kind": "rollout",
@@ -9101,8 +9102,19 @@
     "it": 33,
     "part": 0
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "arm": 2,
+    "decisions": 9205,
+    "games": 80,
+    "it": 33,
+    "maps": [
+     "the-farm",
+     "yellow-brick-road",
+     "ambush"
+    ],
+    "win": 0.263
+   },
+   "status": "done"
   }
  ]
 }
