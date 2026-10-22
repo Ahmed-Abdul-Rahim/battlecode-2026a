@@ -3280,6 +3280,23 @@
    },
    "status": "rejected",
    "title": "RL arm 1 (experts+target) iteration 20"
+  },
+  {
+   "added": "2026-10-22T07:44:50Z",
+   "area": "learning",
+   "id": 74,
+   "notes": "PPO on 21190 decisions; rollout win 0.423; reward -1.1748.",
+   "results": {},
+   "spec": {
+    "files": {
+     "bots/main/src/weights/router.bin": "ml-data:rl/arm1/policy-0025.bin"
+    },
+    "knobs": {
+     "ROUTER": 1
+    }
+   },
+   "status": "queued",
+   "title": "RL arm 1 (experts+target) iteration 25"
   }
  ]
 }
