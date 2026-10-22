@@ -11120,6 +11120,20 @@
     "win": 0.188
    },
    "status": "done"
+  },
+  {
+   "added": "2026-10-22T12:07:06Z",
+   "claimed": "2026-10-22T12:07:06Z",
+   "host": "DESKTOP-QVEMEEE",
+   "id": 433,
+   "kind": "rollout",
+   "params": {
+    "arm": 1,
+    "it": 82,
+    "part": 1
+   },
+   "result": {},
+   "status": "running"
   }
  ]
 }
