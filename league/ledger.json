@@ -927,6 +927,15 @@
    "time": "2026-10-20T20:20:12.929Z",
    "win": false
   },
+  "2ab08ce4-d2ad-4c2a-9960-e654f5bb0060": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "ambush",
+   "opp": "Rogue Noogers",
+   "oppId": "2cb78ebc-e61e-4ee0-9950-b3e3963d9743",
+   "time": "2026-10-22T09:10:16.236Z",
+   "win": false
+  },
   "2b17b8bc-d12d-449f-b300-f44ebfb9df7c": {
    "kind": "unranked",
    "live": 1,
@@ -962,6 +971,15 @@
    "oppId": "a159726f-af79-424d-85ac-fcfd76f2ec1e",
    "time": "2026-10-22T07:20:21.361Z",
    "win": false
+  },
+  "2c8266d4-1075-483c-8ba7-332613892767": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "gemfight",
+   "opp": "Rogue Noogers",
+   "oppId": "2cb78ebc-e61e-4ee0-9950-b3e3963d9743",
+   "time": "2026-10-22T09:10:16.236Z",
+   "win": true
   },
   "2c8f990b-7f77-48d8-ae09-a706ffcd2706": {
    "kind": "ranked",
@@ -2844,6 +2862,15 @@
    "time": "2026-10-22T05:20:12.743Z",
    "win": false
   },
+  "8b964ce4-5818-4f29-91f4-c094e9ea0030": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "monolith",
+   "opp": "Rogue Noogers",
+   "oppId": "2cb78ebc-e61e-4ee0-9950-b3e3963d9743",
+   "time": "2026-10-22T09:10:16.236Z",
+   "win": true
+  },
   "8b9ac0e5-92bf-40ad-9296-68c870f263bb": {
    "kind": "unranked",
    "live": 17,
@@ -3483,6 +3510,15 @@
    "time": "2026-10-20T15:32:13.244Z",
    "win": true
   },
+  "a83dc226-0240-412a-8150-fc510bf0a47b": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "fragment",
+   "opp": "Rogue Noogers",
+   "oppId": "2cb78ebc-e61e-4ee0-9950-b3e3963d9743",
+   "time": "2026-10-22T09:10:16.235Z",
+   "win": true
+  },
   "a93570e6-be2d-490f-ba36-912cd18f77d8": {
    "kind": "ranked",
    "live": null,
@@ -3805,6 +3841,15 @@
    "opp": "Rogue Lock Pickers",
    "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
    "time": "2026-10-20T19:40:10.999Z",
+   "win": true
+  },
+  "b69a7430-62ea-4e70-be40-fa4c81e20edb": {
+   "kind": "ranked",
+   "live": 17,
+   "map": "interlock",
+   "opp": "Rogue Noogers",
+   "oppId": "2cb78ebc-e61e-4ee0-9950-b3e3963d9743",
+   "time": "2026-10-22T09:10:16.236Z",
    "win": true
   },
   "b7136892-ff95-4545-b9c1-7c70241134dd": {
@@ -10694,6 +10739,23 @@
    "status": "open",
    "time": "2026-10-22T08:56:57.669Z",
    "tries_at": 1
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 18,
+    "Unknown entity kind (2)": 2
+   },
+   "deaths_them": 6,
+   "deaths_us": 20,
+   "gems_them": "1042",
+   "gems_us": "349",
+   "id": "2ab08ce4-d2ad-4c2a-9960-e654f5bb0060",
+   "map": "ambush",
+   "opp": "Rogue Noogers",
+   "oppId": "2cb78ebc-e61e-4ee0-9950-b3e3963d9743",
+   "status": "open",
+   "time": "2026-10-22T09:10:16.236Z",
+   "tries_at": 4
   }
  ],
  "map_files": {
