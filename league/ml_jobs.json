@@ -9333,6 +9333,7 @@
   {
    "added": "2026-10-22T10:55:37Z",
    "claimed": "2026-10-22T10:55:37Z",
+   "finished": "2026-10-22T10:56:36Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 366,
    "kind": "rollout",
@@ -9341,8 +9342,19 @@
     "it": 34,
     "part": 0
    },
-   "result": {},
-   "status": "running"
+   "result": {
+    "arm": 2,
+    "decisions": 22188,
+    "games": 80,
+    "it": 34,
+    "maps": [
+     "collision",
+     "concentrated-wealth",
+     "contest"
+    ],
+    "win": 0.287
+   },
+   "status": "done"
   }
  ]
 }
