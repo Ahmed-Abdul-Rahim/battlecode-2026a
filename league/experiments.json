@@ -3723,10 +3723,33 @@
    "added": "2026-10-22T10:11:06Z",
    "area": "learning",
    "claimed": "2026-10-22T10:15:04Z",
+   "finished": "2026-10-22T10:16:56Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 85,
-   "notes": "PPO on 36982 decisions; rollout win 0.352; reward -0.2729.",
-   "results": {},
+   "notes": "PPO on 36982 decisions; rollout win 0.352; reward -0.2729. Screen: win 0.275 vs 0.643, fitness 0.084 vs 0.518 (paired -0.434 +- 0.049).",
+   "results": {
+    "screen": {
+     "live": {
+      "deaths": 14.98,
+      "fitness": 0.518,
+      "games": 182,
+      "gem_margin": 0.102,
+      "win": 0.643
+     },
+     "paired": {
+      "mean": -0.4342,
+      "pairs": 182,
+      "se": 0.0489
+     },
+     "variant": {
+      "deaths": 8.35,
+      "fitness": 0.084,
+      "games": 182,
+      "gem_margin": -0.428,
+      "win": 0.275
+     }
+    }
+   },
    "spec": {
     "files": {
      "bots/main/src/weights/router.bin": "ml-data:rl/arm1/policy-0060.bin"
@@ -3735,7 +3758,7 @@
      "ROUTER": 1
     }
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "RL arm 1 (experts+target) iteration 60"
   },
   {
