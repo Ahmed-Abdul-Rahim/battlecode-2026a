@@ -1224,6 +1224,15 @@
    "time": "2026-10-20T20:00:10.344Z",
    "win": false
   },
+  "3421e85d-4f62-479f-971b-1398b3e08651": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "contest",
+   "opp": "Seacaps",
+   "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
+   "time": "2026-10-22T11:20:16.889Z",
+   "win": false
+  },
   "344945d1-f799-4466-a385-d2da7bb0e1f6": {
    "kind": "ranked",
    "live": 1,
@@ -1438,6 +1447,15 @@
    "opp": "Mousa",
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
    "time": "2026-10-20T18:00:13.679Z",
+   "win": false
+  },
+  "3cd7ec81-4613-467e-8a97-add187e76469": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "fragment",
+   "opp": "Seacaps",
+   "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
+   "time": "2026-10-22T11:20:16.889Z",
    "win": false
   },
   "3db84e5e-6fc4-4b5e-80ef-3ed572740389": {
@@ -2691,6 +2709,15 @@
    "time": "2026-10-20T18:40:10.897Z",
    "win": false
   },
+  "745d239f-f83a-4571-a2fb-36057274c155": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "elk-arena",
+   "opp": "Seacaps",
+   "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
+   "time": "2026-10-22T11:20:16.890Z",
+   "win": false
+  },
   "74d65cd6-3399-46ba-9658-90f8ea3cd55a": {
    "kind": "ranked",
    "live": 15,
@@ -3409,6 +3436,15 @@
    "opp": "Pikachu",
    "oppId": "dc24ee25-0f21-4353-8ebf-1ce5a82e22bb",
    "time": "2026-10-22T09:00:17.841Z",
+   "win": true
+  },
+  "9824551a-3a6d-42e6-a5a1-f0d872b2570e": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "hooks",
+   "opp": "Seacaps",
+   "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
+   "time": "2026-10-22T11:20:16.890Z",
    "win": true
   },
   "98370cfa-e25f-40a6-8afc-ce928a452fe0": {
@@ -4426,6 +4462,15 @@
    "opp": "ggez",
    "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
    "time": "2026-10-21T15:30:43.099Z",
+   "win": true
+  },
+  "c008fa13-b83d-4392-8cf5-4b13a704f09e": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "lanes",
+   "opp": "Seacaps",
+   "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
+   "time": "2026-10-22T11:20:16.890Z",
    "win": true
   },
   "c02655c5-5f6b-42d3-ac79-f145309dacde": {
@@ -11858,6 +11903,56 @@
    "status": "open",
    "time": "2026-10-22T11:10:50.506Z",
    "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 8
+   },
+   "deaths_them": 15,
+   "deaths_us": 8,
+   "gems_them": "828",
+   "gems_us": "360",
+   "id": "745d239f-f83a-4571-a2fb-36057274c155",
+   "map": "elk-arena",
+   "opp": "Seacaps",
+   "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
+   "status": "open",
+   "time": "2026-10-22T11:20:16.890Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 28,
+    "Unknown entity kind (2)": 22
+   },
+   "deaths_them": 56,
+   "deaths_us": 50,
+   "gems_them": "400",
+   "gems_us": "0",
+   "id": "3421e85d-4f62-479f-971b-1398b3e08651",
+   "map": "contest",
+   "opp": "Seacaps",
+   "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
+   "status": "open",
+   "time": "2026-10-22T11:20:16.889Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 61,
+    "Unknown entity kind (2)": 2
+   },
+   "deaths_them": 16,
+   "deaths_us": 63,
+   "gems_them": "902",
+   "gems_us": "290",
+   "id": "3cd7ec81-4613-467e-8a97-add187e76469",
+   "map": "fragment",
+   "opp": "Seacaps",
+   "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
+   "status": "open",
+   "time": "2026-10-22T11:20:16.889Z",
+   "tries_at": 4
   }
  ],
  "map_files": {
