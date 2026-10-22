@@ -2241,6 +2241,15 @@
    "time": "2026-10-20T16:30:26.059Z",
    "win": false
   },
+  "68437780-bad1-4016-b0ac-b287d6dcb5c3": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "stampede",
+   "opp": "Seacaps",
+   "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
+   "time": "2026-10-22T10:00:18.611Z",
+   "win": true
+  },
   "687e38ff-2d90-4a5c-9bd7-8ff36d5bf7f9": {
    "kind": "ranked",
    "live": 1,
@@ -2698,6 +2707,15 @@
    "opp": "ggez",
    "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
    "time": "2026-10-21T15:26:39.446Z",
+   "win": true
+  },
+  "7dab699e-d149-4748-b2ab-4df728149be8": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "gem-fields",
+   "opp": "Seacaps",
+   "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
+   "time": "2026-10-22T10:00:18.610Z",
    "win": true
   },
   "7df61bb9-02dd-47a1-9a90-bf6732c1d5f6": {
@@ -3625,6 +3643,15 @@
    "opp": "Midnight Recallers",
    "oppId": "8d8f5160-f68e-4660-916f-6729a42537e3",
    "time": "2026-10-20T15:32:13.244Z",
+   "win": true
+  },
+  "a7b604bf-cb1e-4de7-89ba-be55826ebca4": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "rushbait-v2",
+   "opp": "Seacaps",
+   "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
+   "time": "2026-10-22T10:00:18.611Z",
    "win": true
   },
   "a83dc226-0240-412a-8150-fc510bf0a47b": {
@@ -5004,6 +5031,15 @@
    "time": "2026-10-21T15:10:10.876Z",
    "win": true
   },
+  "e399407a-8954-4d07-ab78-fec5e7826bfe": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "fragment",
+   "opp": "Seacaps",
+   "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
+   "time": "2026-10-22T10:00:18.611Z",
+   "win": false
+  },
   "e3e5575b-55ba-4b60-b2ef-980b637c7991": {
    "kind": "ranked",
    "live": 10,
@@ -5183,6 +5219,15 @@
    "oppId": "d23f2627-97ea-48b1-b353-5bf2368008f4",
    "time": "2026-10-21T18:10:15.060Z",
    "win": true
+  },
+  "ea2dc8bd-9deb-45b7-ad04-0e6d150ca873": {
+   "kind": "ranked",
+   "live": 21,
+   "map": "starvation",
+   "opp": "Seacaps",
+   "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
+   "time": "2026-10-22T10:00:18.611Z",
+   "win": false
   },
   "ea7a33e5-aad2-4bef-bd49-33ac3e87e1e5": {
    "kind": "ranked",
@@ -11164,6 +11209,40 @@
    "superseded_by": 21,
    "time": "2026-10-22T09:50:15.250Z",
    "tries_at": 3
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 61,
+    "Unknown entity kind (2)": 2
+   },
+   "deaths_them": 16,
+   "deaths_us": 63,
+   "gems_them": "902",
+   "gems_us": "290",
+   "id": "e399407a-8954-4d07-ab78-fec5e7826bfe",
+   "map": "fragment",
+   "opp": "Seacaps",
+   "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
+   "status": "open",
+   "time": "2026-10-22T10:00:18.611Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "Unknown entity kind (1)": 23,
+    "Unknown entity kind (2)": 2
+   },
+   "deaths_them": 22,
+   "deaths_us": 25,
+   "gems_them": "348",
+   "gems_us": "324",
+   "id": "ea2dc8bd-9deb-45b7-ad04-0e6d150ca873",
+   "map": "starvation",
+   "opp": "Seacaps",
+   "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
+   "status": "open",
+   "time": "2026-10-22T10:00:18.611Z",
+   "tries_at": 2
   }
  ],
  "map_files": {
