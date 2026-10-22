@@ -12109,6 +12109,19 @@
     "win": 0.013
    },
    "status": "done"
+  },
+  {
+   "added": "2026-10-22T13:45:31Z",
+   "claimed": "2026-10-22T13:45:31Z",
+   "host": "DESKTOP-QVEMEEE",
+   "id": 470,
+   "kind": "update",
+   "params": {
+    "arm": 1,
+    "it": 90
+   },
+   "result": {},
+   "status": "running"
   }
  ]
 }
