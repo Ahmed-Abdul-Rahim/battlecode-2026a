@@ -4304,10 +4304,34 @@
    "added": "2026-10-23T17:37:30Z",
    "area": "farming",
    "claimed": "2026-10-23T17:45:10Z",
+   "finished": "2026-10-23T17:56:07Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 97,
    "notes": "Re-queued (lost in a registry overwrite). 4 plans replaced CAMP_FEASIBLE=24 with 1.",
    "results": {
+    "full": {
+     "h2h": 0.537,
+     "h2h_games": 80,
+     "live": {
+      "deaths": 23.25,
+      "fitness": 0.351,
+      "games": 720,
+      "gem_margin": 0.086,
+      "win": 0.562
+     },
+     "sparring": {
+      "mean": 0.0,
+      "pairs": 14,
+      "se": 0.0
+     },
+     "variant": {
+      "deaths": 22.83,
+      "fitness": 0.375,
+      "games": 720,
+      "gem_margin": 0.108,
+      "win": 0.576
+     }
+    },
     "screen": {
      "live": {
       "deaths": 14.45,
@@ -4333,7 +4357,7 @@
    "spec": {
     "ref": "origin/feat/plan-feasible"
    },
-   "status": "full",
+   "status": "passed",
    "title": "Map plans keep merged camp bits (CAMP_FEASIBLE 25)"
   },
   {
