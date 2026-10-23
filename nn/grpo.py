@@ -34,9 +34,12 @@ from nn import bcn1, data, spec  # noqa: E402
 
 PAIRS = 4  # antithetic pairs per iteration (8 perturbed teachers)
 SETUPS = 7  # (map, opponent, side) per iteration; every teacher plays all of them
-EVAL_EVERY = 4
+EVAL_EVERY = 2
 TARGET_FLIP = 0.03  # a perturbation should change about this share of goal choices
-LR = 0.5  # step length, in units of a typical perturbation's length
+LR = 0.1  # step length, in units of a typical perturbation's length
+#: Pull towards the imitation policy each iteration: only a consistent signal accumulates
+#: (fixed-length steps on a noisy estimate drifted to |theta| 31 and 0.07 vs the rules).
+DECAY = 0.97
 RESET_DROP = 0.10
 WIDTH = 512
 
@@ -183,8 +186,8 @@ def cmd_run(a) -> int:
         m = 0.7 * m + 0.3 * grad
         typical = sigma * np.sqrt(np.mean([np.sum(ew**2) + np.sum(eb**2) for ew, eb in dirs]))
         step = LR * typical * m / (np.linalg.norm(m) + 1e-12)
-        dw = dw + step[: g * n].reshape(g, n).astype(np.float32)
-        db = db + step[g * n :].astype(np.float32)
+        dw = DECAY * dw + step[: g * n].reshape(g, n).astype(np.float32)
+        db = DECAY * db + step[g * n :].astype(np.float32)
         st["it"], st["games"] = it + 1, st["games"] + len(res)
         np.savez(d / "theta.npz", dw=dw, db=db, m=m, v=v)
         log(d, f"it {it + 1}: {len(res)} games in {time.time() - t0:.0f}s, perturbed win {np.mean(wins):.3f}, "
