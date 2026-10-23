@@ -2637,6 +2637,15 @@
    "time": "2026-10-23T14:30:48.647Z",
    "win": false
   },
+  "55d631b0-6713-460f-8bd8-c49be2b5b1ca": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "yellow-brick-road",
+   "opp": "Teemo's Mushrooms",
+   "oppId": "b4da17fa-37e5-4d41-9468-c1144b87e7ee",
+   "time": "2026-10-23T16:20:26.274Z",
+   "win": false
+  },
   "55ea9c36-7730-40dd-8a06-b0eafc387df6": {
    "kind": "ranked",
    "live": 21,
@@ -3159,6 +3168,15 @@
    "time": "2026-10-23T15:00:25.894Z",
    "win": true
   },
+  "65ce77b9-e8f0-46b3-bfb8-78e6d8ab7b0b": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "starfish",
+   "opp": "Teemo's Mushrooms",
+   "oppId": "b4da17fa-37e5-4d41-9468-c1144b87e7ee",
+   "time": "2026-10-23T16:20:26.275Z",
+   "win": true
+  },
   "66073cf6-a8ed-4d8f-9c56-94b073a8fb9a": {
    "kind": "ranked",
    "live": 1,
@@ -3617,6 +3635,15 @@
    "oppId": "db94d858-5170-41ef-ad90-b2faf85dd5e8",
    "time": "2026-10-20T15:40:12.934Z",
    "win": false
+  },
+  "71fd96d8-bb99-420c-abdf-c629a545164f": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "quadrants",
+   "opp": "du.RAM",
+   "oppId": "d1cb1906-76ed-46c7-b005-90fac23a59cd",
+   "time": "2026-10-23T16:30:32.740Z",
+   "win": true
   },
   "7257ddf1-318c-4dd9-bdde-a205602ad9dd": {
    "kind": "ranked",
@@ -4563,6 +4590,15 @@
    "time": "2026-10-21T16:20:14.380Z",
    "win": true
   },
+  "92430394-d51f-4caf-a089-835137690b95": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "stampede",
+   "opp": "Teemo's Mushrooms",
+   "oppId": "b4da17fa-37e5-4d41-9468-c1144b87e7ee",
+   "time": "2026-10-23T16:20:26.274Z",
+   "win": true
+  },
   "92a36a6d-5d2c-4b8f-a5da-929adc2982d2": {
    "kind": "ranked",
    "live": 1,
@@ -4579,6 +4615,15 @@
    "opp": "B-Team",
    "oppId": "e39c3d57-1813-4a18-a7e7-2b1df6bb3594",
    "time": "2026-10-21T14:10:17.167Z",
+   "win": true
+  },
+  "93ec278f-9c7d-4cfb-9082-b1c36fcc7970": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "rows",
+   "opp": "Teemo's Mushrooms",
+   "oppId": "b4da17fa-37e5-4d41-9468-c1144b87e7ee",
+   "time": "2026-10-23T16:20:26.275Z",
    "win": true
   },
   "941cc6e4-e945-425b-b435-6a611c3cbb2f": {
@@ -4606,6 +4651,15 @@
    "opp": "prism best girl",
    "oppId": "38e6d8c4-1608-44f5-956b-08390f564336",
    "time": "2026-10-22T08:21:22.340Z",
+   "win": false
+  },
+  "9507bedc-2b15-4e10-8ec6-51f92b314346": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "eight",
+   "opp": "du.RAM",
+   "oppId": "d1cb1906-76ed-46c7-b005-90fac23a59cd",
+   "time": "2026-10-23T16:30:32.740Z",
    "win": false
   },
   "9510b279-9a55-446c-a8b6-83e325158392": {
@@ -6046,6 +6100,15 @@
    "opp": "Sneaky Bush Campers",
    "oppId": "5e0c725a-b9b4-4523-8739-4427f20b9ce5",
    "time": "2026-10-23T14:58:19.910Z",
+   "win": false
+  },
+  "be940fcb-b978-42fb-b651-a31791f17dc7": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "split",
+   "opp": "du.RAM",
+   "oppId": "d1cb1906-76ed-46c7-b005-90fac23a59cd",
+   "time": "2026-10-23T16:30:32.740Z",
    "win": false
   },
   "bea37776-17aa-4ce7-b943-e836cf893ed5": {
@@ -7686,6 +7749,15 @@
    "time": "2026-10-21T16:10:12.194Z",
    "win": true
   },
+  "ec878015-4335-4169-b7ec-6e8163189119": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "rushbait-v2",
+   "opp": "Teemo's Mushrooms",
+   "oppId": "b4da17fa-37e5-4d41-9468-c1144b87e7ee",
+   "time": "2026-10-23T16:20:26.275Z",
+   "win": true
+  },
   "ecd0fd60-3c99-41d9-9603-445cf3b71a3b": {
    "kind": "ranked",
    "live": 1,
@@ -8127,6 +8199,15 @@
    "time": "2026-10-22T08:10:22.177Z",
    "win": true
   },
+  "f839c7d6-8aae-494a-906d-a2ca1bfb41a8": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "ambush",
+   "opp": "du.RAM",
+   "oppId": "d1cb1906-76ed-46c7-b005-90fac23a59cd",
+   "time": "2026-10-23T16:30:32.739Z",
+   "win": false
+  },
   "f83d3847-2f07-4783-88c5-e27a1cb4111e": {
    "kind": "ranked",
    "live": 17,
@@ -8314,6 +8395,15 @@
    "opp": "Prime Bot 007",
    "oppId": "4b09b8ff-b429-43dc-9be1-180565784e87",
    "time": "2026-10-22T09:40:19.255Z",
+   "win": false
+  },
+  "fd7dfa70-9126-418a-a0f0-abce16e35727": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "elkring",
+   "opp": "du.RAM",
+   "oppId": "d1cb1906-76ed-46c7-b005-90fac23a59cd",
+   "time": "2026-10-23T16:30:32.740Z",
    "win": false
   },
   "fd8f8c8c-2f52-4143-81f4-2db66cf002b0": {
@@ -16861,6 +16951,91 @@
    "oppId": "b58c08d8-498a-4fc7-9585-f4fafaefa688",
    "status": "open",
    "time": "2026-10-23T16:10:40.121Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 8,
+    "champion": 5
+   },
+   "deaths_them": 4,
+   "deaths_us": 13,
+   "gems_them": "1000",
+   "gems_us": "347",
+   "id": "be940fcb-b978-42fb-b651-a31791f17dc7",
+   "map": "split",
+   "opp": "du.RAM",
+   "oppId": "d1cb1906-76ed-46c7-b005-90fac23a59cd",
+   "status": "open",
+   "time": "2026-10-23T16:30:32.740Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 10,
+    "champion": 19
+   },
+   "deaths_them": 8,
+   "deaths_us": 29,
+   "gems_them": "1012",
+   "gems_us": "792",
+   "id": "fd7dfa70-9126-418a-a0f0-abce16e35727",
+   "map": "elkring",
+   "opp": "du.RAM",
+   "oppId": "d1cb1906-76ed-46c7-b005-90fac23a59cd",
+   "status": "open",
+   "time": "2026-10-23T16:30:32.740Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 54
+   },
+   "deaths_them": 9,
+   "deaths_us": 56,
+   "gems_them": "1003",
+   "gems_us": "19",
+   "id": "9507bedc-2b15-4e10-8ec6-51f92b314346",
+   "map": "eight",
+   "opp": "du.RAM",
+   "oppId": "d1cb1906-76ed-46c7-b005-90fac23a59cd",
+   "status": "open",
+   "time": "2026-10-23T16:30:32.740Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 5,
+    "champion": 3
+   },
+   "deaths_them": 4,
+   "deaths_us": 8,
+   "gems_them": "1026",
+   "gems_us": "786",
+   "id": "f839c7d6-8aae-494a-906d-a2ca1bfb41a8",
+   "map": "ambush",
+   "opp": "du.RAM",
+   "oppId": "d1cb1906-76ed-46c7-b005-90fac23a59cd",
+   "status": "open",
+   "time": "2026-10-23T16:30:32.739Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 19,
+    "champion": 17
+   },
+   "deaths_them": 28,
+   "deaths_us": 36,
+   "gems_them": "1008",
+   "gems_us": "267",
+   "id": "55d631b0-6713-460f-8bd8-c49be2b5b1ca",
+   "map": "yellow-brick-road",
+   "opp": "Teemo's Mushrooms",
+   "oppId": "b4da17fa-37e5-4d41-9468-c1144b87e7ee",
+   "status": "open",
+   "time": "2026-10-23T16:20:26.274Z",
    "tries_at": 1
   }
  ],
