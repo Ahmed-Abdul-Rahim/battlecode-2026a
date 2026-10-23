@@ -1008,6 +1008,15 @@
    "time": "2026-10-22T04:50:12.345Z",
    "win": true
   },
+  "20d8b4d8-c236-41ef-aba2-ceca3b9e57d1": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "lanes",
+   "opp": "Shinshilachki",
+   "oppId": "abb3b776-7d71-41f6-90c6-885aebdc64b4",
+   "time": "2026-10-23T17:20:24.400Z",
+   "win": true
+  },
   "20de418c-2f85-41fd-b9d7-bf7cd2384d42": {
    "kind": "unranked",
    "live": 23,
@@ -1537,6 +1546,15 @@
    "opp": "DeepSleep",
    "oppId": "c14b952b-899c-4f25-a4f8-d3a4b06cbf9a",
    "time": "2026-10-20T20:10:09.725Z",
+   "win": false
+  },
+  "2f47fd0a-a173-4025-b1b4-72b7bd98270f": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "elk-arena",
+   "opp": "Kuchh_bhii",
+   "oppId": "d02e5f2c-f75a-499c-b5e9-418c425a0746",
+   "time": "2026-10-23T17:10:21.741Z",
    "win": false
   },
   "2f4aa7bb-4b18-489a-a930-7161f4c376ba": {
@@ -2241,6 +2259,15 @@
    "time": "2026-10-22T08:00:13.768Z",
    "win": true
   },
+  "46b369a8-b3b0-4164-bc60-28cd332683cc": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "the-farm",
+   "opp": "** sudo rm -rf Victory**",
+   "oppId": "05f7f6ef-25e7-4707-b0aa-51d1106c980a",
+   "time": "2026-10-23T17:30:31.351Z",
+   "win": false
+  },
   "46f1654e-e765-48e2-bd2a-b44d4db6ce62": {
    "kind": "unranked",
    "live": 10,
@@ -2447,6 +2474,15 @@
    "oppId": "4fbe2b8b-0a69-4dd5-b3f0-d8787101d7bc",
    "time": "2026-10-23T14:54:32.635Z",
    "win": false
+  },
+  "4e048b61-67b5-4ea3-91a5-910c59fa0566": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "contest",
+   "opp": "Shinshilachki",
+   "oppId": "abb3b776-7d71-41f6-90c6-885aebdc64b4",
+   "time": "2026-10-23T17:20:24.400Z",
+   "win": true
   },
   "4e0718f5-690b-4790-8d6d-a44c05cad10a": {
    "kind": "ranked",
@@ -3087,6 +3123,15 @@
    "time": "2026-10-22T10:50:13.670Z",
    "win": false
   },
+  "6056b2dd-c2df-41f4-a36f-0ec741d9015d": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "rows",
+   "opp": "** sudo rm -rf Victory**",
+   "oppId": "05f7f6ef-25e7-4707-b0aa-51d1106c980a",
+   "time": "2026-10-23T17:30:31.351Z",
+   "win": true
+  },
   "60c05fbf-cc4a-4e4b-a8a9-c61a12e94724": {
    "kind": "ranked",
    "live": 17,
@@ -3221,6 +3266,15 @@
    "oppId": "5e0c725a-b9b4-4523-8739-4427f20b9ce5",
    "time": "2026-10-23T14:58:19.859Z",
    "win": false
+  },
+  "6370e3f1-1bc1-41c2-a848-7aeb1e30b5d0": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "road-of-riches",
+   "opp": "Shinshilachki",
+   "oppId": "abb3b776-7d71-41f6-90c6-885aebdc64b4",
+   "time": "2026-10-23T17:20:24.400Z",
+   "win": true
   },
   "6391cd4b-173a-45ae-9b13-72e3019f42a8": {
    "kind": "unranked",
@@ -4221,6 +4275,24 @@
    "time": "2026-10-23T17:00:41.033Z",
    "win": false
   },
+  "829b1556-6aac-4a25-b635-a18bf1c670b4": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "yellow-brick-road",
+   "opp": "Kuchh_bhii",
+   "oppId": "d02e5f2c-f75a-499c-b5e9-418c425a0746",
+   "time": "2026-10-23T17:10:21.741Z",
+   "win": false
+  },
+  "8315fa3f-0cd1-4911-8fe7-9e00c7ece0d9": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "reverse-spiral",
+   "opp": "Kuchh_bhii",
+   "oppId": "d02e5f2c-f75a-499c-b5e9-418c425a0746",
+   "time": "2026-10-23T17:10:21.741Z",
+   "win": false
+  },
   "83195c85-9f88-4e0b-91d9-e306c667d003": {
    "kind": "unranked",
    "live": 1,
@@ -4229,6 +4301,15 @@
    "oppId": "1890540d-1ffc-4847-adbf-d0d08772f268",
    "time": "2026-10-20T17:51:26.756Z",
    "win": false
+  },
+  "8323817a-5921-45d4-98e9-e2c955d1d2b1": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "shortcut",
+   "opp": "Shinshilachki",
+   "oppId": "abb3b776-7d71-41f6-90c6-885aebdc64b4",
+   "time": "2026-10-23T17:20:24.400Z",
+   "win": true
   },
   "832d359a-c4ce-4889-9ed3-28e608be85c6": {
    "kind": "ranked",
@@ -4336,6 +4417,15 @@
    "opp": "Gilded Fog Walkers",
    "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
    "time": "2026-10-22T08:52:34.531Z",
+   "win": true
+  },
+  "865b729a-aad8-4e07-980a-fa15f2238c8e": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "gem-fields",
+   "opp": "** sudo rm -rf Victory**",
+   "oppId": "05f7f6ef-25e7-4707-b0aa-51d1106c980a",
+   "time": "2026-10-23T17:30:31.351Z",
    "win": true
   },
   "86780620-e6a0-483b-93c6-06f1c6a767d4": {
@@ -4579,6 +4669,15 @@
    "opp": "haha",
    "oppId": "70dc8c4e-5d63-4f8d-8915-1b9c7fe7fee7",
    "time": "2026-10-20T17:20:08.637Z",
+   "win": true
+  },
+  "8e1f9f74-4586-4ca0-b5c4-b958dd0b2aeb": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "corridors",
+   "opp": "Kuchh_bhii",
+   "oppId": "d02e5f2c-f75a-499c-b5e9-418c425a0746",
+   "time": "2026-10-23T17:10:21.741Z",
    "win": true
   },
   "8e6ba0f6-fb68-4784-97e9-8e952f726d87": {
@@ -4984,6 +5083,15 @@
    "opp": "vc?",
    "oppId": "910ccbab-531b-4efa-a223-0335a686ad83",
    "time": "2026-10-20T21:50:14.541Z",
+   "win": true
+  },
+  "99763428-76bd-4b56-99c6-eaee2638c2cf": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "corridors",
+   "opp": "Shinshilachki",
+   "oppId": "abb3b776-7d71-41f6-90c6-885aebdc64b4",
+   "time": "2026-10-23T17:20:24.400Z",
    "win": true
   },
   "9a6ce9a7-11af-4300-8a08-2a5841b3eba3": {
@@ -5832,6 +5940,15 @@
    "time": "2026-10-21T14:00:16.613Z",
    "win": true
   },
+  "b3c517aa-f095-4300-a1b6-b63716a4627b": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "swirl",
+   "opp": "** sudo rm -rf Victory**",
+   "oppId": "05f7f6ef-25e7-4707-b0aa-51d1106c980a",
+   "time": "2026-10-23T17:30:31.351Z",
+   "win": false
+  },
   "b3cbf3d9-b186-4d49-9a11-46c56578c60b": {
    "kind": "ranked",
    "live": 23,
@@ -6029,6 +6146,15 @@
    "oppId": "4e6d067e-75a9-4891-bc9d-cf69e5def756",
    "time": "2026-10-21T15:50:14.109Z",
    "win": true
+  },
+  "b79f8ffe-87aa-4eeb-a551-e82e70a74f37": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "lost-world",
+   "opp": "Kuchh_bhii",
+   "oppId": "d02e5f2c-f75a-499c-b5e9-418c425a0746",
+   "time": "2026-10-23T17:10:21.741Z",
+   "win": false
   },
   "b7be61b6-cdf0-49b5-b0e4-efc49e72011b": {
    "kind": "ranked",
@@ -7460,6 +7586,15 @@
    "oppId": "4fbe2b8b-0a69-4dd5-b3f0-d8787101d7bc",
    "time": "2026-10-22T14:00:12.311Z",
    "win": false
+  },
+  "df328c0f-657e-4fef-8e20-364ea3b5d37f": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "hooks",
+   "opp": "** sudo rm -rf Victory**",
+   "oppId": "05f7f6ef-25e7-4707-b0aa-51d1106c980a",
+   "time": "2026-10-23T17:30:31.351Z",
+   "win": true
   },
   "df37b4b5-d78c-4006-bf63-313af8cba9fc": {
    "kind": "ranked",
@@ -17567,6 +17702,106 @@
    "oppId": "3881272c-9c7f-4b3d-94f9-4c0788a3b27a",
    "status": "open",
    "time": "2026-10-23T17:00:26.170Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "champion": 11
+   },
+   "deaths_them": 8,
+   "deaths_us": 11,
+   "gems_them": "183",
+   "gems_us": "0",
+   "id": "8315fa3f-0cd1-4911-8fe7-9e00c7ece0d9",
+   "map": "reverse-spiral",
+   "opp": "Kuchh_bhii",
+   "oppId": "d02e5f2c-f75a-499c-b5e9-418c425a0746",
+   "status": "open",
+   "time": "2026-10-23T17:10:21.741Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 31
+   },
+   "deaths_them": 11,
+   "deaths_us": 33,
+   "gems_them": "1010",
+   "gems_us": "119",
+   "id": "b79f8ffe-87aa-4eeb-a551-e82e70a74f37",
+   "map": "lost-world",
+   "opp": "Kuchh_bhii",
+   "oppId": "d02e5f2c-f75a-499c-b5e9-418c425a0746",
+   "status": "open",
+   "time": "2026-10-23T17:10:21.741Z",
+   "tries_at": 5
+  },
+  {
+   "contexts": {
+    "camp": 13,
+    "champion": 24
+   },
+   "deaths_them": 47,
+   "deaths_us": 37,
+   "gems_them": "1006",
+   "gems_us": "580",
+   "id": "829b1556-6aac-4a25-b635-a18bf1c670b4",
+   "map": "yellow-brick-road",
+   "opp": "Kuchh_bhii",
+   "oppId": "d02e5f2c-f75a-499c-b5e9-418c425a0746",
+   "status": "open",
+   "time": "2026-10-23T17:10:21.741Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "champion": 29
+   },
+   "deaths_them": 21,
+   "deaths_us": 29,
+   "gems_them": "504",
+   "gems_us": "360",
+   "id": "2f47fd0a-a173-4025-b1b4-72b7bd98270f",
+   "map": "elk-arena",
+   "opp": "Kuchh_bhii",
+   "oppId": "d02e5f2c-f75a-499c-b5e9-418c425a0746",
+   "status": "open",
+   "time": "2026-10-23T17:10:21.741Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 9,
+    "champion": 21
+   },
+   "deaths_them": 5,
+   "deaths_us": 30,
+   "gems_them": "948",
+   "gems_us": "236",
+   "id": "46b369a8-b3b0-4164-bc60-28cd332683cc",
+   "map": "the-farm",
+   "opp": "** sudo rm -rf Victory**",
+   "oppId": "05f7f6ef-25e7-4707-b0aa-51d1106c980a",
+   "status": "open",
+   "time": "2026-10-23T17:30:31.351Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 47
+   },
+   "deaths_them": 8,
+   "deaths_us": 49,
+   "gems_them": "1015",
+   "gems_us": "263",
+   "id": "b3c517aa-f095-4300-a1b6-b63716a4627b",
+   "map": "swirl",
+   "opp": "** sudo rm -rf Victory**",
+   "oppId": "05f7f6ef-25e7-4707-b0aa-51d1106c980a",
+   "status": "open",
+   "time": "2026-10-23T17:30:31.351Z",
    "tries_at": 4
   }
  ],

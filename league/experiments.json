@@ -4176,6 +4176,107 @@
    },
    "status": "rejected",
    "title": "RL arm 1 (experts+target) iteration 90"
+  },
+  {
+   "added": "2026-10-23T17:25:05Z",
+   "area": "pathing",
+   "claimed": "2026-10-23T17:25:08Z",
+   "finished": "2026-10-23T17:35:14Z",
+   "host": "DESKTOP-QVEMEEE",
+   "id": 95,
+   "notes": "Straight-line chase froze both teams up to 1572 rounds on reverse-spiral; bounded host distance field when no closer step exists.",
+   "results": {
+    "full": {
+     "h2h": 0.55,
+     "h2h_games": 80,
+     "live": {
+      "deaths": 23.25,
+      "fitness": 0.351,
+      "games": 720,
+      "gem_margin": 0.086,
+      "win": 0.562
+     },
+     "sparring": {
+      "mean": 0.0826,
+      "pairs": 14,
+      "se": 0.1482
+     },
+     "variant": {
+      "deaths": 23.74,
+      "fitness": 0.316,
+      "games": 720,
+      "gem_margin": 0.071,
+      "win": 0.536
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 14.45,
+      "fitness": 0.449,
+      "games": 126,
+      "gem_margin": 0.09,
+      "win": 0.571
+     },
+     "paired": {
+      "mean": -0.0115,
+      "pairs": 126,
+      "se": 0.0502
+     },
+     "variant": {
+      "deaths": 15.09,
+      "fitness": 0.438,
+      "games": 126,
+      "gem_margin": 0.069,
+      "win": 0.571
+     }
+    }
+   },
+   "spec": {
+    "knobs": {
+     "PATH_CHASE": 1
+    },
+    "ref": "origin/feat/path-chase"
+   },
+   "status": "rejected",
+   "title": "Chase round walls (reverse-spiral freeze)"
+  },
+  {
+   "added": "2026-10-23T17:36:29Z",
+   "area": "rules",
+   "claimed": "2026-10-23T17:37:43Z",
+   "host": "DESKTOP-QVEMEEE",
+   "id": 96,
+   "notes": "Ability multipliers from the 2026-10-23 rules docs.",
+   "results": {},
+   "spec": {
+    "ref": "origin/feat/rules-sync"
+   },
+   "status": "screening",
+   "title": "Rules sync: Ren stun 0.75, Heart of Ruin dash 1.5"
+  },
+  {
+   "added": "2026-10-23T17:37:30Z",
+   "area": "farming",
+   "id": 97,
+   "notes": "Re-queued (lost in a registry overwrite). 4 plans replaced CAMP_FEASIBLE=24 with 1.",
+   "results": {},
+   "spec": {
+    "ref": "origin/feat/plan-feasible"
+   },
+   "status": "queued",
+   "title": "Map plans keep merged camp bits (CAMP_FEASIBLE 25)"
+  },
+  {
+   "added": "2026-10-23T17:37:36Z",
+   "area": "safety",
+   "id": 98,
+   "notes": "Re-queued. CAMP_SAFE=3 only on 8 elk-heavy maps.",
+   "results": {},
+   "spec": {
+    "ref": "origin/feat/elk-safe"
+   },
+   "status": "queued",
+   "title": "Camp safety on elk-heavy maps (plans)"
   }
  ]
 }
