@@ -2616,6 +2616,9 @@ impl Bot {
             Mode::Complex => "complex",
             Mode::Override(_) => "override",
         };
+        // nn/expert.py: score at this turn (branch values; truncated games have no statistics).
+        println!("S {{\"r\":{round},\"c\":\"{}\",\"us\":{},\"them\":{},\"g\":{},\"lg\":{}}}",
+            champ_name(self.kind), ctx.ally_tributed, ctx.enemy_tributed, ctx.gems, self.ledger.lifetime_gold);
         telemetry::turn(&TurnLog {
             round,
             champ: champ_name(self.kind),

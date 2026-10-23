@@ -51,6 +51,7 @@ DECISIONS = 4  # searched decisions per base game
 ALTS = 3  # alternatives per decision
 H = 150  # rounds a branch plays after its decision
 COMMIT = 20  # rounds the forced intent is kept (while available)
+GOLD_PER_GEM = 0.1
 MARGIN = 4.0  # value units (gems) an alternative must win by
 OVERSAMPLE = 8
 NULL_EVERY = 6  # every 6th base game also gets a null branch (forced = own choice): must give 0
@@ -119,28 +120,35 @@ def decisions(bundle: Path, side: str) -> list[dict]:
     return out
 
 
-def value(stats: Path, side: str, t: int) -> float:
-    """Our team's (submitted + half of carried gems) minus theirs at the start of round t."""
-    s = json.loads(stats.read_text(encoding="utf-8-sig"))
-    us = f"team{side.upper()}"
+def scores(bundle: Path, side: str) -> list[tuple[int, float]]:
+    """(round, team gem difference after that turn) from our bot's own score lines ("S", every
+    turn): submitted gems (ours - theirs) + half of our carried gems + our earned gold / 10 (a
+    wolf pays 40 gold and 4 gems; early branches rarely change gems within H rounds). Truncated games have no
+    statistics file, so the bot's log is the source; base and branch games use the same one."""
+    out: list[tuple[int, float]] = []
+    carried: dict[str, float] = {}
+    gold: dict[str, float] = {}
+    for ln in data._lines(bundle, side):
+        if ln.startswith("S "):
+            o = json.loads(ln[2:])
+            carried[o["c"]] = float(o["g"])
+            gold[o["c"]] = float(o.get("lg", 0))
+            out.append((int(o["r"]), float(o["us"]) - float(o["them"]) + 0.5 * sum(carried.values())
+                        + GOLD_PER_GEM * sum(gold.values())))
+    return out
 
-    def at(runs: list[dict]) -> float:
-        k, v = 0, 0.0
-        for r in runs:
-            v = float(r["value"])
-            k += int(r["duration"])
-            if k > t:
-                break
-        return v
 
+def value_at(sc: list[tuple[int, float]], t: int) -> float:
     v = 0.0
-    for tl in s["teamTimelines"]:
-        if tl["metric"] == "submittedGems":
-            v += at(tl["runs"]) * (1 if tl["owner"] == us else -1)
-    for tl in s["championTimelines"]:
-        if tl["metric"] == "gems":
-            v += 0.5 * at(tl["runs"]) * (1 if tl["owner"]["team"] == us else -1)
+    for r, x in sc:
+        if r > t:
+            break
+        v = x
     return v
+
+
+def value(bundle: Path, side: str, t: int) -> float:
+    return value_at(scores(bundle, side), t)
 
 
 def base_games(st: dict, base: str, rng: random.Random) -> list[dict]:
@@ -180,13 +188,15 @@ def search(st: dict, games: list[dict], pool: list[str], rng: random.Random) -> 
             specs.append((gi, d, d["a"]))
     specs.sort(key=lambda s: s[1]["r"])
     vals: dict[int, float] = {}
+    missing = 0
     out_root = OUT / "games" / f"branch-{st['it']}"
     for b0 in range(0, len(specs), POOL):
         batch = specs[b0 : b0 + POOL]
         games_ = []
         for bot, (gi, d, alt) in zip(pool, batch):
             g = games[gi]
-            patch(bot, (d["r"], KIND[d["c"]], alt, COMMIT))
+            # a null branch (forced = own choice) must not hold the goal: then it replays the base
+            patch(bot, (d["r"], KIND[d["c"]], alt, COMMIT if alt != d["a"] else 0))
             games_.append((bot, g["opp"], g["map"]) if g["a"] else (g["opp"], bot, g["map"]))
         rounds = max(d["r"] for _, d, _ in batch) + H + 1
         out = out_root / f"b{b0 // POOL}"
@@ -195,19 +205,29 @@ def search(st: dict, games: list[dict], pool: list[str], rng: random.Random) -> 
         for k, ((gi, d, alt), r) in enumerate(zip(batch, res)):
             g = games[gi]
             try:
-                vals[b0 + k] = value(Path(r.stats), g["side"], d["r"] + H)
-            except (OSError, json.JSONDecodeError, KeyError):
+                # only a branch whose forced goal fired counts (its "branch" event is in the log)
+                lines = data._lines(Path(r.replay), g["side"])
+                if not any(ln.startswith("E ") and '"k":"branch"' in ln for ln in lines):
+                    missing += 1
+                    continue
+                vals[b0 + k] = value(Path(r.replay), g["side"], d["r"] + H)
+            except (OSError, json.JSONDecodeError, KeyError, zipfile.BadZipFile):
                 pass
         shutil.rmtree(out, ignore_errors=True)
+    if missing:
+        log(f"  {missing} of {len(specs)} branches never fired (ignored)")
     recs: dict[tuple[int, int, str], dict] = {}
+    base_sc: dict[int, list] = {}
     for k, (gi, d, alt) in enumerate(specs):
         if k not in vals:
             continue
         g = games[gi]
         key = (gi, d["r"], d["c"])
+        if gi not in base_sc:
+            base_sc[gi] = scores(Path(g["res"].replay), g["side"])
         if key not in recs:
             recs[key] = {"gi": gi, "r": d["r"], "c": d["c"], "a": d["a"],
-                         "base": value(Path(g["res"].stats), g["side"], d["r"] + H), "alts": {}}
+                         "base": value_at(base_sc[gi], d["r"] + H), "alts": {}}
         recs[key]["alts"][alt] = vals[k]
     return list(recs.values())
 
