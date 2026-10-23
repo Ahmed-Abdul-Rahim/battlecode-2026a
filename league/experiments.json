@@ -4176,6 +4176,21 @@
    },
    "status": "rejected",
    "title": "RL arm 1 (experts+target) iteration 90"
+  },
+  {
+   "added": "2026-10-23T17:25:05Z",
+   "area": "pathing",
+   "id": 95,
+   "notes": "Straight-line chase froze both teams up to 1572 rounds on reverse-spiral; bounded host distance field when no closer step exists.",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "PATH_CHASE": 1
+    },
+    "ref": "origin/feat/path-chase"
+   },
+   "status": "queued",
+   "title": "Chase round walls (reverse-spiral freeze)"
   }
  ]
 }
