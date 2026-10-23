@@ -119,7 +119,7 @@ Each turn normally allows one ordinary move, one basic attack, and one successfu
 
 The game engine runs each round's actions through phases, see the below graphic to understand the order of operations:
 
-At round start: camp respawns, existing spell/ward updates, camp captures, then camp actions. Champion turns follow, alternating teams; the starting team swaps each round. Each champion starts by resolving zero timers: respawn, ward recharge, buff/shield expiry, then channels. At turn end, timers decrement without triggering these effects; spawn recovery still happens at turn end. Recall arrives at turn start, so staying on spawn heals at that same turn's end.
+At round start: camp respawns, existing spell/ward updates, camp captures, then camp turns. Camps expire zero-timer buffs at turn start, act if awake, then decrement cooldowns and buffs at turn end, including newly applied buffs. Sleeping camps still process timers. Champion turns follow, alternating teams; the starting team swaps each round. Each champion starts by resolving zero timers: respawn, ward recharge, buff/shield expiry, then channels. At turn end, timers decrement without triggering these effects; spawn recovery still happens at turn end. Recall arrives at turn start, so staying on spawn heals at that same turn's end.
 
 ##### Who goes first?
 
@@ -187,7 +187,7 @@ The main way to obtain resources is to defeat camps or monsters, on the map. The
 
 The map is populated with a variety of monsters. They vary in health, strength (damage dealt per turn) and the rewards they drop.
 
-The monsters are friendly until they are hit! When a champion strikes a monster, it will awaken attacking the nearest champion every turn, until it either dies or does not take damage for 2 turns.
+The monsters are friendly until they are hit! When a champion strikes a monster, it will awaken attacking the nearest champion every turn, until it either dies or has no targets in range for 2 turns.
 
 ### After defeating a camp, make sure to capture!
 
@@ -534,8 +534,8 @@ Target / range: Ground · 2 tiles. Walking: Compatible. Cooldown: 8 owner turn e
 
 | Stat | Base | Growth per matching shard |
 | --- | --- | --- |
-| Health | 900 | 100 |
-| Strength | 50 | 5 |
+| Health | 1000 | 100 |
+| Strength | 55 | 5 |
 | Focus | 100 | 10 |
 
 Attack type: Ranged. Basic attack range: 3 tiles.
@@ -548,7 +548,7 @@ A ranged spellcaster who gains Focus from carried gems, trading safe tributes fo
 
 **Prism**
 
-**Passive:** Prism gains 1 Focus per carried gem. Ten carried gems add 10 Focus. Tributing or losing those gems removes that bonus.
+**Passive:** Prism gains 1.5 Focus per carried gem. Ten carried gems add 15 Focus. Tributing or losing those gems removes that bonus.
 
 #### Slot 0: Damage and stun
 
@@ -596,9 +596,9 @@ Target / range: Ground · 4. Walking: Excludes walking. Cooldown: 8 owner turn e
 
 | Stat | Base | Growth per matching shard |
 | --- | --- | --- |
-| Health | 750 | 75 |
+| Health | 650 | 65 |
 | Strength | 30 | 3.5 |
-| Focus | 85 | 9 |
+| Focus | 70 | 7 |
 
 Attack type: Ranged. Basic attack range: 3 tiles.
 
@@ -628,7 +628,7 @@ Target / range: Ground · 2 tiles. Walking: Compatible. Cooldown: 8 owner turn e
 
 | Stat | Base | Growth per matching shard |
 | --- | --- | --- |
-| Health | 800 | 100 |
+| Health | 1000 | 100 |
 | Strength | 70 | 6 |
 | Focus | 100 | 10 |
 
@@ -692,9 +692,9 @@ Target / range: Enemy or camp · 4. Walking: Excludes walking. Cooldown: 8 owner
 
 | Stat | Base | Growth per matching shard |
 | --- | --- | --- |
-| Health | 750 | 75 |
+| Health | 900 | 75 |
 | Strength | 45 | 5 |
-| Focus | 100 | 10 |
+| Focus | 110 | 10 |
 
 Attack type: Ranged. Basic attack range: 3 tiles.
 
@@ -740,7 +740,7 @@ A melee champion with retaliation damage, a targeted stun and a short dash.
 
 #### Slot 0: Damage and stun
 
-1.25 × Focus damage and a one-round stun.
+0.75 × Focus damage and a one-round stun.
 
 Target / range: Enemy or camp · 4. Walking: Excludes walking. Cooldown: 8 owner turn ends.
 
@@ -810,7 +810,7 @@ Target / range: Self. Walking: Compatible. Cooldown: 8 owner turn ends.
 
 #### Slot 1: Dash
 
-Dash to a destination within 2 tiles. Does 1.75 × Focus to the surrounding tiles on arrival and stuns enemies/camps hit. Hits within a Chebyshev radius of 1, including diagonals; stun lasts one turn. Damage is increased by the missing-health passive.
+Dash to a destination within 2 tiles. Does 1.5 × Focus to the surrounding tiles on arrival and stuns enemies/camps hit. Hits within a Chebyshev radius of 1, including diagonals; stun lasts one turn. Damage is increased by the missing-health passive.
 
 Target / range: Ground · 2 tiles. Walking: Compatible. Cooldown: 8 owner turn ends.
 
@@ -819,7 +819,7 @@ Target / range: Ground · 2 tiles. Walking: Compatible. Cooldown: 8 owner turn e
 | Stat | Base | Growth per matching shard |
 | --- | --- | --- |
 | Health | 1000 | 100 |
-| Strength | 40 | 4 |
+| Strength | 30 | 3.5 |
 | Focus | 100 | 12 |
 
 Attack type: Melee. Basic attack range: 1 tiles.

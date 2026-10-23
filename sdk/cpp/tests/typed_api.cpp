@@ -415,6 +415,13 @@ extern "C"
 	std::int32_t sdk_DistanceField_Get(const std::uint16_t* field, std::int32_t x, std::int32_t y, std::uint16_t* out) {
 		*out = field[y * 8 + x]; return 0;
 	}
+	std::int32_t sdk_DistanceField_Copy(const std::uint16_t* source, std::uint16_t* destination) {
+		std::memmove(destination, source, 128); return 0;
+	}
+	std::int32_t sdk_DistanceField_CopyWithMask(const std::uint16_t* source, const std::uint64_t* mask, std::uint16_t* destination) {
+		for (std::size_t i = 0; i < 64; ++i) if ((*mask >> i) & 1) destination[i] = source[i];
+		return 0;
+	}
 	std::int32_t sdk_DistanceField_ComputeToWithExpansionCount(const std::uint64_t* walls, const std::uint64_t* roots,
 		const std::uint64_t*, std::uint64_t* visited, std::uint16_t* field, std::uint16_t, std::uint16_t* count) {
 		assert((*walls & *roots) == 0); // The occupied target must seed the distance field.
@@ -1742,6 +1749,26 @@ int main()
 	throws<cambc::error>([&] { (void)ability.heal_amount(target); });
 	test_camp_vision();
 	test_new_game_api();
+	{
+		cambc::distance_field source, destination, empty;
+		source.ptr()[0] = 17; source.ptr()[1] = 23;
+		destination.copy_from(source);
+		auto* storage = destination.ptr();
+		cambc::bitboard mask;
+		mask.set({0, 0});
+		source.ptr()[0] = 42; source.ptr()[1] = 99;
+		destination.copy_from(source, mask);
+		assert(destination.ptr()[0] == 42 && destination.ptr()[1] == 23);
+		assert(destination.ptr() == storage);
+		destination.copy_from(destination, mask);
+		destination.copy_from(destination);
+		destination.copy_from(empty, mask);
+		assert(destination.ptr()[0] == 0 && destination.ptr()[1] == 23);
+		empty.copy_from(source, mask);
+		assert(empty.ptr()[0] == 42 && empty.ptr()[1] == 0);
+		destination.copy_from(cambc::distance_field{});
+		assert(destination.ptr()[0] == 0 && destination.ptr()[1] == 0);
+	}
 	std::puts("typed SDK tests PASS");
 }
 

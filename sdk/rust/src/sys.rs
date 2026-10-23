@@ -875,6 +875,12 @@ unsafe extern "C" {
     /// Exact C-ABI `DistanceField_Set` host operation; pointer buffers obey the module safety contract.
     #[link_name = "bc_DistanceField_Set"]
     pub(crate) fn DistanceField_Set(field: *mut u16, x: i32, y: i32, distance: u16) -> i32;
+    /// Copy complete distance storage into an existing field.
+    #[link_name = "bc_DistanceField_Copy"]
+    pub(crate) fn DistanceField_Copy(source: *const u16, destination: *mut u16) -> i32;
+    /// Copy mask-selected logical distances into an existing field.
+    #[link_name = "bc_DistanceField_CopyWithMask"]
+    pub(crate) fn DistanceField_CopyWithMask(source: *const u16, mask: *const u64, destination: *mut u16) -> i32;
     /// Exact C-ABI `DistanceField_ComputeWithExpansionCount` host operation; pointer buffers obey the module safety contract.
     #[link_name = "bc_DistanceField_ComputeWithExpansionCount"]
     pub(crate) fn DistanceField_ComputeWithExpansionCount(
@@ -2127,6 +2133,14 @@ pub(crate) unsafe fn DistanceField_Set(field: *mut u16, x: i32, y: i32, distance
         "bc_DistanceField_Set",
         &[field as usize, x as usize, y as usize, distance as usize],
     ) as i32
+}
+#[cfg(test)]
+pub(crate) unsafe fn DistanceField_Copy(source: *const u16, destination: *mut u16) -> i32 {
+    crate::fake::call("bc_DistanceField_Copy", &[source as usize, destination as usize]) as i32
+}
+#[cfg(test)]
+pub(crate) unsafe fn DistanceField_CopyWithMask(source: *const u16, mask: *const u64, destination: *mut u16) -> i32 {
+    crate::fake::call("bc_DistanceField_CopyWithMask", &[source as usize, mask as usize, destination as usize]) as i32
 }
 /// Exact C-ABI `DistanceField_ComputeWithExpansionCount` host operation; pointer buffers obey the module safety contract.
 #[cfg(test)]

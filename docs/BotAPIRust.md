@@ -5790,6 +5790,43 @@ Inputs:
 let result = subject.compute_with_expansion_count(walls, roots, visited, max_distance)?;
 ```
 
+### copy_from
+
+```rust
+pub fn copy_from(&mut self, source: &Self) -> Result<()>
+```
+
+Copy every distance from `source` into this field, reusing its storage. # Arguments * `source` - Field to copy from.
+
+Replace an existing distance field while reusing its storage.
+
+Inputs:
+- destination: existing distance field to update
+- source: distance field to copy from
+
+```rust
+destination.copy_from(&source)?;
+```
+
+### copy_from_with_mask
+
+```rust
+pub fn copy_from_with_mask(&mut self, source: &Self, mask: &Bitboard) -> Result<()>
+```
+
+Copy only mask-selected tiles, preserving every unselected destination value. Mask padding is ignored; this field's existing storage is reused. # Arguments * `source` - Field to copy from. * `mask` - Tiles to copy.
+
+Update selected tiles while preserving the rest of an existing distance field.
+
+Inputs:
+- destination: existing distance field to update
+- source: distance field to copy from
+- mask: bitboard selecting the tiles to copy
+
+```rust
+destination.copy_from_with_mask(&source, &mask)?;
+```
+
 ### export_linear_buffer
 
 ```rust

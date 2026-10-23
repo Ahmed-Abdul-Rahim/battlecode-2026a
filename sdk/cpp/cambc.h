@@ -157,7 +157,7 @@ namespace constants
 	namespace passive_abilities
 	{
 		/// Prism: focus gained per carried gem.
-		inline constexpr float prism_focus_per_gem = 1.0f;
+		inline constexpr float prism_focus_per_gem = 1.5f;
 
 		/// Varg: attack splash radius in tiles.
 		inline constexpr float varg_splash_radius = 1.0f;
@@ -1191,6 +1191,25 @@ public:
 
 	/// Take over another field's storage.
 	distance_field& operator=(distance_field&&) noexcept = default;
+
+	/// Copy all distances from source into this field, reusing its storage. Self-copy is a no-op.
+	/// @param source Field to copy from.
+	void copy_from(const distance_field& source)
+	{
+		if (this == &source) return;
+		detail::check(detail::sdk_DistanceField_Copy(source.ptr(), buffer_.get()));
+		written_ = true;
+	}
+
+	/// Copy only tiles selected by mask, preserving every unselected value in this field.
+	/// Mask padding is ignored. Reuses this field's storage; self-copy is a no-op.
+	/// @param source Field to copy from.
+	/// @param mask Tiles to copy.
+	void copy_from(const distance_field& source, const bitboard& mask)
+	{
+		if (this == &source) return;
+		detail::check(detail::sdk_DistanceField_CopyWithMask(source.ptr(), mask.ptr(), ptr()));
+	}
 
 	/// Get the map dimensions in tiles.
 	[[nodiscard]] std::int32_t width() const { return detail::layout().width; }
@@ -5146,8 +5165,8 @@ inline void pick(champion_draft pick)
 
 } // namespace draft
 
-/// Drawings are available during draft and gameplay and last for the current round.
-/// Both teams' drawings clear at the next round; the final draft round clears when gameplay begins.
+/// Gameplay drawings last until the start of the drawing champion's next turn.
+/// Draft drawings clear at the next draft round, or when gameplay begins.
 namespace debug
 {
 /// Emit a debug dot on a tile using a packed 0xRRGGBB colour.

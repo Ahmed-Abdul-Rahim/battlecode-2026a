@@ -82,7 +82,7 @@ pub(crate) fn read_constants() -> Result<Constants> {
 /// Passive-ability constants mirrored from SDK balance values.
 impl Constants {
     /// Prism focus gained per carried gem; no Game API getter exists.
-    pub const PRISM_FOCUS_PER_GEM: f32 = 1.0;
+    pub const PRISM_FOCUS_PER_GEM: f32 = 1.5;
     /// Varg passive splash radius; no Game API getter exists.
     pub const VARG_SPLASH_RADIUS: f32 = 1.0;
     /// Vesper Vale passive bonus-gold percentage; no Game API getter exists.

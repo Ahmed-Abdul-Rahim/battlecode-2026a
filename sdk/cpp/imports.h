@@ -519,6 +519,10 @@ extern "C"
 	std::int32_t sdk_DistanceField_Get(const std::uint16_t* buffer, std::int32_t x, std::int32_t y, std::uint16_t* value);
 	BC_IMPORT("bc_DistanceField_Set")
 	std::int32_t sdk_DistanceField_Set(std::uint16_t* buffer, std::int32_t x, std::int32_t y, std::uint16_t value);
+	BC_IMPORT("bc_DistanceField_Copy")
+	std::int32_t sdk_DistanceField_Copy(const std::uint16_t* source, std::uint16_t* destination);
+	BC_IMPORT("bc_DistanceField_CopyWithMask")
+	std::int32_t sdk_DistanceField_CopyWithMask(const std::uint16_t* source, const std::uint64_t* mask, std::uint16_t* destination);
 
 	/// Compute distances with caller-provided visited storage and an expansion count.
 	BC_IMPORT("bc_DistanceField_ComputeWithExpansionCount")
