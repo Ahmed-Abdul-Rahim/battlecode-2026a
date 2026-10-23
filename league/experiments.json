@@ -4181,18 +4181,244 @@
    "added": "2026-10-23T17:25:05Z",
    "area": "pathing",
    "claimed": "2026-10-23T17:25:08Z",
+   "finished": "2026-10-23T17:35:14Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 95,
    "notes": "Straight-line chase froze both teams up to 1572 rounds on reverse-spiral; bounded host distance field when no closer step exists.",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.55,
+     "h2h_games": 80,
+     "live": {
+      "deaths": 23.25,
+      "fitness": 0.351,
+      "games": 720,
+      "gem_margin": 0.086,
+      "win": 0.562
+     },
+     "sparring": {
+      "mean": 0.0826,
+      "pairs": 14,
+      "se": 0.1482
+     },
+     "variant": {
+      "deaths": 23.74,
+      "fitness": 0.316,
+      "games": 720,
+      "gem_margin": 0.071,
+      "win": 0.536
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 14.45,
+      "fitness": 0.449,
+      "games": 126,
+      "gem_margin": 0.09,
+      "win": 0.571
+     },
+     "paired": {
+      "mean": -0.0115,
+      "pairs": 126,
+      "se": 0.0502
+     },
+     "variant": {
+      "deaths": 15.09,
+      "fitness": 0.438,
+      "games": 126,
+      "gem_margin": 0.069,
+      "win": 0.571
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "PATH_CHASE": 1
     },
     "ref": "origin/feat/path-chase"
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "Chase round walls (reverse-spiral freeze)"
+  },
+  {
+   "added": "2026-10-23T17:36:29Z",
+   "area": "rules",
+   "claimed": "2026-10-23T17:37:43Z",
+   "finished": "2026-10-23T17:45:05Z",
+   "host": "DESKTOP-QVEMEEE",
+   "id": 96,
+   "merged": "2026-10-23T18:20:40Z",
+   "notes": "Ability multipliers from the 2026-10-23 rules docs. Merged: rule facts from the 2026-10-23 docs; gate 0.560 vs 0.562 is noise",
+   "results": {
+    "full": {
+     "h2h": 0.5,
+     "h2h_games": 80,
+     "live": {
+      "deaths": 23.25,
+      "fitness": 0.351,
+      "games": 720,
+      "gem_margin": 0.086,
+      "win": 0.562
+     },
+     "sparring": {
+      "mean": 0.0,
+      "pairs": 14,
+      "se": 0.0
+     },
+     "variant": {
+      "deaths": 23.14,
+      "fitness": 0.349,
+      "games": 720,
+      "gem_margin": 0.081,
+      "win": 0.56
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 14.45,
+      "fitness": 0.449,
+      "games": 126,
+      "gem_margin": 0.09,
+      "win": 0.571
+     },
+     "paired": {
+      "mean": -0.0132,
+      "pairs": 126,
+      "se": 0.0378
+     },
+     "variant": {
+      "deaths": 14.52,
+      "fitness": 0.436,
+      "games": 126,
+      "gem_margin": 0.071,
+      "win": 0.563
+     }
+    }
+   },
+   "run": 2,
+   "spec": {
+    "ref": "origin/feat/rules-sync"
+   },
+   "status": "merged",
+   "title": "Rules sync: Ren stun 0.75, Heart of Ruin dash 1.5"
+  },
+  {
+   "added": "2026-10-23T17:37:30Z",
+   "area": "farming",
+   "claimed": "2026-10-23T17:45:10Z",
+   "finished": "2026-10-23T17:56:07Z",
+   "host": "DESKTOP-QVEMEEE",
+   "id": 97,
+   "merged": "2026-10-23T18:20:42Z",
+   "notes": "Re-queued (lost in a registry overwrite). 4 plans replaced CAMP_FEASIBLE=24 with 1. Merged: passed: 0.576 vs 0.562, h2h 0.537",
+   "results": {
+    "full": {
+     "h2h": 0.537,
+     "h2h_games": 80,
+     "live": {
+      "deaths": 23.25,
+      "fitness": 0.351,
+      "games": 720,
+      "gem_margin": 0.086,
+      "win": 0.562
+     },
+     "sparring": {
+      "mean": 0.0,
+      "pairs": 14,
+      "se": 0.0
+     },
+     "variant": {
+      "deaths": 22.83,
+      "fitness": 0.375,
+      "games": 720,
+      "gem_margin": 0.108,
+      "win": 0.576
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 14.45,
+      "fitness": 0.449,
+      "games": 126,
+      "gem_margin": 0.09,
+      "win": 0.571
+     },
+     "paired": {
+      "mean": 0.0,
+      "pairs": 126,
+      "se": 0.0
+     },
+     "variant": {
+      "deaths": 14.45,
+      "fitness": 0.449,
+      "games": 126,
+      "gem_margin": 0.09,
+      "win": 0.571
+     }
+    }
+   },
+   "run": 2,
+   "spec": {
+    "ref": "origin/feat/plan-feasible"
+   },
+   "status": "merged",
+   "title": "Map plans keep merged camp bits (CAMP_FEASIBLE 25)"
+  },
+  {
+   "added": "2026-10-23T17:37:36Z",
+   "area": "safety",
+   "claimed": "2026-10-23T18:10:05Z",
+   "host": "DESKTOP-QVEMEEE",
+   "id": 98,
+   "notes": "Re-queued. CAMP_SAFE=3 only on 8 elk-heavy maps.",
+   "results": {},
+   "spec": {
+    "ref": "origin/feat/elk-safe"
+   },
+   "status": "screening",
+   "title": "Camp safety on elk-heavy maps (plans)"
+  },
+  {
+   "added": "2026-10-23T17:44:20Z",
+   "area": "pathing",
+   "id": 99,
+   "notes": "PATH_CHASE via the new per-map knob2 table; exp 95 (all maps) won h2h 0.55 but lost vs mimics.",
+   "results": {},
+   "spec": {
+    "ref": "origin/feat/path-chase-rs"
+   },
+   "status": "queued",
+   "title": "Chase round walls on reverse-spiral only"
+  },
+  {
+   "added": "2026-10-23T17:54:24Z",
+   "area": "economy",
+   "id": 100,
+   "notes": "Ranked: enemy captured groups we cleared up to 8x/game (contest). Local contest+elk-arena: 18/28 -> 21/28.",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "LOOT_GUARD": 1
+    },
+    "ref": "origin/feat/loot-guard"
+   },
+   "status": "queued",
+   "title": "Loot guard: keep capturing a ready reward under threat"
+  },
+  {
+   "added": "2026-10-23T18:37:21Z",
+   "area": "draft",
+   "id": 101,
+   "notes": "Match plan in draft memory; champions discount frontier groups while enemies are near. Local 4 maps 23->26/56.",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "DRAFT_PLAN": 1
+    },
+    "ref": "origin/feat/draft-plan"
+   },
+   "status": "queued",
+   "title": "Draft memory v3 + frontier discount (DRAFT_PLAN 1)"
   }
  ]
 }

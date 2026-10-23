@@ -120,6 +120,8 @@ BENCH_JUMP = 0.05
 # streak or a binomial test at ALPHA), the next version uploads after FAST_GAP instead.
 REF_GAMES, ALPHA, MIN_TEST_GAMES = 60, 0.05, 10
 FAST_GAP = 30 * 60
+#: --experiments-only: seconds between queue checks when nothing is queued.
+EXPERIMENTS_IDLE = 300
 HEARTBEAT = 1800  # push try counts at least this often, so the lead sees stuck maps
 #: Map pressure (map_pressure): a loss's weight falls to 1/e after a day; every map keeps a
 #: floor of this fraction of the top pressure, so no map is starved.
@@ -1676,6 +1678,12 @@ def cycle(a: argparse.Namespace, rng: random.Random) -> None:
     if getattr(a, "experiments", True) and experiment_step(use_git):
         save_json(LOCAL, local)
         return
+    if getattr(a, "experiments_only", False):
+        # No θ training, mimic evolution or exploiters: only the queue (and the lead's ladder
+        # watch / reviews / uploads above). Wait for the next queued experiment.
+        save_json(LOCAL, local)
+        time.sleep(EXPERIMENTS_IDLE)
+        return
     t0 = time.time()
     # New maps come first: no mimic rounds until every never-trained map had its bootstrap rounds.
     bootstrap = any(
@@ -2009,6 +2017,11 @@ def main(argv: list[str] | None = None) -> int:
     )
     r.add_argument(
         "--auto-submit", action="store_true", help="lead only: upload new champions (team-agreed rules)"
+    )
+    r.add_argument(
+        "--experiments-only",
+        action="store_true",
+        help="no training cycles: only test queued experiments (plus the lead's ladder watch)",
     )
     r.add_argument(
         "--no-experiments",

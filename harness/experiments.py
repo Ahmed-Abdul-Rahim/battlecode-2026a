@@ -51,6 +51,13 @@ def load() -> dict:
 
 
 def save(reg: dict) -> None:
+    """Write `reg`, merged with the file: since experiments run inside the daemon, an
+    `experiments add` in the same checkout can land while `reg` is held in memory (that
+    overwrite lost experiments 96 and 97 once). Our entries win per id; new ids are kept."""
+    disk = L.load_json(REGISTRY, {})
+    merged = L.merge_experiments(reg, disk) if disk else reg
+    reg.clear()
+    reg.update(merged)
     L.save_json(REGISTRY, reg)
 
 
@@ -528,6 +535,29 @@ def release_claims(reg: dict, host: str = L.HOST) -> list[int]:
     return [e["id"] for e in mine]
 
 
+def cmd_merged(a: argparse.Namespace) -> int:
+    """Record that experiment `id` is in the bot (merged into league by hand, e.g. a rule fix
+    that is merged regardless of a within-noise gate result)."""
+    use_git = a.push and L.git_ready()
+    if use_git:
+        L.integrate(L.h2h_decider(OUT, L.load_champion()["maps"]))
+    reg = load()
+    e = next((x for x in reg["experiments"] if x["id"] == a.id), None)
+    if e is None:
+        print(f"no experiment {a.id}")
+        return 1
+    e["status"] = "merged"
+    e["run"] = e.get("run", 1) + 1  # wins registry merges over the earlier result
+    e["merged"] = L.now_iso()
+    if a.note:
+        e["notes"] = (e.get("notes", "") + " Merged: " + a.note).strip()
+    save(reg)
+    if use_git:
+        L.publish([REGISTRY], f"league: experiment {a.id} merged", L.h2h_decider(OUT, {}))
+    print(f"experiment {a.id} marked merged")
+    return 0
+
+
 def cmd_release(a: argparse.Namespace) -> int:
     if a.push and L.git_ready():
         L.integrate(L.h2h_decider(OUT, L.load_champion()["maps"]))
@@ -597,12 +627,16 @@ def main(argv: list[str] | None = None) -> int:
     rn.add_argument(
         "--hours", type=float, default=0, help="session length; no new experiment in its last hour"
     )
+    mg = sub.add_parser("merged", help="record that an experiment was merged into league")
+    mg.add_argument("id", type=int)
+    mg.add_argument("--note")
+    mg.add_argument("--no-push", dest="push", action="store_false")
     rl = sub.add_parser("release", help="put this PC's unfinished experiments back in the queue")
     rl.add_argument("--no-push", dest="push", action="store_false")
     sub.add_parser("tex")
     a = p.parse_args(argv)
     cmds = {"list": cmd_list, "status": cmd_status, "add": cmd_add, "run": cmd_run, "tex": cmd_tex}
-    return {**cmds, "release": cmd_release}[a.cmd](a)
+    return {**cmds, "release": cmd_release, "merged": cmd_merged}[a.cmd](a)
 
 
 if __name__ == "__main__":
