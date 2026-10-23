@@ -328,10 +328,14 @@ def ppo_run(st: dict, idx: int) -> None:
     width = cfg["width"]
     base = bc_for(st, width)
     rdir = OUT / "ckpt" / f"run{idx}"
+    existed = (rdir / f"it{run['it']:04d}").exists()
     good = last_valid(rdir, run["it"])
-    if good != run["it"]:
+    if good != run["it"] or not existed:
         good = max(good, 0)
-        log(f"run {idx}: checkpoint it {run['it']} is damaged; resuming from it {good}")
+        if existed:
+            log(f"run {idx}: checkpoint it {run['it']} is damaged; resuming from it {good}")
+        elif run["it"] > 0 or rdir.exists():
+            log(f"run {idx}: checkpoint it {run['it']} is missing; resuming from it {good}")
         run["it"] = good
         run["evals"] = [e for e in run["evals"] if e["it"] <= good]
         save_state(st)
