@@ -86,6 +86,10 @@ DIRS = torch.tensor([[0, 0], [0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1],
 WIN_GEMS, MAX_ROUNDS = 1000, 2000
 RESPAWN_ROUNDS, CAPTURE_ROUNDS, KILL_GOLD, SHARD_COST = 60, 5, 100, 30
 VISION, SPELL_RANGE, SPELL_CD, RECALL_TURNS = 8, 4, 8, 5
+# Item families (cambc::ItemType = 6 x family + [str shard, str emblem, focus shard, focus emblem,
+# health shard, health emblem]); stats are the champion's growth per shard.
+MONSTER, POWER, DURABILITY, TREASURE, JUNGLE, HOME, BRUISER = range(7)
+ITEM_STAT = (0, 0, 1, 1, 2, 2)  # strength, focus, health
 # Action layout per champion: move (9) x attack target (3: none, nearest enemy, nearest camp)
 # x spell (3: none, slot 0, slot 1; aimed at the attack target, or self/ally/ground as the
 # ability needs) x special (3: none, recall, tribute) -> four integer heads.
@@ -178,6 +182,8 @@ class Engine:
         self.recall = z(torch.long) - 1  # -1: not channelling
         self.tribute = z(torch.long) - 1
         self.shards = z(torch.long)
+        self.fam_shards = torch.zeros(B, 2, T, 7, 3, dtype=torch.long, device=dev)
+        self.emb = torch.zeros(B, 2, T, 7, device=dev)  # 1 = this family's emblem is complete
         self.kills, self.deaths = z(torch.long), z(torch.long)
         self.camp_dmg_done, self.camp_dmg_taken = z(), z()  # statistics (validation)
         C, G = len(s.camp_kind), len(s.group_gems)
@@ -283,7 +289,8 @@ class Engine:
                 share_g = torch.where(win, s.group_gems / n, 0.0)
                 share_o = torch.where(win, s.group_gold / n, 0.0)
                 self.gems[:, t] += (present.float() * share_g.unsqueeze(1)).sum(-1).floor()
-                mult = torch.where(self.kinds[t] == VESPER, 1.33, 1.0).view(1, -1)  # Vesper: +33% gold
+                # Vesper +33%, Treasure emblem +20%
+                mult = 1.0 + 0.33 * (self.kinds[t] == VESPER).float().view(1, -1) + 0.2 * self.emb[:, t, :, TREASURE]
                 gold = ((present.float() * share_o.unsqueeze(1)).sum(-1) * mult).floor()
                 self.gold[:, t] += gold
                 self.lifetime_gold[:, t] += gold.sum(-1)
@@ -309,8 +316,8 @@ class Engine:
         hit = ok.any(-1)
         dmg = torch.zeros(B, 2 * self.T, device=self.dev)
         dmg.scatter_add_(1, tgt, torch.where(hit, self.camp_str.expand_as(hit), 0.0))
-        dmg = dmg.view(B, 2, self.T)
-        self.camp_dmg_taken += dmg
+        dmg = dmg.view(B, 2, self.T) * (1 - 0.3 * self.emb[..., JUNGLE])
+        self.camp_dmg_taken += dmg * (1 - 0.1 * self.emb[..., DURABILITY])
         # Ren retaliates against the camps that hit him (0.2 x focus each)
         ren = (self.kinds == REN).view(-1)
         if ren.any():
@@ -329,6 +336,7 @@ class Engine:
         """dmg [B, 2, T] to champions: shields absorb first, damage cancels recalls, Ren
         retaliates against a champion attacker (0.2 x focus), deaths resolved."""
         hit = dmg > 0
+        dmg = dmg * (1 - 0.1 * self.emb[..., DURABILITY])
         absorbed = torch.minimum(self.shield, dmg)
         self.shield = self.shield - absorbed
         dmg = dmg - absorbed
@@ -373,8 +381,45 @@ class Engine:
         miss = 1 - (self.hp[:, team, k] / self.max_hp[:, team, k]).clamp(0, 1)
         return 1 + 0.5 * miss
 
-    def gold_mult(self, team: int, k: int) -> float:
-        return 1.33 if int(self.kinds[team, k]) == VESPER else 1.0
+    def gold_mult(self, team: int, k: int) -> torch.Tensor:
+        """Vesper +33%, Treasure emblem +20% (they add)."""
+        return 1.0 + 0.33 * float(int(self.kinds[team, k]) == VESPER) + 0.2 * self.emb[:, team, k, TREASURE]
+
+    def recall_turns(self, team: int, k: int) -> torch.Tensor:
+        """Home emblem: five turn ends become three."""
+        return torch.where(self.emb[:, team, k, HOME] > 0, 3, RECALL_TURNS)
+
+    def buy(self, team: int, k: int, item: int, count: int, mask: torch.Tensor) -> torch.Tensor:
+        """Buy `count` of cambc ItemType `item` (an emblem = its five shards) on spawn or while
+        dead. Five matching shards complete the family's emblem: Power adds one more shard's
+        worth, Bruiser one of each other stat. Health bought on spawn heals what it adds."""
+        fam, stat = item // 6, ITEM_STAT[item % 6]
+        n = count * (5 if item % 2 else 1)
+        here = self.pos[:, team, k]
+        on_spawn = self.alive[:, team, k] & self.s.spawn[team][here[:, 1], here[:, 0]]
+        ok = mask & (on_spawn | ~self.alive[:, team, k]) & (self.gold[:, team, k] >= SHARD_COST * n)
+        if not ok.any():
+            return ok
+        self.gold[:, team, k] -= torch.where(ok, float(SHARD_COST * n), 0.0)
+        before = self.fam_shards[:, team, k, fam, stat].clone()
+        self.fam_shards[:, team, k, fam, stat] += torch.where(ok, n, 0)
+        done = ok & (before < 5) & (self.fam_shards[:, team, k, fam, stat] >= 5)
+        add = torch.zeros(self.B, 3, device=self.dev)
+        add[:, stat] = torch.where(ok, float(n), 0.0)
+        if fam == POWER:
+            add[:, stat] += done.float()
+        if fam == BRUISER:
+            for o in range(3):
+                if o != stat:
+                    add[:, o] += done.float()
+        self.emb[:, team, k, fam] = torch.where(done, 1.0, self.emb[:, team, k, fam])
+        self.shards[:, team, k] += torch.where(ok, n, 0)
+        self.strength[:, team, k] += add[:, 0] * self.str_growth[:, team, k]
+        self.focus[:, team, k] += add[:, 1] * self.focus_growth[:, team, k]
+        dh = add[:, 2] * self.hp_growth[:, team, k]
+        self.max_hp[:, team, k] += dh
+        self.hp[:, team, k] += torch.where(on_spawn, dh, 0.0)
+        return ok
 
     def on_kill(self, team: int, k: int, mask: torch.Tensor) -> None:
         """Vendetta: any kill (champion or camp) resets her ability cooldowns."""
@@ -419,6 +464,7 @@ class Engine:
             self.apply_damage(dmg_e, (team, k))
             self.on_kill(team, k, (before & ~self.alive).any(-1).any(-1))
         if dmg_c.shape[1] and dmg_c.any():
+            dmg_c = dmg_c * (1 + 0.1 * self.emb[:, team, k, MONSTER]).unsqueeze(1)
             before = self.camp_alive.clone()
             eff = torch.minimum(dmg_c, self.camp_hp.clamp(min=0)) * self.camp_alive
             self.camp_dmg_done[:, team, k] += eff.sum(-1)
@@ -684,7 +730,7 @@ class Engine:
         self.basic_attack(team, k, tkind, tidx, act & (at > 0))
         here = self.pos[:, team, k]
         rec = act & (spc == 1) & ~s.spawn[team][here[:, 1], here[:, 0]]
-        self.recall[:, team, k] = torch.where(rec, RECALL_TURNS, self.recall[:, team, k])
+        self.recall[:, team, k] = torch.where(rec, self.recall_turns(team, k), self.recall[:, team, k])
         trib = act & (spc == 2) & (self.gems[:, team, k] > 0) & s.near_altar[here[:, 1], here[:, 0]]
         dur = torch.clamp(torch.ceil(self.gems[:, team, k] / 10).long(), min=1)
         self.tribute[:, team, k] = torch.where(trib, dur, self.tribute[:, team, k])

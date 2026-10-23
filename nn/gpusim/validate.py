@@ -172,11 +172,13 @@ def main(bundle: str, stats: str, map_name: str, max_rounds: int = 10**9) -> int
                               "cast_done", bool(e.cast_done[0, ti, k]), "camp alive", bool(e.camp_alive[0, idx]) if kind == 2 else None)
                 e_done[t.champion] = e_done.get(t.champion, 0.0) + hp_before - float(e.camp_hp[0].clamp(min=0).sum())
             elif r.name == "recall":
-                e.recall[0, ti, k] = 5
+                e.recall[0, ti, k] = int(e.recall_turns(ti, k)[0])
             elif r.name == "tribute" and e.gems[0, ti, k] > 0:
                 e.tribute[0, ti, k] = max(1, int(np.ceil(float(e.gems[0, ti, k]) / 10)))
             elif r.name == "buy":
-                issues["buys (item effects not modelled yet)"] += 1
+                item, count = r.u32(0), r.u32(4)
+                if item >= 42 or not bool(e.buy(ti, k, item, count, torch.ones(1, dtype=torch.bool))[0]):
+                    issues["buy refused by the engine (gold / place)"] += 1
         e.turn_end(ti, k, auto_shop=False)
         if watch >= 0 and float(e.camp_hp[0, watch]) != hp_w and t.round < 40:
             print("camp", watch, "round", t.round, names[t.champion], [r.name for r in t.records],
