@@ -4239,6 +4239,18 @@
    },
    "status": "rejected",
    "title": "Chase round walls (reverse-spiral freeze)"
+  },
+  {
+   "added": "2026-10-23T17:36:29Z",
+   "area": "rules",
+   "id": 96,
+   "notes": "Ability multipliers from the 2026-10-23 rules docs.",
+   "results": {},
+   "spec": {
+    "ref": "origin/feat/rules-sync"
+   },
+   "status": "queued",
+   "title": "Rules sync: Ren stun 0.75, Heart of Ruin dash 1.5"
   }
  ]
 }
