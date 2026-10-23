@@ -46,7 +46,7 @@ ANCHORS = [
 ]
 IMIT_GAMES = 288
 ROLL_GAMES = 56
-EVAL_EVERY = 4  # PPO iterations between evaluations
+EVAL_EVERY = 8  # PPO iterations between evaluations
 #: Teacher's first layer factorised to this rank: games ~2x faster (90 s -> 47 s per 56), no loss
 #: measured (80-game evaluation 0.528 vs the full teacher's 0.486, within noise; 2026-10-23).
 RANK = 64
