@@ -1170,6 +1170,15 @@
    "time": "2026-10-20T22:00:11.532Z",
    "win": true
   },
+  "2356eae3-6e53-4a02-ae24-1aaaa02e53ec": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "gem-fields",
+   "opp": "Invincible Coders",
+   "oppId": "afdfcf47-296e-44db-99c2-c6cc155d746f",
+   "time": "2026-10-23T18:53:01.552Z",
+   "win": true
+  },
   "23804cf8-ea8e-4a5b-bbcc-0eac036d048f": {
    "kind": "ranked",
    "live": 23,
@@ -1728,6 +1737,15 @@
    "time": "2026-10-20T15:32:13.244Z",
    "win": true
   },
+  "3183544e-7354-4ddd-ade5-cfdd46d8320d": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "reverse-spiral",
+   "opp": "Invincible Coders",
+   "oppId": "afdfcf47-296e-44db-99c2-c6cc155d746f",
+   "time": "2026-10-23T18:53:01.553Z",
+   "win": false
+  },
   "3233d49a-3ec5-4ad4-be55-ad9924f41183": {
    "kind": "ranked",
    "live": 1,
@@ -2150,6 +2168,15 @@
    "oppId": "8bb0b5c7-0244-464f-b33d-70cd8b5c6669",
    "time": "2026-10-20T18:00:13.679Z",
    "win": false
+  },
+  "3c83960d-40a4-4502-bf4a-b8fae582c3e2": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "split",
+   "opp": "Invincible Coders",
+   "oppId": "afdfcf47-296e-44db-99c2-c6cc155d746f",
+   "time": "2026-10-23T18:53:01.551Z",
+   "win": true
   },
   "3cd7ec81-4613-467e-8a97-add187e76469": {
    "kind": "ranked",
@@ -7677,6 +7704,15 @@
    "time": "2026-10-22T07:00:15.627Z",
    "win": true
   },
+  "d9ea22af-9ede-42c4-bc02-3a2347de0df0": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "great-wall",
+   "opp": "Invincible Coders",
+   "oppId": "afdfcf47-296e-44db-99c2-c6cc155d746f",
+   "time": "2026-10-23T18:53:01.551Z",
+   "win": true
+  },
   "d9f33b39-e997-44ac-bb8e-3cc166ca6423": {
    "kind": "unranked",
    "live": 23,
@@ -8090,6 +8126,15 @@
    "oppId": "23bf8120-448a-424e-8353-cca7079209f4",
    "time": "2026-10-22T08:10:22.177Z",
    "win": false
+  },
+  "e2d2b779-499d-4910-8cc0-5b4787efe9c8": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "stampede",
+   "opp": "Invincible Coders",
+   "oppId": "afdfcf47-296e-44db-99c2-c6cc155d746f",
+   "time": "2026-10-23T18:53:01.552Z",
+   "win": true
   },
   "e2db92bc-a629-43eb-8427-525aaba81dbf": {
    "kind": "ranked",
@@ -18691,6 +18736,20 @@
    "status": "open",
    "time": "2026-10-23T18:00:41.141Z",
    "tries_at": 4
+  },
+  {
+   "contexts": {},
+   "deaths_them": 0,
+   "deaths_us": 0,
+   "gems_them": "0",
+   "gems_us": "0",
+   "id": "3183544e-7354-4ddd-ade5-cfdd46d8320d",
+   "map": "reverse-spiral",
+   "opp": "Invincible Coders",
+   "oppId": "afdfcf47-296e-44db-99c2-c6cc155d746f",
+   "status": "open",
+   "time": "2026-10-23T18:53:01.553Z",
+   "tries_at": 1
   }
  ],
  "map_files": {
@@ -18784,7 +18843,7 @@
    "name": "prism best girl",
    "since": "2026-10-23T18:51:30Z",
    "slug": "prism-best-girl",
-   "static": false,
+   "static": true,
    "teamId": "38e6d8c4-1608-44f5-956b-08390f564336",
    "why": "top1"
   },
@@ -18794,7 +18853,7 @@
    "name": "Intercontinental Fish",
    "since": "2026-10-23T18:52:11Z",
    "slug": "intercontinental-fish",
-   "static": false,
+   "static": true,
    "teamId": "1890540d-1ffc-4847-adbf-d0d08772f268",
    "why": "top2"
   },
@@ -18814,7 +18873,7 @@
    "name": "policy wonk",
    "since": "2026-10-23T18:52:42Z",
    "slug": "policy-wonk",
-   "static": false,
+   "static": true,
    "teamId": "3ec4a701-a9b5-498f-9361-eea4a6dd1cde",
    "why": "top4"
   },
@@ -18824,7 +18883,7 @@
    "name": "Univardisty of Shingtonwash",
    "since": "2026-10-23T18:53:02Z",
    "slug": "univardisty-of-shingtonwash",
-   "static": false,
+   "static": true,
    "teamId": "a4350547-b7a1-47b1-9031-4f7f084ad0d8",
    "why": "top5"
   },
@@ -18874,9 +18933,19 @@
    "name": "NEETCoders",
    "since": "2026-10-23T18:55:32Z",
    "slug": "neetcoders",
-   "static": false,
+   "static": true,
    "teamId": "882106d4-9deb-40cc-9d5c-8522c1d32129",
    "why": "top10"
+  },
+  {
+   "games": 10,
+   "macro_hash": "e315c0eda78e",
+   "name": "Invincible Coders",
+   "since": "2026-10-23T19:04:38Z",
+   "slug": "invincible-coders",
+   "static": false,
+   "teamId": "afdfcf47-296e-44db-99c2-c6cc155d746f",
+   "why": "loss"
   },
   {
    "games": 9,
@@ -18884,28 +18953,18 @@
    "name": "Electric Shard Casters",
    "since": "2026-10-23T18:55:46Z",
    "slug": "electric-shard-casters",
-   "static": false,
+   "static": true,
    "teamId": "1fd7861b-b197-4ea9-b94d-0d5a70f69758",
    "why": "loss"
   },
   {
-   "games": 5,
-   "macro_hash": "916c77507ab1",
+   "games": 15,
+   "macro_hash": "e128582e7087",
    "name": "Return by Death",
-   "since": "2026-10-23T18:56:24Z",
+   "since": "2026-10-23T19:05:45Z",
    "slug": "return-by-death",
    "static": false,
    "teamId": "07278352-d849-4c77-9ce1-0f8307fd4fa9",
-   "why": "loss"
-  },
-  {
-   "games": 30,
-   "macro_hash": "2c0d1a6e40d7",
-   "name": "Santa Claude",
-   "since": "2026-10-23T18:57:29Z",
-   "slug": "santa-claude",
-   "static": false,
-   "teamId": "14f0c09e-8234-4056-b8a8-93be730312f6",
    "why": "loss"
   }
  ],
@@ -20426,6 +20485,81 @@
     }
    ],
    "time": "2026-10-23T18:50:21Z"
+  },
+  {
+   "teams": [
+    {
+     "name": "prism best girl",
+     "rank": 1,
+     "rating": 2253.1,
+     "slug": "prism-best-girl",
+     "teamId": "38e6d8c4-1608-44f5-956b-08390f564336"
+    },
+    {
+     "name": "Intercontinental Fish",
+     "rank": 2,
+     "rating": 2236.8,
+     "slug": "intercontinental-fish",
+     "teamId": "1890540d-1ffc-4847-adbf-d0d08772f268"
+    },
+    {
+     "name": "Pantheon",
+     "rank": 3,
+     "rating": 2210.8,
+     "slug": "pantheon",
+     "teamId": "547efb5b-57e5-4355-8501-3b331f506d62"
+    },
+    {
+     "name": "policy wonk",
+     "rank": 4,
+     "rating": 2199.0,
+     "slug": "policy-wonk",
+     "teamId": "3ec4a701-a9b5-498f-9361-eea4a6dd1cde"
+    },
+    {
+     "name": "Univardisty of Shingtonwash",
+     "rank": 5,
+     "rating": 2171.0,
+     "slug": "univardisty-of-shingtonwash",
+     "teamId": "a4350547-b7a1-47b1-9031-4f7f084ad0d8"
+    },
+    {
+     "name": "procless",
+     "rank": 6,
+     "rating": 2158.1,
+     "slug": "procless",
+     "teamId": "8df7e1cd-0d60-413b-9331-f5427ce9ca88"
+    },
+    {
+     "name": ":3",
+     "rank": 7,
+     "rating": 2149.8,
+     "slug": "3",
+     "teamId": "bbe481a7-4575-4826-9a3e-f81c28205de8"
+    },
+    {
+     "name": "new team(4)",
+     "rank": 8,
+     "rating": 2129.6,
+     "slug": "new-team-4",
+     "teamId": "616e95e4-36ee-4669-b9b6-edfe818a7470"
+    },
+    {
+     "name": "Trzy Kwaterki",
+     "rank": 9,
+     "rating": 2102.1,
+     "slug": "trzy-kwaterki",
+     "teamId": "36258abf-3fd0-4827-8fa5-2a217438cf6f"
+    },
+    {
+     "name": "NEETCoders",
+     "rank": 10,
+     "rating": 2093.5,
+     "slug": "neetcoders",
+     "teamId": "882106d4-9deb-40cc-9d5c-8522c1d32129"
+    }
+   ],
+   "time": "2026-10-23T18:59:47Z"
   }
  ]
 }
