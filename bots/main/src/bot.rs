@@ -100,6 +100,37 @@ pub struct Bot {
     branch_done: bool,
 }
 
+/// Rule priority block (nn/rules.py byte-patches it per bot; magic first): the override rules in
+/// `turn` (1 assist, 2 deny tribute, 3 punish recall, 4 Tavi hunt, 5 fight fix, 6 utility
+/// arbiter, 7 camp safety, 8 team fight, 9 combat search, 10 kill assist, 11 PvE assist,
+/// 12 altar on the way, 13 combat FSM, 14 team up, 15 upgrade first, 16 endgame ahead,
+/// 17 endgame bank, 18 unstick, 19 walk home; 0 = the expert's plan) may only replace the goal
+/// when their priority is at least that of the rule that set it. Default = code order (the
+/// last rule that fires wins). RULE_OFF disables a rule.
+#[used]
+#[no_mangle]
+static mut RULE_PRIO: [u8; 40] = [
+    0xC7, 0xD1, 0xE2, 0xF3, 0x0A, 0x0B, 0x0C, 0x0D, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+    16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
+];
+const RULE_OFF: u8 = 255;
+
+fn rule_prio() -> [u8; 32] {
+    // SAFETY: never written by the bot; volatile so the patched bytes are read at run time.
+    let all = unsafe { core::ptr::read_volatile(core::ptr::addr_of!(RULE_PRIO)) };
+    core::array::from_fn(|i| all[8 + i])
+}
+
+/// Whether rule `rule` may set the goal now (and if so, it becomes the current owner).
+fn rule_ok(prio: &[u8; 32], cur: &mut u8, rule: usize) -> bool {
+    let p = prio[rule];
+    if p == RULE_OFF || p < *cur {
+        return false;
+    }
+    *cur = p;
+    true
+}
+
 /// Engage turns without landing anything before we give up on that enemy.
 const ENGAGE_STALL_TURNS: u32 = 4;
 /// How long to ignore an unreachable enemy.
@@ -558,6 +589,10 @@ impl Bot {
                     other => other,
                 };
             }
+            // nn/rules.py: rule priorities (patched in the compiled file; default = code order,
+            // so the last rule that fires wins, as before). Rule 0 is the expert's plan.
+            let prio = rule_prio();
+            let mut cur_p = if prio[0] == RULE_OFF { 0 } else { prio[0] };
             // Answer a teammate's call for help: healthy, not carrying a big bag, nothing
             // in our own view, and the fight is close. Safety overrides still win (Routine only).
             let mut assist = None;
@@ -585,7 +620,7 @@ impl Bot {
                     // already going (small detour), so helping costs no farming time.
                     let on_way =
                         hunting || fsm_bits & 128 == 0 || self.on_the_way(my_pos, p, intent);
-                    if on_way && age <= 1 && (2..=radius).contains(&p.cheb(my_pos)) {
+                    if on_way && age <= 1 && (2..=radius).contains(&p.cheb(my_pos)) && rule_ok(&prio, &mut cur_p, 1) {
                         intent = Intent::Engage(p);
                         assist = Some(p);
                         telemetry::event(round, champ_name(self.kind), "assist", 1);
@@ -597,12 +632,12 @@ impl Bot {
             let deny = self.theta.knob(knob::DENY_TRIBUTE) > 0;
             if deny && !matches!(mode, Mode::Override(_)) && ctx.hp_frac() > DENY_MIN_HP {
                 if let Some(e) = vis.enemies.iter().find(|e| e.tributing && e.dist <= DENY_RADIUS) {
-                    intent = Intent::Engage(e.pos);
+                    if rule_ok(&prio, &mut cur_p, 2) { intent = Intent::Engage(e.pos); }
                 } else if deny_level >= 3 && chan.enemy_tributing && ctx.gems < ctx.knobs.big_bag()
                 {
                     // A teammate saw an enemy channelling: go cancel it (long bags take turns).
                     if let Some((p, age)) = chan.sighting(round) {
-                        if age <= 1 && p.cheb(my_pos) <= TEAM_DENY_RADIUS {
+                        if age <= 1 && p.cheb(my_pos) <= TEAM_DENY_RADIUS && rule_ok(&prio, &mut cur_p, 2) {
                             intent = Intent::Engage(p);
                             assist = Some(p);
                             telemetry::event(round, champ_name(self.kind), "team_deny", 1);
@@ -619,7 +654,7 @@ impl Bot {
                     .iter()
                     .find(|e| e.recalling && !e.on_spawn && e.dist <= punish && lone(e.pos))
                 {
-                    intent = Intent::Engage(e.pos);
+                    if rule_ok(&prio, &mut cur_p, 3) { intent = Intent::Engage(e.pos); }
                     telemetry::event(round, champ_name(self.kind), "punish_recall", 1);
                 }
             }
@@ -643,7 +678,7 @@ impl Bot {
                     })
                     .min_by(|a, b| a.hp.total_cmp(&b.hp));
                 if let Some(e) = prey {
-                    intent = Intent::Engage(e.pos);
+                    if rule_ok(&prio, &mut cur_p, 4) { intent = Intent::Engage(e.pos); }
                     telemetry::event(round, champ_name(self.kind), "tavi_hunt", 1);
                 }
             }
@@ -654,7 +689,7 @@ impl Bot {
                     fight_fix(fight_v6, &ctx, &vis, intent, mode, self.kit.attack_range)
                 {
                     telemetry::event(round, champ_name(self.kind), why, 1);
-                    intent = fix;
+                    if rule_ok(&prio, &mut cur_p, 5) { intent = fix; }
                 }
             }
             if fight_v6 & 1 != 0 && !fsm_full {
@@ -679,7 +714,7 @@ impl Bot {
                     intent,
                 ) {
                     telemetry::event(round, champ_name(self.kind), "utility", k as i64);
-                    intent = choice;
+                    if choice != intent && rule_ok(&prio, &mut cur_p, 6) { intent = choice; }
                 }
             }
             // Camp safety: camps hit the nearest champion for their strength every round and
@@ -698,7 +733,7 @@ impl Bot {
                 );
                 if let Some(fix) = fix {
                     telemetry::event(round, champ_name(self.kind), "camp_safe", 1);
-                    intent = fix;
+                    if rule_ok(&prio, &mut cur_p, 7) { intent = fix; }
                 }
             }
             // Team fight (portfolio choice between fight and retreat, scored for the whole
@@ -712,7 +747,7 @@ impl Bot {
                         .min_by(|a, b| a.hp.total_cmp(&b.hp));
                     match intent {
                         Intent::Engage(_) | Intent::Kite(_) if ratio < SKIRMISH_LOSE => {
-                            intent = Intent::Retreat
+                            if rule_ok(&prio, &mut cur_p, 8) { intent = Intent::Retreat }
                         }
                         Intent::Retreat | Intent::Engage(_) | Intent::Kite(_)
                             if ratio > SKIRMISH_WIN
@@ -720,7 +755,7 @@ impl Bot {
                                 && ctx.gems < ctx.knobs.big_bag() =>
                         {
                             if let Some(e) = weakest {
-                                intent = Intent::Engage(e.pos);
+                                if rule_ok(&prio, &mut cur_p, 8) { intent = Intent::Engage(e.pos); }
                             }
                         }
                         _ => {}
@@ -751,7 +786,7 @@ impl Bot {
                     "search_fuel",
                     before.saturating_sub(fuel()) as i64,
                 );
-                if let Some((plan, target)) = pick {
+                if let Some((plan, target)) = pick.filter(|_| rule_ok(&prio, &mut cur_p, 9)) {
                     use crate::skirmish::Plan;
                     let carrying = ctx.gems >= ctx.knobs.big_bag();
                     intent = match (plan, target) {
@@ -770,7 +805,7 @@ impl Bot {
             if kill_assist && calm && ctx.hp_frac() > KILL_ASSIST_MIN_HP && !chan.enemy_tributing {
                 if let Some((p, age)) = chan.sighting(round) {
                     let near = (1..=KILL_ASSIST_RADIUS).contains(&p.cheb(my_pos));
-                    if age <= 1 && near && chan.sighting_hp() <= 0.5 {
+                    if age <= 1 && near && chan.sighting_hp() <= 0.5 && rule_ok(&prio, &mut cur_p, 10) {
                         intent = Intent::Engage(p);
                         assist = Some(p);
                         telemetry::event(round, champ_name(self.kind), "kill_assist", 1);
@@ -797,7 +832,7 @@ impl Bot {
                     .min_by(|x, y| x.hp.total_cmp(&y.hp));
                 if let (false, Some(c)) = (busy, fight) {
                     if let Some(g) = c.group {
-                        intent = Intent::ClearCamp(g as u8);
+                        if rule_ok(&prio, &mut cur_p, 11) { intent = Intent::ClearCamp(g as u8); }
                         telemetry::event(round, champ_name(self.kind), "pve_assist", 1);
                     }
                 }
@@ -807,7 +842,7 @@ impl Bot {
                 let enough = ctx.gems >= (u32::from(ctx.knobs.tribute_min) / 3).max(3);
                 let on_way =
                     self.world.altars.iter().any(|&a| self.altar_on_the_way(my_pos, a, intent));
-                if enough && on_way && !matches!(intent, Intent::Tribute | Intent::Capture(_)) {
+                if enough && on_way && !matches!(intent, Intent::Tribute | Intent::Capture(_)) && rule_ok(&prio, &mut cur_p, 12) {
                     intent = Intent::Tribute;
                     telemetry::event(
                         round,
@@ -829,7 +864,7 @@ impl Bot {
                     intent,
                     hurt_this_round,
                 );
-                intent = fixed;
+                if fixed != intent && rule_ok(&prio, &mut cur_p, 13) { intent = fixed; }
                 if helping.is_some() {
                     assist = helping;
                 }
@@ -855,7 +890,7 @@ impl Bot {
                 let winnable = ctx.enemy.is_none_or(|n| {
                     crate::bc_brain::router::fight_advantage(&ctx, &n) >= TEAM_UP_MIN_ADVANTAGE
                 });
-                if let (Some(e), true) = (target, winnable) {
+                if let (Some(e), true) = (target, winnable && rule_ok(&prio, &mut cur_p, 14)) {
                     intent = Intent::Engage(e.pos);
                     telemetry::event(round, champ_name(self.kind), "team_up", 1);
                 }
@@ -890,7 +925,7 @@ impl Bot {
                     }),
                     _ => false,
                 };
-                if hard {
+                if hard && rule_ok(&prio, &mut cur_p, 15) {
                     telemetry::event(round, champ_name(self.kind), "upgrade_first", 1);
                     intent = Intent::Shop;
                 }
@@ -902,7 +937,7 @@ impl Bot {
                 && vis.enemies.iter().all(|e| e.on_spawn || e.dist > 5)
                 && !matches!(intent, Intent::Capture(_))
             {
-                intent = Intent::Tribute;
+                if rule_ok(&prio, &mut cur_p, 16) { intent = Intent::Tribute; }
             }
             // Endgame: at round 2000 tributed gems decide; never finish holding gems.
             if self.theta.knob(knob::ENDGAME_BANK) > 0
@@ -910,7 +945,7 @@ impl Bot {
                 && ctx.gems > 0
                 && !matches!(mode, Mode::Override(_))
             {
-                intent = Intent::Tribute;
+                if rule_ok(&prio, &mut cur_p, 17) { intent = Intent::Tribute; }
             }
             // knob2 UNSTICK: back and forth over two tiles for a while without fighting: reset.
             if self.theta.knob2(knob2::UNSTICK) > 0
@@ -930,7 +965,7 @@ impl Bot {
                 && self.idle_turns >= UNSTICK_TURNS
                 && crate::bc_core::tactics::two_tile_loop(&self.recent)
             {
-                intent = Intent::Shop;
+                if rule_ok(&prio, &mut cur_p, 18) { intent = Intent::Shop; }
                 self.recent_n = 0;
                 telemetry::event(round, champ_name(self.kind), "unstick", 1);
             }
@@ -941,7 +976,7 @@ impl Bot {
                 && !ctx.at_spawn
                 && ctx.dist_spawn.is_some_and(|d| d <= u16::from(walk_home))
             {
-                intent = Intent::WalkHome;
+                if rule_ok(&prio, &mut cur_p, 19) { intent = Intent::WalkHome; }
                 telemetry::event(round, champ_name(self.kind), "walk_home", 1);
             }
             // nn/ teacher (knob2 TEACHER): observe; at 2 the network replaces the rules' choice.
