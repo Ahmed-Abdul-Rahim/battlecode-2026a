@@ -97,6 +97,8 @@ pub struct Bot {
 }
 
 /// Engage turns without landing anything before we give up on that enemy.
+/// knob2 LOOT_GUARD: enemies this close make a ready reward worth guarding.
+const LOOT_GUARD_RADIUS: i32 = 4;
 const ENGAGE_STALL_TURNS: u32 = 4;
 /// How long to ignore an unreachable enemy.
 const IGNORE_ENEMY_ROUNDS: u32 = 40;
@@ -971,6 +973,45 @@ impl Bot {
                         intent = i;
                     }
                     nn_choice = Some(c);
+                }
+            }
+            // knob2 LOOT_GUARD: don't hand a cleared reward to the enemy (ranked 2026-10-23: they
+            // captured groups we had just cleared up to 8 times a game on contest). Bit 1: on the
+            // capture tiles of a ready reward with an enemy close, keep capturing (standing there
+            // contests their capture; the executor still hits what is in reach). Bit 2: step onto
+            // a ready group an enemy is capturing nearby, unless we'd lose the fight.
+            let loot = self.theta.knob2(knob2::LOOT_GUARD);
+            if loot > 0
+                && !matches!(mode, Mode::Override(_))
+                && !ctx.low_hp()
+                && !matches!(intent, Intent::Capture(_) | Intent::Tribute)
+            {
+                let ready =
+                    |g: usize| self.belief.expected_state(g, round) == GroupState::RewardAvailable;
+                let near =
+                    |e: &&crate::act::EnemyView| !e.on_spawn && e.dist <= LOOT_GUARD_RADIUS;
+                let here = self.world.group_at(my_pos).filter(|&g| ready(g));
+                let guarded = if loot & 1 != 0 && vis.enemies.iter().any(|e| near(&e)) {
+                    here
+                } else {
+                    None
+                };
+                let contested = (loot & 2 != 0)
+                    .then(|| {
+                        vis.enemies
+                            .iter()
+                            .filter(near)
+                            .find_map(|e| self.world.group_at(e.pos).filter(|&g| ready(g)))
+                    })
+                    .flatten()
+                    .filter(|_| {
+                        ctx.enemy.is_none_or(|n| {
+                            crate::bc_brain::router::fight_advantage(&ctx, &n) >= 1.0
+                        })
+                    });
+                if let Some(g) = guarded.or(contested) {
+                    intent = Intent::Capture(g as u8);
+                    telemetry::event(round, champ_name(self.kind), "loot_guard", g as i64);
                 }
             }
             self.charge(Stage::Brain, mark);

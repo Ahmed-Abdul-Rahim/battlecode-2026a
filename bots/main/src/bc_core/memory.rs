@@ -119,7 +119,12 @@ pub mod knob2 {
     /// Local runs only: it needs `--fuel` far above the ladder's 100k.
     pub const TEACHER: usize = 26;
 
-    pub const DEFAULTS: [(usize, u8); 27] = [
+    /// Bits: 1 = keep capturing a ready reward we stand on when enemies close in, 2 = step onto a
+    /// ready group an enemy is capturing nearby unless we'd lose (bot.rs LOOT_GUARD_RADIUS).
+    /// Slot 27 is PATH_CHASE (feat/path-chase).
+    pub const LOOT_GUARD: usize = 28;
+
+    pub const DEFAULTS: [(usize, u8); 28] = [
         (PASSIVE_AWARE, 0),
         (FOCUS, 1),
         (ENDGAME, 1),
@@ -147,6 +152,7 @@ pub mod knob2 {
         (CLUSTER, 0),
         (KEEP_BUYING, 1),
         (TEACHER, 0),
+        (LOOT_GUARD, 0),
     ];
 }
 
