@@ -19,7 +19,7 @@ from pathlib import Path
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
-CACHE = ROOT / "runs" / "nn" / "gpusim" / "maps"
+CACHE = ROOT / "runs" / "gpusim" / "maps"
 
 
 @dataclass
@@ -80,8 +80,8 @@ def extract_all() -> None:
 
     CACHE.mkdir(parents=True, exist_ok=True)
     maps = runner.list_maps()
-    out = ROOT / "runs" / "nn" / "gpusim" / "extract"
-    res = runner.run_games([("main", "baseline", m) for m in maps], out, rounds=2)
+    out = ROOT / "runs" / "gpusim" / "extract"
+    res = runner.run_games([("_mapdump", "baseline", m) for m in maps], out, rounds=2)
     for r in res:
         raw = zipfile.ZipFile(r.replay).read("team-a.stdout").replace(b"\x00", b"").decode("utf-8", "replace")
         line = next((l for l in raw.splitlines() if l.startswith("M ")), None)
