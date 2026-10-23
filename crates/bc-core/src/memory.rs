@@ -118,7 +118,13 @@ pub mod knob2 {
     /// Local runs only: it needs `--fuel` far above the ladder's 100k.
     pub const TEACHER: usize = 26;
 
-    pub const DEFAULTS: [(usize, u8); 27] = [
+    /// 1 = chase by walking distance (bc_path::chase, a search inside the 11x11 window): engage
+    /// and kite step round walls, and an enemy we can't walk to inside the window is ignored
+    /// like a failed chase. Straight-line chasing froze both teams for 1500 rounds on
+    /// reverse-spiral (enemies two tiles away across a corridor wall).
+    pub const PATH_CHASE: usize = 27;
+
+    pub const DEFAULTS: [(usize, u8); 28] = [
         (PASSIVE_AWARE, 0),
         (FOCUS, 1),
         (ENDGAME, 1),
@@ -146,6 +152,7 @@ pub mod knob2 {
         (CLUSTER, 0),
         (KEEP_BUYING, 1),
         (TEACHER, 0),
+        (PATH_CHASE, 0),
     ];
 }
 

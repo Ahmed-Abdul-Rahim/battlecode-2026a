@@ -1019,6 +1019,7 @@ impl Bot {
                 let los_retreat = self.theta.knob2(knob2::LOS_RETREAT) > 0;
                 let tp_crystal = self.theta.knob2(knob2::TP_CRYSTAL) > 0;
                 let weak_first = self.theta.knob2(knob2::WEAK_CAMP_FIRST) > 0;
+                let path_chase = self.theta.knob2(knob2::PATH_CHASE) > 0;
                 let micro = self.micro_policy(&ctx, &vis, me, my_pos, intent, round);
                 let mut exec = self.exec(me, &vis, my_pos, hurt_this_round);
                 exec.gold_order = gold_order;
@@ -1037,6 +1038,7 @@ impl Bot {
                 exec.combo = fsm_bits & (64 | 8) == 64 | 8;
                 exec.stun_lock = stun_lock;
                 exec.dash_in = fsm_bits & (64 | 16) == 64 | 16;
+                exec.path_chase = path_chase;
                 let nn_micro = nn_choice.filter(|c| c.a[1] > 0).zip(nn_obs.as_ref()).map(|(c, o)| {
                     let step = (c.a[1] >= 2).then(|| o.steps[c.a[1] as usize - 1]);
                     let target = (c.a[2] > 0).then(|| o.enemies[c.a[2] as usize - 1]).flatten();
@@ -1083,8 +1085,17 @@ impl Bot {
                 self.idle_turns + 1
             };
             // Give up on enemies we keep chasing without landing anything.
-            if let Intent::Engage(target) = intent {
-                if exec_out.attacked || exec_out.cast {
+            let chased = match intent {
+                Intent::Engage(t) => Some(t),
+                Intent::Kite(t) if self.theta.knob2(knob2::PATH_CHASE) > 0 => Some(t),
+                _ => None,
+            };
+            if let Some(target) = chased {
+                if exec_out.unreachable {
+                    // PATH_CHASE: no walk to it inside the window (behind a wall): give up now.
+                    self.engage_stall = ENGAGE_STALL_TURNS;
+                }
+                if (exec_out.attacked || exec_out.cast) && !exec_out.unreachable {
                     self.engage_stall = 0;
                 } else {
                     self.engage_stall += 1;
@@ -1393,6 +1404,7 @@ impl Bot {
             tp_crystal: false,
             weak_first: false,
             dash_in: false,
+            path_chase: false,
             field_shop: false,
             keep_buying: self.theta.knob2(knob2::KEEP_BUYING) > 0,
             recall_safe: false,

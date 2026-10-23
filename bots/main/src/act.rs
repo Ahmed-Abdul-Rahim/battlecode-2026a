@@ -24,6 +24,9 @@ use cambc::{
 
 /// Fuel that must remain before the deep (A*) pathing tier may run.
 const DEEP_SEARCH_MIN_FUEL: u64 = 75_000;
+/// knob2 PATH_CHASE: fuel kept free for the chase search, and how many steps it looks.
+const CHASE_FUEL: u64 = 15_000;
+const CHASE_STEPS: u16 = 12;
 /// Altar locks: placement range (tiles) and price (gold).
 const ALTAR_LOCK_RANGE: i32 = 2;
 const ALTAR_LOCK_COST: u32 = 10;
@@ -123,6 +126,8 @@ pub struct Outcome {
     pub spent: u32,
     /// Fuel spent choosing and making steps (the Path stage).
     pub path_fuel: u64,
+    /// knob2 PATH_CHASE: the chased enemy can't be walked to inside the search window.
+    pub unreachable: bool,
 }
 
 impl Outcome {
@@ -173,6 +178,8 @@ pub struct Exec<'a> {
     pub weak_first: bool,
     /// COMBAT_FSM 64|16: melee champions dash into attack range.
     pub dash_in: bool,
+    /// knob2 PATH_CHASE: chase enemies by walking distance (bc_path::chase), not straight line.
+    pub path_chase: bool,
     /// TAVI_META: Tavi buys shards anywhere on the map (its passive).
     pub field_shop: bool,
     /// knob2 KEEP_BUYING: once the build order is done, keep buying its last emblem.
@@ -1102,9 +1109,45 @@ impl Exec<'_> {
             return Ok(());
         }
         let goal = enemy.pos;
-        self.step_by(|p| p.cheb(goal))?;
+        self.chase_step(goal)?;
         if !self.ranged() && self.in_attack_range(enemy.pos) {
             self.attack_champion(&enemy.handle);
+        }
+        Ok(())
+    }
+
+    /// One step towards a tile from which we can attack `target`: the straight-line step when
+    /// one gets closer. With PATH_CHASE, when none does (a wall in the way), the step follows
+    /// the walking distance inside the search window, and a target we can't walk to there is
+    /// reported in `out.unreachable` (bot.rs then ignores it).
+    fn chase_step(&mut self, target: Pos) -> Result<()> {
+        let was = self.my_pos;
+        self.step_by(|p| p.cheb(target))?;
+        // Without fuel for the search this turn stays as it was.
+        if !self.path_chase || self.my_pos != was || !self.me.can_move()? || crate::sdk::fuel() < CHASE_FUEL {
+            return Ok(());
+        }
+        let before = crate::sdk::fuel();
+        let found = self.world.fields.chase_step(
+            self.my_pos,
+            target,
+            self.kit.attack_range,
+            &self.occupied,
+            CHASE_STEPS,
+        )?;
+        cambc::debug_block! {
+            telemetry::event(0, "", "chase_fuel", before.saturating_sub(crate::sdk::fuel()) as i64);
+        }
+        match found {
+            Some(Some(to)) => {
+                if self.me.move_absolute(vec2(to)).unwrap_or(false) {
+                    self.my_pos = to;
+                    self.out.moved = true;
+                    self.out.tier = Some(Tier::Greedy);
+                }
+            }
+            Some(None) => {}
+            None => self.out.unreachable = true,
         }
         Ok(())
     }
@@ -1127,8 +1170,7 @@ impl Exec<'_> {
             self.attack_champion(&enemy.handle);
             return Ok(());
         }
-        let goal = enemy.pos;
-        self.step_by(|p| p.cheb(goal))
+        self.chase_step(enemy.pos)
     }
 
     /// Aggro swap: move to the edge of `from`'s reach (camps hit range 3; spells reach 4)

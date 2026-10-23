@@ -333,6 +333,48 @@ impl FieldCache {
         Ok(done)
     }
 
+    /// knob2 PATH_CHASE: the next step towards a tile within Chebyshev `reach` of `target`,
+    /// walking round walls and the `occupied` tiles. One host search from those tiles that stops
+    /// when it reaches `me` or after `limit` steps. `None`: no such walk within `limit`;
+    /// `Some(None)`: already there, or every step on the way is blocked right now.
+    pub fn chase_step(
+        &self,
+        me: Pos,
+        target: Pos,
+        reach: i32,
+        occupied: &[Pos],
+        limit: u16,
+    ) -> Result<Option<Option<Pos>>> {
+        let mut walls = self.blocked.clone();
+        for &o in occupied.iter().filter(|&&o| o != me) {
+            if o.x >= 0 && o.y >= 0 && o.x < self.width && o.y < self.height {
+                walls.set(vec2(o), true)?;
+            }
+        }
+        let mut roots = Bitboard::new()?;
+        roots.draw_chebyshev(vec2(target), reach as f32)?;
+        roots.intersect_assign(&walls.complement()?)?;
+        let mut dest = Bitboard::new()?;
+        dest.set(vec2(me), true)?;
+        let mut field = DistanceField::new()?;
+        let mut visited = Bitboard::new()?;
+        field.compute_to(&walls, &roots, &dest, &mut visited, limit)?;
+        let at = |p: Pos| {
+            let inside = p.x >= 0 && p.y >= 0 && p.x < self.width && p.y < self.height;
+            inside.then(|| field.get(vec2(p)).ok()).flatten().filter(|&d| d != DistanceField::UNREACHABLE)
+        };
+        let Some(here) = at(me) else { return Ok(None) };
+        if here == 0 {
+            return Ok(Some(None));
+        }
+        Ok(Some(
+            DIRS8
+                .iter()
+                .map(|&d| me + d)
+                .find(|&p| !occupied.contains(&p) && at(p).is_some_and(|n| n + 1 == here)),
+        ))
+    }
+
     fn get(&self, goal: Goal, p: Pos) -> Option<u16> {
         if p.x < 0 || p.y < 0 || p.x >= self.width || p.y >= self.height {
             return None;
