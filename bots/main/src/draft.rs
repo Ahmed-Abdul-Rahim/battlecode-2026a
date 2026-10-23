@@ -7,6 +7,7 @@
 
 use crate::bc_brain::champvec::{from_kit, ChampVec};
 use crate::bc_core::champion::{ChampionKind, DraftChoice};
+use crate::bc_core::memory::ThetaMatch;
 use crate::bc_draft::{
     best_pick, build_theta, CampKind, DraftState, GroupInfo, MapDescriptor, MapInfo, ScorerWeights,
 };
@@ -25,12 +26,15 @@ struct DraftCache {
     pack_draft: Vec<DraftChoice>,
     /// Map fingerprint, passed to the champions in draft memory.
     fp: u32,
-    /// Per group (engine order): walking steps / 2 from our spawn, from theirs, to an altar.
-    plan_dist: Vec<[u8; 3]>,
+    /// The draft's map analysis for the match plan (draft memory v3), from the first pick.
+    analysis: Option<crate::plan_build::MapAnalysis>,
 }
 
 thread_local! {
     static CACHE: RefCell<Option<DraftCache>> = const { RefCell::new(None) };
+    /// The whole draft memory for the predicted final roster, built on an earlier pick (the last
+    /// pick already spent ~80k of its 100k building theta; now it only adds the enemy's picks).
+    static PREPARED: RefCell<Option<(Vec<DraftChoice>, ThetaMatch)>> = const { RefCell::new(None) };
 }
 
 fn map_info() -> Result<MapInfo> {
@@ -89,77 +93,6 @@ fn map_fingerprint() -> Result<u32> {
     Ok(crate::world::fingerprint(w, h, &walls, &holes, &altars))
 }
 
-/// Walking distance (steps / 2, 255 = unreachable) from each camp group's nearest tile to our
-/// spawn, the enemy spawn and the nearest tribute tile: three host distance fields (~20k fuel
-/// each on 100x100), affordable only on the first draft turn (10x fuel).
-fn plan_distances() -> Result<Vec<[u8; 3]>> {
-    let mut walls = cambc::map::walls()?.clone();
-    walls.union_assign(cambc::map::holes()?)?;
-    walls.union_assign(cambc::map::altars()?)?;
-    let free = walls.complement()?;
-    let mut ours = cambc::map::spawn_region(Team::Ally)?.clone();
-    ours.intersect_assign(&free)?;
-    let mut theirs = cambc::map::spawn_region(Team::Enemy)?.clone();
-    theirs.intersect_assign(&free)?;
-    let mut altar = Bitboard::new()?;
-    for a in cambc::map::altars()?.positions()? {
-        altar.draw_chebyshev(a, cambc::constants().submit_gems_range as f32)?;
-    }
-    altar.intersect_assign(&free)?;
-    let mut fields = Vec::new();
-    for roots in [&ours, &theirs, &altar] {
-        let mut f = DistanceField::new()?;
-        f.compute(&walls, roots, &mut Bitboard::new()?, DistanceField::UNREACHABLE)?;
-        fields.push(f);
-    }
-    let mut out = Vec::new();
-    for g in cambc::map::camp_groups()? {
-        let tiles: Vec<_> = g.camps().iter().map(|c| c.spawn_position()).collect();
-        let mut rec = [crate::bc_core::memory::PLAN_DIST_UNKNOWN; 3];
-        for (k, f) in fields.iter().enumerate() {
-            let d = tiles
-                .iter()
-                .filter_map(|&t| f.get(t).ok())
-                .filter(|&d| d != DistanceField::UNREACHABLE)
-                .min();
-            if let Some(d) = d {
-                rec[k] = (d / 2).min(254) as u8;
-            }
-        }
-        out.push(rec);
-    }
-    Ok(out)
-}
-
-/// How many of `allies` (base kits) a group needs so that the champion the camps focus survives
-/// the clear: camps hit the nearest champion, so one of us takes the whole group's damage for
-/// the clear time (total HP / team damage). 1-4; 5 = not even four.
-fn camp_need(camps: &[CampKind], allies: &[ChampionKind]) -> u8 {
-    if allies.is_empty() || camps.is_empty() {
-        return 0;
-    }
-    let n = allies.len() as f32;
-    let dps = allies
-        .iter()
-        .map(|&k| {
-            let kit = sdk::kit(k);
-            sdk::dps(kit.base_strength, kit.base_focus, &kit)
-        })
-        .sum::<f32>()
-        / n;
-    let tank = allies.iter().map(|&k| sdk::kit(k).base_health).fold(0.0, f32::max);
-    let hp: f32 = camps.iter().map(|c| c.health()).sum();
-    let hit: f32 = camps.iter().map(|c| c.strength()).sum();
-    if hit <= 0.0 {
-        return 1;
-    }
-    (1..=4u8)
-        .find(|&m| hit * hp / (f32::from(m) * dps.max(1.0)) <= tank * NEED_SAFETY)
-        .unwrap_or(5)
-}
-
-/// Fraction of the tank's health a clear may cost (camp_need).
-const NEED_SAFETY: f32 = 0.8;
 
 fn build_cache() -> Result<DraftCache> {
     let map = map_info()?;
@@ -176,7 +109,7 @@ fn build_cache() -> Result<DraftCache> {
         weights: ScorerWeights::default(),
         plan,
         fp,
-        plan_dist: plan_distances().unwrap_or_default(),
+        analysis: crate::plan_build::analyse().ok(),
         pack_draft: {
             let team_size = cambc::draft::team_size()?;
             crate::pack::lookup(fp)
@@ -237,32 +170,85 @@ pub fn play() -> Result<()> {
         }
         let first = state.ally.len() == 1;
         let last = state.ally.len() >= c.team_size;
-        if first || last {
-            let allies = kinds(&state.ally);
-            let enemies = kinds(&state.enemy);
-            let mut theta =
-                build_theta(&c.map, c.team_size, &allies, &enemies, &vec_of, team_dps(&allies));
-            for &(k, v) in c.plan.map_or(&[][..], |p| p.knobs) {
-                if let Some(slot) = theta.knobs.get_mut(k) {
-                    *slot = v;
+        // Not the last pick: predict the final roster from the preference list and build its draft
+        // memory now, while this turn has fuel to spare.
+        if !last {
+            let mut roster = state.ally.clone();
+            for &ch in &prefs {
+                if roster.len() >= c.team_size {
+                    break;
+                }
+                if !roster.contains(&ch) {
+                    roster.push(ch);
                 }
             }
-            theta.map_fp = c.fp;
-            theta.plan = c
-                .plan_dist
-                .iter()
-                .zip(&c.map.groups)
-                .map(|(d, g)| crate::bc_core::memory::PlanGroup {
-                    from_us: d[0],
-                    from_them: d[1],
-                    to_altar: d[2],
-                    need: if last { camp_need(&g.camps, &allies) } else { 0 },
-                })
-                .collect();
+            let known = PREPARED.with(|r| r.borrow().as_ref().is_some_and(|(x, _)| *x == roster));
+            if roster.len() == c.team_size && !known {
+                let theta = theta_for(c, &kinds(&roster), &kinds(&state.enemy), true);
+                PREPARED.with(|r| *r.borrow_mut() = Some((roster, theta)));
+            }
+        }
+        if first || last {
+            let enemies = kinds(&state.enemy);
+            let prepared = if last {
+                PREPARED.with(|r| r.borrow_mut().take()).filter(|(x, _)| *x == state.ally).map(|(_, t)| t)
+            } else {
+                None
+            };
+            let mut theta = match prepared {
+                Some(mut t) => {
+                    set_enemies(&mut t, &kinds(&state.ally), &enemies);
+                    t
+                }
+                None => theta_for(c, &kinds(&state.ally), &enemies, last),
+            };
+            if last && !theta.plan.is_empty() {
+                crate::plan_build::finish_enemies(&mut theta.plan, &enemies, c.fp);
+            }
             cambc::draft_memory().submit(&theta.encode())?;
         }
         Ok(())
     })
+}
+
+/// The full draft memory for a roster: theta, per-map plan knobs, fingerprint and the match plan
+/// (with its roster part when `roster_final`).
+fn theta_for(
+    c: &DraftCache,
+    allies: &[ChampionKind],
+    enemies: &[ChampionKind],
+    roster_final: bool,
+) -> ThetaMatch {
+    let vec_of = |k: ChampionKind| c.vecs[k as usize];
+    let mut theta = build_theta(&c.map, c.team_size, allies, enemies, &vec_of, team_dps(allies));
+    for &(k, v) in c.plan.map_or(&[][..], |p| p.knobs) {
+        if let Some(slot) = theta.knobs.get_mut(k) {
+            *slot = v;
+        }
+    }
+    theta.map_fp = c.fp;
+    if let Some(a) = &c.analysis {
+        theta.plan = if roster_final {
+            crate::plan_build::finish_roster(a, allies)
+        } else {
+            a.plan.clone()
+        };
+        cambc::debug_block! {
+            println!("P {{\"analysis_fuel\":{},\"groups\":{},\"left\":{}}}", a.spent, theta.plan.groups.len(), crate::sdk::fuel());
+        }
+    }
+    theta
+}
+
+/// Enemy champion kinds into slots 5.. (as build_theta lays them out).
+fn set_enemies(t: &mut ThetaMatch, allies: &[ChampionKind], enemies: &[ChampionKind]) {
+    let _ = allies;
+    for s in 5..crate::bc_core::memory::CHAMP_SLOTS {
+        t.champ_kinds[s] = crate::bc_core::memory::NO_CHAMPION;
+    }
+    for (i, &k) in enemies.iter().take(crate::bc_core::memory::CHAMP_SLOTS - 5).enumerate() {
+        t.champ_kinds[5 + i] = k as u8;
+    }
 }
 
 /// Ladder meta (every team that beat v5): Varg, field-shopping Tavi, Cassi & Issac (two

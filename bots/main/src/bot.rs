@@ -97,9 +97,8 @@ pub struct Bot {
 }
 
 /// Engage turns without landing anything before we give up on that enemy.
-/// knob2 DRAFT_PLAN bit 1: frontier groups (this many steps closer to the enemy spawn than to
-/// ours) are worth this much while enemy champions are within PLAN_ENEMY_CLOSE tiles.
-const PLAN_FRONTIER_SLACK: u8 = 4;
+/// knob2 DRAFT_PLAN bit 1: frontier groups are worth this much while enemy champions are within
+/// PLAN_ENEMY_CLOSE tiles.
 const PLAN_FRONTIER_VALUE: f32 = 0.7;
 const PLAN_ENEMY_CLOSE: i32 = 10;
 const ENGAGE_STALL_TURNS: u32 = 4;
@@ -2136,20 +2135,14 @@ impl Bot {
                     _ => {}
                 }
             }
-            // knob2 DRAFT_PLAN: the draft's per-group table (walking distances, champions needed).
-            if let Some(pg) = (plan_bits > 0).then(|| self.theta.plan.get(i)).flatten() {
-                if plan_bits & 2 != 0 && pg.need > 0 {
-                    let need = u32::from(pg.need).saturating_sub(emblems / 2).max(1);
-                    let helpers = 1 + vis.allies.iter().filter(|a| a.pos.cheb(g.center) <= 8).count() as u32;
-                    if need > helpers {
-                        why!(rows.push(format!("[{i},\"skip:plan_need\"]")));
-                        continue;
-                    }
-                }
-                if plan_bits & 1 != 0 && enemy_close && pg.frontier(PLAN_FRONTIER_SLACK) {
-                    value *= PLAN_FRONTIER_VALUE;
-                    why!(f.push_str("\"frontier\":1,"));
-                }
+            // knob2 DRAFT_PLAN bit 1: frontier groups (walk-closer to the enemy spawn, from the
+            // draft's match plan) are worth less while enemy champions are close.
+            if plan_bits & 1 != 0
+                && enemy_close
+                && self.theta.plan.groups.get(i).is_some_and(|pg| pg.is(crate::bc_core::plan::class::FRONTIER))
+            {
+                value *= PLAN_FRONTIER_VALUE;
+                why!(f.push_str("\"frontier\":1,"));
             }
             // CAMP_FEASIBLE bit 4: a group whose camps are all in sight costs its live HP
             // (an ally may have half-killed it), not its full HP.
