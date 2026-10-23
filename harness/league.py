@@ -1737,7 +1737,16 @@ def experiment_step(use_git: bool) -> bool:
     if not e or not X.claim(e, reg, use_git):
         return False
     t0 = time.time()
-    e = X.evaluate(e, reg, use_git)
+    try:
+        e = X.evaluate(e, reg, use_git)
+    except ValueError as err:
+        # A branch that conflicts with the live code ("needs rebase") would block the queue
+        # forever: reject it with the reason; merge league into the branch and queue it again.
+        e["status"] = "rejected"
+        e["notes"] = (e.get("notes", "") + f" Not run: {err}"[:300]).strip()
+        X.finish(e, reg, use_git)
+        log(f"experiment {e['id']} not run: {err}")
+        return True
     log(f"experiment {e['id']} ({round(time.time() - t0)}s): {e['status']}")
     return True
 
