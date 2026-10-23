@@ -4363,13 +4363,15 @@
   {
    "added": "2026-10-23T17:37:36Z",
    "area": "safety",
+   "claimed": "2026-10-23T18:10:05Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 98,
    "notes": "Re-queued. CAMP_SAFE=3 only on 8 elk-heavy maps.",
    "results": {},
    "spec": {
     "ref": "origin/feat/elk-safe"
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Camp safety on elk-heavy maps (plans)"
   },
   {
