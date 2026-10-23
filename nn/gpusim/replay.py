@@ -26,8 +26,9 @@ TAGS = {
     (4, 1): ("draft_pick", 5),  # u32 champion (cambc enum), u8
     (0, 0): ("set_priority", 4),  # u32
     (0, 1): ("move", 8),  # u32 x, u32 y
-    (0, 2): ("attack", 9),  # u8 target kind, u32 target id, 4 bytes
-    (0, 3): ("cast", 17),  # u8 slot + 16 bytes target
+    (0, 2): ("attack", 9),  # u8 target kind (1 champion, 2 camp), u32 target id, 4 bytes
+    (0, 3): ("cast", 17),  # u8 slot, 3 bytes, u8 target kind (0 ground, 1 champion, 2 camp),
+    #                         u32 target id, i32 x, i32 y (-1 for unit targets)
     (0, 4): ("recall", 0),
     (0, 5): ("tribute", 8),  # u32 x, u32 y (the champion's tile)
     (0, 6): ("buy", 8),  # u32 item, u32 count

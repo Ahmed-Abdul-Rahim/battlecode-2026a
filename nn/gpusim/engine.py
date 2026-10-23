@@ -277,8 +277,8 @@ class Engine:
                 self.kill(t, k, killer if killer is not None and killer[0] != t else None, dead[:, t, k])
 
     # ------------------------------------------------------------------ champion turn
-    def champion_turn(self, team: int, k: int, a: torch.Tensor) -> None:
-        """a: long [B, 4] = (move, attack, spell, special) for champion (team, k) in every game."""
+    def turn_start(self, team: int, k: int) -> torch.Tensor:
+        """Respawn and channel completions; returns which games let this champion act."""
         s, B, dev = self.s, self.B, self.dev
         live = ~self.done
         # --- turn start: respawn, channel completions
@@ -312,6 +312,53 @@ class Engine:
         me = self.alive[:, team, k] & live
         busy = (self.recall[:, team, k] >= 0) | (self.tribute[:, team, k] >= 0)
         act = me & ~busy
+        return act
+
+    def damage_camps(self, dmg_c: torch.Tensor) -> None:
+        """dmg_c [B, C]: damage camps, wake their whole group, mark cleared groups."""
+        s, B, dev = self.s, self.B, self.dev
+        hitc = dmg_c > 0
+        self.camp_hp = self.camp_hp - dmg_c
+        g_hit = torch.zeros(B, self.g_state.shape[1], device=dev).scatter_add_(1, s.camp_group.expand_as(hitc), hitc.float()) > 0
+        self.camp_awake |= g_hit[:, s.camp_group] & self.camp_alive
+        self.camp_quiet = torch.where(g_hit[:, s.camp_group], 0, self.camp_quiet)
+        died = self.camp_alive & (self.camp_hp <= 0)
+        self.camp_alive &= ~died
+        self.camp_awake &= self.camp_alive
+        alive_in_g = torch.zeros(B, self.g_state.shape[1], device=dev).scatter_add_(
+            1, s.camp_group.expand_as(self.camp_alive), self.camp_alive.float())
+        cleared = (self.g_state == 0) & (alive_in_g == 0)
+        self.g_state = torch.where(cleared, 1, self.g_state)
+        self.g_timer = torch.where(cleared, 0, self.g_timer)
+
+    def turn_end(self, team: int, k: int, auto_shop: bool = True) -> None:
+        """Turn-end ticks (cooldowns, channels, respawn), spawn heal, shop."""
+        s, live = self.s, ~self.done
+        self.cd[:, team, k] = (self.cd[:, team, k] - 1).clamp(min=0)
+        for ch in (self.recall, self.tribute):
+            ch[:, team, k] = torch.where(ch[:, team, k] > 0, ch[:, team, k] - 1, ch[:, team, k])
+        self.respawn[:, team, k] = torch.where(~self.alive[:, team, k], (self.respawn[:, team, k] - 1).clamp(min=0),
+                                               self.respawn[:, team, k])
+        on_spawn = self.alive[:, team, k] & s.spawn[team][self.pos[:, team, k, 1], self.pos[:, team, k, 0]]
+        self.hp[:, team, k] = torch.where(on_spawn, self.max_hp[:, team, k], self.hp[:, team, k])
+        shop = (on_spawn | ~self.alive[:, team, k]) & (self.gold[:, team, k] >= SHARD_COST) & live & auto_shop
+        if shop.any():
+            n = torch.where(shop, torch.div(self.gold[:, team, k], SHARD_COST, rounding_mode="floor"), 0.0)
+            self.gold[:, team, k] -= n * SHARD_COST
+            # alternate strength / health shards
+            even = (self.shards[:, team, k] % 2 == 0)
+            s_n = torch.where(even, torch.ceil(n / 2), torch.floor(n / 2))
+            h_n = n - s_n
+            self.strength[:, team, k] += s_n * self.str_growth[:, team, k]
+            self.max_hp[:, team, k] += h_n * self.hp_growth[:, team, k]
+            self.hp[:, team, k] = torch.where(on_spawn, self.max_hp[:, team, k], self.hp[:, team, k])
+            self.shards[:, team, k] += n.long()
+
+
+    def champion_turn(self, team: int, k: int, a: torch.Tensor) -> None:
+        """a: long [B, 4] = (move, attack, spell, special) for champion (team, k) in every game."""
+        s, B, dev = self.s, self.B, self.dev
+        act = self.turn_start(team, k)
         mv, at, sp, spc = a[:, 0], a[:, 1], a[:, 2], a[:, 3]
         ranged = self.ranged[:, team, k]
         # --- move (ranged champions that attack don't move)
@@ -362,45 +409,14 @@ class Engine:
         if dmg_e.any():
             self.apply_damage(dmg_e, (team, k))
         if dmg_c.any():
-            hitc = dmg_c > 0
-            self.camp_hp = self.camp_hp - dmg_c
-            g_hit = torch.zeros(B, self.g_state.shape[1], device=dev).scatter_add_(1, s.camp_group.expand_as(hitc), hitc.float()) > 0
-            self.camp_awake |= g_hit[:, s.camp_group] & self.camp_alive
-            self.camp_quiet = torch.where(g_hit[:, s.camp_group], 0, self.camp_quiet)
-            died = self.camp_alive & (self.camp_hp <= 0)
-            self.camp_alive &= ~died
-            self.camp_awake &= self.camp_alive
-            alive_in_g = torch.zeros(B, self.g_state.shape[1], device=dev).scatter_add_(
-                1, s.camp_group.expand_as(self.camp_alive), self.camp_alive.float())
-            cleared = (self.g_state == 0) & (alive_in_g == 0)
-            self.g_state = torch.where(cleared, 1, self.g_state)
-            self.g_timer = torch.where(cleared, 0, self.g_timer)
+            self.damage_camps(dmg_c)
         # --- specials: recall, tribute (next to an altar with gems)
         rec = act & (spc == 1) & ~s.spawn[team][here[:, 1], here[:, 0]]
         self.recall[:, team, k] = torch.where(rec, RECALL_TURNS, self.recall[:, team, k])
         trib = act & (spc == 2) & (self.gems[:, team, k] > 0) & s.near_altar[here[:, 1], here[:, 0]]
         dur = torch.clamp(torch.ceil(self.gems[:, team, k] / 10).long(), min=1)
         self.tribute[:, team, k] = torch.where(trib, dur, self.tribute[:, team, k])
-        # --- turn end: ticks, spawn heal, shop
-        self.cd[:, team, k] = (self.cd[:, team, k] - 1).clamp(min=0)
-        for ch in (self.recall, self.tribute):
-            ch[:, team, k] = torch.where(ch[:, team, k] > 0, ch[:, team, k] - 1, ch[:, team, k])
-        self.respawn[:, team, k] = torch.where(~self.alive[:, team, k], (self.respawn[:, team, k] - 1).clamp(min=0),
-                                               self.respawn[:, team, k])
-        on_spawn = self.alive[:, team, k] & s.spawn[team][self.pos[:, team, k, 1], self.pos[:, team, k, 0]]
-        self.hp[:, team, k] = torch.where(on_spawn, self.max_hp[:, team, k], self.hp[:, team, k])
-        shop = (on_spawn | ~self.alive[:, team, k]) & (self.gold[:, team, k] >= SHARD_COST) & live
-        if shop.any():
-            n = torch.where(shop, torch.div(self.gold[:, team, k], SHARD_COST, rounding_mode="floor"), 0.0)
-            self.gold[:, team, k] -= n * SHARD_COST
-            # alternate strength / health shards
-            even = (self.shards[:, team, k] % 2 == 0)
-            s_n = torch.where(even, torch.ceil(n / 2), torch.floor(n / 2))
-            h_n = n - s_n
-            self.strength[:, team, k] += s_n * self.str_growth[:, team, k]
-            self.max_hp[:, team, k] += h_n * self.hp_growth[:, team, k]
-            self.hp[:, team, k] = torch.where(on_spawn, self.max_hp[:, team, k], self.hp[:, team, k])
-            self.shards[:, team, k] += n.long()
+        self.turn_end(team, k)
 
     def step(self, actions: torch.Tensor) -> None:
         """One round. actions: long [B, 2, T, 4]."""
