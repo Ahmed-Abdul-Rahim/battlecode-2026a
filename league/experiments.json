@@ -4303,13 +4303,15 @@
   {
    "added": "2026-10-23T17:37:30Z",
    "area": "farming",
+   "claimed": "2026-10-23T17:45:10Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 97,
    "notes": "Re-queued (lost in a registry overwrite). 4 plans replaced CAMP_FEASIBLE=24 with 1.",
    "results": {},
    "spec": {
     "ref": "origin/feat/plan-feasible"
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Map plans keep merged camp bits (CAMP_FEASIBLE 25)"
   },
   {
