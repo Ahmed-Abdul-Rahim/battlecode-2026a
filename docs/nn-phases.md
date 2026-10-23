@@ -73,6 +73,24 @@ what distillation lost), on held-out maps, and in release at 100k fuel (no out-o
 No further teacher compression unless training time becomes the bottleneck (rank-64 already
 halved game time at no measured loss).
 
+**Short compression check (2026-10-23, reference = full teacher it2, which mostly copies the rules):**
+
+| Model | Multiply-adds | Goal agreement | Agreement where teacher overrules rules (249 states) | vs rules (80 games) | vs teacher (80 games) |
+|---|---|---|---|---|---|
+| teacher (full 512) | 1,489k | - | - | 0.542, +50 | - |
+| teacher + tiny noise (noise band) | 1,489k | - | - | 0.556, +53 | 0.500 |
+| rank 64 (in use) | 462k | 99.95% | 85% | 0.431, +17 | 0.550 |
+| rank 16 | 324k | 99.94% | 84% | 0.486, +52 | 0.475 |
+| width 64 | 157k | 99.93% | 89% | 0.458, +10 | 0.537 |
+| width 16 (too-small sanity case) | 39k | 99.89% | 53% | 0.514, +28 | 0.537 |
+
+- All sizes are lossless *for this teacher*: it overrules the rules' suggestion on only ~0.1% of
+  states, and copying one input needs no capacity. Not informative about a real learned teacher.
+- The discriminating measure is agreement on the states where the teacher overrules the rules:
+  width 16 already drops to 53% there. Use it (plus games and plasticity) in the full study once
+  the teacher wins by its own decisions.
+- Noise band for 80-game evaluations: about +/-0.06 win rate.
+
 **LoRA / adapters:** for game patches (adapter on the frozen teacher, fast and can't drift far),
 per-map or per-opponent specialists (merged into the weights: no extra fuel), and student
 fine-tuning with PPO after distillation if the teacher-student gap is large. Not for the main

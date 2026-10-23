@@ -15,6 +15,7 @@ GRID_BITS = SIDE * SIDE * CH
 GRID_BYTES = (GRID_BITS + 7) // 8
 INPUT = S * (1 + HIST) + GRID_BITS
 HEADS = (15, 10, 4, 2)  # goal, step, attack, cast
+RULE_GOAL = 241  # scalar index of the rules' suggested goal (one-hot, HEADS[0] wide); teacher.rs
 HEAD_NAMES = ("goal", "step", "attack", "cast")
 GOALS = (
     "group0", "group1", "group2", "group3", "tribute", "shop", "retreat", "walk_home",

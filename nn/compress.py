@@ -87,6 +87,8 @@ def short(a) -> int:
     for m in rep["offline"]:
         if m["candidate"] == "teacher int8" or (m["goal"] or 0) < AGREE_MIN:
             continue
+        if a.games and m["candidate"].replace(" ", "") not in a.games:
+            continue
         ck = OUT / f"w{m['candidate'].split()[0][1:]}r{m['candidate'].split()[1][1:]}"
         g = {"candidate": m["candidate"], **R.evaluate(ck / "teacher.bin", 512, f"cmp-{ck.name}"),
              **head_to_head(ck / "teacher.bin", teacher / "teacher.bin", 512, ck.name)}
@@ -102,6 +104,7 @@ def main(argv: list[str] | None = None) -> int:
     s = sub.add_parser("short")
     s.add_argument("--teacher", required=True)
     s.add_argument("--data", nargs="*")
+    s.add_argument("--games", nargs="*", help="only these candidates in measure B, e.g. w512r64 w16r0")
     s.set_defaults(fn=short)
     a = p.parse_args(argv)
     return a.fn(a)

@@ -333,6 +333,8 @@ def compare(pol, teacher, b: "Batches", idx: torch.Tensor) -> dict:
     agree = np.zeros(4)
     tot = np.zeros(4)
     kl_sum = 0.0
+    off_hit = off_tot = 0  # states where the teacher overrules the rules' suggestion
+    rule_at = spec.RULE_GOAL
     with torch.no_grad():
         for i in idx.split(8192):
             x = b.x(i)
@@ -341,6 +343,10 @@ def compare(pol, teacher, b: "Batches", idx: torch.Tensor) -> dict:
             _, _, ls = model.head_logp(ls_, b.M[i], acts)
             _, _, lt = model.head_logp(lt_, b.M[i], acts)
             manual = lt[1].argmax(1) > 0
+            tg = lt[0].argmax(1)
+            off = tg != x[:, rule_at : rule_at + spec.HEADS[0]].argmax(1)
+            off_hit += ((ls[0].argmax(1) == tg) & off).sum().item()
+            off_tot += off.sum().item()
             for h in range(4):
                 use = torch.ones_like(manual) if h < 2 else manual
                 agree[h] += ((ls[h].argmax(1) == lt[h].argmax(1)) & use).sum().item()
@@ -348,6 +354,8 @@ def compare(pol, teacher, b: "Batches", idx: torch.Tensor) -> dict:
             kl_sum += soft_kl(ls_, lt_, b.M[i]).sum().item()
     out = {n: (round(float(agree[h] / tot[h]), 5) if tot[h] else None) for h, n in enumerate(spec.HEAD_NAMES)}
     out["kl"] = round(kl_sum / len(idx), 6)
+    out["off_rules_states"] = int(off_tot)
+    out["goal_off_rules"] = round(off_hit / off_tot, 4) if off_tot else None
     return out
 
 
