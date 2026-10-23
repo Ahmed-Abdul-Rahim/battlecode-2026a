@@ -4181,10 +4181,34 @@
    "added": "2026-10-23T17:25:05Z",
    "area": "pathing",
    "claimed": "2026-10-23T17:25:08Z",
+   "finished": "2026-10-23T17:35:14Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 95,
    "notes": "Straight-line chase froze both teams up to 1572 rounds on reverse-spiral; bounded host distance field when no closer step exists.",
    "results": {
+    "full": {
+     "h2h": 0.55,
+     "h2h_games": 80,
+     "live": {
+      "deaths": 23.25,
+      "fitness": 0.351,
+      "games": 720,
+      "gem_margin": 0.086,
+      "win": 0.562
+     },
+     "sparring": {
+      "mean": 0.0826,
+      "pairs": 14,
+      "se": 0.1482
+     },
+     "variant": {
+      "deaths": 23.74,
+      "fitness": 0.316,
+      "games": 720,
+      "gem_margin": 0.071,
+      "win": 0.536
+     }
+    },
     "screen": {
      "live": {
       "deaths": 14.45,
@@ -4213,32 +4237,8 @@
     },
     "ref": "origin/feat/path-chase"
    },
-   "status": "full",
+   "status": "rejected",
    "title": "Chase round walls (reverse-spiral freeze)"
-  },
-  {
-   "added": "2026-10-23T17:28:25Z",
-   "area": "farming",
-   "id": 96,
-   "notes": "4 plans replaced CAMP_FEASIBLE=24 with 1, turning off PvE assist and deliver-on-the-way on collision/eight/monolith/pilgrimage.",
-   "results": {},
-   "spec": {
-    "ref": "origin/feat/plan-feasible"
-   },
-   "status": "queued",
-   "title": "Map plans keep merged camp bits (CAMP_FEASIBLE 25)"
-  },
-  {
-   "added": "2026-10-23T17:28:35Z",
-   "area": "safety",
-   "id": 97,
-   "notes": "CAMP_SAFE=3 only on corridors, boss-battle, starfish, shortcut, stampede, pilgrimage, yellow-brick-road, the-farm (elk deaths 10-41 per ranked game).",
-   "results": {},
-   "spec": {
-    "ref": "origin/feat/elk-safe"
-   },
-   "status": "queued",
-   "title": "Camp safety on elk-heavy maps (plans)"
   }
  ]
 }
