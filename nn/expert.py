@@ -286,6 +286,8 @@ def relabel(games: list[dict], recs: list[dict], it: int) -> tuple[Path, dict]:
             by_game.setdefault(rc["gi"], {})[(rc["r"], rc["c"])] = best
             n_imp += 1
     parts = []
+    qrecs = []  # searched decisions: row in this iteration's data, own choice, gain per alternative
+    rec_at = {(rc["gi"], rc["r"], rc["c"]): rc for rc in recs}
     for gi, g in enumerate(games):
         r = g["res"]
         won = r.score_for(r.bot_a if g["a"] else r.bot_b)
@@ -306,6 +308,12 @@ def relabel(games: list[dict], recs: list[dict], it: int) -> tuple[Path, dict]:
             c, rr = keys[i]
             d["A"][i, 0] = imp[(rr, c)]
             d["M"][i, 0] |= 1 << imp[(rr, c)]
+        off = sum(len(p["S"]) for p in parts)
+        for i, (c, rr) in enumerate(keys):
+            rc = rec_at.get((gi, rr, c))
+            if rc:
+                qrecs.append({"row": off + i, "own": rc["a"],
+                              "gains": {str(a): v - rc["base"] for a, v in rc["alts"].items()}})
         parts.append(d)
         if rows:
             extra = {k: v[rows] for k, v in d.items()}
@@ -315,6 +323,7 @@ def relabel(games: list[dict], recs: list[dict], it: int) -> tuple[Path, dict]:
                 parts.append(dict(extra))
     path = OUT / "data" / f"it{it:03d}.npz"
     data.save(path, data.concat(parts))
+    path.with_suffix(".q.json").write_text(json.dumps(qrecs))
     stats = {"searched": len(recs), "improved": n_imp,
              "improved_frac": round(n_imp / max(len(recs), 1), 3),
              "mean_best_gain": round(float(np.mean(gains)), 2) if gains else None,
