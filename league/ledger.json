@@ -3933,6 +3933,15 @@
    "time": "2026-10-23T15:00:25.894Z",
    "win": false
   },
+  "855b933c-87b2-4476-ba28-e082357f2f47": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "eight",
+   "opp": "Invincible Coders",
+   "oppId": "afdfcf47-296e-44db-99c2-c6cc155d746f",
+   "time": "2026-10-23T15:10:33.783Z",
+   "win": false
+  },
   "858bbbfb-7c63-43d5-b53c-bc73c1dea10f": {
    "kind": "unranked",
    "live": 17,
@@ -5121,6 +5130,15 @@
    "time": "2026-10-20T15:32:13.243Z",
    "win": true
   },
+  "ac97c744-5465-4ecb-a5f1-01838396345a": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "big-world",
+   "opp": "Invincible Coders",
+   "oppId": "afdfcf47-296e-44db-99c2-c6cc155d746f",
+   "time": "2026-10-23T15:10:33.784Z",
+   "win": true
+  },
   "acbfa0db-0f44-4d19-a042-f8c96f86e684": {
    "kind": "ranked",
    "live": null,
@@ -5760,6 +5778,15 @@
    "time": "2026-10-23T14:58:19.910Z",
    "win": false
   },
+  "bea37776-17aa-4ce7-b943-e836cf893ed5": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "interlock",
+   "opp": "Invincible Coders",
+   "oppId": "afdfcf47-296e-44db-99c2-c6cc155d746f",
+   "time": "2026-10-23T15:10:33.782Z",
+   "win": true
+  },
   "bef8d205-b9ee-4213-8ba1-1e0253afd2ff": {
    "kind": "ranked",
    "live": 21,
@@ -6020,6 +6047,15 @@
    "oppId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
    "time": "2026-10-21T15:20:15.263Z",
    "win": false
+  },
+  "c8263d06-a523-4d30-8eed-155bda1f1d43": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "lost-world",
+   "opp": "Invincible Coders",
+   "oppId": "afdfcf47-296e-44db-99c2-c6cc155d746f",
+   "time": "2026-10-23T15:10:33.782Z",
+   "win": true
   },
   "c8537ce5-5975-4f07-bc1a-a5b2f2c76858": {
    "kind": "ranked",
@@ -6749,6 +6785,15 @@
    "oppId": "4f895cf2-77c0-4d65-91a6-320d46ecca54",
    "time": "2026-10-22T07:00:15.628Z",
    "win": false
+  },
+  "de98be41-373d-414e-8850-dd5938dbccae": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "islands",
+   "opp": "Invincible Coders",
+   "oppId": "afdfcf47-296e-44db-99c2-c6cc155d746f",
+   "time": "2026-10-23T15:10:33.783Z",
+   "win": true
   },
   "deb8eb4b-0322-4047-88e6-0d5d52307d0a": {
    "kind": "ranked",
@@ -15878,6 +15923,23 @@
    "oppId": "4fbe2b8b-0a69-4dd5-b3f0-d8787101d7bc",
    "status": "open",
    "time": "2026-10-23T14:54:32.604Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 1,
+    "champion": 82
+   },
+   "deaths_them": 34,
+   "deaths_us": 83,
+   "gems_them": "931",
+   "gems_us": "98",
+   "id": "855b933c-87b2-4476-ba28-e082357f2f47",
+   "map": "eight",
+   "opp": "Invincible Coders",
+   "oppId": "afdfcf47-296e-44db-99c2-c6cc155d746f",
+   "status": "open",
+   "time": "2026-10-23T15:10:33.783Z",
    "tries_at": 4
   }
  ],
