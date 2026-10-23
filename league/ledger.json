@@ -963,6 +963,15 @@
    "time": "2026-10-23T16:01:13.926Z",
    "win": false
   },
+  "1fd23b30-b251-4f79-af5a-7e93a999c528": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "starvation",
+   "opp": "\u200e",
+   "oppId": "b58c08d8-498a-4fc7-9585-f4fafaefa688",
+   "time": "2026-10-23T16:10:40.121Z",
+   "win": false
+  },
   "1ff86ca3-a6d2-466c-9023-a24af5e98540": {
    "kind": "unranked",
    "live": 17,
@@ -1555,6 +1564,15 @@
    "opp": "knownasjason",
    "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
    "time": "2026-10-20T15:00:17.843Z",
+   "win": false
+  },
+  "33137574-8a91-4f22-b781-c55cc35eb923": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "elk-arena",
+   "opp": "\u200e",
+   "oppId": "b58c08d8-498a-4fc7-9585-f4fafaefa688",
+   "time": "2026-10-23T16:10:40.121Z",
    "win": false
   },
   "334d5370-0f31-4d59-9426-002b5ddca303": {
@@ -3258,6 +3276,15 @@
    "time": "2026-10-21T17:50:18.948Z",
    "win": false
   },
+  "687fac13-2697-4854-add9-ebaca6884828": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "interlock",
+   "opp": "\u200e",
+   "oppId": "b58c08d8-498a-4fc7-9585-f4fafaefa688",
+   "time": "2026-10-23T16:10:40.121Z",
+   "win": false
+  },
   "68af59f5-f6dc-447f-a7e4-e42328ecb7a1": {
    "kind": "ranked",
    "live": 1,
@@ -3401,6 +3428,15 @@
    "oppId": "5e0c725a-b9b4-4523-8739-4427f20b9ce5",
    "time": "2026-10-23T14:12:14.126Z",
    "win": true
+  },
+  "6bf37e1e-b64d-48c1-b7e3-2fc34e6d44ec": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "gold-rush",
+   "opp": "\u200e",
+   "oppId": "b58c08d8-498a-4fc7-9585-f4fafaefa688",
+   "time": "2026-10-23T16:10:40.121Z",
+   "win": false
   },
   "6c568630-4fc4-4aba-9a9e-444d0a1872fa": {
    "kind": "ranked",
@@ -6902,6 +6938,15 @@
    "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
    "time": "2026-10-23T15:37:33.784Z",
    "win": false
+  },
+  "da0efe76-eb46-4542-a3d5-2ff299e0071e": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "lanes",
+   "opp": "\u200e",
+   "oppId": "b58c08d8-498a-4fc7-9585-f4fafaefa688",
+   "time": "2026-10-23T16:10:40.121Z",
+   "win": true
   },
   "da39e432-ee0c-4043-a5bc-d5c789d8eba4": {
    "kind": "ranked",
@@ -16749,6 +16794,74 @@
    "status": "open",
    "time": "2026-10-23T16:00:22.633Z",
    "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 22
+   },
+   "deaths_them": 30,
+   "deaths_us": 24,
+   "gems_them": "1008",
+   "gems_us": "72",
+   "id": "33137574-8a91-4f22-b781-c55cc35eb923",
+   "map": "elk-arena",
+   "opp": "\u200e",
+   "oppId": "b58c08d8-498a-4fc7-9585-f4fafaefa688",
+   "status": "open",
+   "time": "2026-10-23T16:10:40.121Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 16
+   },
+   "deaths_them": 15,
+   "deaths_us": 18,
+   "gems_them": "752",
+   "gems_us": "224",
+   "id": "1fd23b30-b251-4f79-af5a-7e93a999c528",
+   "map": "starvation",
+   "opp": "\u200e",
+   "oppId": "b58c08d8-498a-4fc7-9585-f4fafaefa688",
+   "status": "open",
+   "time": "2026-10-23T16:10:40.121Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "camp": 4,
+    "champion": 33
+   },
+   "deaths_them": 34,
+   "deaths_us": 37,
+   "gems_them": "1027",
+   "gems_us": "599",
+   "id": "687fac13-2697-4854-add9-ebaca6884828",
+   "map": "interlock",
+   "opp": "\u200e",
+   "oppId": "b58c08d8-498a-4fc7-9585-f4fafaefa688",
+   "status": "open",
+   "time": "2026-10-23T16:10:40.121Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 13,
+    "champion": 6
+   },
+   "deaths_them": 22,
+   "deaths_us": 19,
+   "gems_them": "1014",
+   "gems_us": "55",
+   "id": "6bf37e1e-b64d-48c1-b7e3-2fc34e6d44ec",
+   "map": "gold-rush",
+   "opp": "\u200e",
+   "oppId": "b58c08d8-498a-4fc7-9585-f4fafaefa688",
+   "status": "open",
+   "time": "2026-10-23T16:10:40.121Z",
+   "tries_at": 1
   }
  ],
  "map_files": {
