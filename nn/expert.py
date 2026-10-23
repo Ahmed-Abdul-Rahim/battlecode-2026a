@@ -42,14 +42,18 @@ from bctools import runner  # noqa: E402
 from nn import data  # noqa: E402
 from nn import run as R  # noqa: E402
 
-OUT = R.OUT / "expert"
+import os
+
+# EXPERT_TAG / EXPERT_H / EXPERT_VALUE: a separate run (nn/gemcheck.py: 150 rounds of the blend
+# barely predicted the final result, rank corr 0.12; 500 rounds of submitted gems 0.52)
+OUT = R.OUT / os.environ.get("EXPERT_TAG", "expert")
 STATE = OUT / "state.json"
 MAGIC = bytes.fromhex("e5c4a1b70df0ed5e")
 POOL = 32  # branch bots (one batch of branch games)
 BASE_GAMES = 24
 DECISIONS = 4  # searched decisions per base game
 ALTS = 3  # alternatives per decision
-H = 150  # rounds a branch plays after its decision
+H = int(os.environ.get("EXPERT_H", 150))  # rounds a branch plays after its decision
 COMMIT = 20  # rounds the forced intent is kept (while available)
 VERIFY_COMMIT = 10  # the re-check of a winner holds it this long instead
 GOLD_PER_GEM = 0.1
@@ -134,8 +138,10 @@ def scores(bundle: Path, side: str) -> list[tuple[int, float]]:
             o = json.loads(ln[2:])
             carried[o["c"]] = float(o["g"])
             gold[o["c"]] = float(o.get("lg", 0))
-            out.append((int(o["r"]), float(o["us"]) - float(o["them"]) + 0.5 * sum(carried.values())
-                        + GOLD_PER_GEM * sum(gold.values())))
+            v = float(o["us"]) - float(o["them"])
+            if os.environ.get("EXPERT_VALUE", "blend") == "blend":
+                v += 0.5 * sum(carried.values()) + GOLD_PER_GEM * sum(gold.values())
+            out.append((int(o["r"]), v))
     return out
 
 
