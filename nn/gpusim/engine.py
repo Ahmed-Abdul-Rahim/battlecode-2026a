@@ -88,6 +88,8 @@ RESPAWN_ROUNDS, CAPTURE_ROUNDS, KILL_GOLD, SHARD_COST = 60, 5, 100, 30
 VISION, SPELL_RANGE, SPELL_CD, RECALL_TURNS = 8, 4, 8, 5
 # Item families (cambc::ItemType = 6 x family + [str shard, str emblem, focus shard, focus emblem,
 # health shard, health emblem]); stats are the champion's growth per shard.
+CAMP_SLEEP, CAMP_SLEEP_ROUNDS = "no_target", 1  # validation experiments
+CAMP_TARGET = "nearest"  # or "aggro_then_nearest" / "aggro_only" (validation experiments)
 MONSTER, POWER, DURABILITY, TREASURE, JUNGLE, HOME, BRUISER = range(7)
 ITEM_STAT = (0, 0, 1, 1, 2, 2)  # strength, focus, health
 # Action layout per champion: move (9) x attack target (3: none, nearest enemy, nearest camp)
@@ -194,6 +196,7 @@ class Engine:
         self.camp_alive = torch.ones(B, C, dtype=torch.bool, device=dev)
         self.camp_awake = torch.zeros(B, C, dtype=torch.bool, device=dev)
         self.camp_quiet = torch.zeros(B, C, dtype=torch.long, device=dev)
+        self.camp_aggro = torch.full((B, C), -1, dtype=torch.long, device=dev)  # last damager (team * T + k)
         self.camp_stun = torch.zeros(B, C, dtype=torch.long, device=dev)
         # group: 0 alive, 1 cleared (capturable), 2 respawning
         self.g_state = torch.zeros(B, G, dtype=torch.long, device=dev)
@@ -314,6 +317,11 @@ class Engine:
         d = torch.where(ok, d, 10_000)
         tgt = d.argmin(-1)  # [B, C]
         hit = ok.any(-1)
+        if CAMP_TARGET != "nearest":
+            ag = self.camp_aggro.clamp(min=0)
+            ag_ok = (self.camp_aggro >= 0) & ok.gather(2, ag.unsqueeze(-1)).squeeze(-1)
+            tgt = torch.where(ag_ok, ag, tgt)
+            hit = ag_ok | (hit & (CAMP_TARGET == "aggro_then_nearest"))
         dmg = torch.zeros(B, 2 * self.T, device=self.dev)
         dmg.scatter_add_(1, tgt, torch.where(hit, self.camp_str.expand_as(hit), 0.0))
         dmg = dmg.view(B, 2, self.T) * (1 - 0.3 * self.emb[..., JUNGLE])
@@ -329,8 +337,11 @@ class Engine:
                 self.damage_camps(back)
         self.apply_damage(dmg, None)
         # a camp with no champion in range for 2 rounds (and no damage taken) goes back to sleep
-        self.camp_quiet = torch.where(act & ~hit, self.camp_quiet + 1, torch.where(hit, 0, self.camp_quiet))
-        self.camp_awake &= ~(self.camp_quiet >= 2)
+        if CAMP_SLEEP == "no_target":
+            self.camp_quiet = torch.where(act & ~hit, self.camp_quiet + 1, torch.where(hit, 0, self.camp_quiet))
+        else:  # rounds without taking damage (reset in damage_camps)
+            self.camp_quiet = torch.where(self.camp_awake, self.camp_quiet + 1, self.camp_quiet)
+        self.camp_awake &= ~(self.camp_quiet > CAMP_SLEEP_ROUNDS)
 
     def apply_damage(self, dmg: torch.Tensor, killer: tuple[int, int] | None) -> None:
         """dmg [B, 2, T] to champions: shields absorb first, damage cancels recalls, Ren
@@ -465,6 +476,7 @@ class Engine:
             self.on_kill(team, k, (before & ~self.alive).any(-1).any(-1))
         if dmg_c.shape[1] and dmg_c.any():
             dmg_c = dmg_c * (1 + 0.1 * self.emb[:, team, k, MONSTER]).unsqueeze(1)
+            self.camp_aggro = torch.where(dmg_c > 0, team * self.T + k, self.camp_aggro)
             before = self.camp_alive.clone()
             eff = torch.minimum(dmg_c, self.camp_hp.clamp(min=0)) * self.camp_alive
             self.camp_dmg_done[:, team, k] += eff.sum(-1)
@@ -645,7 +657,8 @@ class Engine:
         self.camp_hp = self.camp_hp - dmg_c
         g_hit = torch.zeros(B, self.g_state.shape[1], device=dev).scatter_add_(1, s.camp_group.expand_as(hitc), hitc.float()) > 0
         self.camp_awake |= g_hit[:, s.camp_group] & self.camp_alive
-        self.camp_quiet = torch.where(g_hit[:, s.camp_group], 0, self.camp_quiet)
+        reset = hitc if CAMP_SLEEP == "no_damage_camp" else g_hit[:, s.camp_group]
+        self.camp_quiet = torch.where(reset, 0, self.camp_quiet)
         died = self.camp_alive & (self.camp_hp <= 0)
         self.camp_alive &= ~died
         self.camp_awake &= self.camp_alive

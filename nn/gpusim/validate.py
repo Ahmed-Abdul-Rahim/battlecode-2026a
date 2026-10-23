@@ -65,6 +65,12 @@ def infer_camp_ids(ts, md, names) -> dict[int, int]:
 
 
 def main(bundle: str, stats: str, map_name: str, max_rounds: int = 10**9) -> int:
+    if os.environ.get("CAMP_SLEEP"):
+        import nn.gpusim.engine as eng_mod
+        eng_mod.CAMP_SLEEP, eng_mod.CAMP_SLEEP_ROUNDS = os.environ["CAMP_SLEEP"], int(os.environ["CAMP_SLEEP_ROUNDS"])
+    if os.environ.get("CAMP_TARGET"):
+        import nn.gpusim.engine as eng_mod
+        eng_mod.CAMP_TARGET = os.environ["CAMP_TARGET"]
     s = json.loads(Path(stats).read_text(encoding="utf-8-sig"))
     md = maps.load(map_name)
     map_bytes = next(Path("maps").glob(f"{map_name}.map26a")).read_bytes()
