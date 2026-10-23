@@ -59,6 +59,13 @@ problem -> build the simulator, don't stop.
   f32 SIMD 3.9 (docs/fuel-budget.md). Next: i16 pre-widened weights, 4 rows per input load.
 - **Unknown: does the ladder engine accept `simd128`?** Test with an unranked match first.
 - Budget target: network <= ~35k fuel per turn on top of the rules (p95 under ~70k total, 0 out-of-fuel turns).
+- Measured (release, vs baseline): ambush rules 29k mean / 0 out-of-fuel; + student-style observation
+  (no grid) 55k / 11; + full teacher observation 73k / 21. yellow-brick-road: rules alone 54k mean,
+  p95 80k, 31 out-of-fuel turns; + student observation 3,417 out-of-fuel turns.
+- Consequence: the student gets its own small feature set (logged next to the teacher's in teacher
+  games, so it can be trained), runs only on turns with fuel to spare (rules decide otherwise), and
+  probably outputs the goal head only unless PPO shows the teacher relies on manual fighting.
+- Rule bot itself runs out of fuel on dense maps (yellow-brick-road: 31 turns): worth fixing anyway.
 
 **Zoo:** MLP 512/1024, GRU, LSTM, S4/S6, transformer over entity tokens; same inputs and training
 budget; each needs in-bot inference (recurrent state carried between turns) to play rollouts.
