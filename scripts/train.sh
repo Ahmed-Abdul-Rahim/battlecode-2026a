@@ -1,65 +1,57 @@
 #!/usr/bin/env bash
-# The league daemon (harness/league.py) on Linux / macOS / Git Bash. Extra arguments pass through.
-#   scripts/train.sh start                          # worker: train and push to branch 'league'
-#   scripts/train.sh start --lead                   # the one PC that reads the ladder + writes reviews
-#   scripts/train.sh start --lead --auto-submit     # ... and uploads (team-agreed rules, one PC only)
-#   scripts/train.sh stop | status | logs | review | sync | maps | bench | submit
-#   scripts/train.sh once [--no-push]               # one cycle in the foreground
+# The league daemon (harness/league.py) on Linux / macOS / Git Bash. Windows: scripts\train.ps1 (same commands).
+#   scripts/train.sh train [--lead --auto-submit]   # start; the flags are remembered for the next `train`
+#   scripts/train.sh stop | status | logs
+#   scripts/train.sh experiments [list]             # the queue; queued experiments run inside the daemon
+#   scripts/train.sh experiments add --title "..." --area combat --ref origin/feat/x --knobs K=1
+#   scripts/train.sh exp-status                     # what was tried, merged, rejected, next
+# Without flags `train` starts a worker (trains θ, tests experiments, pushes). Exactly one PC runs
+# --lead (reads the ladder, builds mimics, writes reviews); only the lead may add --auto-submit.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 PY=.venv/bin/python
 [ -x "$PY" ] || PY=.venv/Scripts/python.exe
+SCRATCH=runs/league
+SAVED=$SCRATCH/train.args
 cmd="${1:-status}"
 shift || true
 
 stop_league() {
-  pkill -f "harness/league.py run" 2>/dev/null || true
-  rm -f runs/league/lock
+  if [ -f "$SCRATCH/lock" ]; then kill "$(cat "$SCRATCH/lock")" 2>/dev/null || true; fi
+  pkill -f "harness/(league|experiments).py run" 2>/dev/null || true
+  rm -f "$SCRATCH/lock"
 }
 
 case "$cmd" in
-  start)
+  train)
+    mkdir -p "$SCRATCH"
+    if [ $# -gt 0 ]; then
+      echo "$*" > "$SAVED"
+    elif [ -f "$SAVED" ]; then
+      read -r -a saved_args < "$SAVED" || true
+      set -- "${saved_args[@]}"
+    fi
     stop_league
-    mkdir -p runs/league
     "$PY" harness/params.py --check
-    nohup "$PY" -u harness/league.py run --forever "$@" >> runs/league/league.log 2>&1 &
-    echo "league started ($*). Log: runs/league/league.log; status: scripts/train.sh status" ;;
+    for f in league.log league.err; do
+      [ -f "$SCRATCH/$f" ] && mv -f "$SCRATCH/$f" "$SCRATCH/${f%.*}.prev.${f##*.}"
+    done
+    nohup "$PY" -u harness/league.py run --forever "$@" > "$SCRATCH/league.log" 2> "$SCRATCH/league.err" < /dev/null &
+    role=worker
+    for x in "$@"; do [ "$x" = "--lead" ] && role=lead; done
+    echo "league started as $role ($*). Log: scripts/train.sh logs; status: scripts/train.sh status" ;;
   stop)
     stop_league
     echo "league stopped." ;;
+  status)
+    "$PY" harness/league.py status "$@" ;;
   logs)
-    tail -F runs/league/league.log ;;
-  once)
-    "$PY" -u harness/league.py run --cycles 1 "$@" ;;
+    if [ -f "$SCRATCH/league.log" ]; then tail -n 40 -F "$SCRATCH/league.log"; else echo "no log yet: scripts/train.sh train first"; fi ;;
   experiments)
-    wt="$(cd .. && pwd)/battlecode-autopilot"
-    [ -d "$wt" ] || { git fetch -q origin && git worktree add -B autopilot "$wt" origin/league; }
-    mkdir -p "$wt/runs/league"
-    py="$(pwd)/$PY"
-    case "${1:-}" in
-      list) (cd "$wt" && "$py" harness/experiments.py list); exit 0 ;;
-      add) (cd "$wt" && "$py" harness/experiments.py "$@"); exit 0 ;;
-      stop) pkill -f "experiments.py run" || true; exit 0 ;;
-    esac
-    (cd "$wt" && nohup "$py" -u harness/experiments.py run --forever >> runs/league/experiments.log 2>&1 &)
-    echo "experiment autopilot started in $wt (log: runs/league/experiments.log)" ;;
+    [ $# -gt 0 ] || set -- list
+    "$PY" harness/experiments.py "$@" ;;
   exp-status)
     "$PY" harness/experiments.py status ;;
-  ml-status)
-    "$PY" harness/mljobs.py status ;;
-  ml)
-    wt="$(cd .. && pwd)/battlecode-ml"
-    [ -d "$wt" ] || { git fetch -q origin && git worktree add -q -B mlpilot "$wt" origin/league; }
-    py="$(pwd)/$PY"
-    case "${1:-}" in
-      list) (cd "$wt" && "$py" harness/mljobs.py list); exit 0 ;;
-      stop) pkill -f "mljobs.py run" || true; exit 0 ;;
-    esac
-    mkdir -p "$wt/runs/league"
-    (cd "$wt" && nohup "$py" -u harness/mljobs.py run --forever >> runs/league/ml.log 2>&1 &)
-    echo "ml jobs started in $wt (log: runs/league/ml.log; queue: $0 ml list)" ;;
-  status|review|sync|maps|bench|submit|replay)
-    "$PY" harness/league.py "$cmd" "$@" ;;
   *)
-    echo "usage: $0 start|stop|status|logs|review|sync|maps|bench|submit|replay|experiments|exp-status|ml|ml-status|once [args]"; exit 2 ;;
+    echo "usage: $0 train|stop|status|logs|experiments|exp-status [args]"; exit 2 ;;
 esac

@@ -4,6 +4,8 @@ target/
 
 # Python
 .venv/
+.venv-gpu/
+.wt/
 __pycache__/
 *.py[cod]
 .pytest_cache/

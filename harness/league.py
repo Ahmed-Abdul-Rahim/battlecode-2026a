@@ -609,9 +609,9 @@ def benchmark(bot: str, mimics: list[str], maps: list[Path], out: Path) -> dict:
 
 def git_ready() -> bool:
     """Only commit/push from the league branch with an origin remote."""
-    # The experiment autopilot and the ml job runner run in their own worktrees (branches
-    # 'autopilot' / 'mlpilot'; league is the daemon's); they rebase on and push to origin/league.
-    if git("rev-parse", "--abbrev-ref", "HEAD").stdout.strip() not in (BRANCH, "autopilot", "mlpilot"):
+    # 'autopilot': an experiments.py run in its own worktree (the daemon now runs experiments
+    # itself); it rebases on and pushes to origin/league.
+    if git("rev-parse", "--abbrev-ref", "HEAD").stdout.strip() not in (BRANCH, "autopilot"):
         log(f"not on branch '{BRANCH}': git sync disabled")
         return False
     return git("remote", "get-url", "origin").returncode == 0
@@ -1673,6 +1673,9 @@ def cycle(a: argparse.Namespace, rng: random.Random) -> None:
             log("; ".join(msgs))
             if use_git:
                 publish(LEAD_FILES, "league: " + "; ".join(msgs), h2h_decider(cyc, ch["maps"]))
+    if getattr(a, "experiments", True) and experiment_step(use_git):
+        save_json(LOCAL, local)
+        return
     t0 = time.time()
     # New maps come first: no mimic rounds until every never-trained map had its bootstrap rounds.
     bootstrap = any(
@@ -1712,6 +1715,23 @@ def cycle(a: argparse.Namespace, rng: random.Random) -> None:
             ch = load_champion()  # a merge may have renumbered the version
     maybe_release(a, ch, cyc, use_git)
     save_json(LOCAL, local)
+
+
+def experiment_step(use_git: bool) -> bool:
+    """Test the next queued experiment (harness/experiments.py: screen, then the full check) in
+    this checkout instead of training. Variants are built from git refs, so no second worktree is
+    needed. False when the queue is empty or another PC claimed the experiment first."""
+    sys.modules.setdefault("league", sys.modules[__name__])  # one module instance when run as a script
+    import experiments as X
+
+    reg = X.load()
+    e = X.next_queued(reg)
+    if not e or not X.claim(e, reg, use_git):
+        return False
+    t0 = time.time()
+    e = X.evaluate(e, reg, use_git)
+    log(f"experiment {e['id']} ({round(time.time() - t0)}s): {e['status']}")
+    return True
 
 
 def maybe_release(a: argparse.Namespace, ch: dict, cyc: Path, use_git: bool) -> None:
@@ -1989,6 +2009,12 @@ def main(argv: list[str] | None = None) -> int:
     )
     r.add_argument(
         "--auto-submit", action="store_true", help="lead only: upload new champions (team-agreed rules)"
+    )
+    r.add_argument(
+        "--no-experiments",
+        dest="experiments",
+        action="store_false",
+        help="don't test queued experiments (harness/experiments.py) between training cycles",
     )
     for name in ("run", "sync", "maps", "bench", "submit"):
         sp = r if name == "run" else sub.add_parser(name)
