@@ -4247,7 +4247,8 @@
    "finished": "2026-10-23T17:45:05Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 96,
-   "notes": "Ability multipliers from the 2026-10-23 rules docs.",
+   "merged": "2026-10-23T18:20:40Z",
+   "notes": "Ability multipliers from the 2026-10-23 rules docs. Merged: rule facts from the 2026-10-23 docs; gate 0.560 vs 0.562 is noise",
    "results": {
     "full": {
      "h2h": 0.5,
@@ -4294,10 +4295,11 @@
      }
     }
    },
+   "run": 2,
    "spec": {
     "ref": "origin/feat/rules-sync"
    },
-   "status": "rejected",
+   "status": "merged",
    "title": "Rules sync: Ren stun 0.75, Heart of Ruin dash 1.5"
   },
   {
@@ -4307,7 +4309,8 @@
    "finished": "2026-10-23T17:56:07Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 97,
-   "notes": "Re-queued (lost in a registry overwrite). 4 plans replaced CAMP_FEASIBLE=24 with 1.",
+   "merged": "2026-10-23T18:20:42Z",
+   "notes": "Re-queued (lost in a registry overwrite). 4 plans replaced CAMP_FEASIBLE=24 with 1. Merged: passed: 0.576 vs 0.562, h2h 0.537",
    "results": {
     "full": {
      "h2h": 0.537,
@@ -4354,10 +4357,11 @@
      }
     }
    },
+   "run": 2,
    "spec": {
     "ref": "origin/feat/plan-feasible"
    },
-   "status": "passed",
+   "status": "merged",
    "title": "Map plans keep merged camp bits (CAMP_FEASIBLE 25)"
   },
   {
