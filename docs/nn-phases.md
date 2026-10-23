@@ -9,8 +9,8 @@ What's done, what's next, and what each later phase must not forget. Short versi
 |---|---|
 | 0 Cleanup, `nn` branch | done |
 | 1 Inputs/actions/logging | done (`bots/main/src/teacher.rs`, `nn/spec.py`) |
-| 2 Proof: teacher vs rules | running: imitation at parity (0.50 train maps, 0.625 held-out, -8 gems); PPO sweep in `nn/run.py` |
-| 3 Simulator | not started |
+| 2 Proof: teacher vs rules | imitation at parity; PPO flat after 78 iterations (paused), GRPO ~0.47; expert iteration running (`nn/expert.py`) |
+| 3 Simulator | GPU engine `nn/gpusim/` validated against official replays (see below) |
 | 4 Zoo + student | not started (fuel measurements below) |
 | 5 Patch watcher | done (`nn/patch.py`, every 6 h from the loop) |
 
@@ -32,7 +32,37 @@ Training to a plateau before any verdict: >= 20k PPO games per run, flat over 5 
 3 seeds, both widths, shaped and win-only rewards. Curves still rising at the end = throughput
 problem -> build the simulator, don't stop.
 
+## Expert iteration (`nn/expert.py`, 2026-10-23)
+
+Why PPO/GRPO stayed flat: one result per ~1,800 decisions, the actions only reselect the rules'
+goals (already an input), deterministic rollouts, a saturated critic and +-0.06 evaluation noise.
+Search uses determinism directly instead:
+
+- Base games (current policy, logging decisions) -> at sampled decisions, branch games force
+  another goal (held 20 rounds while available). The bot reads a 32-byte block (magic
+  `e5c4a1b7 0df0ed5e`) that `patch()` rewrites in the compiled file: no rebuild per branch. A
+  pool of 32 prebuilt bots runs one batch.
+- Value after H = 150 rounds from the bot's own "S" score line (submitted ours - theirs + half
+  carried + earned gold / 10). cambc writes no statistics for `--rounds`-truncated games.
+- Null branches (forced = own choice, held 0 rounds) must give exactly 0: checks alignment.
+- Improved decisions (gain > 4) are relabelled, oversampled x8, distilled into the teacher with
+  the imitation data; accepted only if it beats the best evaluation vs the rules.
+- Next (chess-engine ideas that transfer): branch on the network's top choices (move ordering),
+  a learned value instead of 150-round playouts (network evaluation), resume from snapshots in
+  the GPU engine instead of replaying the shared prefix (hash table), skip one-option decisions
+  (futility), per-map opening book. Alpha-beta itself only for small fights in the GPU engine.
+
 ## Phase 3: simulator
+
+GPU engine status (00fragment replay, first round each statistic diverges): gems 127, team B
+submitted gems exact for 400 rounds, camp damage Issac 228 / Prism 264 / Marcella 237, damage
+taken Ren 36 / Cassi 30. Learned from replays: live ability values differ from the handbook
+(Ren stun 0.75, Heart of Ruin dash 1.5, Cassi's stun allows walking; debug "A" dump), a capture
+pays at the sixth phase, replays record failed moves (onto occupied tiles), camps target the
+nearest champion by Chebyshev distance and sleep after two rounds with nobody in range (aggro,
+no-damage and Euclidean variants all diverge earlier). Open: a wolf at round 30 skips an
+in-range champion; kill gold from champion fights; vision.
+
 
 - Clean-room from `docs/GameRules.md` + SDK constants; implement the host interface of
   `sdk/rust/src/sys.rs` so the unchanged wasm bots run in it.
