@@ -4180,6 +4180,8 @@
   {
    "added": "2026-10-23T17:25:05Z",
    "area": "pathing",
+   "claimed": "2026-10-23T17:25:08Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 95,
    "notes": "Straight-line chase froze both teams up to 1572 rounds on reverse-spiral; bounded host distance field when no closer step exists.",
    "results": {},
@@ -4189,7 +4191,7 @@
     },
     "ref": "origin/feat/path-chase"
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Chase round walls (reverse-spiral freeze)"
   }
  ]
