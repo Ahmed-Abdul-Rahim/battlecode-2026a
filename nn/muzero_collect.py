@@ -98,6 +98,9 @@ def main() -> None:
     with ThreadPoolExecutor(max_workers=8) as ex:
         list(ex.map(runner.build, pool))
     train, _ = R.maps()
+    # Warm-up: the first game after a build finishes the build (and would overwrite a patch).
+    runner.run_games([(b, "main", train[0]) for b in pool], OUT / "games" / "warm", rounds=1, log_limit=0)
+    shutil.rmtree(OUT / "games" / "warm", ignore_errors=True)
     opps = ["main", *R.ANCHORS, *R.mimics()]
     rng = random.Random(31)
     done = len(list((OUT / "data").glob("explore_*.npz")))
