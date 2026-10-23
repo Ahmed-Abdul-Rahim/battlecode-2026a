@@ -25,7 +25,7 @@ pub const PLANS: &[MapPlan] = &[
     MapPlan {
         fingerprint: 716959943,
         name: "collision",
-        knobs: &[(knob::CAMP_FEASIBLE, 1)],
+        knobs: &[(knob::CAMP_FEASIBLE, 25)],
         draft: 0,
     },
     // contest: fight (gain 0.2)
@@ -33,7 +33,7 @@ pub const PLANS: &[MapPlan] = &[
     // corners: escape (gain 0.22)
     MapPlan { fingerprint: 3046346062, name: "corners", knobs: &[(knob::CAMP_SAFE, 1)], draft: 0 },
     // eight: feasible (gain 0.265)
-    MapPlan { fingerprint: 202678423, name: "eight", knobs: &[(knob::CAMP_FEASIBLE, 1)], draft: 0 },
+    MapPlan { fingerprint: 202678423, name: "eight", knobs: &[(knob::CAMP_FEASIBLE, 25)], draft: 0 },
     // expanse: shop-first (gain 0.42)
     MapPlan { fingerprint: 1862467813, name: "expanse", knobs: &[(knob::SHOP_FIRST, 1)], draft: 0 },
     // fragment: draft-best (gain 0.397)
@@ -42,7 +42,7 @@ pub const PLANS: &[MapPlan] = &[
     MapPlan {
         fingerprint: 1347832923,
         name: "monolith",
-        knobs: &[(knob::CAMP_FEASIBLE, 1)],
+        knobs: &[(knob::CAMP_FEASIBLE, 25)],
         draft: 0,
     },
     // packs: build-jungle (gain 0.479)
@@ -56,7 +56,7 @@ pub const PLANS: &[MapPlan] = &[
     MapPlan {
         fingerprint: 4012222300,
         name: "pilgrimage",
-        knobs: &[(knob::CAMP_FEASIBLE, 1)],
+        knobs: &[(knob::CAMP_FEASIBLE, 25)],
         draft: 0,
     },
     // rows: shop-first (gain 0.121)
