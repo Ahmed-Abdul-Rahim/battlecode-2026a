@@ -59,6 +59,8 @@ pub struct Bot {
     turns: u32,
     /// Consecutive Engage turns without an attack or cast.
     engage_stall: u32,
+    /// plan_here cache: (position, nearby group, walk to spawn).
+    plan_cache: std::cell::Cell<(Pos, Option<u8>, Option<u16>)>,
     /// Per enemy kind: ignored as a fight target until this round (we couldn't reach it).
     /// One slot per kind, so several unreachable enemies are ignored together (a single
     /// slot let the target flip between them forever: the rushbait 2000-round stall).
@@ -101,6 +103,9 @@ pub struct Bot {
 /// PLAN_ENEMY_CLOSE tiles.
 const PLAN_FRONTIER_VALUE: f32 = 0.7;
 const PLAN_ENEMY_CLOSE: i32 = 10;
+/// knob2 DRAFT_PLAN bit 4: within this many tiles of a group centre / of our spawn, plan
+/// distances from there are used.
+const PLAN_NEAR: i32 = 4;
 const ENGAGE_STALL_TURNS: u32 = 4;
 /// How long to ignore an unreachable enemy.
 const IGNORE_ENEMY_ROUNDS: u32 = 40;
@@ -243,7 +248,7 @@ const LAST_STAND_MAX_GEMS: u32 = 20;
 impl Bot {
     pub fn new() -> Result<Self> {
         let theta = ThetaMatch::decode(cambc::draft_memory().bytes()).unwrap_or_default();
-        let world =
+        let mut world =
             World::build(theta.knob(knob::SAFE_ALTAR) > 0, theta.knob2(knob2::CLUSTER) > 0)?;
         // Policy pack: this map's learned parameters and hotspots (harness/pack.py). The draft
         // passes the fingerprint (hashing the map here cost ~50-60k fuel on big maps).
@@ -272,7 +277,7 @@ impl Bot {
         let kit = sdk::kit(kind);
         let passive = me.passive().map_or(0, |p| p as i32 as usize);
         let build_profile = theta.knob(knob::BUILD_PROFILE);
-        let opening = entry.opening_for((world.spawn_hint.x, world.spawn_hint.y), kind as usize);
+        let mut opening = entry.opening_for((world.spawn_hint.x, world.spawn_hint.y), kind as usize);
         let pack_build = entry.build_for(kind as usize);
         let order = if !pack_build.is_empty() {
             // Policy-pack build (mimicked from top teams / evolved per map).
@@ -295,6 +300,17 @@ impl Bot {
             .collect();
         allies.sort_unstable();
         let slot = allies.iter().position(|&k| k == kind as u8).unwrap_or(0) as u8;
+        // knob2 DRAFT_PLAN: bit 8 = the draft's opening split when the pack has none for this map;
+        // bit 16 = compute distance fields in the draft's order (the groups we want first).
+        let plan_bits = theta.knob2(knob2::DRAFT_PLAN);
+        if opening.is_empty() && plan_bits & 8 != 0 {
+            if let Some(row) = theta.plan.opening.get(usize::from(slot)) {
+                opening = row.iter().copied().filter(|&g| g != crate::bc_core::plan::NONE).collect();
+            }
+        }
+        if plan_bits & 16 != 0 && !theta.plan.field_order.is_empty() {
+            world.fields.prioritise_order(&theta.plan.field_order);
+        }
         let belief = Belief::new(&world.groups.iter().map(|g| g.max_respawn).collect::<Vec<_>>());
         let last_pos = me.position().map(pos).unwrap_or_default();
         if slot == 0 {
@@ -321,6 +337,7 @@ impl Bot {
             items_round: 0,
             turns: 0,
             engage_stall: 0,
+            plan_cache: std::cell::Cell::new((Pos::new(-1, -1), None, None)),
             ignore_until: [0; 13],
             hotspots,
             opening,
@@ -1903,9 +1920,61 @@ impl Bot {
         let goal = Goal::Group(i as u8);
         if self.world.fields.is_ready(goal) {
             self.world.fields.distance(goal, from).map(u32::from)
+        } else if let Some(d) = self.plan_distance(i, from) {
+            Some(d)
         } else {
             Some((self.world.groups[i].center.cheb(from) as u32) * 6 / 5 + 2)
         }
+    }
+
+    /// knob2 DRAFT_PLAN bit 4: the walk to group `i` from the draft's plan while its field isn't
+    /// computed: from a group we stand at or near (the neighbour table), or from near our spawn.
+    /// None = no plan figure (the straight-line guess is used).
+    fn plan_distance(&self, i: usize, from: Pos) -> Option<u32> {
+        if self.theta.knob2(knob2::DRAFT_PLAN) & 4 == 0 {
+            return None;
+        }
+        let plan = &self.theta.plan;
+        let pg = plan.groups.get(i)?;
+        let (near, spawn_d) = self.plan_here(from);
+        if let Some(a) = near {
+            let off = self.world.groups[a].center.cheb(from) as u32;
+            if a == i {
+                return Some(off);
+            }
+            if let Some(d) = plan.between(a, i) {
+                return Some(u32::from(d) * 2 + off);
+            }
+        }
+        match spawn_d {
+            Some(d) if pg.from_us != crate::bc_core::plan::UNKNOWN => Some(u32::from(pg.from_us) * 2 + u32::from(d)),
+            _ => None,
+        }
+    }
+
+    /// (group we stand at or within PLAN_NEAR of, walk to our spawn if within PLAN_NEAR), cached
+    /// per position: group_distance runs for every group every turn.
+    fn plan_here(&self, from: Pos) -> (Option<usize>, Option<u16>) {
+        let (p, near, spawn) = self.plan_cache.get();
+        if p == from {
+            return (near.map(usize::from), spawn);
+        }
+        let near = self.world.group_at(from).or_else(|| {
+            self.world
+                .groups
+                .iter()
+                .enumerate()
+                .filter(|(_, g)| g.center.cheb(from) <= PLAN_NEAR)
+                .min_by_key(|(_, g)| g.center.cheb(from))
+                .map(|(a, _)| a)
+        });
+        let spawn = self
+            .world
+            .fields
+            .distance(Goal::AllySpawn, from)
+            .filter(|&d| i32::from(d) <= PLAN_NEAR);
+        self.plan_cache.set((from, near.map(|a| a as u8), spawn));
+        (near, spawn)
     }
 
     /// Value per round of effort, with claims, respawn timers and hysteresis.

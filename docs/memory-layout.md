@@ -26,6 +26,37 @@ The draft bot sees the whole map with 10× fuel. It writes a per-match parameter
 
 All-zero memory, which happens if the draft bot crashed or never wrote, decodes as `Empty`. Bots then fall back to `ThetaMatch::default()`.
 
+### Draft memory v3: the match plan (`crates/bc-core/src/plan.rs`, 2026-10-23)
+
+The draft analyses the map once (first pick, 1M fuel) and writes a **match plan** into the
+regions champions never read in play: the old FiLM block (48–143), the champion vectors
+(176–335), the map cache (352–543) and the free tail (580–1021), 890 bytes used as one buffer
+(`plan::SEGMENTS`, in that order: 580, 352, 176, 48). Version byte 0 = no plan; champions then
+behave as before. The knobs, champion kinds (now including the enemy's picks), knobs2,
+fingerprint and CRC stay where they were. The dormant ML router would read the plan bytes as FiLM
+/ vectors: decoding zeroes those fields when a plan is present.
+
+| Plan offset | Size | Content |
+| ---: | ---: | --- |
+| 0 | 12 | version 3, group / cluster / altar / field-order counts, symmetry, seed, counter profile, monolith round / 8, map class |
+| 12 | 51 × 8 | per camp group (engine order): walk / 2 from our spawn, from theirs, to the nearest safe altar; that altar's index; class bits (gems, gold, elk, golem, monolith, bush within 3, cold, frontier); clear rounds / 4 and bodies needed for our roster; cluster id |
+| 420 | 51 × 3 × 2 | 3 nearest groups by walking distance (index, walk / 2), from one bounded field per group |
+| 726 | 12 × 2 | clusters (value class, entry group) |
+| 750 | 8 × 2 | altars (safety = 128 + their walk − ours, walk from our spawn) |
+| 766 | 6 × 4 | opening: first groups per body slot (rank of champion kind), split so no two share one |
+| 790 | 6 | roles per body |
+| 796 | 16 | field order: groups whose distance fields champions compute first |
+
+**Fuel.** The map analysis costs ~550k (release, 51 groups) on the first pick; the whole draft memory
+for the *predicted* final roster (from the preference list) is built one pick early, so the last pick
+(already at ~80k of 100k before) only adds the enemy picks: ~44k. If the roster differs from the
+prediction the last pick builds it the old way.
+
+**Readers (knob2 DRAFT_PLAN bits).** 1 frontier discount near enemies; 4 plan distances in
+`group_distance` until a field is ready; 8 the draft's opening split when the pack has none; 16 field
+order. The 8-byte channel stays live state (leader parity, respawns, claims, sighting); the static
+opening split now lives here.
+
 ## Shared memory: team channel (8 bytes, read/write all match)
 
 Allies act one after another within a round, in priority order, so later allies see what earlier ones wrote this round.

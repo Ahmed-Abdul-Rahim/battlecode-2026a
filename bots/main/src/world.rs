@@ -281,6 +281,16 @@ impl FieldCache {
         })
     }
 
+    /// knob2 DRAFT_PLAN bit 16: compute these groups' fields first (the draft's field order),
+    /// after our spawn and the altars.
+    pub fn prioritise_order(&mut self, groups: &[u8]) {
+        for &g in groups.iter().rev() {
+            self.prioritise(Goal::Group(g));
+        }
+        self.prioritise(Goal::Altars);
+        self.prioritise(Goal::AllySpawn);
+    }
+
     /// Put a goal at the front of the precompute queue.
     pub fn prioritise(&mut self, goal: Goal) {
         if self.is_ready(goal) {
