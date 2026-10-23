@@ -89,6 +89,53 @@ def greedy(e: Engine, team: int) -> torch.Tensor:
     return out
 
 
+def rules(e: Engine, team: int) -> torch.Tensor:
+    """Approximation of the bot's fight logic: focus the weakest enemy in reach (5 tiles), fight
+    only when the team-vs-team strength ratio (Lanchester: total dps x total hp per side, the
+    bot's TEAM_FIGHT) is not losing (>= 0.8), retreat towards our spawn when it is or below 35%
+    health unless clearly winning (>= 1.5); spells as greedy (on the focused target)."""
+    B, T, dev = e.B, e.T, e.dev
+    out = greedy(e, team)
+    dirs = DIRS.to(dev)
+    bi = torch.arange(B, device=dev)
+    st = e.strength
+    for k in range(T):
+        here = e.pos[:, team, k]
+        ep = e.pos[:, 1 - team]
+        de = torch.where(e.alive[:, 1 - team], e.cheb(ep, here.unsqueeze(1)), 10_000)
+        near_e = de <= 5
+        ap = e.pos[:, team]
+        da = torch.where(e.alive[:, team], e.cheb(ap, here.unsqueeze(1)), 10_000)
+        near_a = da <= 5
+        mine = (st[:, team] * near_a).sum(1) * (e.hp[:, team] * near_a).sum(1)
+        theirs = (st[:, 1 - team] * near_e).sum(1) * (e.hp[:, 1 - team] * near_e).sum(1)
+        ratio = mine / theirs.clamp(min=1e-6)
+        hp = e.hp[:, team, k] / e.max_hp[:, team, k]
+        flee = near_e.any(1) & ((ratio < 0.8) | ((hp < 0.35) & (ratio < 1.5)))
+        # focus: weakest enemy within 5, else nearest
+        weak = torch.where(near_e, e.hp[:, 1 - team], 1e9).argmin(1)
+        tgt = torch.where(near_e.any(1), weak, de.argmin(1))
+        tpos = ep[bi, tgt]
+        d = e.cheb(tpos, here)
+        cand = here.unsqueeze(1) + dirs.unsqueeze(0)
+        x = cand[..., 0].clamp(0, e.s.w - 1)
+        y = cand[..., 1].clamp(0, e.s.h - 1)
+        ok = e.s.walkable[y, x] & (cand[..., 0] == x) & (cand[..., 1] == y)
+        to_t = torch.where(ok, e.cheb(cand, tpos.unsqueeze(1)), 10_000).argmin(1)
+        home = e.s.spawn_tiles[team][0].to(dev).view(1, 1, 2)
+        to_home = torch.where(ok, e.cheb(cand, home), 10_000).argmin(1)
+        in_rng = d <= e.rng[:, team, k]
+        ranged = e.ranged[:, team, k]
+        move = torch.where(flee, to_home, torch.where(in_rng, 0, to_t))
+        out[:, k, 0] = move
+        out[:, k, 1] = torch.where(flee, 0, torch.where(in_rng | ~ranged, 1, 0))
+        out[:, k, 2] = torch.where(flee & (out[:, k, 2] > 0), 0, out[:, k, 2])
+    return out
+
+
+POLICIES = {"greedy": greedy, "rules": rules}
+
+
 def outcome(e: Engine, deaths0: torch.Tensor) -> torch.Tensor:
     """[B] A minus B: health fraction (dead = 0) + 0.5 per enemy death since deaths0."""
     frac = torch.where(e.alive, e.hp / e.max_hp, 0.0).sum(-1)  # [B, 2]
@@ -150,7 +197,7 @@ def play(md, kinds, pos, pa: str, pb: str, rounds: int, depth: int, dets: int, k
     for _ in range(rounds):
         a = torch.zeros(B, 2, 3, 4, dtype=torch.long, device=dev)
         for t, p in ((0, pa), (1, pb)):
-            a[:, t] = search(e, t, depth, dets, know_cd) if p == "search" else greedy(e, t)
+            a[:, t] = search(e, t, depth, dets, know_cd) if p == "search" else POLICIES[p](e, t)
         e.step(a)
     return outcome(e, d0)
 
@@ -164,12 +211,13 @@ def main() -> None:
     ap.add_argument("--dets", type=int, default=8)
     ap.add_argument("--know-cd", action="store_true")
     ap.add_argument("--map", default="00fragment")
+    ap.add_argument("--matchups", default="greedy-greedy,search-greedy,greedy-search")
     a = ap.parse_args()
     torch.set_grad_enabled(False)
     dev = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     md = maps.load(a.map)
     rng = random.Random(7)
-    res = {"greedy-greedy": [], "search-greedy": [], "greedy-search": []}
+    res = {k: [] for k in a.matchups.split(",")}
     t0 = time.time()
     for c in range(a.comps):
         kinds, pos = scenarios(md, a.scenarios // a.comps, rng)
@@ -182,9 +230,10 @@ def main() -> None:
     for k, v in res.items():
         v = np.concatenate(v)
         print(f"{k:14s} A wins {np.mean(v > 0):.3f}  A margin {v.mean():+.3f}  ({len(v)} fights)")
-    sg = np.concatenate(res["search-greedy"])
-    gs = np.concatenate(res["greedy-search"])
-    print(f"search's win rate over both sides: {(np.mean(sg > 0) + np.mean(gs < 0)) / 2:.3f}")
+    for x, y in (("search", "greedy"), ("search", "rules"), ("rules", "greedy")):
+        if f"{x}-{y}" in res and f"{y}-{x}" in res:
+            xy, yx = np.concatenate(res[f"{x}-{y}"]), np.concatenate(res[f"{y}-{x}"])
+            print(f"{x} vs {y}, both sides: {x} wins {(np.mean(xy > 0) + np.mean(yx < 0)) / 2:.3f}")
 
 
 if __name__ == "__main__":
