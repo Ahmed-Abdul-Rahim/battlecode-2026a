@@ -1035,6 +1035,15 @@
    "time": "2026-10-20T18:10:10.514Z",
    "win": false
   },
+  "22d453cf-f900-4dcd-b11b-809517266f1c": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "fragment",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T16:37:39.475Z",
+   "win": false
+  },
   "2318685e-0e2b-464f-b1ad-3487ece29a90": {
    "kind": "ranked",
    "live": 1,
@@ -1277,6 +1286,15 @@
    "oppId": "d48d65ef-625c-4966-b2cc-a7b1b02fafec",
    "time": "2026-10-21T17:20:14.251Z",
    "win": true
+  },
+  "297803d3-92ee-4bb2-874c-8dba3012f4b7": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "ambush",
+   "opp": "Rogue.ai",
+   "oppId": "f1b13689-8bce-4cf2-ac51-b5103c5dde2d",
+   "time": "2026-10-23T16:40:21.780Z",
+   "win": false
   },
   "29aa070d-2ffb-4dfd-a6ce-3ddfa1af7ea5": {
    "kind": "unranked",
@@ -1602,6 +1620,15 @@
    "time": "2026-10-20T20:00:10.344Z",
    "win": false
   },
+  "33dd3288-89e2-408f-95d9-0566de16f7aa": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "split",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T16:37:39.433Z",
+   "win": false
+  },
   "3421e85d-4f62-479f-971b-1398b3e08651": {
    "kind": "ranked",
    "live": 21,
@@ -1853,6 +1880,15 @@
    "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
    "time": "2026-10-20T17:10:06.134Z",
    "win": true
+  },
+  "3a55d3ec-e75e-4db3-8218-0e68f5ccf133": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "contest",
+   "opp": "Rogue.ai",
+   "oppId": "f1b13689-8bce-4cf2-ac51-b5103c5dde2d",
+   "time": "2026-10-23T16:40:21.780Z",
+   "win": false
   },
   "3aa63b7d-590d-4b92-a0a6-4f1eeacaa099": {
    "kind": "unranked",
@@ -3501,6 +3537,15 @@
    "time": "2026-10-22T10:22:12.991Z",
    "win": false
   },
+  "6d62d339-3fdd-495e-9302-463155c5303f": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "shortcut",
+   "opp": "Rogue.ai",
+   "oppId": "f1b13689-8bce-4cf2-ac51-b5103c5dde2d",
+   "time": "2026-10-23T16:40:21.780Z",
+   "win": false
+  },
   "6d7e4d6f-e942-40ea-a88f-99a65d2b3f57": {
    "kind": "ranked",
    "live": 21,
@@ -4581,6 +4626,15 @@
    "time": "2026-10-20T17:00:08.371Z",
    "win": false
   },
+  "91e10ee6-0359-49cd-8da6-6eb3e3d1fd08": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "pilgrimage",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T16:37:39.414Z",
+   "win": false
+  },
   "91fdf5bf-ce13-4f1b-9813-79231fcd5308": {
    "kind": "ranked",
    "live": 1,
@@ -5011,6 +5065,15 @@
    "opp": "meowest",
    "oppId": "2aa08e1e-f986-4c2a-a15f-e10b10f159ba",
    "time": "2026-10-20T21:20:10.858Z",
+   "win": false
+  },
+  "9e3c9411-c852-4d6d-b244-12ec076748eb": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "yellow-brick-road",
+   "opp": "Rogue.ai",
+   "oppId": "f1b13689-8bce-4cf2-ac51-b5103c5dde2d",
+   "time": "2026-10-23T16:40:21.780Z",
    "win": false
   },
   "9e707e6f-b168-4925-bdc5-5514f23e6506": {
@@ -6147,6 +6210,15 @@
    "time": "2026-10-23T14:54:32.687Z",
    "win": false
   },
+  "bfc9133a-575d-42dc-ba3e-ea2e2c443625": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "collision",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T16:37:39.460Z",
+   "win": false
+  },
   "bfcaea2e-4674-4b75-8ebb-ef615831b37a": {
    "kind": "unranked",
    "live": 1,
@@ -7101,6 +7173,15 @@
    "time": "2026-10-20T20:50:10.904Z",
    "win": true
   },
+  "dccb34ca-c68b-4ea0-bb5a-5fce35ea765b": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "elkring",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T16:37:39.390Z",
+   "win": false
+  },
   "dcdf81e6-edcb-4bde-848d-a760570856fc": {
    "kind": "ranked",
    "live": 15,
@@ -7693,6 +7774,15 @@
    "opp": "Seacaps",
    "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
    "time": "2026-10-22T10:00:18.611Z",
+   "win": false
+  },
+  "ea46f90a-a9fa-4df6-b344-3b759eaf0f04": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "elkring",
+   "opp": "Rogue.ai",
+   "oppId": "f1b13689-8bce-4cf2-ac51-b5103c5dde2d",
+   "time": "2026-10-23T16:40:21.780Z",
    "win": false
   },
   "ea7a33e5-aad2-4bef-bd49-33ac3e87e1e5": {
@@ -15115,11 +15205,12 @@
    "deaths_us": 12,
    "gems_them": "1014",
    "gems_us": "345",
+   "hint": "no mimic of this team: check their replay by hand",
    "id": "1cd0cbea-6d86-40d1-8133-ffef27014141",
    "map": "road-of-riches",
    "opp": "Lucky Gem Thieves",
    "oppId": "f28f8525-f0d5-423b-bf3a-fcaf78b3b028",
-   "status": "open",
+   "status": "needs-human",
    "time": "2026-10-22T14:20:13.420Z",
    "tries_at": 4
   },
@@ -15448,11 +15539,12 @@
    "deaths_us": 21,
    "gems_them": "1037",
    "gems_us": "723",
+   "hint": "no mimic of this team: check their replay by hand",
    "id": "c44335c1-dcd1-4f33-b008-b668d3e0148a",
    "map": "road-of-riches",
    "opp": "Sneaky Bush Campers",
    "oppId": "5e0c725a-b9b4-4523-8739-4427f20b9ce5",
-   "status": "open",
+   "status": "needs-human",
    "time": "2026-10-23T14:00:22.454Z",
    "tries_at": 4
   },
@@ -15770,11 +15862,12 @@
    "deaths_us": 15,
    "gems_them": "1010",
    "gems_us": "201",
+   "hint": "no mimic of this team: check their replay by hand",
    "id": "90be4ccb-050f-4d74-8506-7ce2e4ad8fe2",
    "map": "road-of-riches",
    "opp": "QS2\u00b3",
    "oppId": "23626fbe-2c8f-4ee8-ba0d-5042e85fc98a",
-   "status": "open",
+   "status": "needs-human",
    "time": "2026-10-23T14:30:48.646Z",
    "tries_at": 4
   },
@@ -16827,11 +16920,12 @@
    "deaths_us": 12,
    "gems_them": "1041",
    "gems_us": "209",
+   "hint": "no mimic of this team: check their replay by hand",
    "id": "6391cd4b-173a-45ae-9b13-72e3019f42a8",
    "map": "road-of-riches",
    "opp": "Santa Claude",
    "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
-   "status": "open",
+   "status": "needs-human",
    "time": "2026-10-23T16:01:13.973Z",
    "tries_at": 4
   },
@@ -17036,6 +17130,176 @@
    "oppId": "b4da17fa-37e5-4d41-9468-c1144b87e7ee",
    "status": "open",
    "time": "2026-10-23T16:20:26.274Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 30,
+    "champion": 1
+   },
+   "deaths_them": 12,
+   "deaths_us": 31,
+   "gems_them": "562",
+   "gems_us": "266",
+   "id": "6d62d339-3fdd-495e-9302-463155c5303f",
+   "map": "shortcut",
+   "opp": "Rogue.ai",
+   "oppId": "f1b13689-8bce-4cf2-ac51-b5103c5dde2d",
+   "status": "open",
+   "time": "2026-10-23T16:40:21.780Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "camp": 3,
+    "champion": 12
+   },
+   "deaths_them": 5,
+   "deaths_us": 15,
+   "gems_them": "1027",
+   "gems_us": "763",
+   "id": "297803d3-92ee-4bb2-874c-8dba3012f4b7",
+   "map": "ambush",
+   "opp": "Rogue.ai",
+   "oppId": "f1b13689-8bce-4cf2-ac51-b5103c5dde2d",
+   "status": "open",
+   "time": "2026-10-23T16:40:21.780Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 1,
+    "champion": 86
+   },
+   "deaths_them": 38,
+   "deaths_us": 87,
+   "gems_them": "200",
+   "gems_us": "0",
+   "id": "3a55d3ec-e75e-4db3-8218-0e68f5ccf133",
+   "map": "contest",
+   "opp": "Rogue.ai",
+   "oppId": "f1b13689-8bce-4cf2-ac51-b5103c5dde2d",
+   "status": "open",
+   "time": "2026-10-23T16:40:21.780Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "camp": 5,
+    "champion": 20
+   },
+   "deaths_them": 7,
+   "deaths_us": 25,
+   "gems_them": "1012",
+   "gems_us": "407",
+   "id": "ea46f90a-a9fa-4df6-b344-3b759eaf0f04",
+   "map": "elkring",
+   "opp": "Rogue.ai",
+   "oppId": "f1b13689-8bce-4cf2-ac51-b5103c5dde2d",
+   "status": "open",
+   "time": "2026-10-23T16:40:21.780Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 13,
+    "champion": 16
+   },
+   "deaths_them": 11,
+   "deaths_us": 29,
+   "gems_them": "1006",
+   "gems_us": "537",
+   "id": "9e3c9411-c852-4d6d-b244-12ec076748eb",
+   "map": "yellow-brick-road",
+   "opp": "Rogue.ai",
+   "oppId": "f1b13689-8bce-4cf2-ac51-b5103c5dde2d",
+   "status": "open",
+   "time": "2026-10-23T16:40:21.780Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 41
+   },
+   "deaths_them": 6,
+   "deaths_us": 43,
+   "gems_them": "1004",
+   "gems_us": "94",
+   "id": "22d453cf-f900-4dcd-b11b-809517266f1c",
+   "map": "fragment",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T16:37:39.475Z",
+   "tries_at": 10
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 31
+   },
+   "deaths_them": 2,
+   "deaths_us": 33,
+   "gems_them": "1016",
+   "gems_us": "34",
+   "id": "bfc9133a-575d-42dc-ba3e-ea2e2c443625",
+   "map": "collision",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T16:37:39.460Z",
+   "tries_at": 6
+  },
+  {
+   "contexts": {
+    "camp": 3,
+    "champion": 7
+   },
+   "deaths_them": 2,
+   "deaths_us": 10,
+   "gems_them": "1031",
+   "gems_us": "186",
+   "id": "33dd3288-89e2-408f-95d9-0566de16f7aa",
+   "map": "split",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T16:37:39.433Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 10,
+    "champion": 27
+   },
+   "deaths_them": 0,
+   "deaths_us": 37,
+   "gems_them": "1027",
+   "gems_us": "90",
+   "id": "91e10ee6-0359-49cd-8da6-6eb3e3d1fd08",
+   "map": "pilgrimage",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T16:37:39.414Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "camp": 6,
+    "champion": 16
+   },
+   "deaths_them": 3,
+   "deaths_us": 22,
+   "gems_them": "1012",
+   "gems_us": "264",
+   "id": "dccb34ca-c68b-4ea0-bb5a-5fce35ea765b",
+   "map": "elkring",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T16:37:39.390Z",
    "tries_at": 1
   }
  ],
