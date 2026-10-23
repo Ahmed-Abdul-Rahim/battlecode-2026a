@@ -272,7 +272,7 @@
   ]
  },
  "cadence": {
-  "bag": 54.6,
+  "bag": 53.9,
   "first_emblem": 212,
   "shops_per_100r": 0.73
  },
@@ -296,7 +296,7 @@
    1
   ]
  },
- "games": 10,
+ "games": 15,
  "opening": {
   "broken-curve": [
    {
@@ -644,5 +644,5 @@
   ]
  },
  "team": "prism best girl",
- "win_rate": 0.8
+ "win_rate": 0.533
 }
