@@ -4227,6 +4227,18 @@
    },
    "status": "queued",
    "title": "Map plans keep merged camp bits (CAMP_FEASIBLE 25)"
+  },
+  {
+   "added": "2026-10-23T17:28:35Z",
+   "area": "safety",
+   "id": 97,
+   "notes": "CAMP_SAFE=3 only on corridors, boss-battle, starfish, shortcut, stampede, pilgrimage, yellow-brick-road, the-farm (elk deaths 10-41 per ranked game).",
+   "results": {},
+   "spec": {
+    "ref": "origin/feat/elk-safe"
+   },
+   "status": "queued",
+   "title": "Camp safety on elk-heavy maps (plans)"
   }
  ]
 }
