@@ -92,8 +92,22 @@ def maps() -> tuple[list[Path], list[Path]]:
     return train, held
 
 
-def mimics() -> list[str]:
+def all_mimics() -> list[str]:
     return sorted(p.name for p in (ROOT / "bots").glob("mimic-*") if (p / "Cargo.toml").exists())
+
+
+#: Opponents never used in training (overfitting check): every 7th mimic, at most 8.
+def held_mimics() -> list[str]:
+    return all_mimics()[::7][:8]
+
+
+def mimics() -> list[str]:
+    held = set(held_mimics())
+    return [m for m in all_mimics() if m not in held]
+
+
+HELD_OPP_MAPS = 6  # maps (spread over the train pool) for the held-out opponent check
+HELD_OPP_EVERY = 3  # every n-th evaluation
 
 
 def variant(name: str, teacher: int, seed: int = 0, weights: Path | None = None) -> str:
@@ -210,6 +224,37 @@ def evaluate(weights: Path, width: int, tag: str) -> dict:
             "gem_margin": round(sum(margin) / max(len(margin), 1), 1)}
 
 
+def held_opponents(st: dict, weights: Path, width: int, tag: str) -> dict:
+    """Paired overfitting check: the teacher and the rule bot each vs the held-out mimics on the
+    same maps and sides. Reports win rates and the gem-margin difference (teacher - rules)."""
+    train, _ = maps()
+    ms = train[:: max(1, len(train) // HELD_OPP_MAPS)][:HELD_OPP_MAPS]
+    opps = held_mimics()
+    bot = variant("_nn_eval", 2, 0, weights)
+
+    def games(b: str) -> list:
+        return [(b, o, m) for o in opps for m in ms] + [(o, b, m) for o in opps for m in ms]
+
+    def summary(res: list, b: str) -> tuple[float, float]:
+        win = sum(r.score_for(b) for r in res) / max(len(res), 1)
+        mg = sum(((r.gems_a - r.gems_b) if r.bot_a == b else (r.gems_b - r.gems_a)) for r in res) / max(len(res), 1)
+        return round(win, 3), round(mg, 1)
+
+    key = "|".join(opps) + "|" + "|".join(m.stem for m in ms)
+    base = st.get("held_rules")
+    if not base or base.get("key") != key:
+        out = OUT / "games" / "held-rules"
+        res = play_games(games("main"), out, width)
+        shutil.rmtree(out, ignore_errors=True)
+        w, mg = summary(res, "main")
+        base = st["held_rules"] = {"key": key, "win": w, "margin": mg}
+    out = OUT / "games" / f"held-{tag}"
+    res = play_games(games(bot), out, width)
+    shutil.rmtree(out, ignore_errors=True)
+    w, mg = summary(res, bot)
+    return {"held_opp_win": w, "held_opp_rules_win": base["win"], "held_opp_margin_gain": round(mg - base["margin"], 1)}
+
+
 def ppo_run(st: dict, idx: int) -> None:
     cfg = SWEEP[idx]
     if idx >= len(st["runs"]):
@@ -265,6 +310,8 @@ def ppo_run(st: dict, idx: int) -> None:
             shutil.rmtree(old, ignore_errors=True)
         if run["it"] % EVAL_EVERY == 0:
             e = evaluate(cur / "teacher.bin", width, f"r{idx}-it{run['it']}")
+            if (run["it"] // EVAL_EVERY) % HELD_OPP_EVERY == 0:
+                e.update(held_opponents(st, cur / "teacher.bin", width, f"r{idx}-it{run['it']}"))
             run["evals"].append({"it": run["it"], "games": run["games"], **e})
             best = max(run["evals"], key=lambda x: (x["train"], x["gem_margin"]))
             log(f"run {idx} eval it {run['it']}: {e} (best it {best['it']}: {best['train']})")
@@ -323,6 +370,11 @@ def cmd_status(_: argparse.Namespace) -> int:
         if best:
             print(f"   best: it {best['it']} vs rules {best['train']} (held-out {best['held_out']}, margin {best['gem_margin']})")
         print("   curve (games: win vs rules): " + ", ".join(f"{e['games']}: {e['train']}" for e in ev[-10:]))
+        held = [e for e in ev if "held_opp_win" in e]
+        if held:
+            h = held[-1]
+            print(f"   held-out opponents (it {h['it']}): {h['held_opp_win']} vs rules' {h['held_opp_rules_win']}, "
+                  f"margin gain {h['held_opp_margin_gain']}")
     return 0
 
 
