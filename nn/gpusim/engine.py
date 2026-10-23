@@ -194,7 +194,9 @@ class Engine:
         self.g_timer = torch.zeros(B, G, dtype=torch.long, device=dev)
         self.g_team = torch.full((B, G), -1, dtype=torch.long, device=dev)
         self.tributed = torch.zeros(B, 2, device=dev)
+        self.submitted = torch.zeros(B, 2, self.T, device=dev)  # per champion (statistics)
         self.lifetime_gold = torch.zeros(B, 2, device=dev)
+        self.earned = torch.zeros(B, 2, self.T, device=dev)  # per champion (statistics)
         self.round = 0
         self.done = torch.zeros(B, dtype=torch.bool, device=dev)
         self.winner = torch.full((B,), -1, dtype=torch.long, device=dev)
@@ -230,6 +232,7 @@ class Engine:
             kg = torch.where(mask, float(KILL_GOLD) * self.gold_mult(kt, ks), 0.0)
             self.gold[:, kt, ks] += kg
             self.lifetime_gold[:, kt] += kg
+            self.earned[:, kt, ks] += kg
             self.kills[:, kt, ks] += mask.long()
         self.gems[:, team, slot] = torch.where(mask, 0.0, self.gems[:, team, slot])
         self.alive[:, team, slot] &= ~mask
@@ -267,7 +270,8 @@ class Engine:
         progress = cleared & uncontested & ((self.g_team == team) | (self.g_team < 0))
         self.g_team = torch.where(cleared & uncontested, team, torch.where(cleared, -1, self.g_team))
         self.g_timer = torch.where(progress, self.g_timer + 1, torch.where(cleared, 0, self.g_timer))
-        done = progress & (self.g_timer >= CAPTURE_ROUNDS)
+        # the first phase starts the five-round timer, the next five count it down (validated)
+        done = progress & (self.g_timer > CAPTURE_ROUNDS)
         if done.any():
             for t in range(2):
                 win = done & (team == t)
@@ -283,6 +287,7 @@ class Engine:
                 gold = ((present.float() * share_o.unsqueeze(1)).sum(-1) * mult).floor()
                 self.gold[:, t] += gold
                 self.lifetime_gold[:, t] += gold.sum(-1)
+                self.earned[:, t] += gold
             self.g_state = torch.where(done, 2, self.g_state)
             self.g_timer = torch.where(done, s.group_respawn, self.g_timer)
             self.g_team = torch.where(done, -1, self.g_team)
@@ -571,9 +576,11 @@ class Engine:
         if fin.any():
             g = torch.where(fin, self.gems[:, team, k], 0.0)
             self.tributed[:, team] += g
+            self.submitted[:, team, k] += g
             if int(self.kinds[team, k]) == MARCELLA:  # 2 gold per gem tributed
                 self.gold[:, team, k] += 2 * g
                 self.lifetime_gold[:, team] += 2 * g
+                self.earned[:, team, k] += 2 * g
             self.gems[:, team, k] = torch.where(fin, 0.0, self.gems[:, team, k])
             self.tribute[:, team, k] = torch.where(fin, -1, tr)
         stunned = self.stun[:, team, k] > 0

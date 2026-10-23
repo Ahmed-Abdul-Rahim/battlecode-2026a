@@ -97,6 +97,13 @@ def main(bundle: str, stats: str, map_name: str, max_rounds: int = 10**9) -> int
             hp0 = e.hp.clone()
             e.camp_actions()
             taken = (hp0 - e.hp).clamp(min=0)
+            if os.environ.get("DEBUG_ROUND") and int(os.environ["DEBUG_ROUND"]) in (cur_round, cur_round - 1):
+                print("round", cur_round, "taken", {names[c]: float(taken[0, ti, k]) for c, (ti, k) in slot.items() if taken[0, ti, k] > 0})
+                print("  champs", {names[c]: e.pos[0, ti, k].tolist() for c, (ti, k) in slot.items()})
+                for ci in range(e.camp_hp.shape[1]):
+                    if e.camp_awake[0, ci] and e.camp_alive[0, ci]:
+                        print("  camp", ci, md.groups and [(c.x, c.y) for g in md.groups for c in g.camps][ci],
+                              "hp", float(e.camp_hp[0, ci]), "quiet", int(e.camp_quiet[0, ci]), "stun", int(e.camp_stun[0, ci]))
             for cid, (ti, k) in slot.items():
                 e_taken[cid] = e_taken.get(cid, 0.0) + float(taken[0, ti, k])
         ti, k = slot[t.champion]
@@ -109,6 +116,12 @@ def main(bundle: str, stats: str, map_name: str, max_rounds: int = 10**9) -> int
         for r in t.records:
             if r.name == "move":
                 p = torch.tensor([r.u32(0), r.u32(4)])
+                # the replay records attempted moves: one onto a living champion failed
+                others = (e.pos[0] == p).all(-1) & e.alive[0]
+                others[ti, k] = False
+                if t.champion in placed and bool(others.any()):
+                    issues["move onto an occupied tile (failed)"] += 1
+                    continue
                 if t.champion not in placed or e.cheb(p, e.pos[0, ti, k]).item() > 1:
                     issues["jump (first move, dash, teleport or respawn)"] += t.champion in placed
                 placed.add(t.champion)
@@ -208,8 +221,8 @@ def snapshot(e: Engine, sim: dict, slot: dict, rnd: int) -> None:
         sim["deaths"][cid, rnd] = float(e.deaths[0, ti, k])
         sim["monsterDamageDone"][cid, rnd] = float(e.camp_dmg_done[0, ti, k])
         sim["monsterDamageTaken"][cid, rnd] = float(e.camp_dmg_taken[0, ti, k])
-        sim["earnedGold"][cid, rnd] = float(e.gold[0, ti, k] + e.shards[0, ti, k] * 30)
-        sim["submittedGems"][cid, rnd] = 0.0
+        sim["earnedGold"][cid, rnd] = float(e.earned[0, ti, k])
+        sim["submittedGems"][cid, rnd] = float(e.submitted[0, ti, k])
 
 
 def first_divergence(a: np.ndarray, b: np.ndarray, tol: float = 0.5) -> int | None:

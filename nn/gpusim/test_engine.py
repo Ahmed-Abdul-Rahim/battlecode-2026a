@@ -100,9 +100,9 @@ def test_clear_capture_split_and_respawn():
         act(e, 0, 0, attack=2)
     assert not e.camp_alive[0, 0] and e.g_state[0, 0] == 1
     act(e, 0, 0, move=3)  # onto the spawn tile
-    for _ in range(4):
+    for _ in range(5):
         e.captures()
-    assert e.gems[0, 0, 0].item() == 0, "five capture phases needed"
+    assert e.gems[0, 0, 0].item() == 0, "a phase to start the timer, then five"
     e.captures()
     assert e.gems[0, 0, 0].item() == 7 and e.g_state[0, 0] == 2
     act(e, 0, 0, move=7)
