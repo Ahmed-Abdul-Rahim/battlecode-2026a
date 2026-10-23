@@ -434,7 +434,7 @@ pub fn builtin_kit(kind: ChampionKind) -> KitInfo {
             5.0,
             100.0,
             9.0,
-            ability(Cc, 1.25, 4.0, 0.0, 1, true, foe),
+            ability(Cc, 0.75, 4.0, 0.0, 1, true, foe),
             dash,
             Passive::Retaliation,
         ),
@@ -461,8 +461,8 @@ pub fn builtin_kit(kind: ChampionKind) -> KitInfo {
             100.0,
             12.0,
             ability(Shield, 1.5, 0.0, 0.0, 5, false, SELF),
-            // Dash 2 tiles, 1.75 x Focus to radius 1 on landing, one-turn stun.
-            ability(Cc, 1.75, 2.0, 1.0, 1, false, GROUND),
+            // Dash 2 tiles, 1.5 x Focus to radius 1 on landing, one-turn stun.
+            ability(Cc, 1.5, 2.0, 1.0, 1, false, GROUND),
             Passive::MissingHealthDamage,
         ),
     }
