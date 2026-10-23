@@ -81,8 +81,32 @@ def load_state() -> dict:
 def save_state(st: dict) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     tmp = STATE.with_suffix(".tmp")
-    tmp.write_text(json.dumps(st, indent=1), encoding="utf-8")
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(st, f, indent=1)
+        f.flush()
+        os.fsync(f.fileno())
     tmp.replace(STATE)
+
+
+def valid_ckpt(d: Path) -> bool:
+    """A checkpoint survived intact (a power cut can leave zero-filled files)."""
+    try:
+        json.loads((d / "meta.json").read_text(encoding="utf-8"))
+        with open(d / "teacher.bin", "rb") as f:
+            ok = f.read(4) == b"BCN1"
+        return ok and all((d / n).stat().st_size > 0 for n in ("policy.pt", "value.pt"))
+    except (OSError, ValueError):
+        return False
+
+
+def last_valid(rdir: Path, it: int) -> int:
+    """The newest intact checkpoint at or before iteration `it` (broken ones are removed)."""
+    for k in range(it, -1, -1):
+        d = rdir / f"it{k:04d}"
+        if d.exists() and valid_ckpt(d):
+            return k
+        shutil.rmtree(d, ignore_errors=True)
+    return -1
 
 
 def maps() -> tuple[list[Path], list[Path]]:
@@ -195,7 +219,7 @@ def imitation_data(st: dict) -> None:
 def bc_for(st: dict, width: int) -> Path:
     key = str(width)
     ck = OUT / "ckpt" / f"bc{width}"
-    if key in st["bc"] and (ck / "teacher.bin").exists():
+    if key in st["bc"] and valid_ckpt(ck):
         return ck
     shards = sorted(str(p) for p in (OUT / "data" / "imitation").glob("*.npz"))
     log(f"imitation training, width {width}, {len(shards)} shards")
@@ -264,6 +288,13 @@ def ppo_run(st: dict, idx: int) -> None:
     width = cfg["width"]
     base = bc_for(st, width)
     rdir = OUT / "ckpt" / f"run{idx}"
+    good = last_valid(rdir, run["it"])
+    if good != run["it"]:
+        good = max(good, 0)
+        log(f"run {idx}: checkpoint it {run['it']} is damaged; resuming from it {good}")
+        run["it"] = good
+        run["evals"] = [e for e in run["evals"] if e["it"] <= good]
+        save_state(st)
     cur = rdir / f"it{run['it']:04d}"
     if run["it"] == 0 and not cur.exists():
         shutil.copytree(base, cur)

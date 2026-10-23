@@ -106,11 +106,23 @@ def load_nets(init: Path | None, arch: str, width: int):
 
 
 def save(out: Path, pol, val, meta: dict) -> None:
-    out.mkdir(parents=True, exist_ok=True)
-    torch.save(pol.state_dict(), out / "policy.pt")
-    torch.save(val.state_dict(), out / "value.pt")
-    (out / "meta.json").write_text(json.dumps(meta))
-    model.export_bcn1(pol, out / "teacher.bin")
+    """Write into <out>.tmp, flush every file to disk, then rename: a power cut mid-save leaves
+    the previous checkpoint intact instead of a zero-filled one (seen 2026-10-23)."""
+    import os
+    import shutil
+
+    tmp = out.with_name(out.name + ".tmp")
+    shutil.rmtree(tmp, ignore_errors=True)
+    tmp.mkdir(parents=True)
+    torch.save(pol.state_dict(), tmp / "policy.pt")
+    torch.save(val.state_dict(), tmp / "value.pt")
+    (tmp / "meta.json").write_text(json.dumps(meta))
+    model.export_bcn1(pol, tmp / "teacher.bin")
+    for f in tmp.iterdir():
+        with open(f, "rb+") as h:
+            os.fsync(h.fileno())
+    shutil.rmtree(out, ignore_errors=True)
+    tmp.rename(out)
 
 
 #: Imitation: the rules' fights go through the executor (step "auto"); copying their moves
