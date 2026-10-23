@@ -173,6 +173,67 @@ def test_turn_order_interleaves():
     assert seen == [(0, 0), (1, 0), (0, 1), (1, 1), (1, 0), (0, 0), (1, 1), (0, 1)]
 
 
+def cast(e, team, k, slot, kind=1, idx=0, xy=(0, 0)):
+    m = torch.ones(e.B, dtype=torch.bool)
+    return e.cast(team, k, slot, m, torch.full((e.B,), kind), torch.full((e.B,), idx), torch.tensor([xy] * e.B))
+
+
+def test_stellar_damage_and_aoe():
+    g = Group([Camp(0, 7, 5), Camp(0, 8, 5)], [(7, 5), (8, 5)], 4, 40, 40)
+    e = eng(tiny(groups=[g]), kinds=((5,), (0,)))  # Stellar: 2 x 85 single, 1.4 x 85 area
+    put(e, 0, 0, 5, 5)
+    e.turn_start(0, 0)
+    assert cast(e, 0, 0, 0, kind=2, idx=0).all()
+    assert e.camp_hp[0, 0].item() == 1350 - 170
+    assert not cast(e, 0, 0, 1, kind=0, xy=(8, 5)).any(), "one cast per turn"
+    e.turn_end(0, 0)
+    e.turn_start(0, 0)
+    assert cast(e, 0, 0, 1, kind=0, xy=(8, 5)).all()
+    assert abs(e.camp_hp[0, 1].item() - (1350 - 119)) < 1e-3 and abs(e.camp_hp[0, 0].item() - (1180 - 119)) < 1e-3
+
+
+def test_stun_stops_camp_and_marcella_is_immune():
+    g = Group([Camp(0, 6, 5)], [(6, 5)], 4, 40, 40)
+    e = eng(tiny(groups=[g]), kinds=((6,), (7,)))  # Prism vs Marcella
+    put(e, 0, 0, 5, 5)
+    put(e, 1, 0, 6, 6)
+    e.turn_start(0, 0)
+    cast(e, 0, 0, 0, kind=2, idx=0)  # damage + stun the wolf
+    hp = e.hp[0, 0, 0].item()
+    e.camp_actions()
+    assert e.hp[0, 0, 0].item() == hp, "stunned camp does not attack"
+    e.turn_end(0, 0)
+    e.turn_start(0, 0)
+    cast(e, 0, 0, 0, kind=1, idx=0)
+    assert e.stun[0, 1, 0] == 0, "Marcella is immune to stuns"
+
+
+def test_shield_heal_splash_and_vendetta_reset():
+    e = eng(tiny(), kinds=((10, 8), (2, 0)))  # Varg, Willow vs Vendetta, Ryth
+    put(e, 0, 0, 5, 5)
+    put(e, 0, 1, 4, 4)
+    put(e, 1, 0, 6, 5)
+    put(e, 1, 1, 7, 5)
+    e.turn_start(0, 0)
+    cast(e, 0, 0, 1)  # Varg shield 2.5 x 100
+    assert e.shield[0, 0, 0].item() == 250
+    e.basic_attack(0, 0, torch.ones(e.B, dtype=torch.long), torch.zeros(e.B, dtype=torch.long), torch.ones(e.B, dtype=torch.bool))
+    assert e.hp[0, 1, 0].item() == 800 - 40 and e.hp[0, 1, 1].item() == 1200 - 40, "Varg splash"
+    hp = e.hp[0, 0, 0].item()
+    e.apply_damage(torch.tensor([[[100.0, 0.0], [0.0, 0.0]]] * e.B), (1, 0))
+    assert e.hp[0, 0, 0].item() == hp and e.shield[0, 0, 0].item() == 150, "shield absorbs"
+    e.hp[:, 0, 0] = 500.0
+    e.turn_start(0, 1)
+    cast(e, 0, 1, 0, kind=1, idx=0)  # Willow heal 3 x 120
+    assert e.hp[0, 0, 0].item() == 860
+    e.hp[:, 0, 0] = 30.0
+    e.shield[:, 0, 0] = 0.0
+    e.cd[:, 1, 0] = 5
+    e.turn_start(1, 0)
+    e.basic_attack(1, 0, torch.ones(e.B, dtype=torch.long), torch.zeros(e.B, dtype=torch.long), torch.ones(e.B, dtype=torch.bool))
+    assert not e.alive[0, 0, 0] and (e.cd[0, 1, 0] == 0).all(), "Vendetta kill resets cooldowns"
+
+
 if __name__ == "__main__":
     for name, fn in list(globals().items()):
         if name.startswith("test_"):

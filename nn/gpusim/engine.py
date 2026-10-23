@@ -26,8 +26,8 @@ from nn.gpusim.maps import MapData
 
 SIMPLIFIED = [
     "vision: Chebyshev radius 8, walls/bushes ignored (no shadowcasting yet)",
-    "abilities: one generic spell per champion (2 x focus damage, range 4, 8-turn cooldown)",
-    "no wards, consumables, altar locks, dashes, teleport crystals, emblem passives",
+    "no wards, consumables, altar locks, teleport crystals, emblem passives",
+    "Ren's retaliation hits champion attackers only",
     "shop: on spawn, gold buys alternating strength/health shards (30 gold each)",
     "camps keep their health while asleep",
 ]
@@ -53,13 +53,36 @@ KITS = [
     (True, 3, 750, 75, 45, 5, 100),  # Tavi
     (False, 1, 1000, 100, 40, 4, 100),  # Heart of Ruin
 ]
+# Abilities per kind: two slots of (type, focus modifier, range, radius) from docs/GameRules.md.
+# Types: dmg (unit), stun (unit: damage + one-round stun), aoe (ground radius), aoe_stun,
+# heal (ally), shield (self, 5 turns), reset (attack reset), mreset (Marcella: reset + the next
+# basic attack stuns), dash (ground 2), hordash (dash + 1.75 x focus around the landing + stun).
+ABILITIES = [
+    [("aoe_stun", 1.0, 4, 1), ("reset", 0, 0, 0)],  # Ryth
+    [("reset", 0, 0, 0), ("dash", 0, 2, 0)],  # Vesper Vale
+    [("reset", 0, 0, 0), ("dash", 0, 2, 0)],  # Vendetta
+    [("dmg", 2.0, 4, 0), ("stun", 0.0, 4, 0)],  # Cassi
+    [("reset", 0, 0, 0), ("dash", 0, 2, 0)],  # Issac
+    [("dmg", 2.0, 4, 0), ("aoe", 1.4, 4, 1)],  # Stellar
+    [("stun", 1.5, 4, 0), ("aoe", 1.0, 4, 1)],  # Prism
+    [("mreset", 0, 0, 0), ("dmg", 2.0, 4, 0)],  # Marcella
+    [("heal", 3.0, 4, 0), ("reset", 0, 0, 0)],  # Willow
+    [("stun", 1.25, 4, 0), ("dash", 0, 2, 0)],  # Ren
+    [("reset", 0, 0, 0), ("shield", 2.5, 0, 0)],  # Varg
+    [("reset", 0, 0, 0), ("stun", 1.4, 4, 0)],  # Tavi
+    [("shield", 1.5, 0, 0), ("hordash", 1.75, 2, 1)],  # Heart of Ruin
+]
+# Abilities that can't share a turn with a walk.
+EXCLUDES_WALK = {"dmg", "stun", "aoe", "aoe_stun"}
+RYTH, VESPER, VENDETTA, PRISM, MARCELLA, REN, VARG, HOR = 0, 1, 2, 6, 7, 9, 10, 12
 DIRS = torch.tensor([[0, 0], [0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]])
 WIN_GEMS, MAX_ROUNDS = 1000, 2000
 RESPAWN_ROUNDS, CAPTURE_ROUNDS, KILL_GOLD, SHARD_COST = 60, 5, 100, 30
 VISION, SPELL_RANGE, SPELL_CD, RECALL_TURNS = 8, 4, 8, 5
 # Action layout per champion: move (9) x attack target (3: none, nearest enemy, nearest camp)
-# x spell (2) x special (3: none, recall, tribute) -> four integer heads.
-ACT_MOVE, ACT_ATTACK, ACT_SPELL, ACT_SPECIAL = 9, 3, 2, 3
+# x spell (3: none, slot 0, slot 1; aimed at the attack target, or self/ally/ground as the
+# ability needs) x special (3: none, recall, tribute) -> four integer heads.
+ACT_MOVE, ACT_ATTACK, ACT_SPELL, ACT_SPECIAL = 9, 3, 3, 3
 
 
 @dataclass
@@ -126,6 +149,7 @@ class Engine:
         self.strength = ex(k[..., 4])
         self.str_growth = ex(k[..., 5])
         self.focus = ex(k[..., 6])
+        self.base_hp = self.max_hp.clone()
         self.hp = self.max_hp.clone()
         self.pos = torch.zeros(B, 2, T, 2, dtype=torch.long, device=dev)
         for team in range(2):
@@ -134,7 +158,15 @@ class Engine:
         z = lambda dt=torch.float32: torch.zeros(B, 2, T, dtype=dt, device=dev)  # noqa: E731
         self.alive = torch.ones(B, 2, T, dtype=torch.bool, device=dev)
         self.respawn = z(torch.long)
-        self.gems, self.gold, self.cd = z(), z(), z(torch.long)
+        self.gems, self.gold = z(), z()
+        self.cd = torch.zeros(B, 2, T, 2, dtype=torch.long, device=dev)  # per ability slot
+        self.stun = z(torch.long)  # turns this champion still can't act
+        self.shield, self.shield_t = z(), z(torch.long)
+        self.can_attack = torch.ones(B, 2, T, dtype=torch.bool, device=dev)
+        self.can_move = torch.ones(B, 2, T, dtype=torch.bool, device=dev)
+        self.walked = torch.zeros(B, 2, T, dtype=torch.bool, device=dev)
+        self.cast_done = torch.zeros(B, 2, T, dtype=torch.bool, device=dev)
+        self.charged = torch.zeros(B, 2, T, dtype=torch.bool, device=dev)  # Marcella's stun attack
         self.recall = z(torch.long) - 1  # -1: not channelling
         self.tribute = z(torch.long) - 1
         self.shards = z(torch.long)
@@ -147,6 +179,7 @@ class Engine:
         self.camp_alive = torch.ones(B, C, dtype=torch.bool, device=dev)
         self.camp_awake = torch.zeros(B, C, dtype=torch.bool, device=dev)
         self.camp_quiet = torch.zeros(B, C, dtype=torch.long, device=dev)
+        self.camp_stun = torch.zeros(B, C, dtype=torch.long, device=dev)
         # group: 0 alive, 1 cleared (capturable), 2 respawning
         self.g_state = torch.zeros(B, G, dtype=torch.long, device=dev)
         self.g_timer = torch.zeros(B, G, dtype=torch.long, device=dev)
@@ -185,8 +218,9 @@ class Engine:
         if killer is not None:
             kt, ks = killer
             self.gems[:, kt, ks] += torch.where(mask, self.gems[:, team, slot], 0.0)
-            self.gold[:, kt, ks] += torch.where(mask, float(KILL_GOLD), 0.0)
-            self.lifetime_gold[:, kt] += torch.where(mask, float(KILL_GOLD), 0.0)
+            kg = torch.where(mask, float(KILL_GOLD) * self.gold_mult(kt, ks), 0.0)
+            self.gold[:, kt, ks] += kg
+            self.lifetime_gold[:, kt] += kg
             self.kills[:, kt, ks] += mask.long()
         self.gems[:, team, slot] = torch.where(mask, 0.0, self.gems[:, team, slot])
         self.alive[:, team, slot] &= ~mask
@@ -236,7 +270,8 @@ class Engine:
                 share_g = torch.where(win, s.group_gems / n, 0.0)
                 share_o = torch.where(win, s.group_gold / n, 0.0)
                 self.gems[:, t] += (present.float() * share_g.unsqueeze(1)).sum(-1).floor()
-                gold = (present.float() * share_o.unsqueeze(1)).sum(-1).floor()
+                mult = torch.where(self.kinds[t] == VESPER, 1.33, 1.0).view(1, -1)  # Vesper: +33% gold
+                gold = ((present.float() * share_o.unsqueeze(1)).sum(-1) * mult).floor()
                 self.gold[:, t] += gold
                 self.lifetime_gold[:, t] += gold.sum(-1)
             self.g_state = torch.where(done, 2, self.g_state)
@@ -244,9 +279,11 @@ class Engine:
             self.g_team = torch.where(done, -1, self.g_team)
 
     def camp_actions(self) -> None:
-        """Awake camps hit the nearest living champion in range (lowest index on ties)."""
+        """Awake, unstunned camps hit the nearest living champion in range (lowest index on ties)."""
         s, B = self.s, self.B
-        act = self.camp_alive & self.camp_awake & (self.camp_str > 0)
+        stunned = self.camp_stun > 0
+        self.camp_stun = (self.camp_stun - 1).clamp(min=0)
+        act = self.camp_alive & self.camp_awake & (self.camp_str > 0) & ~stunned
         if not act.any():
             return
         cp = s.camp_xy.view(1, -1, 1, 2)  # [1, C, 1, 2]
@@ -265,10 +302,24 @@ class Engine:
         self.camp_awake &= ~(self.camp_quiet >= 2)
 
     def apply_damage(self, dmg: torch.Tensor, killer: tuple[int, int] | None) -> None:
-        """dmg [B, 2, T] to champions; recalls are cancelled by damage; deaths resolved."""
+        """dmg [B, 2, T] to champions: shields absorb first, damage cancels recalls, Ren
+        retaliates against a champion attacker (0.2 x focus), deaths resolved."""
         hit = dmg > 0
+        absorbed = torch.minimum(self.shield, dmg)
+        self.shield = self.shield - absorbed
+        dmg = dmg - absorbed
         self.hp = self.hp - dmg
         self.recall = torch.where(hit, -1, self.recall)
+        if killer is not None:
+            kt, ks = killer
+            ren = hit & (self.kinds == REN).unsqueeze(0)
+            if ren.any():
+                back = (ren.float() * 0.2 * self.focus).sum((1, 2))  # [B]
+                rd = torch.zeros_like(self.hp)
+                rd[:, kt, ks] = back
+                absorbed = torch.minimum(self.shield, rd)
+                self.shield = self.shield - absorbed
+                self.hp = self.hp - (rd - absorbed)
         dead = self.alive & (self.hp <= 0)
         if not dead.any():
             return
@@ -276,12 +327,202 @@ class Engine:
             for k in range(self.T):
                 self.kill(t, k, killer if killer is not None and killer[0] != t else None, dead[:, t, k])
 
+    # ------------------------------------------------------------------ passives
+    def eff_focus(self, team: int, k: int) -> torch.Tensor:
+        """Focus with Prism's +1 per carried gem."""
+        f = self.focus[:, team, k]
+        if int(self.kinds[team, k]) == PRISM:
+            f = f + self.gems[:, team, k]
+        return f
+
+    def eff_strength(self, team: int, k: int) -> torch.Tensor:
+        """Strength with Ryth's +1% of bonus health."""
+        st = self.strength[:, team, k]
+        if int(self.kinds[team, k]) == RYTH:
+            st = st + 0.01 * (self.max_hp[:, team, k] - self.base_hp[:, team, k])
+        return st
+
+    def dmg_mult(self, team: int, k: int) -> torch.Tensor:
+        """Heart of Ruin: up to +50% damage, linear in missing health."""
+        if int(self.kinds[team, k]) != HOR:
+            return torch.ones(self.B, device=self.dev)
+        miss = 1 - (self.hp[:, team, k] / self.max_hp[:, team, k]).clamp(0, 1)
+        return 1 + 0.5 * miss
+
+    def gold_mult(self, team: int, k: int) -> float:
+        return 1.33 if int(self.kinds[team, k]) == VESPER else 1.0
+
+    def on_kill(self, team: int, k: int, mask: torch.Tensor) -> None:
+        """Vendetta: any kill (champion or camp) resets her ability cooldowns."""
+        if int(self.kinds[team, k]) == VENDETTA and mask.any():
+            self.cd[:, team, k] = torch.where(mask.unsqueeze(-1), 0, self.cd[:, team, k])
+
+    # ------------------------------------------------------------------ actions
+    def move_to(self, team: int, k: int, dest: torch.Tensor, mask: torch.Tensor, dash: bool = False) -> torch.Tensor:
+        """Move (or dash, up to 2 tiles) to dest [B, 2] where legal; returns games that moved."""
+        s, B = self.s, self.B
+        cur = self.pos[:, team, k]
+        reach = 2 if dash else 1
+        x, y = dest[:, 0].clamp(0, s.w - 1), dest[:, 1].clamp(0, s.h - 1)
+        inb = (dest[:, 0] >= 0) & (dest[:, 0] < s.w) & (dest[:, 1] >= 0) & (dest[:, 1] < s.h)
+        occ = self.occupied()
+        bi = torch.arange(B, device=self.dev)
+        dist = self.cheb(dest, cur)
+        legal = inb & (dist <= reach) & (dist > 0) & s.walkable[y, x] & ~s.spawn[1 - team][y, x] & ~occ[bi, y, x]
+        go = mask & legal
+        self.pos[:, team, k] = torch.where(go.unsqueeze(-1), torch.stack([x, y], -1), cur)
+        return go
+
+    def stun_targets(self, team: int, e_idx: torch.Tensor, c_idx: torch.Tensor) -> None:
+        """One-round stun on enemy slot e_idx / camp c_idx (-1 = none); Marcella is immune.
+        A stun cancels recalls and tributes."""
+        bi = torch.arange(self.B, device=self.dev)
+        for kk in range(self.T):
+            if int(self.kinds[1 - team, kk]) == MARCELLA:
+                continue
+            hit = e_idx == kk
+            self.stun[:, 1 - team, kk] = torch.where(hit, 1, self.stun[:, 1 - team, kk])
+            self.recall[:, 1 - team, kk] = torch.where(hit, -1, self.recall[:, 1 - team, kk])
+            self.tribute[:, 1 - team, kk] = torch.where(hit, -1, self.tribute[:, 1 - team, kk])
+        if self.camp_stun.shape[1]:
+            c = c_idx >= 0
+            self.camp_stun[bi[c], c_idx[c]] = 1
+
+    def resolve(self, team: int, k: int, dmg_e: torch.Tensor, dmg_c: torch.Tensor) -> None:
+        """Apply damage dealt by (team, k) to enemy champions and camps."""
+        if dmg_e.any():
+            before = self.alive.clone()
+            self.apply_damage(dmg_e, (team, k))
+            self.on_kill(team, k, (before & ~self.alive).any(-1).any(-1))
+        if dmg_c.shape[1] and dmg_c.any():
+            before = self.camp_alive.clone()
+            self.damage_camps(dmg_c)
+            self.on_kill(team, k, (before & ~self.camp_alive).any(-1))
+
+    def basic_attack(self, team: int, k: int, kind: torch.Tensor, idx: torch.Tensor, mask: torch.Tensor) -> torch.Tensor:
+        """Basic attack on a champion (kind 1, idx = enemy slot) or a camp (kind 2, idx = camp
+        index), in range, using the attack allowance. Varg splashes; Marcella's charged attack
+        stuns. Returns the games where it hit."""
+        s, B, dev = self.s, self.B, self.dev
+        here = self.pos[:, team, k]
+        bi = torch.arange(B, device=dev)
+        st = self.eff_strength(team, k) * self.dmg_mult(team, k)
+        ok = mask & self.can_attack[:, team, k] & self.alive[:, team, k]
+        ec = idx.clamp(0, self.T - 1)
+        epos = self.pos[bi, 1 - team, ec]
+        is_e = ok & (kind == 1) & self.alive[bi, 1 - team, ec] & (self.cheb(epos, here) <= self.rng[:, team, k])
+        C = self.camp_hp.shape[1]
+        cc = idx.clamp(0, max(C - 1, 0))
+        is_c = ok & (kind == 2) & (C > 0)
+        if C:
+            is_c &= self.camp_alive[bi, cc] & (self.cheb(s.camp_xy[cc], here) <= self.rng[:, team, k])
+        done = is_e | is_c
+        if not done.any():
+            return done
+        dmg_e = torch.zeros(B, 2, self.T, device=dev)
+        dmg_c = torch.zeros(B, C, device=dev)
+        dmg_e[bi, 1 - team, ec] += torch.where(is_e, st, 0.0)
+        if C:
+            dmg_c[bi, cc] += torch.where(is_c, st, 0.0)
+        if int(self.kinds[team, k]) == VARG:  # splash onto other enemies and camps within 1 of the target
+            tpos = torch.where(is_e.unsqueeze(-1), epos, s.camp_xy[cc] if C else epos)
+            near_e = self.alive[:, 1 - team] & (self.cheb(self.pos[:, 1 - team], tpos.unsqueeze(1)) <= 1)
+            near_e[bi, ec] &= ~is_e
+            dmg_e[:, 1 - team] += torch.where(done.unsqueeze(-1) & near_e, st.unsqueeze(-1), 0.0)
+            if C:
+                near_c = self.camp_alive & (self.cheb(s.camp_xy.unsqueeze(0), tpos.unsqueeze(1)) <= 1)
+                near_c[bi, cc] &= ~is_c
+                dmg_c += torch.where(done.unsqueeze(-1) & near_c, st.unsqueeze(-1), 0.0)
+        if int(self.kinds[team, k]) == MARCELLA:
+            stun = done & self.charged[:, team, k]
+            self.stun_targets(team, torch.where(is_e & stun, ec, -1), torch.where(is_c & stun, cc, -1))
+            self.charged[:, team, k] &= ~done
+        self.can_attack[:, team, k] &= ~done
+        if bool(self.ranged[0, team, k]):
+            self.can_move[:, team, k] &= ~done
+        self.resolve(team, k, dmg_e, dmg_c)
+        return done
+
+    def cast(self, team: int, k: int, slot: int, mask: torch.Tensor, kind: torch.Tensor, idx: torch.Tensor,
+             xy: torch.Tensor) -> torch.Tensor:
+        """Cast ability `slot` where `mask`: target kind (0 ground, 1 champion, 2 camp; a heal
+        uses kind 1 with an ally slot), idx (enemy / ally slot or camp index), xy [B, 2] for
+        ground targets. Returns the games where it went off."""
+        s, B, dev = self.s, self.B, self.dev
+        typ, mod, rng_, rad = ABILITIES[int(self.kinds[team, k])][slot]
+        bi = torch.arange(B, device=dev)
+        here = self.pos[:, team, k]
+        ok = mask & self.alive[:, team, k] & (self.cd[:, team, k, slot] <= 0) & ~self.cast_done[:, team, k]
+        if typ in EXCLUDES_WALK:
+            ok &= ~self.walked[:, team, k]
+        power = self.eff_focus(team, k) * mod * self.dmg_mult(team, k)
+        C = self.camp_hp.shape[1]
+        dmg_e = torch.zeros(B, 2, self.T, device=dev)
+        dmg_c = torch.zeros(B, C, device=dev)
+        ec = idx.clamp(0, self.T - 1)
+        cc = idx.clamp(0, max(C - 1, 0))
+        if typ in ("dmg", "stun"):
+            epos = self.pos[bi, 1 - team, ec]
+            on_e = ok & (kind == 1) & self.alive[bi, 1 - team, ec] & (self.cheb(epos, here) <= rng_)
+            on_c = ok & (kind == 2) & (C > 0)
+            if C:
+                on_c &= self.camp_alive[bi, cc] & (self.cheb(s.camp_xy[cc], here) <= rng_)
+                dmg_c[bi, cc] += torch.where(on_c, power, 0.0)
+            dmg_e[bi, 1 - team, ec] += torch.where(on_e, power, 0.0)
+            went = on_e | on_c
+            if typ == "stun":
+                self.stun_targets(team, torch.where(on_e, ec, -1), torch.where(on_c, cc, -1))
+        elif typ in ("aoe", "aoe_stun", "hordash"):
+            if typ == "hordash":
+                went = self.move_to(team, k, xy, ok, dash=True)
+                centre = self.pos[:, team, k]
+            else:
+                went = ok & (self.cheb(xy, here) <= rng_)
+                centre = xy
+            near_e = self.alive[:, 1 - team] & (self.cheb(self.pos[:, 1 - team], centre.unsqueeze(1)) <= rad)
+            dmg_e[:, 1 - team] += torch.where(went.unsqueeze(-1) & near_e, power.unsqueeze(-1), 0.0)
+            near_c = torch.zeros(B, C, dtype=torch.bool, device=dev)
+            if C:
+                near_c = self.camp_alive & (self.cheb(s.camp_xy.unsqueeze(0), centre.unsqueeze(1)) <= rad)
+                dmg_c += torch.where(went.unsqueeze(-1) & near_c, power.unsqueeze(-1), 0.0)
+            if typ != "aoe":
+                for kk in range(self.T):
+                    hit = went & near_e[:, kk]
+                    if int(self.kinds[1 - team, kk]) != MARCELLA:
+                        self.stun[:, 1 - team, kk] = torch.where(hit, 1, self.stun[:, 1 - team, kk])
+                        self.recall[:, 1 - team, kk] = torch.where(hit, -1, self.recall[:, 1 - team, kk])
+                        self.tribute[:, 1 - team, kk] = torch.where(hit, -1, self.tribute[:, 1 - team, kk])
+                if C:
+                    self.camp_stun = torch.where(went.unsqueeze(-1) & near_c, 1, self.camp_stun)
+        elif typ == "heal":
+            ac = idx.clamp(0, self.T - 1)
+            apos = self.pos[bi, team, ac]
+            went = ok & (kind == 1) & (ac != k) & self.alive[bi, team, ac] & (self.cheb(apos, here) <= rng_)
+            healed = torch.minimum(self.hp[bi, team, ac] + power, self.max_hp[bi, team, ac])
+            self.hp[bi, team, ac] = torch.where(went, healed, self.hp[bi, team, ac])
+        elif typ == "shield":
+            went = ok
+            self.shield[:, team, k] = torch.where(went, power, self.shield[:, team, k])
+            self.shield_t[:, team, k] = torch.where(went, 5, self.shield_t[:, team, k])
+        elif typ in ("reset", "mreset"):
+            went = ok
+            self.can_attack[:, team, k] |= went
+            if typ == "mreset":
+                self.charged[:, team, k] |= went
+        elif typ == "dash":
+            went = self.move_to(team, k, xy, ok, dash=True)
+        else:
+            raise ValueError(typ)
+        self.cd[:, team, k, slot] = torch.where(went, SPELL_CD, self.cd[:, team, k, slot])
+        self.cast_done[:, team, k] |= went
+        self.resolve(team, k, dmg_e, dmg_c)
+        return went
+
     # ------------------------------------------------------------------ champion turn
     def turn_start(self, team: int, k: int) -> torch.Tensor:
-        """Respawn and channel completions; returns which games let this champion act."""
-        s, B, dev = self.s, self.B, self.dev
+        """Respawn, channel completions, stun; returns which games let this champion act."""
+        s = self.s
         live = ~self.done
-        # --- turn start: respawn, channel completions
         dead = ~self.alive[:, team, k]
         ready = dead & (self.respawn[:, team, k] <= 0) & live
         if ready.any():
@@ -293,7 +534,7 @@ class Engine:
             self.pos[:, team, k] = torch.where(can.unsqueeze(-1), tiles[first], self.pos[:, team, k])
             self.alive[:, team, k] |= can
             self.hp[:, team, k] = torch.where(can, self.max_hp[:, team, k], self.hp[:, team, k])
-            self.cd[:, team, k] = torch.where(can, 0, self.cd[:, team, k])
+            self.cd[:, team, k] = torch.where(can.unsqueeze(-1), 0, self.cd[:, team, k])
         rc = self.recall[:, team, k]
         arrive = (rc == 0) & self.alive[:, team, k]
         if arrive.any():
@@ -306,13 +547,21 @@ class Engine:
         tr = self.tribute[:, team, k]
         fin = (tr == 0) & self.alive[:, team, k]
         if fin.any():
-            self.tributed[:, team] += torch.where(fin, self.gems[:, team, k], 0.0)
+            g = torch.where(fin, self.gems[:, team, k], 0.0)
+            self.tributed[:, team] += g
+            if int(self.kinds[team, k]) == MARCELLA:  # 2 gold per gem tributed
+                self.gold[:, team, k] += 2 * g
+                self.lifetime_gold[:, team] += 2 * g
             self.gems[:, team, k] = torch.where(fin, 0.0, self.gems[:, team, k])
             self.tribute[:, team, k] = torch.where(fin, -1, tr)
-        me = self.alive[:, team, k] & live
+        stunned = self.stun[:, team, k] > 0
+        self.can_attack[:, team, k] = True
+        self.can_move[:, team, k] = True
+        self.walked[:, team, k] = False
+        self.cast_done[:, team, k] = False
+        me = self.alive[:, team, k] & live & ~stunned
         busy = (self.recall[:, team, k] >= 0) | (self.tribute[:, team, k] >= 0)
-        act = me & ~busy
-        return act
+        return me & ~busy
 
     def damage_camps(self, dmg_c: torch.Tensor) -> None:
         """dmg_c [B, C]: damage camps, wake their whole group, mark cleared groups."""
@@ -332,11 +581,14 @@ class Engine:
         self.g_timer = torch.where(cleared, 0, self.g_timer)
 
     def turn_end(self, team: int, k: int, auto_shop: bool = True) -> None:
-        """Turn-end ticks (cooldowns, channels, respawn), spawn heal, shop."""
+        """Turn-end ticks (cooldowns, channels, stun, shield, respawn), spawn heal, shop."""
         s, live = self.s, ~self.done
         self.cd[:, team, k] = (self.cd[:, team, k] - 1).clamp(min=0)
         for ch in (self.recall, self.tribute):
             ch[:, team, k] = torch.where(ch[:, team, k] > 0, ch[:, team, k] - 1, ch[:, team, k])
+        self.stun[:, team, k] = (self.stun[:, team, k] - 1).clamp(min=0)
+        self.shield_t[:, team, k] = (self.shield_t[:, team, k] - 1).clamp(min=0)
+        self.shield[:, team, k] = torch.where(self.shield_t[:, team, k] > 0, self.shield[:, team, k], 0.0)
         self.respawn[:, team, k] = torch.where(~self.alive[:, team, k], (self.respawn[:, team, k] - 1).clamp(min=0),
                                                self.respawn[:, team, k])
         on_spawn = self.alive[:, team, k] & s.spawn[team][self.pos[:, team, k, 1], self.pos[:, team, k, 0]]
@@ -354,63 +606,54 @@ class Engine:
             self.hp[:, team, k] = torch.where(on_spawn, self.max_hp[:, team, k], self.hp[:, team, k])
             self.shards[:, team, k] += n.long()
 
-
     def champion_turn(self, team: int, k: int, a: torch.Tensor) -> None:
-        """a: long [B, 4] = (move, attack, spell, special) for champion (team, k) in every game."""
+        """a: long [B, 4] = (move, attack target, spell, special) for champion (team, k).
+        attack target: 0 none, 1 nearest enemy champion, 2 nearest camp. spell: 0 none, 1/2 =
+        slot 0/1, aimed at the attack target (or the nearest enemy), the lowest-health ally
+        (heals), self, or 2 tiles along the move direction (dashes)."""
         s, B, dev = self.s, self.B, self.dev
         act = self.turn_start(team, k)
         mv, at, sp, spc = a[:, 0], a[:, 1], a[:, 2], a[:, 3]
-        ranged = self.ranged[:, team, k]
-        # --- move (ranged champions that attack don't move)
-        wants_move = act & (mv > 0) & ~(ranged & (at > 0))
+        bi = torch.arange(B, device=dev)
+        # move first (a ranged champion that attacks gives up its move)
+        wants_move = act & (mv > 0) & ~(self.ranged[:, team, k] & (at > 0))
+        d = DIRS.to(dev)[mv]
         if wants_move.any():
-            d = DIRS.to(dev)[mv]
-            np_ = self.pos[:, team, k] + d
-            inb = (np_[:, 0] >= 0) & (np_[:, 0] < s.w) & (np_[:, 1] >= 0) & (np_[:, 1] < s.h)
-            npc = torch.stack([np_[:, 0].clamp(0, s.w - 1), np_[:, 1].clamp(0, s.h - 1)], -1)
-            occ = self.occupied()
-            bi = torch.arange(B, device=dev)
-            legal = inb & s.walkable[npc[:, 1], npc[:, 0]] & ~s.spawn[1 - team][npc[:, 1], npc[:, 0]] \
-                & ~occ[bi, npc[:, 1], npc[:, 0]]
-            go = wants_move & legal
-            self.pos[:, team, k] = torch.where(go.unsqueeze(-1), npc, self.pos[:, team, k])
+            moved = self.move_to(team, k, self.pos[:, team, k] + d, wants_move)
+            self.walked[:, team, k] |= moved
+            self.can_move[:, team, k] &= ~moved
+            if bool(self.ranged[0, team, k]):
+                self.can_attack[:, team, k] &= ~moved
         here = self.pos[:, team, k]
-        # --- targets in range: nearest enemy champion / nearest living camp
-        ep = self.pos[:, 1 - team]  # [B, T, 2]
+        ep = self.pos[:, 1 - team]
         de = self.cheb(ep, here.unsqueeze(1))
         de = torch.where(self.alive[:, 1 - team] & ~s.spawn[1 - team][ep[..., 1], ep[..., 0]], de, 10_000)
-        e_idx, e_d = de.argmin(1), de.amin(1)
-        dc = self.cheb(s.camp_xy.unsqueeze(0), here.unsqueeze(1))
-        dc = torch.where(self.camp_alive, dc, 10_000)
-        if dc.shape[1]:
-            c_idx, c_d = dc.argmin(1), dc.amin(1)
+        e_idx = de.argmin(1)
+        C = self.camp_hp.shape[1]
+        if C:
+            dc = torch.where(self.camp_alive, self.cheb(s.camp_xy.unsqueeze(0), here.unsqueeze(1)), 10_000)
+            c_idx = dc.argmin(1)
         else:
             c_idx = torch.zeros(B, dtype=torch.long, device=dev)
-            c_d = torch.full((B,), 10_000, dtype=torch.long, device=dev)
-        rng_ = self.rng[:, team, k]
-        dmg_e = torch.zeros(B, 2, self.T, device=dev)
-        dmg_c = torch.zeros(B, self.camp_hp.shape[1], device=dev)
-        bi = torch.arange(B, device=dev)
-        strength = self.strength[:, team, k]
-        hit_e = act & (at == 1) & (e_d <= rng_)
-        hit_c = act & (at == 2) & (c_d <= rng_)
-        dmg_e[bi, 1 - team, e_idx] += torch.where(hit_e, strength, 0.0)
-        if dmg_c.shape[1]:
-            dmg_c[bi, c_idx] += torch.where(hit_c, strength, 0.0)
-        # --- generic spell: 2 x focus at the attack's target type, range 4, 8-turn cooldown
-        cast = act & (sp == 1) & (self.cd[:, team, k] <= 0)
-        se = cast & (at == 1) & (e_d <= SPELL_RANGE)
-        sc = cast & (at == 2) & (c_d <= SPELL_RANGE)
-        dmg_e[bi, 1 - team, e_idx] += torch.where(se, 2 * self.focus[:, team, k], 0.0)
-        if dmg_c.shape[1]:
-            dmg_c[bi, c_idx] += torch.where(sc, 2 * self.focus[:, team, k], 0.0)
-        self.cd[:, team, k] = torch.where(se | sc, SPELL_CD, self.cd[:, team, k])
-        # --- resolve damage: champions, then camps (wake their whole group)
-        if dmg_e.any():
-            self.apply_damage(dmg_e, (team, k))
-        if dmg_c.any():
-            self.damage_camps(dmg_c)
-        # --- specials: recall, tribute (next to an altar with gems)
+        tkind = torch.where(at == 2, 2, 1)
+        tidx = torch.where(at == 2, c_idx, e_idx)
+        for slot in (0, 1):
+            m = act & (sp == slot + 1)
+            if not m.any():
+                continue
+            typ = ABILITIES[int(self.kinds[team, k])][slot][0]
+            target_xy = s.camp_xy[c_idx] if C else here
+            xy = torch.where((tkind == 2).unsqueeze(-1), target_xy, ep[bi, e_idx])
+            kind_, idx_ = tkind, tidx
+            if typ in ("dash", "hordash"):
+                xy = here + 2 * d
+            if typ == "heal":
+                ally = torch.where(self.alive[:, team], self.hp[:, team] / self.max_hp[:, team], 2.0)
+                ally[:, k] = 2.0
+                kind_, idx_ = torch.ones_like(tkind), ally.argmin(1)
+            self.cast(team, k, slot, m, kind_, idx_, xy)
+        self.basic_attack(team, k, tkind, tidx, act & (at > 0))
+        here = self.pos[:, team, k]
         rec = act & (spc == 1) & ~s.spawn[team][here[:, 1], here[:, 0]]
         self.recall[:, team, k] = torch.where(rec, RECALL_TURNS, self.recall[:, team, k])
         trib = act & (spc == 2) & (self.gems[:, team, k] > 0) & s.near_altar[here[:, 1], here[:, 0]]
