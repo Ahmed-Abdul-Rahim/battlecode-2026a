@@ -2,7 +2,7 @@
 //! Keyed by `world::fingerprint` (exact: the draft sees the whole map). Unknown maps
 //! use the general defaults (knob::DEFAULTS + the descriptor-based draft and knobs).
 
-use crate::bc_core::memory::knob;
+use crate::bc_core::memory::{knob, knob2};
 
 /// Draft preference: 0 default, 1 ranged first, 2 melee first, 3 Cassi & Issac first, 4 counter-pick,
 /// 8 best-bot draft, 9 Tavi meta draft (draft.rs draft_prefs).
@@ -78,6 +78,18 @@ pub const PLANS: &[MapPlan] = &[
     // swirl: escape (gain 0.5)
     MapPlan { fingerprint: 73263638, name: "swirl", knobs: &[(knob::CAMP_SAFE, 1)], draft: 0 },
 ];
+
+/// Per-map knob2 values (the second knob block), applied after `PLANS` by the draft.
+pub const PLANS2: &[(u32, &str, &[(usize, u8)])] = &[
+    // reverse-spiral: straight-line chasing froze both teams behind corridor walls (ranked: 1 clear
+    // per game); PATH_CHASE lost on all maps together (exp 95), so only here.
+    (2960243713, "reverse-spiral", &[(knob2::PATH_CHASE, 1)]),
+];
+
+#[must_use]
+pub fn lookup2(fingerprint: u32) -> &'static [(usize, u8)] {
+    PLANS2.iter().find(|p| p.0 == fingerprint).map_or(&[], |p| p.2)
+}
 
 #[must_use]
 pub fn lookup(fingerprint: u32) -> Option<&'static MapPlan> {

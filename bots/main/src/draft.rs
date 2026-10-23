@@ -172,6 +172,11 @@ pub fn play() -> Result<()> {
                     *slot = v;
                 }
             }
+            for &(k, v) in crate::map_plans::lookup2(c.fp) {
+                if let Some(slot) = theta.knobs2.get_mut(k) {
+                    *slot = v;
+                }
+            }
             theta.map_fp = c.fp;
             cambc::draft_memory().submit(&theta.encode())?;
         }
