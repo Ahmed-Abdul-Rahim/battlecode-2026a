@@ -121,18 +121,23 @@ def describe(c: dict) -> str:
 # ---------------------------------------------------------------- proposals
 
 
-def mutate(c: dict, rng: random.Random) -> dict:
+def mutate(c: dict, rng: random.Random, active: list[int]) -> dict:
+    """Swap / move / switch off rules among `active` ones (those whose removal changes games;
+    reordering rules that never fire together changes nothing). Rule 0 (the plan) may move."""
     o, off = list(c["order"]), set(c["off"])
+    movable = [0] + [r for r in active if r != 0]
     for _ in range(rng.choice((1, 1, 2, 3))):
         op = rng.random()
-        if op < 0.4:  # swap two rules
-            i, j = rng.sample(range(N), 2)
+        if op < 0.4 and len(movable) >= 2:  # swap two rules
+            a, b = rng.sample(movable, 2)
+            i, j = o.index(a), o.index(b)
             o[i], o[j] = o[j], o[i]
         elif op < 0.8:  # move one rule elsewhere
-            r = o.pop(rng.randrange(N))
+            r = rng.choice(movable)
+            o.remove(r)
             o.insert(rng.randrange(N), r)
-        elif op < 0.9 and len(off) < 4:
-            off.add(rng.randrange(1, N))
+        elif op < 0.9 and len(off) < 4 and active:
+            off.add(rng.choice(active))
         elif off:
             off.discard(rng.choice(sorted(off)))
     return {"order": o, "off": sorted(off)}
@@ -236,6 +241,16 @@ def cmd_run(_: argparse.Namespace) -> int:
     per_opp = json.loads(per_opp_path.read_text()) if per_opp_path.exists() else {}
     ref, pool = bots()
     seen = {key(st["best"])}
+    if "active" not in st:  # probe: which rules change games when switched off alone
+        probe = [{"order": list(range(N)), "off": [r]} for r in range(1, N)]
+        sets = setups(random.Random(5), STAGE1)
+        rows = play_all(probe, sets, ref, pool, st["best"], "probe")
+        st["active"] = [r for r, row in zip(range(1, N), rows) if any(x[2] != 0 for x in row)]
+        st["probe"] = {RULES[r]: round(sum(x[1] for x in row) / max(len(row), 1), 3)
+                       for r, row in zip(range(1, N), rows)}
+        log(f"probe: active rules {st['active']} ({[RULES[r] for r in st['active']]}); "
+            f"win change when off: {st['probe']}")
+        save_state(st)
     while True:
         g = st["gen"]
         rng = random.Random(900 + g)
@@ -244,7 +259,7 @@ def cmd_run(_: argparse.Namespace) -> int:
         cands = [c for c in qwen(st, n_q) if key(c) not in seen]
         src = ["qwen"] * len(cands)
         while len(cands) < POOL:
-            c = mutate(best, rng)
+            c = mutate(best, rng, st["active"])
             if key(c) not in seen:
                 cands.append(c)
                 src.append("mut")
