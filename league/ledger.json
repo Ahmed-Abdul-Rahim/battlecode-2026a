@@ -666,6 +666,15 @@
    "time": "2026-10-22T06:10:11.799Z",
    "win": true
   },
+  "141a3e31-9cc9-4dcc-86c0-73f61b29b008": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "lanes",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T16:01:14.007Z",
+   "win": false
+  },
   "143985eb-8591-4f7c-9080-e81c97d22d0e": {
    "kind": "ranked",
    "live": 17,
@@ -935,6 +944,24 @@
    "oppId": "f43512ab-25ea-4bcd-ada6-9a303b63c153",
    "time": "2026-10-23T15:00:25.894Z",
    "win": true
+  },
+  "1eb19efd-071a-456a-8d87-91524b99708f": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "boss-battle",
+   "opp": "Solo Zorgis",
+   "oppId": "2e350c20-b742-42aa-b4e1-47516c423a3a",
+   "time": "2026-10-23T16:00:22.633Z",
+   "win": true
+  },
+  "1f510527-e754-4a2b-8fe8-6ee3ba9cba7e": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "broken-curve",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T16:01:13.926Z",
+   "win": false
   },
   "1ff86ca3-a6d2-466c-9023-a24af5e98540": {
    "kind": "unranked",
@@ -2151,6 +2178,15 @@
    "time": "2026-10-20T18:30:06.484Z",
    "win": false
   },
+  "484a9445-795c-4bde-95a6-fc56d1ebda43": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "ambush",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T16:01:14.034Z",
+   "win": false
+  },
   "48a6ec88-a751-448c-b317-dcb394e39829": {
    "kind": "ranked",
    "live": 23,
@@ -3060,6 +3096,15 @@
    "time": "2026-10-23T14:58:19.859Z",
    "win": false
   },
+  "6391cd4b-173a-45ae-9b13-72e3019f42a8": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "road-of-riches",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T16:01:13.973Z",
+   "win": false
+  },
   "63982bce-2287-4afb-ba0c-da4561d0ed89": {
    "kind": "ranked",
    "live": 23,
@@ -3707,6 +3752,15 @@
    "oppId": "5bfa785b-3a15-4398-96b7-624e1a1e103c",
    "time": "2026-10-21T16:30:13.512Z",
    "win": false
+  },
+  "77e812f4-e9d1-4592-b6f6-384e8c062a37": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "stampede",
+   "opp": "Solo Zorgis",
+   "oppId": "2e350c20-b742-42aa-b4e1-47516c423a3a",
+   "time": "2026-10-23T16:00:22.633Z",
+   "win": true
   },
   "78413ca6-8e50-43b3-bfe5-47cdf554a05d": {
    "kind": "ranked",
@@ -6183,6 +6237,15 @@
    "time": "2026-10-22T12:30:23.031Z",
    "win": false
   },
+  "c699a6a3-8778-4122-b1e2-23d20cee67a7": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "islands",
+   "opp": "Solo Zorgis",
+   "oppId": "2e350c20-b742-42aa-b4e1-47516c423a3a",
+   "time": "2026-10-23T16:00:22.633Z",
+   "win": false
+  },
   "c6b69406-0eb4-461d-9a99-92343f108688": {
    "kind": "ranked",
    "live": 1,
@@ -7551,6 +7614,15 @@
    "time": "2026-10-22T10:30:12.502Z",
    "win": true
   },
+  "ebb4de3f-f872-4c6c-b84d-4d2d77154d1f": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "concentrated-wealth",
+   "opp": "Solo Zorgis",
+   "oppId": "2e350c20-b742-42aa-b4e1-47516c423a3a",
+   "time": "2026-10-23T16:00:22.633Z",
+   "win": true
+  },
   "ebd29af3-1093-488f-8b33-f8215513f5fd": {
    "kind": "ranked",
    "live": 1,
@@ -7675,6 +7747,15 @@
    "opp": "Kvantai",
    "oppId": "0580c098-a7c9-46d7-b414-bf39c02c3dcc",
    "time": "2026-10-22T11:50:22.938Z",
+   "win": false
+  },
+  "ee364ce6-4acf-4c98-a274-090e2d1bae65": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "hooks",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T16:01:13.994Z",
    "win": false
   },
   "ee3ca839-cf10-4a2a-80a8-cb2f58c36c1b": {
@@ -8143,6 +8224,15 @@
    "opp": "Azerbaijan Technologies",
    "oppId": "7218a6a8-8211-4587-bdf8-3bae779e930e",
    "time": "2026-10-23T15:40:32.971Z",
+   "win": false
+  },
+  "fb88cab5-31c4-42ea-9924-c353adc83537": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "eight",
+   "opp": "Solo Zorgis",
+   "oppId": "2e350c20-b742-42aa-b4e1-47516c423a3a",
+   "time": "2026-10-23T16:00:22.633Z",
    "win": false
   },
   "fc0227a7-4af4-45cf-bd20-c0ae3752d93a": {
@@ -16542,6 +16632,123 @@
    "status": "open",
    "time": "2026-10-23T15:40:32.971Z",
    "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 7,
+    "champion": 2
+   },
+   "deaths_them": 1,
+   "deaths_us": 9,
+   "gems_them": "1012",
+   "gems_us": "782",
+   "id": "484a9445-795c-4bde-95a6-fc56d1ebda43",
+   "map": "ambush",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T16:01:14.034Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 11
+   },
+   "deaths_them": 3,
+   "deaths_us": 13,
+   "gems_them": "1004",
+   "gems_us": "783",
+   "id": "141a3e31-9cc9-4dcc-86c0-73f61b29b008",
+   "map": "lanes",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T16:01:14.007Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "champion": 38
+   },
+   "deaths_them": 5,
+   "deaths_us": 38,
+   "gems_them": "1012",
+   "gems_us": "22",
+   "id": "ee364ce6-4acf-4c98-a274-090e2d1bae65",
+   "map": "hooks",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T16:01:13.994Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "camp": 10,
+    "champion": 2
+   },
+   "deaths_them": 6,
+   "deaths_us": 12,
+   "gems_them": "1041",
+   "gems_us": "209",
+   "id": "6391cd4b-173a-45ae-9b13-72e3019f42a8",
+   "map": "road-of-riches",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T16:01:13.973Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 5,
+    "champion": 1
+   },
+   "deaths_them": 0,
+   "deaths_us": 6,
+   "gems_them": "1017",
+   "gems_us": "394",
+   "id": "1f510527-e754-4a2b-8fe8-6ee3ba9cba7e",
+   "map": "broken-curve",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T16:01:13.926Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 6,
+    "champion": 21
+   },
+   "deaths_them": 23,
+   "deaths_us": 27,
+   "gems_them": "1005",
+   "gems_us": "599",
+   "id": "c699a6a3-8778-4122-b1e2-23d20cee67a7",
+   "map": "islands",
+   "opp": "Solo Zorgis",
+   "oppId": "2e350c20-b742-42aa-b4e1-47516c423a3a",
+   "status": "open",
+   "time": "2026-10-23T16:00:22.633Z",
+   "tries_at": 5
+  },
+  {
+   "contexts": {
+    "champion": 76
+   },
+   "deaths_them": 27,
+   "deaths_us": 76,
+   "gems_them": "1003",
+   "gems_us": "46",
+   "id": "fb88cab5-31c4-42ea-9924-c353adc83537",
+   "map": "eight",
+   "opp": "Solo Zorgis",
+   "oppId": "2e350c20-b742-42aa-b4e1-47516c423a3a",
+   "status": "open",
+   "time": "2026-10-23T16:00:22.633Z",
+   "tries_at": 4
   }
  ],
  "map_files": {
