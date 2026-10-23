@@ -21,7 +21,9 @@ The draft bot sees the whole map with 10× fuel. It writes a per-match parameter
 | 176 | 160 | **champion vectors** 10 × 16 int8: allies in slots 0–4, enemies in slots 5–9 |
 | 336 | 10 | champion kind per slot (0xFF = empty) |
 | 352 | 192 | map-descriptor cache (normalised map features × 255) |
-| 544 | 478 | reserved (zero) |
+| 544 | 32 | second knob block (`memory::knob2`) |
+| 576 | 4 | map fingerprint (`world::fingerprint`, u32 LE; 0 = not written): champions skip hashing the map at start-up |
+| 580 | 442 | reserved (zero) |
 | 1022 | 2 | CRC-16/CCITT-FALSE of bytes 0..1022 |
 
 All-zero memory, which happens if the draft bot crashed or never wrote, decodes as `Empty`. Bots then fall back to `ThetaMatch::default()`.
