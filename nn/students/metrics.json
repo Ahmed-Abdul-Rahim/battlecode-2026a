@@ -1,0 +1,11 @@
+{
+ "hidden": 8,
+ "macs": 2168,
+ "bytes": 2286,
+ "float_vs_teacher": 0.99857,
+ "int8_vs_teacher": 0.99857,
+ "int8_vs_float": 1.0,
+ "teacher_overrules_rules": 43,
+ "int8_vs_teacher_where_overruled": 0.0,
+ "teacher": "runs/nn/ref/full-it0002"
+}

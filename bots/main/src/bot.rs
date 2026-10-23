@@ -919,13 +919,19 @@ impl Bot {
             let busy = state.intersects(
                 ChampionState::RECALLING | ChampionState::SUBMITTING_GEMS | ChampionState::TELEPORTING,
             );
-            let nn_obs = (teach > 0 && !busy).then(|| {
+            let student_fuel = teach < 5
+                || (round >= teacher::STUDENT_FROM_ROUND
+                    && fuel() > teacher::STUDENT_MIN_FUEL
+                    && self.student_ready());
+            let nn_obs = (teach > 0 && !busy && student_fuel).then(|| {
                 self.teacher_obs(&ctx, &vis, &chan, me, my_pos, round, hurt_this_round, intent, teach < 5)
             });
             let mut nn_choice = None;
             if let (true, Some(o)) = (teach >= 2, &nn_obs) {
                 // 3 = diagnostic: the rules' own goal through the teacher's control path.
-                let pick = if teach == 3 {
+                let pick = if teach == 5 {
+                    self.student_pick(o)
+                } else if teach == 3 {
                     Some(teacher::Choice { a: [o.rule_goal as i32, 0, -1, -1], logp: 0.0 })
                 } else if teach == 4 {
                     // 4 = diagnostic: the network's goal, the executor's own moves.

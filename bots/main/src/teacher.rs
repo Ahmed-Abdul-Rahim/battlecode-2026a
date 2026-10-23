@@ -13,6 +13,7 @@
 
 use super::Bot;
 use crate::act::{occupied_tiles, Visible};
+use crate::bc_brain::int8::Mlp;
 use crate::bc_brain::nn::{self, Net};
 use crate::bc_brain::rl;
 use crate::bc_brain::{Context, Intent};
@@ -52,9 +53,21 @@ pub const G_STEP_BACK: usize = 13;
 pub const G_SIGHTING: usize = 14;
 
 static TEACHER_BLOB: &[u8] = include_bytes!("weights/teacher.bin");
+/// The distilled student (nn/student.py): int8 BCW1, goal head only, the first STUDENT_IN scalars.
+static STUDENT_BLOB: &[u8] = include_bytes!("weights/student.bin");
+/// Self, economy, allies, enemies, camps, goal slots and the rules' suggestion (no per-step block).
+pub const STUDENT_IN: usize = 256;
+pub const STUDENT_SCHEMA: u16 = (SPEC as u16) ^ 0x5354;
+/// The student runs only with this much fuel left at the decision point (observation ~17k +
+/// network ~13k, and the executor still needs ~40k after it); otherwise the rules decide.
+pub const STUDENT_MIN_FUEL: u64 = 70_000;
+/// ... and only from this round: the first turns compute the distance fields (they ran out of
+/// fuel with the student on, 2026-10-23).
+pub const STUDENT_FROM_ROUND: u32 = 10;
 
 thread_local! {
     static NET: std::cell::OnceCell<Option<Net>> = const { std::cell::OnceCell::new() };
+    static STUDENT: std::cell::OnceCell<Option<Mlp>> = const { std::cell::OnceCell::new() };
 }
 
 /// Previous observations of this champion (newest first), as the network sees them.
@@ -335,7 +348,11 @@ impl Bot {
         let (here_spawn, here_altar) = (fields.distance(Goal::AllySpawn, my_pos), fields.distance(Goal::Altars, my_pos));
         let here_target = target_goal.map(|g| fields.distance(g, my_pos));
         let mut free = [false; 9];
-        for (i, &sp) in steps.iter().enumerate() {
+        if !with_grid {
+            // Student (TEACHER >= 5): no per-step block (zeros; only the manual-step heads use it).
+            p.at += 9 * 6;
+        }
+        for (i, &sp) in steps.iter().enumerate().filter(|_| with_grid) {
             free[i] = i == 0 || (self.world.terrain.walkable(sp) && !occupied.contains(&sp));
             p.b(free[i]);
             let n = vis.enemies.iter().filter(|e| !e.on_spawn && e.pos.cheb(sp) <= e.range).count();
@@ -408,6 +425,41 @@ impl Bot {
                 c.logp += la + lc;
             }
             Some(c)
+        })
+    }
+
+    /// Whether the student's weights are loaded; if not, load them now (a turn the fuel gate
+    /// allowed) and let the rules decide this turn: loading and deciding never share a turn
+    /// (the early turns ran out of fuel when they did, 2026-10-23).
+    pub(super) fn student_ready(&self) -> bool {
+        STUDENT.with(|cell| {
+            if cell.get().is_some() {
+                return true;
+            }
+            cell.get_or_init(|| {
+                Mlp::parse_for_schema(STUDENT_BLOB, STUDENT_SCHEMA)
+                    .ok()
+                    .filter(|m| m.input_len() <= STUDENT_IN && m.output_len() == HEADS[0])
+            });
+            false
+        })
+    }
+
+    /// The student's goal (TEACHER = 5): argmax of the int8 network over the allowed goals.
+    pub(super) fn student_pick(&self, obs: &Obs) -> Option<Choice> {
+        STUDENT.with(|cell| {
+            let mlp = cell
+                .get_or_init(|| {
+                    Mlp::parse_for_schema(STUDENT_BLOB, STUDENT_SCHEMA)
+                        .ok()
+                        .filter(|m| m.input_len() <= STUDENT_IN && m.output_len() == HEADS[0])
+                })
+                .as_ref()?;
+            let logits = student_forward(mlp, &obs.s)?;
+            let g = (0..HEADS[0])
+                .filter(|&i| obs.masks[0] >> i & 1 == 1)
+                .max_by_key(|&i| (logits[i], core::cmp::Reverse(i)))?;
+            Some(Choice { a: [g as i32, 0, -1, -1], logp: 0.0 })
         })
     }
 
@@ -495,6 +547,34 @@ fn goal_of(intent: Intent, goals: &[Option<Intent>; HEADS[0]], vis: &Visible) ->
             .position(|e| e.pos == p)
             .map_or(G_SIGHTING, |k| G_ENGAGE + k),
     }
+}
+
+/// Lean forward pass of the two-layer student (same maths as `Mlp::forward`, bit-exact with
+/// ml/distill/quant.py): inputs widened once, rows unrolled by 4, no scratch buffers. The
+/// generic kernel cost ~7 fuel per multiply-add here (2026-10-23).
+fn student_forward(mlp: &Mlp, s: &[i8; S]) -> Option<[i32; HEADS[0]]> {
+    let (l1, l2) = (mlp.layers.first()?, mlp.layers.get(1)?);
+    if mlp.layers.len() != 2 || l1.n_in != STUDENT_IN || l1.n_out > 64 || l2.n_out != HEADS[0] {
+        return None;
+    }
+    let x: [i32; STUDENT_IN] = core::array::from_fn(|i| i32::from(s[i]));
+    let mut h = [0i32; 64];
+    for (o, row) in l1.weights.chunks_exact(STUDENT_IN).enumerate() {
+        let mut acc = l1.bias[o];
+        for (w, v) in row.chunks_exact(4).zip(x.chunks_exact(4)) {
+            acc += i32::from(w[0]) * v[0] + i32::from(w[1]) * v[1] + i32::from(w[2]) * v[2] + i32::from(w[3]) * v[3];
+        }
+        h[o] = (acc >> l1.shift).clamp(0, 127);
+    }
+    let mut out = [0i32; HEADS[0]];
+    for (o, row) in l2.weights.chunks_exact(l2.n_in).enumerate() {
+        let mut acc = l2.bias[o];
+        for (w, v) in row.iter().zip(&h[..l2.n_in]) {
+            acc += i32::from(*w) * v;
+        }
+        out[o] = acc;
+    }
+    Some(out)
 }
 
 /// The intent a goal index means, for the network's pick.

@@ -91,6 +91,20 @@ halved game time at no measured loss).
   the teacher wins by its own decisions.
 - Noise band for 80-game evaluations: about +/-0.06 win rate.
 
+**Student MVP (2026-10-23):** `nn/student.py` distils the teacher's goal head into an int8 BCW1
+network (256 inputs the bot already computes -> 8 hidden -> 15 goals), quantised with
+`ml/distill/quant.py`; the bot runs it with knob2 TEACHER = 5 (`teacher.rs student_pick`, lean
+kernel bit-exact with the Python mirror: 10,153/10,153 decisions). It decides only from round 10,
+with >= 70k fuel left at the decision point, and loads its weights on a turn of its own; otherwise
+the rules decide.
+- Agreement with the teacher: 99.86% (float and int8 identical).
+- Release, 100k fuel, out-of-fuel turns (rules vs student): ambush 0/0, expanse 0/0, big-world 6/6,
+  yellow-brick-road 58/22.
+- vs the rule bot over 80 games, three builds: 0.487 (+21), 0.475 (+7), 0.412 (-58): parity
+  within noise, as expected while the teacher copies the rules.
+- Observation cost (debug): goal slots 7.4k of ~17k (distances to every camp group): first target
+  if the student must run on more turns.
+
 **LoRA / adapters:** for game patches (adapter on the frozen teacher, fast and can't drift far),
 per-map or per-opponent specialists (merged into the weights: no extra fuel), and student
 fine-tuning with PPO after distillation if the teacher-student gap is large. Not for the main
