@@ -198,6 +198,15 @@
    "time": "2026-10-22T07:30:19.642Z",
    "win": true
   },
+  "0779ec77-7422-42dc-a44f-17965c3a5feb": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "ambush",
+   "opp": "QS2\u00b3",
+   "oppId": "23626fbe-2c8f-4ee8-ba0d-5042e85fc98a",
+   "time": "2026-10-23T14:30:48.647Z",
+   "win": true
+  },
   "077f8383-b95f-4834-b982-3305b6b04e85": {
    "kind": "ranked",
    "live": null,
@@ -621,6 +630,15 @@
    "time": "2026-10-22T09:20:19.205Z",
    "win": true
   },
+  "14cc696e-e93e-4a3e-8a63-3f92b1761b48": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "corridors",
+   "opp": "Teemo's Mushrooms",
+   "oppId": "b4da17fa-37e5-4d41-9468-c1144b87e7ee",
+   "time": "2026-10-23T14:20:52.534Z",
+   "win": true
+  },
   "14d56491-2408-4223-a389-825b240f9356": {
    "kind": "ranked",
    "live": 1,
@@ -629,6 +647,15 @@
    "oppId": "23f1309e-917f-4666-8747-a5898a677aa2",
    "time": "2026-10-21T13:30:11.453Z",
    "win": true
+  },
+  "14df1004-14a4-4708-98d8-2a4e4f1234b6": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "monolith",
+   "opp": "let's jump into it",
+   "oppId": "3881272c-9c7f-4b3d-94f9-4c0788a3b27a",
+   "time": "2026-10-23T14:40:37.395Z",
+   "win": false
   },
   "15c0fd50-f0db-40a0-b55e-7297a9304e7b": {
    "kind": "ranked",
@@ -1107,6 +1134,15 @@
    "time": "2026-10-20T15:20:09.962Z",
    "win": false
   },
+  "286c66f2-c227-407d-be97-74de063cbd8f": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "hooks",
+   "opp": "Teemo's Mushrooms",
+   "oppId": "b4da17fa-37e5-4d41-9468-c1144b87e7ee",
+   "time": "2026-10-23T14:20:52.534Z",
+   "win": true
+  },
   "2891d51e-266c-4bf0-a630-6309f1af83c2": {
    "kind": "ranked",
    "live": 1,
@@ -1386,6 +1422,15 @@
    "time": "2026-10-20T15:00:17.843Z",
    "win": false
   },
+  "334d5370-0f31-4d59-9426-002b5ddca303": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "split",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T14:29:57.477Z",
+   "win": false
+  },
   "33507434-9739-495e-9392-b9c740019081": {
    "kind": "ranked",
    "live": 23,
@@ -1465,6 +1510,15 @@
    "opp": "Worldwide Gem Thieves",
    "oppId": "f73c4710-c1c1-41c1-b59a-6165b02a1be9",
    "time": "2026-10-22T14:10:08.632Z",
+   "win": false
+  },
+  "35df8a60-d5ee-4191-8a24-6cada03925a6": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "stampede",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T14:29:57.460Z",
    "win": false
   },
   "35fc7014-ee3b-4d22-adb3-1595794d7499": {
@@ -1908,6 +1962,15 @@
    "time": "2026-10-20T18:30:06.484Z",
    "win": false
   },
+  "48a6ec88-a751-448c-b317-dcb394e39829": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "gold-rush",
+   "opp": "Teemo's Mushrooms",
+   "oppId": "b4da17fa-37e5-4d41-9468-c1144b87e7ee",
+   "time": "2026-10-23T14:20:52.534Z",
+   "win": false
+  },
   "48da0342-b107-4dde-b04e-7ffca06243a3": {
    "kind": "ranked",
    "live": 23,
@@ -2196,6 +2259,15 @@
    "time": "2026-10-22T04:40:12.087Z",
    "win": false
   },
+  "539bed8c-15d1-4e9f-90ab-4f227ede3915": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "gem-fields",
+   "opp": "QS2\u00b3",
+   "oppId": "23626fbe-2c8f-4ee8-ba0d-5042e85fc98a",
+   "time": "2026-10-23T14:30:48.647Z",
+   "win": true
+  },
   "53db24fa-516f-4ba2-8536-878214a8f12e": {
    "kind": "ranked",
    "live": 21,
@@ -2275,6 +2347,15 @@
    "opp": "ggez",
    "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
    "time": "2026-10-23T13:51:24.804Z",
+   "win": false
+  },
+  "55d60f21-0208-48a8-8a61-5c298b18135d": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "eight",
+   "opp": "QS2\u00b3",
+   "oppId": "23626fbe-2c8f-4ee8-ba0d-5042e85fc98a",
+   "time": "2026-10-23T14:30:48.647Z",
    "win": false
   },
   "55ea9c36-7730-40dd-8a06-b0eafc387df6": {
@@ -2590,6 +2671,15 @@
    "opp": "Sneaky Bush Campers",
    "oppId": "5e0c725a-b9b4-4523-8739-4427f20b9ce5",
    "time": "2026-10-23T14:00:22.454Z",
+   "win": false
+  },
+  "5fb60d70-ef6e-4319-bb08-28dd1ca99874": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "fragment",
+   "opp": "let's jump into it",
+   "oppId": "3881272c-9c7f-4b3d-94f9-4c0788a3b27a",
+   "time": "2026-10-23T14:40:37.395Z",
    "win": false
   },
   "604f9714-df42-4b9b-b6b7-89be08eb4c27": {
@@ -3888,6 +3978,15 @@
    "time": "2026-10-20T18:10:10.514Z",
    "win": true
   },
+  "90be4ccb-050f-4d74-8506-7ce2e4ad8fe2": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "road-of-riches",
+   "opp": "QS2\u00b3",
+   "oppId": "23626fbe-2c8f-4ee8-ba0d-5042e85fc98a",
+   "time": "2026-10-23T14:30:48.646Z",
+   "win": false
+  },
   "90c39c2f-92b1-4bd3-aab9-4e76cf459edb": {
    "kind": "ranked",
    "live": 15,
@@ -4589,6 +4688,15 @@
    "oppId": "2cb78ebc-e61e-4ee0-9950-b3e3963d9743",
    "time": "2026-10-22T09:10:16.235Z",
    "win": true
+  },
+  "a862bab0-82f3-4a9e-a52d-2efc4daae71e": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "elkring",
+   "opp": "let's jump into it",
+   "oppId": "3881272c-9c7f-4b3d-94f9-4c0788a3b27a",
+   "time": "2026-10-23T14:40:37.395Z",
+   "win": false
   },
   "a93570e6-be2d-490f-ba36-912cd18f77d8": {
    "kind": "ranked",
@@ -5328,6 +5436,15 @@
    "time": "2026-10-20T21:00:10.929Z",
    "win": true
   },
+  "c20b8210-6fe3-4d57-85fc-046f0097d31b": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "boss-battle",
+   "opp": "QS2\u00b3",
+   "oppId": "23626fbe-2c8f-4ee8-ba0d-5042e85fc98a",
+   "time": "2026-10-23T14:30:48.646Z",
+   "win": true
+  },
   "c21454c9-9285-49ee-ae17-2c5a10cd9c01": {
    "kind": "ranked",
    "live": 21,
@@ -5380,6 +5497,15 @@
    "opp": "Gilded Fog Walkers",
    "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
    "time": "2026-10-22T08:56:57.655Z",
+   "win": true
+  },
+  "c3e3a37e-f66c-4be6-b874-02bca74437f6": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "islands",
+   "opp": "let's jump into it",
+   "oppId": "3881272c-9c7f-4b3d-94f9-4c0788a3b27a",
+   "time": "2026-10-23T14:40:37.395Z",
    "win": true
   },
   "c44335c1-dcd1-4f33-b008-b668d3e0148a": {
@@ -5607,6 +5733,15 @@
    "time": "2026-10-20T16:20:07.815Z",
    "win": true
   },
+  "cc4b2607-6f85-482f-8b8f-6d4ac8271f75": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "ambush",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T14:29:57.521Z",
+   "win": false
+  },
   "cc5c1469-6d0f-4c9a-abfa-7dc443df5919": {
    "kind": "ranked",
    "live": 22,
@@ -5830,6 +5965,15 @@
    "opp": "\u200e",
    "oppId": "b58c08d8-498a-4fc7-9585-f4fafaefa688",
    "time": "2026-10-22T05:30:14.380Z",
+   "win": false
+  },
+  "d5d5f059-59b2-4542-a90f-63b858558307": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "starvation",
+   "opp": "Teemo's Mushrooms",
+   "oppId": "b4da17fa-37e5-4d41-9468-c1144b87e7ee",
+   "time": "2026-10-23T14:20:52.533Z",
    "win": false
   },
   "d601acde-2dd5-46c0-82c8-1ba0ffa0d906": {
@@ -6363,6 +6507,15 @@
    "time": "2026-10-23T14:16:11.868Z",
    "win": false
   },
+  "e36a7ea2-0a23-4fa7-b1ed-454a017da8ca": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "quadrants",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T14:29:57.540Z",
+   "win": false
+  },
   "e399407a-8954-4d07-ab78-fec5e7826bfe": {
    "kind": "ranked",
    "live": 21,
@@ -6388,6 +6541,15 @@
    "opp": "TrueCoders",
    "oppId": "e1f192db-587e-4602-b11e-dc91877f599d",
    "time": "2026-10-22T12:50:24.575Z",
+   "win": false
+  },
+  "e45f8e29-848a-4653-a096-486490e38da9": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "interlock",
+   "opp": "let's jump into it",
+   "oppId": "3881272c-9c7f-4b3d-94f9-4c0788a3b27a",
+   "time": "2026-10-23T14:40:37.395Z",
    "win": false
   },
   "e4bd7274-a182-4428-a32e-7972f59e79db": {
@@ -6732,6 +6894,15 @@
    "time": "2026-10-20T17:40:07.589Z",
    "win": false
   },
+  "ee09a5c5-9207-429b-aa72-8980e4d8fd7c": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "lanes",
+   "opp": "Teemo's Mushrooms",
+   "oppId": "b4da17fa-37e5-4d41-9468-c1144b87e7ee",
+   "time": "2026-10-23T14:20:52.534Z",
+   "win": false
+  },
   "ee341f9e-ced1-457a-89c5-5eda798d65c3": {
    "kind": "ranked",
    "live": 21,
@@ -6793,6 +6964,15 @@
    "opp": "\u200e",
    "oppId": "b58c08d8-498a-4fc7-9585-f4fafaefa688",
    "time": "2026-10-22T05:30:14.379Z",
+   "win": false
+  },
+  "efe9ce46-a28a-49db-a686-afc68c14a21d": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "elk-arena",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T14:29:57.491Z",
    "win": false
   },
   "f02347a5-5757-42c7-91ef-e74db4b06984": {
@@ -14460,6 +14640,243 @@
    "status": "open",
    "time": "2026-10-23T13:20:27.205Z",
    "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 29
+   },
+   "deaths_them": 12,
+   "deaths_us": 31,
+   "gems_them": "1003",
+   "gems_us": "630",
+   "id": "14df1004-14a4-4708-98d8-2a4e4f1234b6",
+   "map": "monolith",
+   "opp": "let's jump into it",
+   "oppId": "3881272c-9c7f-4b3d-94f9-4c0788a3b27a",
+   "status": "open",
+   "time": "2026-10-23T14:40:37.395Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 3,
+    "champion": 51
+   },
+   "deaths_them": 3,
+   "deaths_us": 54,
+   "gems_them": "1000",
+   "gems_us": "26",
+   "id": "5fb60d70-ef6e-4319-bb08-28dd1ca99874",
+   "map": "fragment",
+   "opp": "let's jump into it",
+   "oppId": "3881272c-9c7f-4b3d-94f9-4c0788a3b27a",
+   "status": "open",
+   "time": "2026-10-23T14:40:37.395Z",
+   "tries_at": 10
+  },
+  {
+   "contexts": {
+    "camp": 12,
+    "champion": 24
+   },
+   "deaths_them": 28,
+   "deaths_us": 36,
+   "gems_them": "1022",
+   "gems_us": "692",
+   "id": "e45f8e29-848a-4653-a096-486490e38da9",
+   "map": "interlock",
+   "opp": "let's jump into it",
+   "oppId": "3881272c-9c7f-4b3d-94f9-4c0788a3b27a",
+   "status": "open",
+   "time": "2026-10-23T14:40:37.395Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 12,
+    "champion": 15
+   },
+   "deaths_them": 14,
+   "deaths_us": 27,
+   "gems_them": "1009",
+   "gems_us": "432",
+   "id": "a862bab0-82f3-4a9e-a52d-2efc4daae71e",
+   "map": "elkring",
+   "opp": "let's jump into it",
+   "oppId": "3881272c-9c7f-4b3d-94f9-4c0788a3b27a",
+   "status": "open",
+   "time": "2026-10-23T14:40:37.395Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 3,
+    "champion": 59
+   },
+   "deaths_them": 36,
+   "deaths_us": 62,
+   "gems_them": "1044",
+   "gems_us": "127",
+   "id": "55d60f21-0208-48a8-8a61-5c298b18135d",
+   "map": "eight",
+   "opp": "QS2\u00b3",
+   "oppId": "23626fbe-2c8f-4ee8-ba0d-5042e85fc98a",
+   "status": "open",
+   "time": "2026-10-23T14:30:48.647Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 13,
+    "champion": 2
+   },
+   "deaths_them": 1,
+   "deaths_us": 15,
+   "gems_them": "1010",
+   "gems_us": "201",
+   "id": "90be4ccb-050f-4d74-8506-7ce2e4ad8fe2",
+   "map": "road-of-riches",
+   "opp": "QS2\u00b3",
+   "oppId": "23626fbe-2c8f-4ee8-ba0d-5042e85fc98a",
+   "status": "open",
+   "time": "2026-10-23T14:30:48.646Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 1
+   },
+   "deaths_them": 1,
+   "deaths_us": 1,
+   "gems_them": "1014",
+   "gems_us": "904",
+   "id": "e36a7ea2-0a23-4fa7-b1ed-454a017da8ca",
+   "map": "quadrants",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T14:29:57.540Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 6,
+    "champion": 16
+   },
+   "deaths_them": 3,
+   "deaths_us": 22,
+   "gems_them": "1048",
+   "gems_us": "605",
+   "id": "cc4b2607-6f85-482f-8b8f-6d4ac8271f75",
+   "map": "ambush",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T14:29:57.521Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 16
+   },
+   "deaths_them": 17,
+   "deaths_us": 18,
+   "gems_them": "1008",
+   "gems_us": "144",
+   "id": "efe9ce46-a28a-49db-a686-afc68c14a21d",
+   "map": "elk-arena",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T14:29:57.491Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 9,
+    "champion": 10
+   },
+   "deaths_them": 1,
+   "deaths_us": 19,
+   "gems_them": "1022",
+   "gems_us": "224",
+   "id": "334d5370-0f31-4d59-9426-002b5ddca303",
+   "map": "split",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T14:29:57.477Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 19,
+    "champion": 38
+   },
+   "deaths_them": 0,
+   "deaths_us": 57,
+   "gems_them": "1040",
+   "gems_us": "240",
+   "id": "35df8a60-d5ee-4191-8a24-6cada03925a6",
+   "map": "stampede",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T14:29:57.460Z",
+   "tries_at": 10
+  },
+  {
+   "contexts": {
+    "camp": 3,
+    "champion": 26
+   },
+   "deaths_them": 12,
+   "deaths_us": 29,
+   "gems_them": "1015",
+   "gems_us": "789",
+   "id": "ee09a5c5-9207-429b-aa72-8980e4d8fd7c",
+   "map": "lanes",
+   "opp": "Teemo's Mushrooms",
+   "oppId": "b4da17fa-37e5-4d41-9468-c1144b87e7ee",
+   "status": "open",
+   "time": "2026-10-23T14:20:52.534Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 3,
+    "champion": 5
+   },
+   "deaths_them": 4,
+   "deaths_us": 8,
+   "gems_them": "275",
+   "gems_us": "44",
+   "id": "48a6ec88-a751-448c-b317-dcb394e39829",
+   "map": "gold-rush",
+   "opp": "Teemo's Mushrooms",
+   "oppId": "b4da17fa-37e5-4d41-9468-c1144b87e7ee",
+   "status": "open",
+   "time": "2026-10-23T14:20:52.534Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 1,
+    "champion": 43
+   },
+   "deaths_them": 22,
+   "deaths_us": 44,
+   "gems_them": "272",
+   "gems_us": "144",
+   "id": "d5d5f059-59b2-4542-a90f-63b858558307",
+   "map": "starvation",
+   "opp": "Teemo's Mushrooms",
+   "oppId": "b4da17fa-37e5-4d41-9468-c1144b87e7ee",
+   "status": "open",
+   "time": "2026-10-23T14:20:52.533Z",
+   "tries_at": 2
   }
  ],
  "map_files": {
@@ -14553,7 +14970,7 @@
    "name": "prism best girl",
    "since": "2026-10-23T14:23:38Z",
    "slug": "prism-best-girl",
-   "static": false,
+   "static": true,
    "teamId": "38e6d8c4-1608-44f5-956b-08390f564336",
    "why": "top1"
   },
@@ -14563,7 +14980,7 @@
    "name": "policy wonk",
    "since": "2026-10-23T14:23:54Z",
    "slug": "policy-wonk",
-   "static": false,
+   "static": true,
    "teamId": "3ec4a701-a9b5-498f-9361-eea4a6dd1cde",
    "why": "top3"
   },
@@ -14573,7 +14990,7 @@
    "name": "procless",
    "since": "2026-10-23T14:23:57Z",
    "slug": "procless",
-   "static": false,
+   "static": true,
    "teamId": "8df7e1cd-0d60-413b-9331-f5427ce9ca88",
    "why": "top4"
   },
@@ -14583,9 +15000,19 @@
    "name": ":3",
    "since": "2026-10-23T14:24:14Z",
    "slug": "3",
-   "static": false,
+   "static": true,
    "teamId": "bbe481a7-4575-4826-9a3e-f81c28205de8",
    "why": "top5"
+  },
+  {
+   "games": 5,
+   "macro_hash": "ca16393c0d3d",
+   "name": "Pantheon",
+   "since": "2026-10-23T14:54:37Z",
+   "slug": "pantheon",
+   "static": false,
+   "teamId": "547efb5b-57e5-4355-8501-3b331f506d62",
+   "why": "top6"
   },
   {
    "games": 5,
@@ -14593,38 +15020,38 @@
    "name": "Trzy Kwaterki",
    "since": "2026-10-23T14:24:28Z",
    "slug": "trzy-kwaterki",
-   "static": false,
+   "static": true,
    "teamId": "36258abf-3fd0-4827-8fa5-2a217438cf6f",
    "why": "top9"
   },
   {
-   "games": 5,
-   "macro_hash": "9356192e78ce",
-   "name": "Noobot",
-   "since": "2026-10-23T14:24:46Z",
-   "slug": "noobot",
+   "games": 9,
+   "macro_hash": "ed536df543f4",
+   "name": "let's jump into it",
+   "since": "2026-10-23T14:58:04Z",
+   "slug": "let-s-jump-into-it",
    "static": false,
-   "teamId": "de4b4211-4d8b-4755-a37f-3955b7cbdd8a",
-   "why": "top10"
-  },
-  {
-   "games": 10,
-   "macro_hash": "3c4444ec98dc",
-   "name": "Sneaky Bush Campers",
-   "since": "2026-10-23T14:25:22Z",
-   "slug": "sneaky-bush-campers",
-   "static": false,
-   "teamId": "5e0c725a-b9b4-4523-8739-4427f20b9ce5",
+   "teamId": "3881272c-9c7f-4b3d-94f9-4c0788a3b27a",
    "why": "loss"
   },
   {
    "games": 10,
-   "macro_hash": "fb684565931e",
-   "name": "risq-v",
-   "since": "2026-10-23T14:25:50Z",
-   "slug": "risq-v",
+   "macro_hash": "47a24b628375",
+   "name": "QS2\u00b3",
+   "since": "2026-10-23T14:58:38Z",
+   "slug": "qs2",
    "static": false,
-   "teamId": "378a749d-070a-44ed-a2fb-fb7eee40ea15",
+   "teamId": "23626fbe-2c8f-4ee8-ba0d-5042e85fc98a",
+   "why": "loss"
+  },
+  {
+   "games": 10,
+   "macro_hash": "8666b308c708",
+   "name": "Santa Claude",
+   "since": "2026-10-23T14:59:29Z",
+   "slug": "santa-claude",
+   "static": false,
+   "teamId": "14f0c09e-8234-4056-b8a8-93be730312f6",
    "why": "loss"
   }
  ],
@@ -15920,6 +16347,81 @@
     }
    ],
    "time": "2026-10-23T14:23:21Z"
+  },
+  {
+   "teams": [
+    {
+     "name": "prism best girl",
+     "rank": 1,
+     "rating": 2269.3,
+     "slug": "prism-best-girl",
+     "teamId": "38e6d8c4-1608-44f5-956b-08390f564336"
+    },
+    {
+     "name": "Intercontinental Fish",
+     "rank": 2,
+     "rating": 2235.3,
+     "slug": "intercontinental-fish",
+     "teamId": "1890540d-1ffc-4847-adbf-d0d08772f268"
+    },
+    {
+     "name": "policy wonk",
+     "rank": 3,
+     "rating": 2193.2,
+     "slug": "policy-wonk",
+     "teamId": "3ec4a701-a9b5-498f-9361-eea4a6dd1cde"
+    },
+    {
+     "name": "procless",
+     "rank": 4,
+     "rating": 2180.1,
+     "slug": "procless",
+     "teamId": "8df7e1cd-0d60-413b-9331-f5427ce9ca88"
+    },
+    {
+     "name": ":3",
+     "rank": 5,
+     "rating": 2176.1,
+     "slug": "3",
+     "teamId": "bbe481a7-4575-4826-9a3e-f81c28205de8"
+    },
+    {
+     "name": "Pantheon",
+     "rank": 6,
+     "rating": 2160.4,
+     "slug": "pantheon",
+     "teamId": "547efb5b-57e5-4355-8501-3b331f506d62"
+    },
+    {
+     "name": "Univardisty of Shingtonwash",
+     "rank": 7,
+     "rating": 2135.5,
+     "slug": "univardisty-of-shingtonwash",
+     "teamId": "a4350547-b7a1-47b1-9031-4f7f084ad0d8"
+    },
+    {
+     "name": "new team(4)",
+     "rank": 8,
+     "rating": 2130.5,
+     "slug": "new-team-4",
+     "teamId": "616e95e4-36ee-4669-b9b6-edfe818a7470"
+    },
+    {
+     "name": "Trzy Kwaterki",
+     "rank": 9,
+     "rating": 2096.8,
+     "slug": "trzy-kwaterki",
+     "teamId": "36258abf-3fd0-4827-8fa5-2a217438cf6f"
+    },
+    {
+     "name": "Zarzorki",
+     "rank": 10,
+     "rating": 2072.3,
+     "slug": "zarzorki",
+     "teamId": "c0a5d0a5-eb8f-4aa7-8d6a-8e74ed78874c"
+    }
+   ],
+   "time": "2026-10-23T14:53:03Z"
   }
  ]
 }
