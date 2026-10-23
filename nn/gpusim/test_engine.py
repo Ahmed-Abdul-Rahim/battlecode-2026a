@@ -162,6 +162,17 @@ def test_win_at_1000():
     assert e.done.all() and (e.winner == 1).all()
 
 
+def test_turn_order_interleaves():
+    e = eng(tiny(), kinds=((0, 0), (0, 0)))
+    seen = []
+    orig = e.champion_turn
+    e.champion_turn = lambda team, k, a: (seen.append((team, k)), orig(team, k, a))
+    z = torch.zeros(e.B, 2, e.T, 4, dtype=torch.long)
+    e.step(z)
+    e.step(z)
+    assert seen == [(0, 0), (1, 0), (0, 1), (1, 1), (1, 0), (0, 0), (1, 1), (0, 1)]
+
+
 if __name__ == "__main__":
     for name, fn in list(globals().items()):
         if name.startswith("test_"):

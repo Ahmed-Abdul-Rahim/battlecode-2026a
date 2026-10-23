@@ -9,7 +9,8 @@ slot), camps [B, C], groups [B, G].
 
 Per round (rules: "The exact turn order"):
   round start: camp respawns -> captures -> camp actions (awake camps hit the nearest champion)
-  champion turns: teams alternate, the starting team swaps every round; slot order in a team
+  champion turns: the two teams' champions interleave (A1 B1 A2 B2 ...), the starting team
+  swaps every round
   each champion turn: respawn / channel completion at turn start, then its action, then
   turn-end ticks (cooldowns, channels), spawn heal, shop.
 """
@@ -406,9 +407,11 @@ class Engine:
         self.camp_respawns()
         self.captures()
         self.camp_actions()
+        # Champions of the two teams interleave one by one (A1 B1 A2 B2 ...), the starting
+        # team swaps every round (confirmed on official replays: nn/gpusim/replay.py).
         first = self.round % 2
-        for team in (first, 1 - first):
-            for k in range(self.T):
+        for k in range(self.T):
+            for team in (first, 1 - first):
                 self.champion_turn(team, k, actions[:, team, k])
         self.round += 1
         won = (self.tributed >= WIN_GEMS) & ~self.done.unsqueeze(1)
