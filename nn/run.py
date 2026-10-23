@@ -53,17 +53,20 @@ RANK = 64
 PLATEAU_EVALS = 5
 MIN_GAMES = 20_000  # PPO training games before a run may be called flat
 # The sweep, in order: early signal first. Each runs until its curve is flat.
+# Entropy 0 and an anchor to the imitation policy (KL near `anchor`): the first run without them
+# drifted at random and lost (0.50 -> 0.29 vs the rules in 16 iterations, 2026-10-23).
 SWEEP = [
-    {"width": 512, "seed": 0, "lr": 1e-4, "entropy": 0.003, "reward": "shaped"},
-    {"width": 512, "seed": 1, "lr": 1e-4, "entropy": 0.003, "reward": "shaped"},
-    {"width": 512, "seed": 0, "lr": 1e-4, "entropy": 0.003, "reward": "win"},
-    {"width": 512, "seed": 0, "lr": 3e-5, "entropy": 0.01, "reward": "shaped"},
-    {"width": 1024, "seed": 0, "lr": 1e-4, "entropy": 0.003, "reward": "shaped"},
-    {"width": 512, "seed": 2, "lr": 1e-4, "entropy": 0.003, "reward": "shaped"},
-    {"width": 1024, "seed": 1, "lr": 1e-4, "entropy": 0.003, "reward": "win"},
+    {"width": 512, "seed": 0, "lr": 1e-4, "entropy": 0.0, "reward": "shaped", "anchor": 0.03},
+    {"width": 512, "seed": 0, "lr": 1e-4, "entropy": 0.003, "reward": "win", "anchor": 0.1},  # explores more
+    {"width": 512, "seed": 1, "lr": 1e-4, "entropy": 0.0, "reward": "shaped", "anchor": 0.03},
+    {"width": 512, "seed": 0, "lr": 1e-4, "entropy": 0.0, "reward": "win", "anchor": 0.03},
+    {"width": 512, "seed": 0, "lr": 3e-5, "entropy": 0.0, "reward": "shaped", "anchor": 0.01},
+    {"width": 1024, "seed": 0, "lr": 1e-4, "entropy": 0.0, "reward": "shaped", "anchor": 0.03},
+    {"width": 512, "seed": 2, "lr": 1e-4, "entropy": 0.0, "reward": "shaped", "anchor": 0.03},
+    {"width": 1024, "seed": 1, "lr": 1e-4, "entropy": 0.0, "reward": "win", "anchor": 0.03},
 ]
-# Explore harder (try what the rules never do): second in line, after the first baseline run.
-SWEEP.insert(1, {"width": 512, "seed": 0, "lr": 1e-4, "entropy": 0.02, "reward": "win"})
+#: An evaluation this far below the run's best rolls the run back to its best checkpoint.
+RESET_DROP = 0.10
 PATCH_EVERY = 6 * 3600
 REWARDS = {
     "shaped": dict(data.WEIGHTS),
@@ -372,11 +375,12 @@ def ppo_run(st: dict, idx: int) -> None:
         t2 = time.time()
         nxt = rdir / f"it{it + 1:04d}"
         u = gpu(["ppo", "--data", str(shard), "--init", str(cur), "--out", str(nxt),
-                 "--lr", str(cfg["lr"]), "--entropy", str(cfg["entropy"]), "--seed", str(cfg["seed"])])
+                 "--lr", str(cfg["lr"]), "--entropy", str(cfg["entropy"]), "--seed", str(cfg["seed"]),
+                 "--anchor", run.get("anchor_ckpt", str(base)), "--anchor-target", str(cfg.get("anchor", 0.03))])
         run["it"], run["games"] = it + 1, run["games"] + m["games"]
         cur = nxt
         log(f"run {idx} it {it + 1}: rollout {m}, update kl {u['kl']} ent {u['entropy']} "
-            f"clip {u['clipfrac']} reward {u['reward_mean']} | build+games {t1 - t0:.0f}s, "
+            f"clip {u['clipfrac']} reward {u['reward_mean']} anchor kl {u.get('anchor_kl')} beta {u.get('anchor_beta')} | build+games {t1 - t0:.0f}s, "
             f"parse+save {t2 - t1:.0f}s, update {time.time() - t2:.0f}s (gpu {u.get('seconds')}s)")
         # Keep only the evaluated checkpoints and the latest one.
         old = rdir / f"it{it:04d}"
@@ -391,6 +395,21 @@ def ppo_run(st: dict, idx: int) -> None:
             log(f"run {idx} eval it {run['it']}: {e} (best it {best['it']}: {best['train']})")
             if best["it"] == run["it"] and e["train"] > 0.5:
                 st["snapshots"] = [*st["snapshots"], str(cur / "teacher.bin")][-6:]
+                # Re-anchor to the new best: the policy stays near the best model found so far,
+                # not near the rules, so it can keep moving away from imitation as it wins more.
+                keep = rdir / f"anchor-it{run['it']:04d}"
+                shutil.rmtree(keep, ignore_errors=True)
+                shutil.copytree(cur, keep)
+                run["anchor_ckpt"] = str(keep)
+                log(f"run {idx}: anchor moved to it {run['it']} (new best {e['train']})")
+            if e["train"] < best["train"] - RESET_DROP and best["it"] != run["it"]:
+                src = rdir / f"it{best['it']:04d}"
+                if valid_ckpt(src):
+                    shutil.rmtree(cur, ignore_errors=True)
+                    shutil.copytree(src, cur)
+                    run.setdefault("resets", []).append({"at": run["it"], "to": best["it"]})
+                    log(f"run {idx}: eval {e['train']} is {RESET_DROP}+ below the best {best['train']}: "
+                        f"rolled back to it {best['it']}'s weights")
             recent = run["evals"][-PLATEAU_EVALS:]
             flat = len(run["evals"]) > PLATEAU_EVALS and best not in recent
             if flat and run["games"] >= MIN_GAMES:

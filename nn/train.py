@@ -193,9 +193,29 @@ def accuracy(pol, b: Batches, idx_all: torch.Tensor) -> dict:
     return {n: round(float(hits[h] / tot[h]), 4) if tot[h] else None for h, n in enumerate(spec.HEAD_NAMES)}
 
 
+def anchor_kl(logits: torch.Tensor, ref_logits: torch.Tensor, masks: torch.Tensor) -> torch.Tensor:
+    """Per-sample KL(policy || anchor) over the goal and step heads (always used)."""
+    acts = torch.zeros(len(logits), len(spec.HEADS), dtype=torch.long, device=logits.device)
+    _, _, lp = model.head_logp(logits, masks, acts)
+    _, _, lr = model.head_logp(ref_logits, masks, acts)
+    kl = torch.zeros(len(logits), device=logits.device)
+    for h in (0, 1):
+        p = lp[h].exp()
+        kl = kl + (p * (lp[h] - lr[h])).clamp(min=0.0).sum(1)
+    return kl
+
+
 def ppo(a) -> dict:
     d = data.load([Path(p) for p in a.data])
     pol, val, meta = load_nets(Path(a.init), a.arch, a.width)
+    # Anchor (2026-10-23): without it PPO drifted away from the imitation policy's goals at random
+    # (goal agreement 100% -> 91%, win rate vs the rules 0.50 -> 0.29 in 16 iterations). The
+    # anchor's weight adapts so the KL to the imitation policy stays near --anchor-target.
+    anchor = None
+    beta = float(meta.get("anchor_beta", a.anchor_beta))
+    if a.anchor:
+        anchor, _, _ = load_nets(Path(a.anchor), a.arch, a.width)
+        anchor.eval()
     b = Batches(d)
     v = values(val, b)
     ret, adv = returns_and_adv(d["R"], d["DONE"], d["TRAJ"], v)
@@ -203,15 +223,23 @@ def ppo(a) -> dict:
     adv_t = torch.from_numpy(adv.astype(np.float32)).to(DEV)
     old_lp = torch.from_numpy(d["LP"]).to(DEV)
     opt = torch.optim.AdamW(pol.parameters(), lr=a.lr, weight_decay=0.0)
-    kls, clipfrac, ents, steps = [], [], [], 0
+    kls, clipfrac, ents, akls, steps = [], [], [], [], 0
     stop = False
     for _ in range(a.epochs):
         for idx in torch.randperm(b.n, device=DEV).split(a.batch):
-            lp, ent, _ = model.head_logp(pol(b.x(idx)), b.M[idx], b.A[idx])
+            x = b.x(idx)
+            logits = pol(x)
+            lp, ent, _ = model.head_logp(logits, b.M[idx], b.A[idx])
             ratio = torch.exp(lp - old_lp[idx])
             s1 = ratio * adv_t[idx]
             s2 = ratio.clamp(1 - a.clip, 1 + a.clip) * adv_t[idx]
             loss = -torch.min(s1, s2).mean() - a.entropy * ent.mean()
+            if anchor is not None:
+                with torch.no_grad():
+                    ref = anchor(x)
+                akl = anchor_kl(logits, ref, b.M[idx]).mean()
+                loss = loss + beta * akl
+                akls.append(akl.item())
             opt.zero_grad()
             loss.backward()
             torch.nn.utils.clip_grad_norm_(pol.parameters(), 0.5)
@@ -229,6 +257,13 @@ def ppo(a) -> dict:
             break
     vopt = torch.optim.AdamW(val.parameters(), lr=a.lr, weight_decay=0.01)
     vloss = fit_value(val, vopt, b, ret.astype(np.float32), 2, a.batch)
+    akl_mean = float(np.mean(akls[-20:])) if akls else 0.0
+    if anchor is not None:
+        if akl_mean > 1.5 * a.anchor_target:
+            beta = min(beta * 2, 100.0)
+        elif akl_mean < a.anchor_target / 1.5:
+            beta = max(beta / 2, 1e-3)
+        meta["anchor_beta"] = beta
     meta.update({"stage": "ppo", "samples": int(b.n)})
     save(Path(a.out), pol, val, meta)
     return {
@@ -241,7 +276,124 @@ def ppo(a) -> dict:
         "early_stop": stop,
         "value_loss": round(vloss, 5),
         "reward_mean": round(float(d["R"].mean()), 5),
+        "anchor_kl": round(akl_mean, 5),
+        "anchor_beta": round(beta, 4),
     }
+
+
+def soft_kl(logits: torch.Tensor, t_logits: torch.Tensor, masks: torch.Tensor) -> torch.Tensor:
+    """Per-sample KL(teacher || student): goal and step heads, plus attack and cast weighted by
+    the teacher's probability of a manual step (they only act then)."""
+    acts = torch.zeros(len(logits), len(spec.HEADS), dtype=torch.long, device=logits.device)
+    _, _, ls = model.head_logp(logits, masks, acts)
+    _, _, lt = model.head_logp(t_logits, masks, acts)
+    manual = 1.0 - lt[1][:, 0].exp()
+    kl = torch.zeros(len(logits), device=logits.device)
+    for h in range(len(spec.HEADS)):
+        pt = lt[h].exp()
+        k = (pt * (lt[h] - ls[h])).clamp(min=0.0).sum(1)
+        kl = kl + (k if h < 2 else manual * k)
+    return kl
+
+
+def fake_int8(pol) -> None:
+    """Round the policy's weights to per-row int8 in place (evaluation of int8 inference)."""
+    with torch.no_grad():
+        for m in pol.modules():
+            if isinstance(m, torch.nn.Linear):
+                s = m.weight.abs().amax(1, keepdim=True).clamp(min=1e-8) / 127
+                m.weight.copy_((m.weight / s).round().clamp(-127, 127) * s)
+
+
+def plasticity_stats(pol, b: "Batches", idx: torch.Tensor) -> dict:
+    """Dead ReLU units (never active on these states) and the effective rank of the last hidden
+    layer's features: both fall when a network loses the ability to learn new things."""
+    feats = []
+
+    def hook(_m, _i, out):
+        feats.append(out.detach())
+
+    relus = [m for m in pol.net if isinstance(m, torch.nn.ReLU)]
+    h = relus[-1].register_forward_hook(hook)
+    with torch.no_grad():
+        for i in idx.split(8192):
+            pol(b.x(i))
+    h.remove()
+    f = torch.cat(feats)
+    dead = float(((f > 0).sum(0) == 0).float().mean())
+    sv = torch.linalg.svdvals(f[:20000] - f[:20000].mean(0))
+    p = sv / sv.sum().clamp(min=1e-12)
+    erank = float(torch.exp(-(p * p.clamp(min=1e-12).log()).sum()))
+    return {"dead_units": round(dead, 4), "effective_rank": round(erank, 1), "units": int(f.shape[1])}
+
+
+def compare(pol, teacher, b: "Batches", idx: torch.Tensor) -> dict:
+    """Agreement of argmax picks with the teacher (goal; step; attack/cast where the teacher
+    steps manually) and the mean KL."""
+    agree = np.zeros(4)
+    tot = np.zeros(4)
+    kl_sum = 0.0
+    with torch.no_grad():
+        for i in idx.split(8192):
+            x = b.x(i)
+            acts = torch.zeros(len(i), len(spec.HEADS), dtype=torch.long, device=DEV)
+            ls_, lt_ = pol(x), teacher(x)
+            _, _, ls = model.head_logp(ls_, b.M[i], acts)
+            _, _, lt = model.head_logp(lt_, b.M[i], acts)
+            manual = lt[1].argmax(1) > 0
+            for h in range(4):
+                use = torch.ones_like(manual) if h < 2 else manual
+                agree[h] += ((ls[h].argmax(1) == lt[h].argmax(1)) & use).sum().item()
+                tot[h] += use.sum().item()
+            kl_sum += soft_kl(ls_, lt_, b.M[i]).sum().item()
+    out = {n: (round(float(agree[h] / tot[h]), 5) if tot[h] else None) for h, n in enumerate(spec.HEAD_NAMES)}
+    out["kl"] = round(kl_sum / len(idx), 6)
+    return out
+
+
+def distill(a) -> dict:
+    """Student (width/rank of the arguments) trained to match the teacher's action probabilities
+    on the given states; the held-out tenth of the games measures fidelity."""
+    d = data.load([Path(p) for p in a.data])
+    teacher, _, tmeta = load_nets(Path(a.teacher), "mlp", 512)
+    teacher.eval()
+    b = Batches(d)
+    held = (d["TRAJ"] % 10) == 0
+    tr_idx = torch.from_numpy(np.flatnonzero(~held)).to(DEV)
+    te_idx = torch.from_numpy(np.flatnonzero(held)).to(DEV)
+    if a.int8_only:
+        pol = teacher
+        ref, _, _ = load_nets(Path(a.teacher), "mlp", 512)
+        ref.eval()
+        fake_int8(pol)
+        return {"mode": "distill", "candidate": "teacher int8", **compare(pol, ref, b, te_idx)}
+    pol = model.make("mlp", a.width, sum(spec.HEADS), a.rank).to(DEV)
+    opt = torch.optim.AdamW(pol.parameters(), lr=a.lr, weight_decay=0.0)
+    hist = []
+    for _ in range(a.epochs):
+        pol.train()
+        for idx in tr_idx[torch.randperm(len(tr_idx), device=DEV)].split(a.batch):
+            x = b.x(idx)
+            with torch.no_grad():
+                t = teacher(x)
+            loss = soft_kl(pol(x), t, b.M[idx]).mean()
+            opt.zero_grad()
+            loss.backward()
+            torch.nn.utils.clip_grad_norm_(pol.parameters(), 1.0)
+            opt.step()
+        pol.eval()
+        hist.append(compare(pol, teacher, b, te_idx))
+        if len(hist) > 2 and hist[-1]["kl"] > min(h["kl"] for h in hist[:-1]) * 0.97:
+            break
+    m = hist[-1]
+    lin = [l for l in pol.net if isinstance(l, torch.nn.Linear)]
+    macs = sum(l.in_features * l.out_features for l in lin)
+    meta = {"arch": "mlp", "width": a.width, "rank": a.rank, "stage": "distill", "teacher": str(a.teacher)}
+    if a.out:
+        _, val, _ = load_nets(Path(a.teacher), "mlp", 512)
+        save(Path(a.out), pol, val, meta)
+    return {"mode": "distill", "candidate": f"w{a.width} r{a.rank}", "macs": macs, "epochs": len(hist),
+            **m, **plasticity_stats(pol, b, te_idx[:40000])}
 
 
 def factorize(a) -> dict:
@@ -257,9 +409,9 @@ def factorize(a) -> dict:
 
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser()
-    p.add_argument("mode", choices=["bc", "ppo", "factorize"])
+    p.add_argument("mode", choices=["bc", "ppo", "factorize", "distill"])
     p.add_argument("--data", nargs="+", default=[])
-    p.add_argument("--out", required=True)
+    p.add_argument("--out", default="")
     p.add_argument("--init")
     p.add_argument("--arch", default="mlp")
     p.add_argument("--width", type=int, default=512)
@@ -271,15 +423,20 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--entropy", type=float, default=0.003)
     p.add_argument("--target-kl", type=float, default=0.02)
     p.add_argument("--seed", type=int, default=0)
+    p.add_argument("--teacher", help="distill: the teacher checkpoint")
+    p.add_argument("--int8-only", action="store_true", help="distill: score the teacher with int8 weights")
+    p.add_argument("--anchor", help="checkpoint whose policy PPO stays close to (KL penalty)")
+    p.add_argument("--anchor-target", type=float, default=0.03)
+    p.add_argument("--anchor-beta", type=float, default=0.5)
     a = p.parse_args(argv)
     torch.manual_seed(a.seed)
     np.random.seed(a.seed)
     if a.lr is None:
-        a.lr = 1e-3 if a.mode == "bc" else 1e-4
+        a.lr = 1e-3 if a.mode in ("bc", "distill") else 1e-4
     if a.epochs is None:
-        a.epochs = 30 if a.mode == "bc" else 4
+        a.epochs = {"bc": 30, "distill": 12}.get(a.mode, 4)
     t = time.time()
-    m = {"bc": bc, "ppo": ppo, "factorize": factorize}[a.mode](a)
+    m = {"bc": bc, "ppo": ppo, "factorize": factorize, "distill": distill}[a.mode](a)
     m["seconds"] = round(time.time() - t, 1)
     print(json.dumps(m))
     return 0
