@@ -150,10 +150,30 @@ HELD_OPP_MAPS = 6  # maps (spread over the train pool) for the held-out opponent
 HELD_OPP_EVERY = 3  # every n-th evaluation
 
 
+def _stamp(teacher: int, seed: int, weights: Path | None) -> str:
+    """What a bot copy was built from: bots/main's sources, the knobs and the weights."""
+    import hashlib
+
+    h = hashlib.sha256(f"{teacher}/{seed}".encode())
+    for f in sorted((ROOT / "bots" / "main" / "src").rglob("*")):
+        if f.is_file() and f.name != "teacher.bin":
+            st = f.stat()
+            h.update(f"{f.relative_to(ROOT)}:{st.st_size}:{st.st_mtime_ns}".encode())
+    if weights is not None:
+        h.update(Path(weights).read_bytes())
+    return h.hexdigest()
+
+
 def variant(name: str, teacher: int, seed: int = 0, weights: Path | None = None) -> str:
+    """bots/<name> = bots/main with these knobs and weights; reused (no rebuild) if unchanged."""
+    stamp = _stamp(teacher, seed, weights)
+    mark = ROOT / "bots" / name / ".nn-stamp"
+    if mark.exists() and mark.read_text() == stamp:
+        return name
     X.knob_variant(name, {"TEACHER": teacher, "RL_SEED": seed})
     if weights is not None:
         shutil.copyfile(weights, ROOT / "bots" / name / "src" / "weights" / "teacher.bin")
+    mark.write_text(stamp)
     return name
 
 
@@ -339,7 +359,9 @@ def ppo_run(st: dict, idx: int) -> None:
                 o = rng.choice(pool)
             games += [(bot, o, m), (o, bot, m)]
         out = OUT / "games" / f"r{idx}-it{it:04d}"
+        t0 = time.time()
         res = play_games(games, out, width)
+        t1 = time.time()
         d, m = samples(res, bot, cfg["reward"])
         shutil.rmtree(out, ignore_errors=True)
         if not d:
@@ -347,13 +369,15 @@ def ppo_run(st: dict, idx: int) -> None:
             continue
         shard = OUT / "data" / f"run{idx}" / "rollout.npz"
         data.save(shard, d)
+        t2 = time.time()
         nxt = rdir / f"it{it + 1:04d}"
         u = gpu(["ppo", "--data", str(shard), "--init", str(cur), "--out", str(nxt),
                  "--lr", str(cfg["lr"]), "--entropy", str(cfg["entropy"]), "--seed", str(cfg["seed"])])
         run["it"], run["games"] = it + 1, run["games"] + m["games"]
         cur = nxt
         log(f"run {idx} it {it + 1}: rollout {m}, update kl {u['kl']} ent {u['entropy']} "
-            f"clip {u['clipfrac']} reward {u['reward_mean']}")
+            f"clip {u['clipfrac']} reward {u['reward_mean']} | build+games {t1 - t0:.0f}s, "
+            f"parse+save {t2 - t1:.0f}s, update {time.time() - t2:.0f}s (gpu {u.get('seconds')}s)")
         # Keep only the evaluated checkpoints and the latest one.
         old = rdir / f"it{it:04d}"
         if it % EVAL_EVERY and old.exists():

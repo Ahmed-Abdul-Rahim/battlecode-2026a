@@ -150,7 +150,8 @@ def concat(parts: list[dict[str, np.ndarray]]) -> dict[str, np.ndarray]:
 def save(path: Path, d: dict[str, np.ndarray]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(".tmp.npz")
-    np.savez_compressed(tmp, **d)
+    # Rollouts are read once and replaced next iteration: uncompressed is much faster.
+    (np.savez if path.name == "rollout.npz" else np.savez_compressed)(tmp, **d)
     tmp.replace(path)
 
 
