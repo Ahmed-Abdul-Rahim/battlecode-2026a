@@ -1,0 +1,344 @@
+"""Expert iteration: search with high fuel, then distill the search into the teacher.
+
+    python nn/expert.py run       # loop (state in runs/nn/expert/)
+    python nn/expert.py status
+
+One iteration:
+1. Base games: the current policy (the rules, then the latest accepted teacher) plays full games
+   against the opponent pool and logs every goal decision.
+2. Search: at sampled decisions, branch games force a different goal (the bot reads a block
+   that this script byte-patches into the compiled file, so a branch costs no rebuild). The
+   game is deterministic, so a branch replays the base game exactly up to that decision.
+   A branch plays on for H rounds; its value is the team gem difference (submitted + half
+   of carried) at that round minus the base game's at the same round.
+3. Labels: where an alternative beat the policy's own choice by more than MARGIN, the
+   decision is relabelled to that alternative (and oversampled).
+4. Distill: fine-tune the teacher on the policy's own decisions + the improved labels.
+5. Evaluate against the rule bot (80 games); accept if better than the best so far. The next
+   iteration searches around the accepted teacher (policy iteration).
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import random
+import shutil
+import struct
+import sys
+import time
+import zipfile
+from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
+
+import numpy as np
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "tools"))
+
+from bctools import runner  # noqa: E402
+
+from nn import data  # noqa: E402
+from nn import run as R  # noqa: E402
+
+OUT = R.OUT / "expert"
+STATE = OUT / "state.json"
+MAGIC = bytes.fromhex("e5c4a1b70df0ed5e")
+POOL = 32  # branch bots (one batch of branch games)
+BASE_GAMES = 24
+DECISIONS = 4  # searched decisions per base game
+ALTS = 3  # alternatives per decision
+H = 150  # rounds a branch plays after its decision
+COMMIT = 20  # rounds the forced intent is kept (while available)
+MARGIN = 4.0  # value units (gems) an alternative must win by
+OVERSAMPLE = 8
+NULL_EVERY = 6  # every 6th base game also gets a null branch (forced = own choice): must give 0
+KIND = {"ryth": 0, "vespervale": 1, "vendetta": 2, "cassi": 3, "issac": 4, "stellar": 5, "prism": 6,
+        "marcella": 7, "willow": 8, "ren": 9, "varg": 10, "tavi": 11, "heartofruin": 12}
+
+
+def log(msg: str) -> None:
+    line = f"{time.strftime('%Y-%m-%d %H:%M:%S')} {msg}"
+    print(line, flush=True)
+    with open(OUT / "expert.log", "a", encoding="utf-8") as f:
+        f.write(line + "\n")
+
+
+def load_state() -> dict:
+    if STATE.exists():
+        return json.loads(STATE.read_text())
+    return {"it": 0, "weights": None, "best": None, "evals": [], "search": []}
+
+
+def save_state(st: dict) -> None:
+    tmp = STATE.with_suffix(".tmp")
+    tmp.write_text(json.dumps(st, indent=1))
+    tmp.replace(STATE)
+
+
+# ---------------------------------------------------------------- bots
+
+
+def policy_bots(weights: str | None) -> tuple[str, list[str]]:
+    """The base bot and the branch pool, all the same policy (rules: TEACHER 1, teacher: 2)."""
+    mode, w = (1, None) if weights is None else (2, Path(weights))
+    base = R.variant("_xbase", mode, 0, w)
+    pool = [R.variant(f"_xb{i}", mode, 0, w) for i in range(POOL)]
+    with ThreadPoolExecutor(max_workers=8) as ex:
+        list(ex.map(runner.build, [base, *pool]))
+    return base, pool
+
+
+def patch(bot: str, cfg: tuple[int, ...]) -> None:
+    words = struct.pack("<8I", 0xB7A1C4E5, 0x5EEDF00D, *cfg, *([0] * (6 - len(cfg))))
+    n = 0
+    for f in (runner.bot_dir(bot) / ".cambc").rglob("*.wasm"):
+        b = bytearray(f.read_bytes())
+        i = b.find(MAGIC)
+        if i >= 0:
+            b[i : i + 32] = words
+            f.write_bytes(b)
+            n += 1
+    if n == 0:
+        raise RuntimeError(f"{bot}: branch block not found in the compiled file")
+
+
+# ---------------------------------------------------------------- games
+
+
+def decisions(bundle: Path, side: str) -> list[dict]:
+    out = []
+    for ln in data._lines(bundle, side):
+        if ln.startswith("N "):
+            try:
+                o = json.loads(ln[2:])
+            except json.JSONDecodeError:
+                continue
+            out.append({"r": o["r"], "c": data._norm(o["c"]), "a": o["a"][0], "m": o["m"][0]})
+    return out
+
+
+def value(stats: Path, side: str, t: int) -> float:
+    """Our team's (submitted + half of carried gems) minus theirs at the start of round t."""
+    s = json.loads(stats.read_text(encoding="utf-8-sig"))
+    us = f"team{side.upper()}"
+
+    def at(runs: list[dict]) -> float:
+        k, v = 0, 0.0
+        for r in runs:
+            v = float(r["value"])
+            k += int(r["duration"])
+            if k > t:
+                break
+        return v
+
+    v = 0.0
+    for tl in s["teamTimelines"]:
+        if tl["metric"] == "submittedGems":
+            v += at(tl["runs"]) * (1 if tl["owner"] == us else -1)
+    for tl in s["championTimelines"]:
+        if tl["metric"] == "gems":
+            v += 0.5 * at(tl["runs"]) * (1 if tl["owner"]["team"] == us else -1)
+    return v
+
+
+def base_games(st: dict, base: str, rng: random.Random) -> list[dict]:
+    train, _ = R.maps()
+    opps = ["main", *R.ANCHORS, *R.mimics()]
+    setups = []
+    for _ in range(BASE_GAMES):
+        setups.append((rng.choice(opps), rng.choice(train), rng.random() < 0.5))
+    games = [(base, o, m) if a else (o, base, m) for o, m, a in setups]
+    out = OUT / "games" / f"base-{st['it']}"
+    res = runner.run_games(games, out, log_limit=R.LOG_LIMIT, fuel=R.FUEL[512], timeout=R.GAME_TIMEOUT)
+    games_ = []
+    for (o, m, a), r in zip(setups, res):
+        side = "a" if a else "b"
+        if r.winner is None and r.rounds == 0:
+            continue
+        try:
+            dec = decisions(Path(r.replay), side)
+        except (OSError, KeyError, zipfile.BadZipFile):
+            continue
+        games_.append({"opp": o, "map": m, "a": a, "side": side, "res": r, "dec": dec, "rounds": r.rounds})
+    return games_
+
+
+def search(st: dict, games: list[dict], pool: list[str], rng: random.Random) -> list[dict]:
+    """Branch specs, played in batches of POOL; returns one record per searched decision."""
+    specs = []
+    for gi, g in enumerate(games):
+        cand = [d for d in g["dec"] if 20 <= d["r"] <= g["rounds"] - H - 5
+                and bin(d["m"] & ~(1 << d["a"])).count("1") >= 1 and d["c"] in KIND]
+        for d in rng.sample(cand, min(DECISIONS, len(cand))):
+            alts = [i for i in range(15) if d["m"] >> i & 1 and i != d["a"]]
+            for alt in rng.sample(alts, min(ALTS, len(alts))):
+                specs.append((gi, d, alt))
+        if cand and gi % NULL_EVERY == 0:
+            d = rng.choice(cand)
+            specs.append((gi, d, d["a"]))
+    specs.sort(key=lambda s: s[1]["r"])
+    vals: dict[int, float] = {}
+    out_root = OUT / "games" / f"branch-{st['it']}"
+    for b0 in range(0, len(specs), POOL):
+        batch = specs[b0 : b0 + POOL]
+        games_ = []
+        for bot, (gi, d, alt) in zip(pool, batch):
+            g = games[gi]
+            patch(bot, (d["r"], KIND[d["c"]], alt, COMMIT))
+            games_.append((bot, g["opp"], g["map"]) if g["a"] else (g["opp"], bot, g["map"]))
+        rounds = max(d["r"] for _, d, _ in batch) + H + 1
+        out = out_root / f"b{b0 // POOL}"
+        res = runner.run_games(games_, out, rounds=rounds, log_limit=R.LOG_LIMIT, fuel=R.FUEL[512],
+                               timeout=R.GAME_TIMEOUT)
+        for k, ((gi, d, alt), r) in enumerate(zip(batch, res)):
+            g = games[gi]
+            try:
+                vals[b0 + k] = value(Path(r.stats), g["side"], d["r"] + H)
+            except (OSError, json.JSONDecodeError, KeyError):
+                pass
+        shutil.rmtree(out, ignore_errors=True)
+    recs: dict[tuple[int, int, str], dict] = {}
+    for k, (gi, d, alt) in enumerate(specs):
+        if k not in vals:
+            continue
+        g = games[gi]
+        key = (gi, d["r"], d["c"])
+        if key not in recs:
+            recs[key] = {"gi": gi, "r": d["r"], "c": d["c"], "a": d["a"],
+                         "base": value(Path(g["res"].stats), g["side"], d["r"] + H), "alts": {}}
+        recs[key]["alts"][alt] = vals[k]
+    return list(recs.values())
+
+
+# ---------------------------------------------------------------- labels and training
+
+
+def relabel(games: list[dict], recs: list[dict], it: int) -> tuple[Path, dict]:
+    """Samples of the base games (our side) with improved decisions relabelled + oversampled."""
+    by_game: dict[int, dict[tuple[int, str], int]] = {}
+    null, gains, n_imp = [], [], 0
+    for rc in recs:
+        dq = {a: v - rc["base"] for a, v in rc["alts"].items()}
+        if rc["a"] in dq:
+            null.append(dq.pop(rc["a"]))
+        if not dq:
+            continue
+        best = max(dq, key=dq.get)
+        gains.append(dq[best])
+        if dq[best] > MARGIN:
+            by_game.setdefault(rc["gi"], {})[(rc["r"], rc["c"])] = best
+            n_imp += 1
+    parts = []
+    for gi, g in enumerate(games):
+        r = g["res"]
+        won = r.score_for(r.bot_a if g["a"] else r.bot_b)
+        margin = ((r.gems_a - r.gems_b) if g["a"] else (r.gems_b - r.gems_a)) / 1000.0
+        try:
+            d = data.game_samples(Path(r.replay), Path(r.stats), g["side"], won, margin)
+        except (OSError, KeyError, zipfile.BadZipFile, ValueError):
+            continue
+        if not d:
+            continue
+        # Row order of game_samples: champions sorted by name, then rounds.
+        keys = sorted(((dd["c"], dd["r"]) for dd in g["dec"]), key=lambda x: (x[0], x[1]))
+        if len(keys) != len(d["S"]):
+            continue
+        imp = by_game.get(gi, {})
+        rows = [i for i, (c, rr) in enumerate(keys) if (rr, c) in imp]
+        for i in rows:
+            c, rr = keys[i]
+            d["A"][i, 0] = imp[(rr, c)]
+            d["M"][i, 0] |= 1 << imp[(rr, c)]
+        parts.append(d)
+        if rows:
+            extra = {k: v[rows] for k, v in d.items()}
+            extra["PREV"] = np.full_like(extra["PREV"], -1)
+            extra["TRAJ"] = np.zeros_like(extra["TRAJ"])
+            for _ in range(OVERSAMPLE - 1):
+                parts.append(dict(extra))
+    path = OUT / "data" / f"it{it:03d}.npz"
+    data.save(path, data.concat(parts))
+    stats = {"searched": len(recs), "improved": n_imp,
+             "improved_frac": round(n_imp / max(len(recs), 1), 3),
+             "mean_best_gain": round(float(np.mean(gains)), 2) if gains else None,
+             "median_best_gain": round(float(np.median(gains)), 2) if gains else None,
+             "null_abs_max": round(float(np.max(np.abs(null))), 3) if null else None}
+    return path, stats
+
+
+def evaluate(weights: Path, tag: str) -> dict:
+    train, held = R.maps()
+    bot = R.variant("_xeval", 2, 0, weights)
+    out = OUT / "games" / f"eval-{tag}"
+    res = runner.run_pairs([(bot, "main"), ("main", bot)], train + held, out, log_limit=R.LOG_LIMIT,
+                           fuel=R.FUEL[512], timeout=R.GAME_TIMEOUT)
+    shutil.rmtree(out, ignore_errors=True)
+    tr = [r for r in res if r.map not in R.HELD_OUT]
+    ho = [r for r in res if r.map in R.HELD_OUT]
+
+    def sc(rs: list) -> float:
+        return round(sum(r.score_for(bot) for r in rs) / max(len(rs), 1), 3)
+
+    margin = [((r.gems_a - r.gems_b) if r.bot_a == bot else (r.gems_b - r.gems_a)) for r in res]
+    return {"win": sc(res), "train": sc(tr), "held_out": sc(ho), "games": len(res),
+            "gem_margin": round(sum(margin) / max(len(margin), 1), 1)}
+
+
+def cmd_run(_: argparse.Namespace) -> int:
+    OUT.mkdir(parents=True, exist_ok=True)
+    st = load_state()
+    base_ck = R.ensure_rank(R.OUT / "ckpt" / "bc512")
+    while True:
+        it = st["it"]
+        rng = random.Random(4242 + it)
+        t0 = time.time()
+        base, pool = policy_bots(st["weights"])
+        games = base_games(st, base, rng)
+        t1 = time.time()
+        recs = search(st, games, pool, rng)
+        t2 = time.time()
+        path, sstats = relabel(games, recs, it)
+        shutil.rmtree(OUT / "games" / f"base-{it}", ignore_errors=True)
+        shutil.rmtree(OUT / "games" / f"branch-{it}", ignore_errors=True)
+        st["search"].append({"it": it, **sstats})
+        log(f"it {it}: {len(games)} base games ({t1 - t0:.0f}s), search {sstats} ({t2 - t1:.0f}s)")
+        # Distill: the imitation data (keeps the rules' skills) + every iteration's search data.
+        shards = sorted(str(p) for p in (R.OUT / "data" / "imitation").glob("*.npz"))
+        shards += sorted(str(p) for p in (OUT / "data").glob("it*.npz"))
+        init = Path(st["best"]) if st["best"] else base_ck
+        ck = OUT / "ckpt" / f"it{it:03d}"
+        m = R.gpu(["bc", "--data", *shards, "--init", str(init), "--out", str(ck), "--width", "512",
+                   "--rank", str(R.RANK), "--lr", "3e-4", "--epochs", "6"])
+        e = evaluate(ck / "teacher.bin", f"it{it}")
+        st["evals"].append({"it": it, **e, "bc_goal_acc": m["held_out"][-1]["goal"]})
+        best = max((x for x in st["evals"] if x.get("accepted")), key=lambda x: x["win"], default=None)
+        bar = best["win"] if best else 0.5
+        if e["win"] > bar:
+            st["evals"][-1]["accepted"] = True
+            st["best"], st["weights"] = str(ck), str(ck / "teacher.bin")
+        log(f"eval it {it}: {e} (bar {bar}){' ACCEPTED' if st['evals'][-1].get('accepted') else ''} "
+            f"| bc {time.time() - t2:.0f}s")
+        st["it"] = it + 1
+        save_state(st)
+
+
+def cmd_status(_: argparse.Namespace) -> int:
+    st = load_state()
+    print(json.dumps({"it": st["it"], "best": st["best"], "search": st["search"][-3:], "evals": st["evals"][-5:]},
+                     indent=1))
+    return 0
+
+
+def main(argv: list[str] | None = None) -> int:
+    p = argparse.ArgumentParser()
+    sub = p.add_subparsers(dest="cmd", required=True)
+    sub.add_parser("run").set_defaults(fn=cmd_run)
+    sub.add_parser("status").set_defaults(fn=cmd_status)
+    a = p.parse_args(argv)
+    return a.fn(a)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

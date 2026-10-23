@@ -94,6 +94,10 @@ pub struct Bot {
     fsm_fighting: Option<bool>,
     /// knob2 TEACHER: this champion's previous observations (nn/ pipeline).
     nn_hist: teacher::History,
+    /// nn/expert.py search branch: the forced intent and the round it ends (None: not started
+    /// or over); `branch_done` once it has started.
+    branch: Option<(Intent, u32)>,
+    branch_done: bool,
 }
 
 /// Engage turns without landing anything before we give up on that enemy.
@@ -335,6 +339,8 @@ impl Bot {
             fsm_seen: None,
             fsm_fighting: None,
             nn_hist: teacher::History::default(),
+            branch: None,
+            branch_done: false,
         };
         if bot.teacher_mode() > 0 {
             bot.teacher_header();
@@ -971,6 +977,12 @@ impl Bot {
                         intent = i;
                     }
                     nn_choice = Some(c);
+                }
+            }
+            // nn/expert.py search branch (patched into the compiled file; off in normal builds).
+            if let Some(o) = &nn_obs {
+                if let Some(i) = self.branch_intent(o, round) {
+                    intent = i;
                 }
             }
             self.charge(Stage::Brain, mark);

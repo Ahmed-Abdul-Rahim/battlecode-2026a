@@ -52,6 +52,18 @@ pub const G_KITE: usize = 12;
 pub const G_STEP_BACK: usize = 13;
 pub const G_SIGHTING: usize = 14;
 
+/// Search-branch block (nn/expert.py byte-patches it in the compiled file per game; the magic
+/// words find it): magic, magic, from round (u32::MAX = off), champion kind, goal slot, rounds
+/// to keep the intent, unused, unused.
+#[used]
+#[no_mangle]
+static mut BRANCH: [u32; 8] = [0xB7A1_C4E5, 0x5EED_F00D, u32::MAX, 0, 0, 0, 0, 0];
+
+fn branch_cfg() -> [u32; 8] {
+    // SAFETY: never written by the bot; volatile so the patched bytes are read at run time.
+    unsafe { core::ptr::read_volatile(core::ptr::addr_of!(BRANCH)) }
+}
+
 static TEACHER_BLOB: &[u8] = include_bytes!("weights/teacher.bin");
 /// The distilled student (nn/student.py): int8 BCW1, goal head only, the first STUDENT_IN scalars.
 static STUDENT_BLOB: &[u8] = include_bytes!("weights/student.bin");
@@ -400,6 +412,29 @@ impl Bot {
         let sm = if fight_near { 1 | (bits(free.iter().copied()) << 1) } else { 1 };
         let am = 1 | bits((0..ENEMY_SLOTS).map(|k| vis.enemies.get(k).is_some_and(|e| !e.on_spawn))) << 1;
         Obs { s, grid, goals, enemies, steps, masks: [gm, sm, am, 0b11], rule_goal, fight_near }
+    }
+
+    /// The search branch's intent this turn (nn/expert.py), if one is active: from round
+    /// BRANCH[2] on, champion kind BRANCH[3] takes goal slot BRANCH[4] and keeps that same
+    /// intent for BRANCH[5] rounds while it stays available.
+    pub(super) fn branch_intent(&mut self, obs: &Obs, round: u32) -> Option<Intent> {
+        let cfg = branch_cfg();
+        if cfg[2] == u32::MAX || cfg[3] != self.kind as u32 || round < cfg[2] {
+            return None;
+        }
+        if !self.branch_done {
+            self.branch_done = true;
+            let i = intent_of(obs, cfg[4] as usize)?;
+            self.branch = Some((i, round + cfg[5]));
+            crate::telemetry::event(round, super::champ_name(self.kind), "branch", i64::from(cfg[4]));
+            return Some(i);
+        }
+        let (i, until) = self.branch?;
+        if round >= until || !obs.goals.contains(&Some(i)) {
+            self.branch = None;
+            return None;
+        }
+        Some(i)
     }
 
     /// The network's choice (TEACHER = 2), or None without a usable network.
