@@ -245,10 +245,12 @@ def cmd_run(_: argparse.Namespace) -> int:
         probe = [{"order": list(range(N)), "off": [r]} for r in range(1, N)]
         sets = setups(random.Random(5), STAGE1)
         rows = play_all(probe, sets, ref, pool, st["best"], "probe")
-        st["active"] = [r for r, row in zip(range(1, N), rows) if any(x[2] != 0 for x in row)]
+        # a rule without compared games counts as active (unknown), never as "no effect"
+        st["active"] = [r for r, row in zip(range(1, N), rows) if not row or any(x[2] != 0 for x in row)]
+        st["probe_games"] = [len(row) for row in rows]
         st["probe"] = {RULES[r]: round(sum(x[1] for x in row) / max(len(row), 1), 3)
                        for r, row in zip(range(1, N), rows)}
-        log(f"probe: active rules {st['active']} ({[RULES[r] for r in st['active']]}); "
+        log(f"probe ({sum(st['probe_games'])} paired games): active rules {st['active']} ({[RULES[r] for r in st['active']]}); "
             f"win change when off: {st['probe']}")
         save_state(st)
     while True:

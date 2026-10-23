@@ -1020,6 +1020,8 @@ impl Bot {
                     intent = i;
                 }
             }
+            // The goal actually executed this turn (logged with the observation: nn/muzero.py).
+            let exec_goal = nn_obs.as_ref().and_then(|o| o.goals.iter().position(|g| *g == Some(intent)));
             self.charge(Stage::Brain, mark);
             let claim = match intent {
                 Intent::ClearCamp(g) | Intent::Capture(g) | Intent::Approach(g) => {
@@ -1110,7 +1112,7 @@ impl Bot {
             }
             if let Some(o) = &nn_obs {
                 let c = nn_choice.unwrap_or_else(|| Self::teacher_labels(o));
-                self.teacher_log(round, o, &c, teach);
+                self.teacher_log(round, o, &c, teach, exec_goal);
                 self.nn_hist.push(&o.s);
             }
             // RL training builds: what this turn did (wasted turns cost reward in ml/rl).

@@ -419,6 +419,32 @@ impl Bot {
     /// intent for BRANCH[5] rounds while it stays available.
     pub(super) fn branch_intent(&mut self, obs: &Obs, round: u32) -> Option<Intent> {
         let cfg = branch_cfg();
+        // Exploration (nn/muzero.py data): BRANCH[6] per mille of decisions take a random other
+        // allowed goal (seed BRANCH[7]) and keep it BRANCH[5] rounds while it stays available.
+        if cfg[2] == u32::MAX && cfg[6] > 0 {
+            if let Some((i, until)) = self.branch {
+                if round < until && obs.goals.contains(&Some(i)) {
+                    return Some(i);
+                }
+                self.branch = None;
+            }
+            let seed = (cfg[7] & 0xFF) as u8;
+            let roll = rl::uniform(round ^ (cfg[7] << 8), self.kind as u8, seed, 200);
+            if roll * 1000.0 >= cfg[6] as f32 {
+                return None;
+            }
+            let alts: Vec<usize> =
+                (0..HEADS[0]).filter(|&g| obs.masks[0] >> g & 1 == 1 && g != obs.rule_goal).collect();
+            if alts.is_empty() {
+                return None;
+            }
+            let pick = rl::uniform(round ^ (cfg[7] << 8), self.kind as u8, seed, 201);
+            let g = alts[((pick * alts.len() as f32) as usize).min(alts.len() - 1)];
+            let i = intent_of(obs, g)?;
+            self.branch = Some((i, round + cfg[5]));
+            crate::telemetry::event(round, super::champ_name(self.kind), "explore", g as i64);
+            return Some(i);
+        }
         if cfg[2] == u32::MAX || cfg[3] != self.kind as u32 || round < cfg[2] {
             return None;
         }
@@ -505,7 +531,7 @@ impl Bot {
     }
 
     /// Print the `N` line (debug runs only).
-    pub(super) fn teacher_log(&self, round: u32, obs: &Obs, c: &Choice, mode: u8) {
+    pub(super) fn teacher_log(&self, round: u32, obs: &Obs, c: &Choice, mode: u8, exec: Option<usize>) {
         cambc::debug_block! {
             let s: String = obs.s.iter().map(|b| format!("{:02x}", *b as u8)).collect();
             let g: String = obs.grid.iter().map(|b| format!("{b:02x}")).collect();
@@ -517,8 +543,9 @@ impl Bot {
                 }
             }
             println!(
-                "N {{\"r\":{round},\"c\":\"{}\",\"t\":{mode},\"s\":\"{s}\",\"g\":\"{g}\",\"a\":{:?},\"m\":{:?},\"lp\":{}}}",
-                super::champ_name(self.kind), c.a, m, (c.logp * 1000.0).round() as i64
+                "N {{\"r\":{round},\"c\":\"{}\",\"t\":{mode},\"s\":\"{s}\",\"g\":\"{g}\",\"a\":{:?},\"m\":{:?},\"lp\":{},\"ex\":{}}}",
+                super::champ_name(self.kind), c.a, m, (c.logp * 1000.0).round() as i64,
+                exec.map_or(-1, |e| e as i64)
             );
         }
     }
