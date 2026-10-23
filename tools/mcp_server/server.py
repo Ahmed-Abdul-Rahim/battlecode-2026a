@@ -150,26 +150,6 @@ def fuel_report(bundle: str) -> dict:
     }
 
 
-@server.tool()
-def feature_selection_report(path: str = "ml/features/selected/report.json") -> dict:
-    """Result of ml/features/select.py: selected feature indices and the per-level
-    group size / objective / stability curve."""
-    p = _inside_repo(path)
-    if not p.exists():
-        return {"error": f"{path} not found; run `python -m ml.features.select <dataset.npz>`"}
-    return json.loads(p.read_text(encoding="utf-8"))
-
-
-@server.tool()
-def champion_report(vectors: str | None = None) -> Image:
-    """Cosine-similarity heatmap of champion vectors (initial kit projection, or a
-    fine-tuned vectors JSON from ml/champions/finetune.py)."""
-    from ml.champions import report
-
-    out = ROOT / "renders" / "champions.png"
-    return _png(report.render(_inside_repo(vectors) if vectors else None, out))
-
-
 def _gh(*args: str) -> subprocess.CompletedProcess:
     return subprocess.run(["gh", *args], cwd=ROOT, capture_output=True, text=True)
 

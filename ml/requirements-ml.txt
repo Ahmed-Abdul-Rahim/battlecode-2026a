@@ -1,6 +1,0 @@
-# GPU training box only (teammate's RTX 5060 Ti). Blackwell GPUs need a CUDA 12.8+ build:
-#   pip install -r ml/requirements-ml.txt --index-url https://download.pytorch.org/whl/cu128 --extra-index-url https://pypi.org/simple
-torch>=2.7
-numpy>=1.26
-pyyaml>=6.0
-scikit-learn>=1.4

@@ -28,13 +28,6 @@ repos:
         language: python
         files: ^(crates/|bots/main/src/)
         pass_filenames: false
-      - id: feature-codegen
-        name: feature schema codegen is current
-        entry: python ml/features/gen.py --check
-        language: python
-        additional_dependencies: ["pyyaml>=6.0"]
-        files: ^(ml/features/|crates/bc-brain/src/features_gen\.rs)
-        pass_filenames: false
       - id: cargo-fmt
         name: cargo fmt (crates)
         entry: cargo fmt --all -- --check
