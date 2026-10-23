@@ -920,7 +920,7 @@ impl Bot {
                 ChampionState::RECALLING | ChampionState::SUBMITTING_GEMS | ChampionState::TELEPORTING,
             );
             let nn_obs = (teach > 0 && !busy).then(|| {
-                self.teacher_obs(&ctx, &vis, &chan, me, my_pos, round, hurt_this_round, intent)
+                self.teacher_obs(&ctx, &vis, &chan, me, my_pos, round, hurt_this_round, intent, teach < 5)
             });
             let mut nn_choice = None;
             if let (true, Some(o)) = (teach >= 2, &nn_obs) {

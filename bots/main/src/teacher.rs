@@ -132,6 +132,7 @@ impl Bot {
         round: u32,
         hurt: bool,
         rule: Intent,
+        with_grid: bool,
     ) -> Obs {
         let mut s = [0i8; S];
         let mut p = Put { s: &mut s, at: 0 };
@@ -139,7 +140,8 @@ impl Bot {
         let (w, h) = (self.world.width.max(1) as f32, self.world.height.max(1) as f32);
 
         // ---- self (24) + champion (13) ----
-        let cd = |i: usize| me.abilities().get(i).and_then(|a| a.cooldown().ok()).unwrap_or(0) as f32;
+        let abilities = me.abilities();
+        let cd = |i: usize| abilities.get(i).and_then(|a| a.cooldown().ok()).unwrap_or(0) as f32;
         p.v(ctx.hp_frac());
         p.v(ctx.max_hp / 3000.0);
         p.v(me.strength().unwrap_or(0.0) / 150.0);
@@ -329,8 +331,9 @@ impl Bot {
         let occupied = occupied_tiles(vis, my_pos);
         let steps: [Pos; 9] =
             core::array::from_fn(|i| if i == 0 { my_pos } else { my_pos + DIRS8[i - 1] });
-        let here = |g: Goal| fields.distance(g, my_pos);
         let target_goal = self.target.map(|t| Goal::Group(t as u8));
+        let (here_spawn, here_altar) = (fields.distance(Goal::AllySpawn, my_pos), fields.distance(Goal::Altars, my_pos));
+        let here_target = target_goal.map(|g| fields.distance(g, my_pos));
         let mut free = [false; 9];
         for (i, &sp) in steps.iter().enumerate() {
             free[i] = i == 0 || (self.world.terrain.walkable(sp) && !occupied.contains(&sp));
@@ -339,9 +342,9 @@ impl Bot {
             p.v(n as f32 / 3.0);
             let c = vis.camps.iter().filter(|c| c.awake && c.hp > 0.0 && c.pos.cheb(sp) <= 3).count();
             p.v(c as f32 / 3.0);
-            p.v(sign(here(Goal::AllySpawn), fields.distance(Goal::AllySpawn, sp)));
-            p.v(sign(here(Goal::Altars), fields.distance(Goal::Altars, sp)));
-            p.v(target_goal.map_or(0.0, |g| sign(here(g), fields.distance(g, sp))));
+            p.v(sign(here_spawn, fields.distance(Goal::AllySpawn, sp)));
+            p.v(sign(here_altar, fields.distance(Goal::Altars, sp)));
+            p.v(target_goal.map_or(0.0, |g| sign(here_target.flatten(), fields.distance(g, sp))));
         }
         debug_assert_eq!(p.at, S);
 
@@ -353,7 +356,7 @@ impl Bot {
                 grid[bit / 8] |= 1 << (bit % 8);
             }
         };
-        for dy in -R..=R {
+        for dy in (-R..=R).filter(|_| with_grid) {
             for dx in -R..=R {
                 let t = Pos::new(my_pos.x + dx, my_pos.y + dy);
                 if !self.world.terrain.walkable(t) {
@@ -364,7 +367,7 @@ impl Bot {
                 }
             }
         }
-        for e in &vis.enemies {
+        for e in vis.enemies.iter().filter(|_| with_grid) {
             set(2, e.pos.x - my_pos.x, e.pos.y - my_pos.y);
         }
         for a in &vis.allies {
