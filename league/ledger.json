@@ -1008,6 +1008,15 @@
    "time": "2026-10-22T04:50:12.345Z",
    "win": true
   },
+  "20d8b4d8-c236-41ef-aba2-ceca3b9e57d1": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "lanes",
+   "opp": "Shinshilachki",
+   "oppId": "abb3b776-7d71-41f6-90c6-885aebdc64b4",
+   "time": "2026-10-23T17:20:24.400Z",
+   "win": true
+  },
   "20de418c-2f85-41fd-b9d7-bf7cd2384d42": {
    "kind": "unranked",
    "live": 23,
@@ -2457,6 +2466,15 @@
    "time": "2026-10-23T14:54:32.635Z",
    "win": false
   },
+  "4e048b61-67b5-4ea3-91a5-910c59fa0566": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "contest",
+   "opp": "Shinshilachki",
+   "oppId": "abb3b776-7d71-41f6-90c6-885aebdc64b4",
+   "time": "2026-10-23T17:20:24.400Z",
+   "win": true
+  },
   "4e0718f5-690b-4790-8d6d-a44c05cad10a": {
    "kind": "ranked",
    "live": 1,
@@ -3230,6 +3248,15 @@
    "oppId": "5e0c725a-b9b4-4523-8739-4427f20b9ce5",
    "time": "2026-10-23T14:58:19.859Z",
    "win": false
+  },
+  "6370e3f1-1bc1-41c2-a848-7aeb1e30b5d0": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "road-of-riches",
+   "opp": "Shinshilachki",
+   "oppId": "abb3b776-7d71-41f6-90c6-885aebdc64b4",
+   "time": "2026-10-23T17:20:24.400Z",
+   "win": true
   },
   "6391cd4b-173a-45ae-9b13-72e3019f42a8": {
    "kind": "unranked",
@@ -4257,6 +4284,15 @@
    "time": "2026-10-20T17:51:26.756Z",
    "win": false
   },
+  "8323817a-5921-45d4-98e9-e2c955d1d2b1": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "shortcut",
+   "opp": "Shinshilachki",
+   "oppId": "abb3b776-7d71-41f6-90c6-885aebdc64b4",
+   "time": "2026-10-23T17:20:24.400Z",
+   "win": true
+  },
   "832d359a-c4ce-4889-9ed3-28e608be85c6": {
    "kind": "ranked",
    "live": 17,
@@ -5020,6 +5056,15 @@
    "opp": "vc?",
    "oppId": "910ccbab-531b-4efa-a223-0335a686ad83",
    "time": "2026-10-20T21:50:14.541Z",
+   "win": true
+  },
+  "99763428-76bd-4b56-99c6-eaee2638c2cf": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "corridors",
+   "opp": "Shinshilachki",
+   "oppId": "abb3b776-7d71-41f6-90c6-885aebdc64b4",
+   "time": "2026-10-23T17:20:24.400Z",
    "win": true
   },
   "9a6ce9a7-11af-4300-8a08-2a5841b3eba3": {
