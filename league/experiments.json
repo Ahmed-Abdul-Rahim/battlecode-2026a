@@ -4251,6 +4251,18 @@
    },
    "status": "queued",
    "title": "Rules sync: Ren stun 0.75, Heart of Ruin dash 1.5"
+  },
+  {
+   "added": "2026-10-23T17:37:30Z",
+   "area": "farming",
+   "id": 97,
+   "notes": "Re-queued (lost in a registry overwrite). 4 plans replaced CAMP_FEASIBLE=24 with 1.",
+   "results": {},
+   "spec": {
+    "ref": "origin/feat/plan-feasible"
+   },
+   "status": "queued",
+   "title": "Map plans keep merged camp bits (CAMP_FEASIBLE 25)"
   }
  ]
 }
