@@ -100,6 +100,8 @@ def main(bundle: str, stats: str, map_name: str, max_rounds: int = 10**9) -> int
             for cid, (ti, k) in slot.items():
                 e_taken[cid] = e_taken.get(cid, 0.0) + float(taken[0, ti, k])
         ti, k = slot[t.champion]
+        watch = int(os.environ.get("DEBUG_CAMP", "-1"))
+        hp_w = float(e.camp_hp[0, watch]) if watch >= 0 else 0.0
         act = bool(e.turn_start(ti, k)[0])
         if os.environ.get("DEBUG_CAST") and t.round < 6:
             print("turn", t.round, names[t.champion], "act", act, "alive", bool(e.alive[0, ti, k]), "stun", int(e.stun[0, ti, k]),
@@ -163,6 +165,9 @@ def main(bundle: str, stats: str, map_name: str, max_rounds: int = 10**9) -> int
             elif r.name == "buy":
                 issues["buys (item effects not modelled yet)"] += 1
         e.turn_end(ti, k, auto_shop=False)
+        if watch >= 0 and float(e.camp_hp[0, watch]) != hp_w and t.round < 40:
+            print("camp", watch, "round", t.round, names[t.champion], [r.name for r in t.records],
+                  f"{hp_w:.0f} -> {float(e.camp_hp[0, watch]):.0f}")
     snapshot(e, sim, slot, cur_round)
     # ---- compare ----
     off = {c["id"]: {} for c in roster}

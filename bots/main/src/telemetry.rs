@@ -84,6 +84,14 @@ pub fn map_dump(world: &crate::world::World) {
                 }
             }
             println!("K {{\"champions\":[{}],\"camps\":[{}]}}", rows.join(","), camps.join(","));
+            for d in designs {
+                let Ok(kind) = d.champion_name() else { continue };
+                for a in d.abilities() {
+                    if let Ok(Some(info)) = a.info() {
+                        println!("A {} {} {:?}", kind as i32, a.slot(), info);
+                    }
+                }
+            }
         }
         println!(
             "M {{\"w\":{},\"h\":{},\"walls\":\"{}\",\"holes\":\"{}\",\"bushes\":\"{}\",\"altars\":\"{}\",\"ally_spawn\":\"{}\",\"enemy_spawn\":\"{}\",\"groups\":[{}]}}",

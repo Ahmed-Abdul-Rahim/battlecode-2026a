@@ -56,10 +56,12 @@ KITS = [
     (True, 3, 900, 75, 45, 5, 110, 10),  # Tavi
     (False, 1, 1000, 100, 30, 3.5, 100, 12),  # Heart of Ruin
 ]
-# Abilities per kind: two slots of (type, focus modifier, range, radius) from docs/GameRules.md.
+# Abilities per kind: two slots of (type, focus modifier, range, radius). LIVE values (debug "A"
+# dump, runs/nn/gpusim/live_kits.txt): Ren 0.75 (handbook 1.25), Heart of Ruin dash 1.5 (1.75),
+# all cooldowns 8.
 # Types: dmg (unit), stun (unit: damage + one-round stun), aoe (ground radius), aoe_stun,
 # heal (ally), shield (self, 5 turns), reset (attack reset), mreset (Marcella: reset + the next
-# basic attack stuns), dash (ground 2), hordash (dash + 1.75 x focus around the landing + stun).
+# basic attack stuns), dash (ground 2), hordash (dash + 1.5 x focus around the landing + stun).
 ABILITIES = [
     [("aoe_stun", 1.0, 4, 1), ("reset", 0, 0, 0)],  # Ryth
     [("reset", 0, 0, 0), ("dash", 0, 2, 0)],  # Vesper Vale
@@ -70,13 +72,15 @@ ABILITIES = [
     [("stun", 1.5, 4, 0), ("aoe", 1.0, 4, 1)],  # Prism
     [("mreset", 0, 0, 0), ("dmg", 2.0, 4, 0)],  # Marcella
     [("heal", 3.0, 4, 0), ("reset", 0, 0, 0)],  # Willow
-    [("stun", 1.25, 4, 0), ("dash", 0, 2, 0)],  # Ren
+    [("stun", 0.75, 4, 0), ("dash", 0, 2, 0)],  # Ren
     [("reset", 0, 0, 0), ("shield", 2.5, 0, 0)],  # Varg
     [("reset", 0, 0, 0), ("stun", 1.4, 4, 0)],  # Tavi
-    [("shield", 1.5, 0, 0), ("hordash", 1.75, 2, 1)],  # Heart of Ruin
+    [("shield", 1.5, 0, 0), ("hordash", 1.5, 2, 1)],  # Heart of Ruin
 ]
 # Abilities that can't share a turn with a walk.
 EXCLUDES_WALK = {"dmg", "stun", "aoe", "aoe_stun"}
+# ... except these (kind, slot): Cassi's stun may share a turn with a walk (live).
+WALK_OK = {(3, 1)}
 RYTH, VESPER, VENDETTA, PRISM, MARCELLA, REN, VARG, HOR = 0, 1, 2, 6, 7, 9, 10, 12
 DIRS = torch.tensor([[0, 0], [0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]])
 WIN_GEMS, MAX_ROUNDS = 1000, 2000
@@ -470,7 +474,8 @@ class Engine:
         bi = torch.arange(B, device=dev)
         here = self.pos[:, team, k]
         ok = mask & self.alive[:, team, k] & (self.cd[:, team, k, slot] <= 0) & ~self.cast_done[:, team, k]
-        if typ in EXCLUDES_WALK:
+        excl = typ in EXCLUDES_WALK and (int(self.kinds[team, k]), slot) not in WALK_OK
+        if excl:
             ok &= ~self.walked[:, team, k]
         power = self.eff_focus(team, k) * mod * self.dmg_mult(team, k)
         C = self.camp_hp.shape[1]
