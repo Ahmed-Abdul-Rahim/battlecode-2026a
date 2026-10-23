@@ -4404,6 +4404,21 @@
    },
    "status": "queued",
    "title": "Loot guard: keep capturing a ready reward under threat"
+  },
+  {
+   "added": "2026-10-23T18:37:21Z",
+   "area": "draft",
+   "id": 101,
+   "notes": "Match plan in draft memory; champions discount frontier groups while enemies are near. Local 4 maps 23->26/56.",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "DRAFT_PLAN": 1
+    },
+    "ref": "origin/feat/draft-plan"
+   },
+   "status": "queued",
+   "title": "Draft memory v3 + frontier discount (DRAFT_PLAN 1)"
   }
  ]
 }
