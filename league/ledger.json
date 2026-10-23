@@ -13499,7 +13499,8 @@
    "map": "road-of-riches",
    "opp": "Lucky Gem Thieves",
    "oppId": "f28f8525-f0d5-423b-bf3a-fcaf78b3b028",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 23,
    "time": "2026-10-22T14:20:13.420Z",
    "tries_at": 4
   },
@@ -13515,7 +13516,8 @@
    "map": "the-farm",
    "opp": "Lucky Gem Thieves",
    "oppId": "f28f8525-f0d5-423b-bf3a-fcaf78b3b028",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 23,
    "time": "2026-10-22T14:20:13.420Z",
    "tries_at": 4
   },
@@ -13531,7 +13533,8 @@
    "map": "great-wall",
    "opp": "Lucky Gem Thieves",
    "oppId": "f28f8525-f0d5-423b-bf3a-fcaf78b3b028",
-   "status": "open",
+   "status": "superseded",
+   "superseded_by": 23,
    "time": "2026-10-22T14:20:13.420Z",
    "tries_at": 4
   }
@@ -13841,6 +13844,15 @@
    "output": "Uploading D:\\Code\\battlecode\\bots\\lg-v23 (160842 bytes)...\nSubmitted bot version 20. View submissions at https://2026a.battlecode.co.uk/game/submissions",
    "reason": "fast upload: v22 won 8/25 ranked games (expected 0.62)",
    "time": "2026-10-22T14:22:46Z",
+   "version": 23
+  },
+  {
+   "bot": "lg-v23-fuel",
+   "host": "DESKTOP-QVEMEEE",
+   "ok": true,
+   "output": "Uploading D:\\Code\\battlecode\\bots\\lg-v23-fuel (176699 bytes)...\nSubmitted bot version 21. View submissions at https://2026a.battlecode.co.uk/game/submissions",
+   "reason": "manual: rule-bot fuel fixes (out-of-fuel turns 310 -> 1 over 80 games; strength even with v23), branch nn",
+   "time": "2026-10-23T10:07:38Z",
    "version": 23
   }
  ],
