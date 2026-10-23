@@ -51,6 +51,7 @@ DECISIONS = 4  # searched decisions per base game
 ALTS = 3  # alternatives per decision
 H = 150  # rounds a branch plays after its decision
 COMMIT = 20  # rounds the forced intent is kept (while available)
+VERIFY_COMMIT = 10  # the re-check of a winner holds it this long instead
 GOLD_PER_GEM = 0.1
 MARGIN = 4.0  # value units (gems) an alternative must win by
 OVERSAMPLE = 8
@@ -229,7 +230,41 @@ def search(st: dict, games: list[dict], pool: list[str], rng: random.Random) -> 
             recs[key] = {"gi": gi, "r": d["r"], "c": d["c"], "a": d["a"],
                          "base": value_at(base_sc[gi], d["r"] + H), "alts": {}}
         recs[key]["alts"][alt] = vals[k]
-    return list(recs.values())
+    out = list(recs.values())
+    verify(st, games, pool, out, base_sc)
+    return out
+
+
+def verify(st: dict, games: list[dict], pool: list[str], recs: list[dict], base_sc: dict) -> None:
+    """Best-of-several noisy branches looks good by luck: re-run each apparent winner holding the
+    goal VERIFY_COMMIT rounds instead of COMMIT; its gain is the smaller of the two."""
+    todo = []
+    for rc in recs:
+        dq = {a: v - rc["base"] for a, v in rc["alts"].items() if a != rc["a"]}
+        if dq and max(dq.values()) > MARGIN:
+            todo.append((rc, max(dq, key=dq.get)))
+    todo.sort(key=lambda t: t[0]["r"])
+    kept = 0
+    for b0 in range(0, len(todo), POOL):
+        batch = todo[b0 : b0 + POOL]
+        games_ = []
+        for bot, (rc, alt) in zip(pool, batch):
+            g = games[rc["gi"]]
+            patch(bot, (rc["r"], KIND[rc["c"]], alt, VERIFY_COMMIT))
+            games_.append((bot, g["opp"], g["map"]) if g["a"] else (g["opp"], bot, g["map"]))
+        out = OUT / "games" / f"verify-{st['it']}-{b0 // POOL}"
+        res = runner.run_games(games_, out, rounds=max(rc["r"] for rc, _ in batch) + H + 1, log_limit=R.LOG_LIMIT,
+                               fuel=R.FUEL[512], timeout=R.GAME_TIMEOUT)
+        for (rc, alt), r in zip(batch, res):
+            g = games[rc["gi"]]
+            try:
+                v2 = value(Path(r.replay), g["side"], rc["r"] + H)
+            except (OSError, json.JSONDecodeError, KeyError, zipfile.BadZipFile):
+                v2 = rc["base"]
+            rc["alts"][alt] = min(rc["alts"][alt], v2)
+            kept += v2 - rc["base"] > MARGIN
+        shutil.rmtree(out, ignore_errors=True)
+    log(f"  verify: {kept} of {len(todo)} winners hold with a {VERIFY_COMMIT}-round hold")
 
 
 # ---------------------------------------------------------------- labels and training
@@ -332,13 +367,14 @@ def cmd_run(_: argparse.Namespace) -> int:
         m = R.gpu(["bc", "--data", *shards, "--init", str(init), "--out", str(ck), "--width", "512",
                    "--rank", str(R.RANK), "--lr", "3e-4", "--epochs", "6"])
         e = evaluate(ck / "teacher.bin", f"it{it}")
-        st["evals"].append({"it": it, **e, "bc_goal_acc": m["held_out"][-1]["goal"]})
+        st["evals"].append({"it": it, **e, "bc_goal_acc": m["held_out"][-1]["goal"],
+                            "adopted": m.get("off_rule_labels")})
         best = max((x for x in st["evals"] if x.get("accepted")), key=lambda x: x["win"], default=None)
         bar = best["win"] if best else 0.5
         if e["win"] > bar:
             st["evals"][-1]["accepted"] = True
             st["best"], st["weights"] = str(ck), str(ck / "teacher.bin")
-        log(f"eval it {it}: {e} (bar {bar}){' ACCEPTED' if st['evals'][-1].get('accepted') else ''} "
+        log(f"eval it {it}: {e} adopted {m.get('off_rule_labels')} (bar {bar}){' ACCEPTED' if st['evals'][-1].get('accepted') else ''} "
             f"| bc {time.time() - t2:.0f}s")
         st["it"] = it + 1
         save_state(st)

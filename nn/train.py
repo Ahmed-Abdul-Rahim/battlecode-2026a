@@ -169,13 +169,27 @@ def bc(a) -> dict:
         if len(hist) > 3 and max(h["goal"] for h in hist[-3:]) <= max(h["goal"] for h in hist[:-3]) + 1e-3:
             break
     pol.load_state_dict(best[1])
+    # Labels that differ from the rules' suggestion (nn/expert.py relabels): does the policy adopt them?
+    pol.eval()
+    hit = tot = 0
+    with torch.no_grad():
+        for idx in torch.arange(b.n, device=DEV).split(8192):
+            x = b.x(idx)
+            lab = b.A[idx, 0]
+            off = lab != x[:, spec.RULE_GOAL : spec.RULE_GOAL + spec.HEADS[0]].argmax(1)
+            if off.any():
+                _, _, lsms = model.head_logp(pol(x), b.M[idx], b.A[idx])
+                hit += ((lsms[0].argmax(1) == lab) & off).sum().item()
+                tot += off.sum().item()
+    off_rule = {"rows": int(tot), "adopted": round(hit / tot, 4) if tot else None}
     # Value warm start: Monte Carlo-ish returns (GAE with V = 0) of the rules' games.
     ret, _ = returns_and_adv(d["R"], d["DONE"], d["TRAJ"], np.zeros_like(d["R"]))
     vopt = torch.optim.AdamW(val.parameters(), lr=a.lr, weight_decay=0.01)
     vloss = fit_value(val, vopt, b, ret.astype(np.float32), 3, a.batch)
     meta.update({"stage": "bc", "samples": int(b.n)})
     save(Path(a.out), pol, val, meta)
-    return {"mode": "bc", "samples": int(b.n), "epochs": len(hist), "held_out": hist, "value_loss": vloss}
+    return {"mode": "bc", "samples": int(b.n), "epochs": len(hist), "held_out": hist, "value_loss": vloss,
+            "off_rule_labels": off_rule}
 
 
 def accuracy(pol, b: Batches, idx_all: torch.Tensor) -> dict:
