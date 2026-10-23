@@ -504,6 +504,15 @@
    "time": "2026-10-23T14:03:34.401Z",
    "win": false
   },
+  "0fdb8553-13d4-40e0-ba4e-c8fc9a4c9a57": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "lanes",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "time": "2026-10-23T17:50:34.791Z",
+   "win": false
+  },
   "101af71d-44ed-48a1-95c3-6bfe912480fc": {
    "kind": "ranked",
    "live": 22,
@@ -2007,6 +2016,15 @@
    "time": "2026-10-21T14:50:14.151Z",
    "win": true
   },
+  "3c08a8f2-d263-4662-ba41-5def474d828b": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "rows",
+   "opp": "WhatIsQuantTrading??????",
+   "oppId": "d88df6e3-53c7-44ed-874f-67f3caa0578c",
+   "time": "2026-10-23T17:40:17.814Z",
+   "win": true
+  },
   "3c2b594c-6cdd-4aef-9d0a-f308a7279988": {
    "kind": "ranked",
    "live": 1,
@@ -2168,6 +2186,15 @@
    "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
    "time": "2026-10-23T14:55:52.313Z",
    "win": true
+  },
+  "429d9180-9dbf-4d29-b8a9-c67d47427139": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "elk-arena",
+   "opp": "WhatIsQuantTrading??????",
+   "oppId": "d88df6e3-53c7-44ed-874f-67f3caa0578c",
+   "time": "2026-10-23T17:40:17.814Z",
+   "win": false
   },
   "42e8ba3f-697f-45a4-b91e-fd55c021c0f9": {
    "kind": "ranked",
@@ -3132,6 +3159,15 @@
    "time": "2026-10-23T17:30:31.351Z",
    "win": true
   },
+  "6090207c-7ab0-43bb-a3a1-7574c7fb856b": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "fragment",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "time": "2026-10-23T17:50:34.791Z",
+   "win": false
+  },
   "60c05fbf-cc4a-4e4b-a8a9-c61a12e94724": {
    "kind": "ranked",
    "live": 17,
@@ -3789,6 +3825,15 @@
    "time": "2026-10-23T17:00:26.169Z",
    "win": true
   },
+  "70790460-e622-4c11-8dbe-03c055fb0f81": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "great-wall",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "time": "2026-10-23T17:50:34.791Z",
+   "win": false
+  },
   "7088501a-2482-4078-a12f-405c8307a059": {
    "kind": "ranked",
    "live": 17,
@@ -4266,6 +4311,15 @@
    "time": "2026-10-23T13:20:27.205Z",
    "win": false
   },
+  "8250e806-c98b-4b6c-a242-698c56a490de": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "fracture",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T17:39:00.884Z",
+   "win": false
+  },
   "828123a0-2da8-4d96-a2f0-b00e5a3cadc5": {
    "kind": "unranked",
    "live": 23,
@@ -4482,6 +4536,15 @@
    "time": "2026-10-23T15:30:27.753Z",
    "win": true
   },
+  "88b9884b-91d4-4ae1-ac29-090e9182815d": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "swirl",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T17:39:00.857Z",
+   "win": false
+  },
   "88d8aca4-2dde-4253-adc0-83e0c0591213": {
    "kind": "ranked",
    "live": 1,
@@ -4606,6 +4669,15 @@
    "opp": "angsana forest",
    "oppId": "89041e37-b511-48d2-aa3d-922e12fe8630",
    "time": "2026-10-22T12:30:23.032Z",
+   "win": true
+  },
+  "8c1cf8f8-cc02-4992-b69c-bfbd6af98bbf": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "pilgrimage",
+   "opp": "WhatIsQuantTrading??????",
+   "oppId": "d88df6e3-53c7-44ed-874f-67f3caa0578c",
+   "time": "2026-10-23T17:40:17.814Z",
    "win": true
   },
   "8c31fd0f-1016-499f-9591-43bbe51d5618": {
@@ -5733,6 +5805,15 @@
    "time": "2026-10-23T15:10:33.784Z",
    "win": true
   },
+  "acbbc9bd-a380-426d-aaf1-fff827f13c54": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "starvation",
+   "opp": "WhatIsQuantTrading??????",
+   "oppId": "d88df6e3-53c7-44ed-874f-67f3caa0578c",
+   "time": "2026-10-23T17:40:17.814Z",
+   "win": false
+  },
   "acbfa0db-0f44-4d19-a042-f8c96f86e684": {
    "kind": "ranked",
    "live": null,
@@ -6462,6 +6543,15 @@
    "time": "2026-10-21T15:10:10.877Z",
    "win": false
   },
+  "bf436a5f-0480-49da-8f20-9804aeb11f5d": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "eight",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T17:39:00.908Z",
+   "win": false
+  },
   "bf7d0041-8f8f-42c7-a525-dd3508e728f4": {
    "kind": "unranked",
    "live": 23,
@@ -6523,6 +6613,15 @@
    "opp": "777",
    "oppId": "1158c8e5-3ab7-47da-9a7a-344e175243d0",
    "time": "2026-10-20T21:00:10.929Z",
+   "win": true
+  },
+  "c14cc489-9d6a-4ac7-bf76-b1ea510c9fe2": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "stampede",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "time": "2026-10-23T17:50:34.791Z",
    "win": true
   },
   "c20b8210-6fe3-4d57-85fc-046f0097d31b": {
@@ -7137,6 +7236,15 @@
    "time": "2026-10-23T15:20:25.397Z",
    "win": true
   },
+  "d5afba75-200a-4b6d-9060-8a60b49f2a00": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "yellow-brick-road",
+   "opp": "WhatIsQuantTrading??????",
+   "oppId": "d88df6e3-53c7-44ed-874f-67f3caa0578c",
+   "time": "2026-10-23T17:40:17.814Z",
+   "win": false
+  },
   "d5c396ba-c00f-4980-a7ce-9871ef88492c": {
    "kind": "ranked",
    "live": 15,
@@ -7226,6 +7334,15 @@
    "oppId": "4b09b8ff-b429-43dc-9be1-180565784e87",
    "time": "2026-10-22T09:40:19.254Z",
    "win": true
+  },
+  "d6e4e3d9-6682-4125-9631-8fa0da80ec4e": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "stampede",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T17:39:00.943Z",
+   "win": false
   },
   "d6f66b29-22e1-4056-afd3-a9774bebc933": {
    "kind": "unranked",
@@ -8748,6 +8865,15 @@
    "time": "2026-10-22T06:00:12.757Z",
    "win": false
   },
+  "fd00a6d6-0c49-4317-8151-b93bf33a24a3": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "elk-arena",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "time": "2026-10-23T17:50:34.791Z",
+   "win": false
+  },
   "fd59fd26-51ac-4e8b-9a2a-1658d4261fd5": {
    "kind": "ranked",
    "live": 17,
@@ -8864,6 +8990,15 @@
    "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
    "time": "2026-10-22T10:50:13.670Z",
    "win": true
+  },
+  "fff18b64-1e86-4ce7-920c-21e6bea0df1a": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "ambush",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T17:39:00.975Z",
+   "win": false
   }
  },
  "losses": [
@@ -17803,6 +17938,206 @@
    "status": "open",
    "time": "2026-10-23T17:30:31.351Z",
    "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 1,
+    "champion": 23
+   },
+   "deaths_them": 84,
+   "deaths_us": 24,
+   "gems_them": "764",
+   "gems_us": "676",
+   "id": "fd00a6d6-0c49-4317-8151-b93bf33a24a3",
+   "map": "elk-arena",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "status": "open",
+   "time": "2026-10-23T17:50:34.791Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 22,
+    "champion": 23
+   },
+   "deaths_them": 41,
+   "deaths_us": 45,
+   "gems_them": "712",
+   "gems_us": "600",
+   "id": "70790460-e622-4c11-8dbe-03c055fb0f81",
+   "map": "great-wall",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "status": "open",
+   "time": "2026-10-23T17:50:34.791Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 56
+   },
+   "deaths_them": 9,
+   "deaths_us": 58,
+   "gems_them": "1000",
+   "gems_us": "70",
+   "id": "6090207c-7ab0-43bb-a3a1-7574c7fb856b",
+   "map": "fragment",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "status": "open",
+   "time": "2026-10-23T17:50:34.791Z",
+   "tries_at": 10
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 25
+   },
+   "deaths_them": 26,
+   "deaths_us": 27,
+   "gems_them": "1000",
+   "gems_us": "698",
+   "id": "0fdb8553-13d4-40e0-ba4e-c8fc9a4c9a57",
+   "map": "lanes",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "status": "open",
+   "time": "2026-10-23T17:50:34.791Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 26
+   },
+   "deaths_them": 30,
+   "deaths_us": 28,
+   "gems_them": "448",
+   "gems_us": "332",
+   "id": "acbbc9bd-a380-426d-aaf1-fff827f13c54",
+   "map": "starvation",
+   "opp": "WhatIsQuantTrading??????",
+   "oppId": "d88df6e3-53c7-44ed-874f-67f3caa0578c",
+   "status": "open",
+   "time": "2026-10-23T17:40:17.814Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "champion": 38
+   },
+   "deaths_them": 22,
+   "deaths_us": 38,
+   "gems_them": "720",
+   "gems_us": "504",
+   "id": "429d9180-9dbf-4d29-b8a9-c67d47427139",
+   "map": "elk-arena",
+   "opp": "WhatIsQuantTrading??????",
+   "oppId": "d88df6e3-53c7-44ed-874f-67f3caa0578c",
+   "status": "open",
+   "time": "2026-10-23T17:40:17.814Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 16
+   },
+   "deaths_them": 6,
+   "deaths_us": 16,
+   "gems_them": "1003",
+   "gems_us": "677",
+   "id": "d5afba75-200a-4b6d-9060-8a60b49f2a00",
+   "map": "yellow-brick-road",
+   "opp": "WhatIsQuantTrading??????",
+   "oppId": "d88df6e3-53c7-44ed-874f-67f3caa0578c",
+   "status": "open",
+   "time": "2026-10-23T17:40:17.814Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 11,
+    "champion": 5
+   },
+   "deaths_them": 1,
+   "deaths_us": 16,
+   "gems_them": "1048",
+   "gems_us": "466",
+   "id": "fff18b64-1e86-4ce7-920c-21e6bea0df1a",
+   "map": "ambush",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T17:39:00.975Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 29,
+    "champion": 16
+   },
+   "deaths_them": 0,
+   "deaths_us": 45,
+   "gems_them": "1120",
+   "gems_us": "160",
+   "id": "d6e4e3d9-6682-4125-9631-8fa0da80ec4e",
+   "map": "stampede",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T17:39:00.943Z",
+   "tries_at": 10
+  },
+  {
+   "contexts": {
+    "champion": 29
+   },
+   "deaths_them": 15,
+   "deaths_us": 29,
+   "gems_them": "1052",
+   "gems_us": "237",
+   "id": "bf436a5f-0480-49da-8f20-9804aeb11f5d",
+   "map": "eight",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T17:39:00.908Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 16
+   },
+   "deaths_them": 2,
+   "deaths_us": 16,
+   "gems_them": "1087",
+   "gems_us": "113",
+   "id": "8250e806-c98b-4b6c-a242-698c56a490de",
+   "map": "fracture",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T17:39:00.884Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 3,
+    "champion": 42
+   },
+   "deaths_them": 10,
+   "deaths_us": 45,
+   "gems_them": "1030",
+   "gems_us": "273",
+   "id": "88b9884b-91d4-4ae1-ac29-090e9182815d",
+   "map": "swirl",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T17:39:00.857Z",
+   "tries_at": 4
   }
  ],
  "map_files": {
@@ -17891,90 +18226,130 @@
  ],
  "pool": [
   {
-   "games": 10,
-   "macro_hash": "e3d8a97f6ac8",
+   "games": 15,
+   "macro_hash": "60ec08e06b33",
    "name": "prism best girl",
-   "since": "2026-10-23T14:23:38Z",
+   "since": "2026-10-23T17:58:33Z",
    "slug": "prism-best-girl",
-   "static": true,
+   "static": false,
    "teamId": "38e6d8c4-1608-44f5-956b-08390f564336",
    "why": "top1"
   },
   {
-   "games": 5,
-   "macro_hash": "e8d1b0b4be77",
-   "name": "policy wonk",
-   "since": "2026-10-23T14:23:54Z",
-   "slug": "policy-wonk",
-   "static": true,
-   "teamId": "3ec4a701-a9b5-498f-9361-eea4a6dd1cde",
-   "why": "top3"
+   "games": 20,
+   "macro_hash": "19525dc54931",
+   "name": "Intercontinental Fish",
+   "since": "2026-10-23T17:58:59Z",
+   "slug": "intercontinental-fish",
+   "static": false,
+   "teamId": "1890540d-1ffc-4847-adbf-d0d08772f268",
+   "why": "top2"
   },
   {
-   "games": 5,
-   "macro_hash": "ccc26d119b65",
-   "name": "procless",
-   "since": "2026-10-23T14:23:57Z",
-   "slug": "procless",
-   "static": true,
-   "teamId": "8df7e1cd-0d60-413b-9331-f5427ce9ca88",
-   "why": "top4"
-  },
-  {
-   "games": 5,
-   "macro_hash": "63500fa03a4e",
-   "name": ":3",
-   "since": "2026-10-23T14:24:14Z",
-   "slug": "3",
-   "static": true,
-   "teamId": "bbe481a7-4575-4826-9a3e-f81c28205de8",
-   "why": "top5"
-  },
-  {
-   "games": 5,
-   "macro_hash": "ca16393c0d3d",
+   "games": 35,
+   "macro_hash": "2988c510cc1d",
    "name": "Pantheon",
-   "since": "2026-10-23T14:54:37Z",
+   "since": "2026-10-23T17:59:31Z",
    "slug": "pantheon",
    "static": false,
    "teamId": "547efb5b-57e5-4355-8501-3b331f506d62",
+   "why": "top3"
+  },
+  {
+   "games": 20,
+   "macro_hash": "0d727a16a38f",
+   "name": "policy wonk",
+   "since": "2026-10-23T17:59:59Z",
+   "slug": "policy-wonk",
+   "static": false,
+   "teamId": "3ec4a701-a9b5-498f-9361-eea4a6dd1cde",
+   "why": "top4"
+  },
+  {
+   "games": 13,
+   "macro_hash": "98534b15782d",
+   "name": "Univardisty of Shingtonwash",
+   "since": "2026-10-23T18:00:35Z",
+   "slug": "univardisty-of-shingtonwash",
+   "static": false,
+   "teamId": "a4350547-b7a1-47b1-9031-4f7f084ad0d8",
+   "why": "top5"
+  },
+  {
+   "games": 50,
+   "macro_hash": "fd9c7508df48",
+   "name": "procless",
+   "since": "2026-10-23T18:01:44Z",
+   "slug": "procless",
+   "static": false,
+   "teamId": "8df7e1cd-0d60-413b-9331-f5427ce9ca88",
    "why": "top6"
   },
   {
-   "games": 5,
-   "macro_hash": "232a7f39e862",
-   "name": "Trzy Kwaterki",
-   "since": "2026-10-23T14:24:28Z",
-   "slug": "trzy-kwaterki",
-   "static": true,
-   "teamId": "36258abf-3fd0-4827-8fa5-2a217438cf6f",
+   "games": 156,
+   "macro_hash": "fe8916292d12",
+   "name": ":3",
+   "since": "2026-10-23T18:02:52Z",
+   "slug": "3",
+   "static": false,
+   "teamId": "bbe481a7-4575-4826-9a3e-f81c28205de8",
+   "why": "top7"
+  },
+  {
+   "games": 20,
+   "macro_hash": "1710650fb0dd",
+   "name": "new team(4)",
+   "since": "2026-10-23T18:04:01Z",
+   "slug": "new-team-4",
+   "static": false,
+   "teamId": "616e95e4-36ee-4669-b9b6-edfe818a7470",
+   "why": "top8"
+  },
+  {
+   "games": 30,
+   "macro_hash": "5facb9ac5df7",
+   "name": "NEETCoders",
+   "since": "2026-10-23T18:04:29Z",
+   "slug": "neetcoders",
+   "static": false,
+   "teamId": "882106d4-9deb-40cc-9d5c-8522c1d32129",
    "why": "top9"
   },
   {
-   "games": 9,
-   "macro_hash": "ed536df543f4",
-   "name": "let's jump into it",
-   "since": "2026-10-23T14:58:04Z",
-   "slug": "let-s-jump-into-it",
+   "games": 175,
+   "macro_hash": "3c1a25bbc59f",
+   "name": "Trzy Kwaterki",
+   "since": "2026-10-23T18:05:05Z",
+   "slug": "trzy-kwaterki",
    "static": false,
-   "teamId": "3881272c-9c7f-4b3d-94f9-4c0788a3b27a",
-   "why": "loss"
+   "teamId": "36258abf-3fd0-4827-8fa5-2a217438cf6f",
+   "why": "top10"
   },
   {
    "games": 10,
-   "macro_hash": "47a24b628375",
-   "name": "QS2\u00b3",
-   "since": "2026-10-23T14:58:38Z",
-   "slug": "qs2",
+   "macro_hash": "972dc05d9163",
+   "name": "LiquidSwords",
+   "since": "2026-10-23T18:06:25Z",
+   "slug": "liquidswords",
    "static": false,
-   "teamId": "23626fbe-2c8f-4ee8-ba0d-5042e85fc98a",
+   "teamId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
    "why": "loss"
   },
   {
-   "games": 10,
-   "macro_hash": "8666b308c708",
+   "games": 15,
+   "macro_hash": "894e37aac3d3",
+   "name": "WhatIsQuantTrading??????",
+   "since": "2026-10-23T18:08:01Z",
+   "slug": "whatisquanttrading",
+   "static": false,
+   "teamId": "d88df6e3-53c7-44ed-874f-67f3caa0578c",
+   "why": "loss"
+  },
+  {
+   "games": 20,
+   "macro_hash": "1bf2f92e8fe0",
    "name": "Santa Claude",
-   "since": "2026-10-23T14:59:29Z",
+   "since": "2026-10-23T18:10:02Z",
    "slug": "santa-claude",
    "static": false,
    "teamId": "14f0c09e-8234-4056-b8a8-93be730312f6",
@@ -19348,6 +19723,81 @@
     }
    ],
    "time": "2026-10-23T14:53:03Z"
+  },
+  {
+   "teams": [
+    {
+     "name": "prism best girl",
+     "rank": 1,
+     "rating": 2258.2,
+     "slug": "prism-best-girl",
+     "teamId": "38e6d8c4-1608-44f5-956b-08390f564336"
+    },
+    {
+     "name": "Intercontinental Fish",
+     "rank": 2,
+     "rating": 2245.5,
+     "slug": "intercontinental-fish",
+     "teamId": "1890540d-1ffc-4847-adbf-d0d08772f268"
+    },
+    {
+     "name": "Pantheon",
+     "rank": 3,
+     "rating": 2193.5,
+     "slug": "pantheon",
+     "teamId": "547efb5b-57e5-4355-8501-3b331f506d62"
+    },
+    {
+     "name": "policy wonk",
+     "rank": 4,
+     "rating": 2191.1,
+     "slug": "policy-wonk",
+     "teamId": "3ec4a701-a9b5-498f-9361-eea4a6dd1cde"
+    },
+    {
+     "name": "Univardisty of Shingtonwash",
+     "rank": 5,
+     "rating": 2173.9,
+     "slug": "univardisty-of-shingtonwash",
+     "teamId": "a4350547-b7a1-47b1-9031-4f7f084ad0d8"
+    },
+    {
+     "name": "procless",
+     "rank": 6,
+     "rating": 2155.7,
+     "slug": "procless",
+     "teamId": "8df7e1cd-0d60-413b-9331-f5427ce9ca88"
+    },
+    {
+     "name": ":3",
+     "rank": 7,
+     "rating": 2143.4,
+     "slug": "3",
+     "teamId": "bbe481a7-4575-4826-9a3e-f81c28205de8"
+    },
+    {
+     "name": "new team(4)",
+     "rank": 8,
+     "rating": 2126.5,
+     "slug": "new-team-4",
+     "teamId": "616e95e4-36ee-4669-b9b6-edfe818a7470"
+    },
+    {
+     "name": "NEETCoders",
+     "rank": 9,
+     "rating": 2098.8,
+     "slug": "neetcoders",
+     "teamId": "882106d4-9deb-40cc-9d5c-8522c1d32129"
+    },
+    {
+     "name": "Trzy Kwaterki",
+     "rank": 10,
+     "rating": 2087.6,
+     "slug": "trzy-kwaterki",
+     "teamId": "36258abf-3fd0-4827-8fa5-2a217438cf6f"
+    }
+   ],
+   "time": "2026-10-23T17:57:50Z"
   }
  ]
 }

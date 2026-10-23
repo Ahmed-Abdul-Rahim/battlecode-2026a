@@ -216,7 +216,7 @@
   ]
  },
  "cadence": {
-  "bag": 48.5,
+  "bag": 39.8,
   "first_emblem": 236,
   "shops_per_100r": 0.61
  },
@@ -234,13 +234,13 @@
   ],
   "5": [
    6,
+   4,
    1,
-   10,
-   7,
-   11
+   0,
+   8
   ]
  },
- "games": 5,
+ "games": 20,
  "opening": {
   "broken-curve": [
    {

@@ -240,15 +240,15 @@
   ]
  },
  "cadence": {
-  "bag": 35.8,
+  "bag": 31.0,
   "first_emblem": 224,
   "shops_per_100r": 0.8
  },
  "draft": {
   "3": [
-   1,
    11,
-   2
+   0,
+   8
   ],
   "4": [
    11,
@@ -258,13 +258,13 @@
   ],
   "5": [
    11,
-   1,
    0,
-   6,
-   2
+   8,
+   10,
+   6
   ]
  },
- "games": 5,
+ "games": 50,
  "opening": {
   "broken-curve": [
    {
@@ -436,5 +436,5 @@
   ]
  },
  "team": "procless",
- "win_rate": 0.2
+ "win_rate": 0.36
 }
