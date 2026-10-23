@@ -110,6 +110,27 @@ per-map or per-opponent specialists (merged into the weights: no extra fuel), an
 fine-tuning with PPO after distillation if the teacher-student gap is large. Not for the main
 teacher run (full update takes ~4 s on the GPU).
 
+**Architecture comparison (2026-10-23, `nn/zoo.py`, 1,411 train / 157 held-out champion-games
+of logged play, same budget: predict the win and the return from each decision):**
+
+| Model | Log-loss | Accuracy | Return error |
+|---|---|---|---|
+| base rate | 0.498 | 0.80 | - |
+| MLP + 3 turns of history (current teacher) | **0.287** | 0.873 | 0.442 |
+| MLP | 0.293 | 0.869 | 0.445 |
+| LSTM | 0.329 | 0.869 | 0.445 |
+| encoder-decoder | 0.337 | 0.866 | 0.446 |
+| entity transformer | 0.346 | 0.866 | **0.419** |
+| selective SSM (Mamba-style) | 0.352 | 0.876 | 0.448 |
+| time transformer | 0.367 | 0.878 | 0.430 |
+| GRU | 0.376 | 0.868 | 0.453 |
+
+No architecture extracts clearly more from the state: sequence models get similar accuracy but
+are overconfident; the entity transformer predicts returns best (small gain). Caveats: only
+rule-bot games, a small held-out set, one budget without early stopping. Conclusion: the
+bottleneck is the action space (the network only picks among the rules' goals) and the
+learning signal, not the network type.
+
 **Zoo:** MLP 512/1024, GRU, LSTM, S4/S6, transformer over entity tokens; same inputs and training
 budget; each needs in-bot inference (recurrent state carried between turns) to play rollouts.
 

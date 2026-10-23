@@ -53,6 +53,38 @@ pub fn map_dump(world: &crate::world::World) {
                 format!("{{\"c\":[{},{}],\"gems\":{},\"gold\":{},\"respawn\":{},\"tiles\":[{}],\"camps\":[{}]}}", g.center.x, g.center.y, g.gems, g.gold, g.max_respawn, tiles.join(","), camps.join(","))
             })
             .collect();
+        // Live design stats (nn/gpusim: the handbook's numbers can be outdated).
+        if let Ok(designs) = cambc::champion_designs() {
+            let rows: Vec<String> = designs
+                .iter()
+                .filter_map(|d| {
+                    let s = d.base_stats().ok()?;
+                    Some(format!(
+                        "[{},{},{},{},{},{},{},{},{}]",
+                        d.champion_name().ok()? as i32, s.base_health, s.health_growth, s.base_strength,
+                        s.strength_growth, s.base_focus, s.focus_growth, s.base_attack_range, s.camp_damage_multiplier
+                    ))
+                })
+                .collect();
+            let mut camps: Vec<String> = Vec::new();
+            let mut seen: Vec<i32> = Vec::new();
+            for g in &world.groups {
+                for c in g.sdk.camps() {
+                    let k = c.kind() as i32;
+                    if seen.contains(&k) {
+                        continue;
+                    }
+                    seen.push(k);
+                    if let Ok(s) = c.base_stats() {
+                        camps.push(format!(
+                            "[{k},{},{},{},{},{}]",
+                            s.base_health, s.health_growth, s.base_strength, s.strength_growth, s.base_attack_range
+                        ));
+                    }
+                }
+            }
+            println!("K {{\"champions\":[{}],\"camps\":[{}]}}", rows.join(","), camps.join(","));
+        }
         println!(
             "M {{\"w\":{},\"h\":{},\"walls\":\"{}\",\"holes\":\"{}\",\"bushes\":\"{}\",\"altars\":\"{}\",\"ally_spawn\":\"{}\",\"enemy_spawn\":\"{}\",\"groups\":[{}]}}",
             world.width, world.height,

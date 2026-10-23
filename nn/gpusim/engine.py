@@ -27,7 +27,7 @@ from nn.gpusim.maps import MapData
 SIMPLIFIED = [
     "vision: Chebyshev radius 8, walls/bushes ignored (no shadowcasting yet)",
     "no wards, consumables, altar locks, teleport crystals, emblem passives",
-    "Ren's retaliation hits champion attackers only",
+
     "shop: on spawn, gold buys alternating strength/health shards (30 gold each)",
     "camps keep their health while asleep",
 ]
@@ -36,22 +36,25 @@ SIMPLIFIED = [
 CAMP_HP = [1350.0, 2400.0, 120.0, 120.0, 20000.0, 5000.0]
 CAMP_STR = [20.0, 60.0, 0.0, 0.0, 200.0, 120.0]
 CAMP_RANGE = [3, 4, 0, 0, 5, 4]
-# Champion kits: (ranged, range, health, health growth, strength, strength growth, focus) by kind
-# index (bc_core::champion::ChampionKind order).
+# Champion kits: (ranged, range, health, health growth, strength, strength growth, focus, focus
+# growth) by kind index (bc_core::champion::ChampionKind order). LIVE engine values (debug "K"
+# dump of champion_designs(), cambc 3.0.5, 2026-10-23): several differ from the handbook
+# (Stellar 650 hp / 70 focus, Vesper 1000 hp / 55 str, Vendetta 1000 hp, Tavi 900 hp / 110
+# focus, Heart of Ruin 30 str). Camp-damage multipliers are all 1.
 KITS = [
-    (False, 1, 1200, 100, 45, 5, 100),  # Ryth
-    (True, 3, 900, 100, 50, 5, 100),  # Vesper Vale
-    (False, 1, 800, 100, 70, 6, 100),  # Vendetta
-    (True, 3, 600, 65, 30, 3, 70),  # Cassi
-    (False, 1, 900, 80, 40, 3, 100),  # Issac
-    (True, 3, 750, 75, 30, 3.5, 85),  # Stellar
-    (True, 3, 700, 60, 35, 2.5, 80),  # Prism
-    (False, 1, 1200, 100, 45, 5, 60),  # Marcella
-    (True, 3, 700, 50, 55, 3, 120),  # Willow
-    (False, 1, 900, 100, 35, 5, 100),  # Ren
-    (False, 1, 1000, 100, 40, 5, 100),  # Varg
-    (True, 3, 750, 75, 45, 5, 100),  # Tavi
-    (False, 1, 1000, 100, 40, 4, 100),  # Heart of Ruin
+    (False, 1, 1200, 100, 45, 5, 100, 10),  # Ryth
+    (True, 3, 1000, 100, 55, 5, 100, 10),  # Vesper Vale
+    (False, 1, 1000, 100, 70, 6, 100, 10),  # Vendetta
+    (True, 3, 600, 65, 30, 3, 70, 13),  # Cassi
+    (False, 1, 900, 80, 40, 3, 100, 10),  # Issac
+    (True, 3, 650, 65, 30, 3.5, 70, 7),  # Stellar
+    (True, 3, 700, 60, 35, 2.5, 80, 8),  # Prism
+    (False, 1, 1200, 100, 45, 5, 60, 15),  # Marcella
+    (True, 3, 700, 50, 55, 3, 120, 5),  # Willow
+    (False, 1, 900, 100, 35, 5, 100, 9),  # Ren
+    (False, 1, 1000, 100, 40, 5, 100, 10),  # Varg
+    (True, 3, 900, 75, 45, 5, 110, 10),  # Tavi
+    (False, 1, 1000, 100, 30, 3.5, 100, 12),  # Heart of Ruin
 ]
 # Abilities per kind: two slots of (type, focus modifier, range, radius) from docs/GameRules.md.
 # Types: dmg (unit), stun (unit: damage + one-round stun), aoe (ground radius), aoe_stun,
@@ -140,7 +143,7 @@ class Engine:
     # ------------------------------------------------------------------ state
     def reset(self) -> None:
         B, T, dev, s = self.B, self.T, self.dev, self.s
-        k = torch.as_tensor(KITS, dtype=torch.float32, device=dev)[self.kinds]  # [2, T, 7]
+        k = torch.as_tensor(KITS, dtype=torch.float32, device=dev)[self.kinds]  # [2, T, 8]
         ex = lambda v: v.unsqueeze(0).expand(B, *v.shape).clone()  # noqa: E731
         self.ranged = ex(k[..., 0] > 0)
         self.rng = ex(k[..., 1].long())
@@ -149,6 +152,7 @@ class Engine:
         self.strength = ex(k[..., 4])
         self.str_growth = ex(k[..., 5])
         self.focus = ex(k[..., 6])
+        self.focus_growth = ex(k[..., 7])
         self.base_hp = self.max_hp.clone()
         self.hp = self.max_hp.clone()
         self.pos = torch.zeros(B, 2, T, 2, dtype=torch.long, device=dev)
@@ -171,6 +175,7 @@ class Engine:
         self.tribute = z(torch.long) - 1
         self.shards = z(torch.long)
         self.kills, self.deaths = z(torch.long), z(torch.long)
+        self.camp_dmg_done, self.camp_dmg_taken = z(), z()  # statistics (validation)
         C, G = len(s.camp_kind), len(s.group_gems)
         self.camp_max = torch.as_tensor(CAMP_HP, device=dev)[s.camp_kind]
         self.camp_str = torch.as_tensor(CAMP_STR, device=dev)[s.camp_kind]
@@ -296,6 +301,16 @@ class Engine:
         dmg = torch.zeros(B, 2 * self.T, device=self.dev)
         dmg.scatter_add_(1, tgt, torch.where(hit, self.camp_str.expand_as(hit), 0.0))
         dmg = dmg.view(B, 2, self.T)
+        self.camp_dmg_taken += dmg
+        # Ren retaliates against the camps that hit him (0.2 x focus each)
+        ren = (self.kinds == REN).view(-1)
+        if ren.any():
+            ren_hit = hit & ren[tgt]  # [B, C]
+            if ren_hit.any():
+                back = torch.where(ren_hit, 0.2 * self.focus.view(B, -1).gather(1, tgt), 0.0)
+                eff = torch.minimum(back, self.camp_hp.clamp(min=0)) * self.camp_alive
+                self.camp_dmg_done.view(B, -1).scatter_add_(1, tgt, eff)
+                self.damage_camps(back)
         self.apply_damage(dmg, None)
         # a camp with no champion in range for 2 rounds (and no damage taken) goes back to sleep
         self.camp_quiet = torch.where(act & ~hit, self.camp_quiet + 1, torch.where(hit, 0, self.camp_quiet))
@@ -396,6 +411,8 @@ class Engine:
             self.on_kill(team, k, (before & ~self.alive).any(-1).any(-1))
         if dmg_c.shape[1] and dmg_c.any():
             before = self.camp_alive.clone()
+            eff = torch.minimum(dmg_c, self.camp_hp.clamp(min=0)) * self.camp_alive
+            self.camp_dmg_done[:, team, k] += eff.sum(-1)
             self.damage_camps(dmg_c)
             self.on_kill(team, k, (before & ~self.camp_alive).any(-1))
 

@@ -73,7 +73,7 @@ def test_attack_ranges_and_ranged_rule():
     hp0 = e.hp[0, 0, 0].item()
     act(e, 1, 0, move=7, attack=1)  # ranged: attacking forbids the move this turn
     assert e.pos[0, 1, 0].tolist() == [8, 5]
-    assert e.hp[0, 0, 0].item() == hp0 - 50, "ranged range 3"
+    assert e.hp[0, 0, 0].item() == hp0 - 55, "ranged range 3 (Vesper 55 strength, live)"
 
 
 def test_camp_wakes_hits_nearest_then_sleeps():
@@ -180,16 +180,16 @@ def cast(e, team, k, slot, kind=1, idx=0, xy=(0, 0)):
 
 def test_stellar_damage_and_aoe():
     g = Group([Camp(0, 7, 5), Camp(0, 8, 5)], [(7, 5), (8, 5)], 4, 40, 40)
-    e = eng(tiny(groups=[g]), kinds=((5,), (0,)))  # Stellar: 2 x 85 single, 1.4 x 85 area
+    e = eng(tiny(groups=[g]), kinds=((5,), (0,)))  # Stellar: 2 x 70 single, 1.4 x 70 area (live)
     put(e, 0, 0, 5, 5)
     e.turn_start(0, 0)
     assert cast(e, 0, 0, 0, kind=2, idx=0).all()
-    assert e.camp_hp[0, 0].item() == 1350 - 170
+    assert e.camp_hp[0, 0].item() == 1350 - 140
     assert not cast(e, 0, 0, 1, kind=0, xy=(8, 5)).any(), "one cast per turn"
     e.turn_end(0, 0)
     e.turn_start(0, 0)
     assert cast(e, 0, 0, 1, kind=0, xy=(8, 5)).all()
-    assert abs(e.camp_hp[0, 1].item() - (1350 - 119)) < 1e-3 and abs(e.camp_hp[0, 0].item() - (1180 - 119)) < 1e-3
+    assert abs(e.camp_hp[0, 1].item() - (1350 - 98)) < 1e-3 and abs(e.camp_hp[0, 0].item() - (1210 - 98)) < 1e-3
 
 
 def test_stun_stops_camp_and_marcella_is_immune():
@@ -218,7 +218,7 @@ def test_shield_heal_splash_and_vendetta_reset():
     cast(e, 0, 0, 1)  # Varg shield 2.5 x 100
     assert e.shield[0, 0, 0].item() == 250
     e.basic_attack(0, 0, torch.ones(e.B, dtype=torch.long), torch.zeros(e.B, dtype=torch.long), torch.ones(e.B, dtype=torch.bool))
-    assert e.hp[0, 1, 0].item() == 800 - 40 and e.hp[0, 1, 1].item() == 1200 - 40, "Varg splash"
+    assert e.hp[0, 1, 0].item() == 1000 - 40 and e.hp[0, 1, 1].item() == 1200 - 40, "Varg splash"
     hp = e.hp[0, 0, 0].item()
     e.apply_damage(torch.tensor([[[100.0, 0.0], [0.0, 0.0]]] * e.B), (1, 0))
     assert e.hp[0, 0, 0].item() == hp and e.shield[0, 0, 0].item() == 150, "shield absorbs"
