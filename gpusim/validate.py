@@ -91,7 +91,12 @@ def main(bundle: str, stats: str, map_name: str, max_rounds: int = 10**9) -> dic
         for k in range(len(tm), T):
             e.alive[:, ti, k] = False
             e.respawn[:, ti, k] = 10**9
-    camp_of = infer_camp_ids(all_turns, md, names)  # from the whole game, even when truncated
+    # Exact: file record k = camp 2k, its mirror = 2k + 1 (replay.camp_ids); attack-position
+    # inference only as a fallback.
+    try:
+        camp_of = replay.camp_ids(map_bytes, [(c.kind, c.x, c.y) for g in md.groups for c in g.camps], md.w, md.h)
+    except ValueError:
+        camp_of = infer_camp_ids(all_turns, md, names)
     n_rounds = ts[-1].round + 1
     sim = {m: np.zeros((len(roster), n_rounds)) for m in METRICS}
     issues = collections.Counter()

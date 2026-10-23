@@ -4367,11 +4367,33 @@
    "host": "DESKTOP-QVEMEEE",
    "id": 98,
    "notes": "Re-queued. CAMP_SAFE=3 only on 8 elk-heavy maps.",
-   "results": {},
+   "results": {
+    "screen": {
+     "live": {
+      "deaths": 14.03,
+      "fitness": 0.52,
+      "games": 182,
+      "gem_margin": 0.156,
+      "win": 0.621
+     },
+     "paired": {
+      "mean": 0.0,
+      "pairs": 182,
+      "se": 0.0
+     },
+     "variant": {
+      "deaths": 14.03,
+      "fitness": 0.52,
+      "games": 182,
+      "gem_margin": 0.156,
+      "win": 0.621
+     }
+    }
+   },
    "spec": {
     "ref": "origin/feat/elk-safe"
    },
-   "status": "screening",
+   "status": "full",
    "title": "Camp safety on elk-heavy maps (plans)"
   },
   {
