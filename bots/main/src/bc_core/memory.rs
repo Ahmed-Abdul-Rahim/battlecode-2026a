@@ -41,6 +41,9 @@ mod off {
     pub const CHAMP_KINDS: usize = 336;
     pub const MAP_CACHE: usize = 352;
     pub const KNOBS2: usize = 544;
+    /// Map fingerprint (u32 LE) the draft computed (0 = not written): champions skip hashing
+    /// the map themselves (~50-60k fuel on big maps, on a first turn that is already full).
+    pub const MAP_FP: usize = 576;
     pub const CRC: usize = 1022;
 }
 
@@ -111,8 +114,12 @@ pub mod knob2 {
     /// After the build order is complete, keep buying its last emblem instead of hoarding gold.
     /// On since 2026-10-22: 0.675 vs 0.619 over 320 games (better on 15 maps, worse on 4).
     pub const KEEP_BUYING: usize = 25;
+    /// nn/ teacher (weights/teacher.bin): 1 = log the observation and the rules' choice (imitation
+    /// data), 2 = the teacher picks goal, step, attack and cast (sampling when RL_SEED > 0).
+    /// Local runs only: it needs `--fuel` far above the ladder's 100k.
+    pub const TEACHER: usize = 26;
 
-    pub const DEFAULTS: [(usize, u8); 26] = [
+    pub const DEFAULTS: [(usize, u8); 27] = [
         (PASSIVE_AWARE, 0),
         (FOCUS, 1),
         (ENDGAME, 1),
@@ -139,6 +146,7 @@ pub mod knob2 {
         (MICRO_NET, 0),
         (CLUSTER, 0),
         (KEEP_BUYING, 1),
+        (TEACHER, 0),
     ];
 }
 
@@ -295,6 +303,8 @@ pub struct ThetaMatch {
     pub champ_kinds: [u8; CHAMP_SLOTS],
     pub champ_vecs: [[i8; CHAMP_VEC_LEN]; CHAMP_SLOTS],
     pub map_cache: [u8; MAP_CACHE_BYTES],
+    /// `world::fingerprint` of this map, from the draft; 0 = not written.
+    pub map_fp: u32,
 }
 
 impl Default for ThetaMatch {
@@ -319,6 +329,7 @@ impl Default for ThetaMatch {
             champ_kinds: [NO_CHAMPION; CHAMP_SLOTS],
             champ_vecs: [[0; CHAMP_VEC_LEN]; CHAMP_SLOTS],
             map_cache: [0; MAP_CACHE_BYTES],
+            map_fp: 0,
         }
     }
 }
@@ -353,6 +364,7 @@ impl ThetaMatch {
         }
         b[off::CHAMP_KINDS..off::CHAMP_KINDS + CHAMP_SLOTS].copy_from_slice(&self.champ_kinds);
         b[off::MAP_CACHE..off::MAP_CACHE + MAP_CACHE_BYTES].copy_from_slice(&self.map_cache);
+        b[off::MAP_FP..off::MAP_FP + 4].copy_from_slice(&self.map_fp.to_le_bytes());
         let crc = crc16(&b[..off::CRC]);
         b[off::CRC..off::CRC + 2].copy_from_slice(&crc.to_le_bytes());
         b
@@ -399,6 +411,7 @@ impl ThetaMatch {
         }
         t.champ_kinds.copy_from_slice(&b[off::CHAMP_KINDS..off::CHAMP_KINDS + CHAMP_SLOTS]);
         t.map_cache.copy_from_slice(&b[off::MAP_CACHE..off::MAP_CACHE + MAP_CACHE_BYTES]);
+        t.map_fp = u32::from_le_bytes([b[off::MAP_FP], b[off::MAP_FP + 1], b[off::MAP_FP + 2], b[off::MAP_FP + 3]]);
         Ok(t)
     }
 

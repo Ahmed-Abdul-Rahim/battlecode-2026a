@@ -23,8 +23,14 @@ use crate::telemetry::{self, TurnLog};
 use crate::world::World;
 use cambc::{CampGroupState, Champion, ChampionState, Result, Team};
 
+#[path = "teacher.rs"]
+mod teacher;
+
 /// Vision radius for deciding which camp groups we can check this turn.
 const VISION: i32 = 8;
+
+/// Camps further than this (from their spawn) only count as alive; no other queries.
+const FAR_CAMP: i32 = 7;
 
 /// Assume an unreadable, camp-less group stays down this long before re-checking.
 const INFER_DOWN_ROUNDS: i32 = 8;
@@ -86,6 +92,8 @@ pub struct Bot {
     fsm_seen: Option<(ChampionKind, f32)>,
     /// COMBAT_FSM bit 64: last fight-or-flee choice against the visible enemy.
     fsm_fighting: Option<bool>,
+    /// knob2 TEACHER: this champion's previous observations (nn/ pipeline).
+    nn_hist: teacher::History,
 }
 
 /// Engage turns without landing anything before we give up on that enemy.
@@ -190,6 +198,13 @@ const EARLY_RAMP_KNEE: f32 = 20.0;
 const CAMP_INFEASIBLE_VALUE: f32 = 0.1;
 /// Fuel the rest of a turn needs after target scoring (path 40k + act 5k + reserve).
 const TARGET_REST_FUEL: u64 = 55_000;
+/// Below this before acting, only Intent::Hold (attack what is in range) runs: clearing a camp
+/// spends ~10k before it walks and the walk ~10k more (measured on yellow-brick-road).
+const EXEC_MIN_FUEL: u64 = 25_000;
+/// Fuel a turn still needs after a mid-turn field precompute (context, path, act).
+const PRECOMPUTE_REST_FUEL: u64 = 25_000;
+/// ... and when our own target has no field yet (the fresh field makes pathing cheap).
+const URGENT_REST_FUEL: u64 = 12_000;
 /// Most turns in a row a target is kept unscored when fuel is short.
 const TARGET_KEEP_MAX: u8 = 8;
 /// knob2 CLUSTER: neighbours count up to this many walking tiles from a group's centre.
@@ -224,15 +239,21 @@ const LAST_STAND_MAX_GEMS: u32 = 20;
 impl Bot {
     pub fn new() -> Result<Self> {
         let theta = ThetaMatch::decode(cambc::draft_memory().bytes()).unwrap_or_default();
-        let world = World::build(theta.knob(knob::SAFE_ALTAR) > 0)?;
-        // Policy pack: this map's learned parameters and hotspots (harness/pack.py).
-        let fp = crate::world::fingerprint(
-            world.width,
-            world.height,
-            &world.terrain.walls,
-            &world.terrain.holes,
-            &world.terrain.altars,
-        );
+        let world =
+            World::build(theta.knob(knob::SAFE_ALTAR) > 0, theta.knob2(knob2::CLUSTER) > 0)?;
+        // Policy pack: this map's learned parameters and hotspots (harness/pack.py). The draft
+        // passes the fingerprint (hashing the map here cost ~50-60k fuel on big maps).
+        let fp = if theta.map_fp != 0 {
+            theta.map_fp
+        } else {
+            crate::world::fingerprint(
+                world.width,
+                world.height,
+                &world.terrain.walls,
+                &world.terrain.holes,
+                &world.terrain.altars,
+            )
+        };
         let entry = crate::pack::lookup(fp);
         crate::learned::init(entry.theta);
         let hotspots: Vec<(Pos, f32)> = entry
@@ -275,7 +296,7 @@ impl Bot {
         if slot == 0 {
             telemetry::map_dump(&world);
         }
-        Ok(Self {
+        let bot = Self {
             knobs: Knobs::from_theta(&theta),
             team_size: allies.len().max(1),
             world,
@@ -313,7 +334,12 @@ impl Bot {
             fsm: Fsm::default(),
             fsm_seen: None,
             fsm_fighting: None,
-        })
+            nn_hist: teacher::History::default(),
+        };
+        if bot.teacher_mode() > 0 {
+            bot.teacher_header();
+        }
+        Ok(bot)
     }
 
     pub fn turn(&mut self) -> Result<()> {
@@ -464,7 +490,15 @@ impl Bot {
             mark = self.charge(Stage::Brain, mark);
             // First turns: get the fields we need right now.
             let gov = &self.gov;
-            self.world.fields.precompute(&|cost| gov.turn_allows(cost + 20_000, fuel()))?;
+            // Keep what the rest of the turn needs (context, pathing on a fresh field, actions).
+            // The out-of-fuel turns came from underestimated field costs (now measured); keeping
+            // TARGET_REST_FUEL here instead starved maps like yellow-brick-road of fields
+            // altogether (0-15 gems a game, 2026-10-23).
+            // No field for our own target yet: that is urgent (without it the bot walks straight
+            // lines and gets stuck on maze maps); a fresh field makes the rest of the turn cheap.
+            let urgent = self.target.is_some_and(|t| !self.world.fields.is_ready(Goal::Group(t as u8)));
+            let rest = if urgent { URGENT_REST_FUEL } else { PRECOMPUTE_REST_FUEL };
+            self.world.fields.precompute(&|cost| gov.turn_allows(cost + rest, fuel()))?;
             mark = self.charge(Stage::Precompute, mark);
 
             let mut ctx = self.context(round, my_pos, hp, max_hp, &vis, &chan, state, me)?;
@@ -904,6 +938,41 @@ impl Bot {
                 intent = Intent::WalkHome;
                 telemetry::event(round, champ_name(self.kind), "walk_home", 1);
             }
+            // nn/ teacher (knob2 TEACHER): observe; at 2 the network replaces the rules' choice.
+            let teach = self.teacher_mode();
+            let busy = state.intersects(
+                ChampionState::RECALLING | ChampionState::SUBMITTING_GEMS | ChampionState::TELEPORTING,
+            );
+            let student_fuel = teach < 5
+                || (round >= teacher::STUDENT_FROM_ROUND
+                    && fuel() > teacher::STUDENT_MIN_FUEL
+                    && self.student_ready());
+            let nn_obs = (teach > 0 && !busy && student_fuel).then(|| {
+                self.teacher_obs(&ctx, &vis, &chan, me, my_pos, round, hurt_this_round, intent, teach < 5)
+            });
+            let mut nn_choice = None;
+            if let (true, Some(o)) = (teach >= 2, &nn_obs) {
+                // 3 = diagnostic: the rules' own goal through the teacher's control path.
+                let pick = if teach == 5 {
+                    self.student_pick(o)
+                } else if teach == 3 {
+                    Some(teacher::Choice { a: [o.rule_goal as i32, 0, -1, -1], logp: 0.0 })
+                } else if teach == 4 {
+                    // 4 = diagnostic: the network's goal, the executor's own moves.
+                    self.teacher_pick(o, &self.nn_hist).map(|mut c| {
+                        c.a = [c.a[0], 0, -1, -1];
+                        c
+                    })
+                } else {
+                    self.teacher_pick(o, &self.nn_hist)
+                };
+                if let Some(c) = pick {
+                    if let Some(i) = teacher::intent_of(o, c.a[0] as usize) {
+                        intent = i;
+                    }
+                    nn_choice = Some(c);
+                }
+            }
             self.charge(Stage::Brain, mark);
             let claim = match intent {
                 Intent::ClearCamp(g) | Intent::Capture(g) | Intent::Approach(g) => {
@@ -968,7 +1037,18 @@ impl Bot {
                 exec.combo = fsm_bits & (64 | 8) == 64 | 8;
                 exec.stun_lock = stun_lock;
                 exec.dash_in = fsm_bits & (64 | 16) == 64 | 16;
-                if let Some((step, target, cast)) = micro {
+                let nn_micro = nn_choice.filter(|c| c.a[1] > 0).zip(nn_obs.as_ref()).map(|(c, o)| {
+                    let step = (c.a[1] >= 2).then(|| o.steps[c.a[1] as usize - 1]);
+                    let target = (c.a[2] > 0).then(|| o.enemies[c.a[2] as usize - 1]).flatten();
+                    (step, target, c.a[3] == 1)
+                });
+                // Last safety net: too little fuel for a full move (pathing can cost 10k+): only
+                // the cheap hold-and-hit action this turn, instead of running out mid-move.
+                if fuel() < EXEC_MIN_FUEL {
+                    exec.execute(Intent::Hold)?;
+                } else if let Some((step, target, cast)) = nn_micro {
+                    exec.micro(step, target, cast)?;
+                } else if let Some((step, target, cast)) = micro {
                     exec.micro(step, target, cast)?;
                 } else {
                     exec.execute(intent)?;
@@ -980,6 +1060,11 @@ impl Bot {
             }
             if exec_out.moved {
                 self.last_pos = pos(me.position()?);
+            }
+            if let Some(o) = &nn_obs {
+                let c = nn_choice.unwrap_or_else(|| Self::teacher_labels(o));
+                self.teacher_log(round, o, &c, teach);
+                self.nn_hist.push(&o.s);
             }
             // RL training builds: what this turn did (wasted turns cost reward in ml/rl).
             if self.theta.knob2(knob2::RL_SEED) > 0 {
@@ -1639,6 +1724,7 @@ impl Bot {
                 self.belief.forget(kind);
                 continue;
             }
+            let max_hp = e.max_health().unwrap_or(hp);
             let (strength, focus) =
                 (e.strength().unwrap_or(kit.base_strength), e.focus().unwrap_or(kit.base_focus));
             let dps = if stun_threat {
@@ -1650,13 +1736,13 @@ impl Bot {
             let dps = dps
                 * crate::bc_core::champion::missing_health_bonus(
                     kind,
-                    hp / e.max_health().unwrap_or(hp).max(1.0),
+                    hp / max_hp.max(1.0),
                 );
             let view = EnemyView {
                 pos: p,
                 dist: my_pos.cheb(p),
                 hp,
-                max_hp: e.max_health().unwrap_or(hp),
+                max_hp,
                 dps,
                 gems: e.gem_count().unwrap_or(0),
                 ranged: kit.attack == AttackType::Ranged,
@@ -1720,24 +1806,38 @@ impl Bot {
 
         let mut seen_groups = Vec::new();
         for c in cambc::vision::camps()? {
+            let spawn = pos(c.spawn_position());
             let Ok(state) = c.state() else { continue };
             if state.is_dead() {
                 continue;
             }
-            let p = c.position().map(pos).unwrap_or_else(|_| pos(c.spawn_position()));
-            let group = self.world.group_at(pos(c.spawn_position()));
+            let group = self.world.group_at(spawn);
             if let Some(g) = group {
                 if !seen_groups.contains(&g) {
                     seen_groups.push(g);
                     self.belief.observe_group(g, GroupObs::Alive, round);
                 }
             }
+            // Far camps (they never chase more than 3 tiles from their spawn): alive is all we
+            // need. Their position/health/strength queries cost ~450 fuel each, and maps like
+            // yellow-brick-road show 40+ camps (observe took 60k+ and turns ran out of fuel).
+            if spawn.cheb(my_pos) > FAR_CAMP {
+                continue;
+            }
+            let p = c.position().map(pos).unwrap_or(spawn);
+            let awake = state.is_awake();
+            // Sleeping camps don't hit: their kind's base strength is enough (no host query).
+            let strength = if awake {
+                c.strength().unwrap_or(0.0)
+            } else {
+                crate::bc_draft::CampKind::from_engine(c.kind() as i32).map_or(0.0, |k| k.strength())
+            };
             vis.camps.push(CampView {
                 pos: p,
                 dist: my_pos.cheb(p),
                 hp: c.health().unwrap_or(0.0),
-                awake: state.is_awake(),
-                strength: c.strength().unwrap_or(0.0),
+                awake,
+                strength,
                 group,
                 handle: c,
             });
@@ -1747,8 +1847,12 @@ impl Bot {
         // The target is always checked; others when close, at most 2 per turn.
         let mut checked = 0;
         for (i, g) in self.world.groups.iter().enumerate() {
-            let near = g.tiles.iter().map(|t| t.cheb(my_pos)).min().unwrap_or(i32::MAX);
             let is_target = self.target == Some(i);
+            // Cheap bound first: the centre's distance minus the group's radius.
+            if !is_target && g.center.cheb(my_pos) - g.radius > VISION {
+                continue;
+            }
+            let near = g.tiles.iter().map(|t| t.cheb(my_pos)).min().unwrap_or(i32::MAX);
             if seen_groups.contains(&i) || near > VISION || (!is_target && checked >= 2) {
                 continue;
             }
@@ -1951,7 +2055,23 @@ impl Bot {
         let mut f = String::new();
         let (mut t0, mut t1) = (0u64, 0u64);
         why!(t0 = fuel());
-        for (i, g) in self.world.groups.iter().enumerate() {
+        // Short on fuel (dense maps: ~1.5k per group): nearest groups first, and stop once a
+        // candidate exists and the rest of the turn's fuel is reached. With enough fuel every
+        // group is scored in index order as before.
+        let n_groups = self.world.groups.len();
+        // Per-group cost from the last full scoring (it grew to ~6k a group; 1.5k was measured
+        // long ago and made `short` miss: one scoring then took 60k).
+        let per_group = (self.target_cost / n_groups.max(1) as u64).max(1_500);
+        let short = fuel() < n_groups as u64 * per_group + TARGET_REST_FUEL;
+        let mut order: Vec<usize> = (0..n_groups).collect();
+        if short {
+            order.sort_by_key(|&i| self.world.groups[i].center.cheb(my_pos));
+        }
+        for i in order {
+            let g = &self.world.groups[i];
+            if best.is_some() && fuel() < TARGET_REST_FUEL {
+                break;
+            }
             why!(f.clear());
             if g.has_monolith && live {
                 // The monolith hits the nearest champion for its strength every round: the
@@ -2128,7 +2248,7 @@ impl Bot {
         }
         why!(t1 = fuel());
         let pick = best.map_or(-1, |(_, i)| i as i64);
-        if self.theta.knob(knob::EN_ROUTE) > 0 {
+        if self.theta.knob(knob::EN_ROUTE) > 0 && fuel() > TARGET_REST_FUEL {
             if let Some((_, far)) = best {
                 let quiet = vis.enemies.iter().all(|e| e.on_spawn || e.dist > 6);
                 if let Some(stop) = self.en_route_stop(far, my_pos, round, chan, quiet) {
