@@ -198,6 +198,9 @@ const EARLY_RAMP_KNEE: f32 = 20.0;
 const CAMP_INFEASIBLE_VALUE: f32 = 0.1;
 /// Fuel the rest of a turn needs after target scoring (path 40k + act 5k + reserve).
 const TARGET_REST_FUEL: u64 = 55_000;
+/// Below this before acting, only Intent::Hold (attack what is in range) runs: clearing a camp
+/// spends ~10k before it walks and the walk ~10k more (measured on yellow-brick-road).
+const EXEC_MIN_FUEL: u64 = 25_000;
 /// Fuel a turn still needs after a mid-turn field precompute (context, path, act).
 const PRECOMPUTE_REST_FUEL: u64 = 25_000;
 /// ... and when our own target has no field yet (the fresh field makes pathing cheap).
@@ -1039,7 +1042,11 @@ impl Bot {
                     let target = (c.a[2] > 0).then(|| o.enemies[c.a[2] as usize - 1]).flatten();
                     (step, target, c.a[3] == 1)
                 });
-                if let Some((step, target, cast)) = nn_micro {
+                // Last safety net: too little fuel for a full move (pathing can cost 10k+): only
+                // the cheap hold-and-hit action this turn, instead of running out mid-move.
+                if fuel() < EXEC_MIN_FUEL {
+                    exec.execute(Intent::Hold)?;
+                } else if let Some((step, target, cast)) = nn_micro {
                     exec.micro(step, target, cast)?;
                 } else if let Some((step, target, cast)) = micro {
                     exec.micro(step, target, cast)?;
@@ -2052,14 +2059,17 @@ impl Bot {
         // candidate exists and the rest of the turn's fuel is reached. With enough fuel every
         // group is scored in index order as before.
         let n_groups = self.world.groups.len();
-        let short = fuel() < n_groups as u64 * 1_500 + TARGET_REST_FUEL;
+        // Per-group cost from the last full scoring (it grew to ~6k a group; 1.5k was measured
+        // long ago and made `short` miss: one scoring then took 60k).
+        let per_group = (self.target_cost / n_groups.max(1) as u64).max(1_500);
+        let short = fuel() < n_groups as u64 * per_group + TARGET_REST_FUEL;
         let mut order: Vec<usize> = (0..n_groups).collect();
         if short {
             order.sort_by_key(|&i| self.world.groups[i].center.cheb(my_pos));
         }
         for i in order {
             let g = &self.world.groups[i];
-            if short && best.is_some() && fuel() < TARGET_REST_FUEL {
+            if best.is_some() && fuel() < TARGET_REST_FUEL {
                 break;
             }
             why!(f.clear());
@@ -2238,7 +2248,7 @@ impl Bot {
         }
         why!(t1 = fuel());
         let pick = best.map_or(-1, |(_, i)| i as i64);
-        if self.theta.knob(knob::EN_ROUTE) > 0 {
+        if self.theta.knob(knob::EN_ROUTE) > 0 && fuel() > TARGET_REST_FUEL {
             if let Some((_, far)) = best {
                 let quiet = vis.enemies.iter().all(|e| e.on_spawn || e.dist > 6);
                 if let Some(stop) = self.en_route_stop(far, my_pos, round, chan, quiet) {
