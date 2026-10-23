@@ -97,6 +97,11 @@ pub struct Bot {
 }
 
 /// Engage turns without landing anything before we give up on that enemy.
+/// knob2 DRAFT_PLAN bit 1: frontier groups (this many steps closer to the enemy spawn than to
+/// ours) are worth this much while enemy champions are within PLAN_ENEMY_CLOSE tiles.
+const PLAN_FRONTIER_SLACK: u8 = 4;
+const PLAN_FRONTIER_VALUE: f32 = 0.7;
+const PLAN_ENEMY_CLOSE: i32 = 10;
 const ENGAGE_STALL_TURNS: u32 = 4;
 /// How long to ignore an unreachable enemy.
 const IGNORE_ENEMY_ROUNDS: u32 = 40;
@@ -2008,6 +2013,8 @@ impl Bot {
         let team_power =
             if live { self.cur_dps.max(my_dps) } else { my_dps } * self.team_size as f32;
         let value_profile = self.theta.knob(knob::VALUE_PROFILE);
+        let plan_bits = self.theta.knob2(knob2::DRAFT_PLAN);
+        let enemy_close = vis.enemies.iter().any(|e| !e.on_spawn && e.dist <= PLAN_ENEMY_CLOSE);
         // VALUE_PROFILE 4/5: near camps first in the opening (gold now beats gems later).
         let opening = matches!(value_profile, 4 | 5) && round < OPENING_ROUNDS;
         // Loop invariants, read once (scoring every group used ~1.5k fuel each).
@@ -2127,6 +2134,21 @@ impl Bot {
                     }
                     ChampionKind::Prism => value = g.gems as f32 * 1.4 + g.gold as f32 / 3.0,
                     _ => {}
+                }
+            }
+            // knob2 DRAFT_PLAN: the draft's per-group table (walking distances, champions needed).
+            if let Some(pg) = (plan_bits > 0).then(|| self.theta.plan.get(i)).flatten() {
+                if plan_bits & 2 != 0 && pg.need > 0 {
+                    let need = u32::from(pg.need).saturating_sub(emblems / 2).max(1);
+                    let helpers = 1 + vis.allies.iter().filter(|a| a.pos.cheb(g.center) <= 8).count() as u32;
+                    if need > helpers {
+                        why!(rows.push(format!("[{i},\"skip:plan_need\"]")));
+                        continue;
+                    }
+                }
+                if plan_bits & 1 != 0 && enemy_close && pg.frontier(PLAN_FRONTIER_SLACK) {
+                    value *= PLAN_FRONTIER_VALUE;
+                    why!(f.push_str("\"frontier\":1,"));
                 }
             }
             // CAMP_FEASIBLE bit 4: a group whose camps are all in sight costs its live HP

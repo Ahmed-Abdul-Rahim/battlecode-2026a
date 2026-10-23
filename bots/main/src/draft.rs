@@ -25,6 +25,8 @@ struct DraftCache {
     pack_draft: Vec<DraftChoice>,
     /// Map fingerprint, passed to the champions in draft memory.
     fp: u32,
+    /// Per group (engine order): walking steps / 2 from our spawn, from theirs, to an altar.
+    plan_dist: Vec<[u8; 3]>,
 }
 
 thread_local! {
@@ -87,6 +89,78 @@ fn map_fingerprint() -> Result<u32> {
     Ok(crate::world::fingerprint(w, h, &walls, &holes, &altars))
 }
 
+/// Walking distance (steps / 2, 255 = unreachable) from each camp group's nearest tile to our
+/// spawn, the enemy spawn and the nearest tribute tile: three host distance fields (~20k fuel
+/// each on 100x100), affordable only on the first draft turn (10x fuel).
+fn plan_distances() -> Result<Vec<[u8; 3]>> {
+    let mut walls = cambc::map::walls()?.clone();
+    walls.union_assign(cambc::map::holes()?)?;
+    walls.union_assign(cambc::map::altars()?)?;
+    let free = walls.complement()?;
+    let mut ours = cambc::map::spawn_region(Team::Ally)?.clone();
+    ours.intersect_assign(&free)?;
+    let mut theirs = cambc::map::spawn_region(Team::Enemy)?.clone();
+    theirs.intersect_assign(&free)?;
+    let mut altar = Bitboard::new()?;
+    for a in cambc::map::altars()?.positions()? {
+        altar.draw_chebyshev(a, cambc::constants().submit_gems_range as f32)?;
+    }
+    altar.intersect_assign(&free)?;
+    let mut fields = Vec::new();
+    for roots in [&ours, &theirs, &altar] {
+        let mut f = DistanceField::new()?;
+        f.compute(&walls, roots, &mut Bitboard::new()?, DistanceField::UNREACHABLE)?;
+        fields.push(f);
+    }
+    let mut out = Vec::new();
+    for g in cambc::map::camp_groups()? {
+        let tiles: Vec<_> = g.camps().iter().map(|c| c.spawn_position()).collect();
+        let mut rec = [crate::bc_core::memory::PLAN_DIST_UNKNOWN; 3];
+        for (k, f) in fields.iter().enumerate() {
+            let d = tiles
+                .iter()
+                .filter_map(|&t| f.get(t).ok())
+                .filter(|&d| d != DistanceField::UNREACHABLE)
+                .min();
+            if let Some(d) = d {
+                rec[k] = (d / 2).min(254) as u8;
+            }
+        }
+        out.push(rec);
+    }
+    Ok(out)
+}
+
+/// How many of `allies` (base kits) a group needs so that the champion the camps focus survives
+/// the clear: camps hit the nearest champion, so one of us takes the whole group's damage for
+/// the clear time (total HP / team damage). 1-4; 5 = not even four.
+fn camp_need(camps: &[CampKind], allies: &[ChampionKind]) -> u8 {
+    if allies.is_empty() || camps.is_empty() {
+        return 0;
+    }
+    let n = allies.len() as f32;
+    let dps = allies
+        .iter()
+        .map(|&k| {
+            let kit = sdk::kit(k);
+            sdk::dps(kit.base_strength, kit.base_focus, &kit)
+        })
+        .sum::<f32>()
+        / n;
+    let tank = allies.iter().map(|&k| sdk::kit(k).base_health).fold(0.0, f32::max);
+    let hp: f32 = camps.iter().map(|c| c.health()).sum();
+    let hit: f32 = camps.iter().map(|c| c.strength()).sum();
+    if hit <= 0.0 {
+        return 1;
+    }
+    (1..=4u8)
+        .find(|&m| hit * hp / (f32::from(m) * dps.max(1.0)) <= tank * NEED_SAFETY)
+        .unwrap_or(5)
+}
+
+/// Fraction of the tank's health a clear may cost (camp_need).
+const NEED_SAFETY: f32 = 0.8;
+
 fn build_cache() -> Result<DraftCache> {
     let map = map_info()?;
     let fp = map_fingerprint()?;
@@ -102,6 +176,7 @@ fn build_cache() -> Result<DraftCache> {
         weights: ScorerWeights::default(),
         plan,
         fp,
+        plan_dist: plan_distances().unwrap_or_default(),
         pack_draft: {
             let team_size = cambc::draft::team_size()?;
             crate::pack::lookup(fp)
@@ -173,6 +248,17 @@ pub fn play() -> Result<()> {
                 }
             }
             theta.map_fp = c.fp;
+            theta.plan = c
+                .plan_dist
+                .iter()
+                .zip(&c.map.groups)
+                .map(|(d, g)| crate::bc_core::memory::PlanGroup {
+                    from_us: d[0],
+                    from_them: d[1],
+                    to_altar: d[2],
+                    need: if last { camp_need(&g.camps, &allies) } else { 0 },
+                })
+                .collect();
             cambc::draft_memory().submit(&theta.encode())?;
         }
         Ok(())

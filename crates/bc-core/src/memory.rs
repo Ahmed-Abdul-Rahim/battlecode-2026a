@@ -24,6 +24,13 @@ pub const CHAMP_SLOTS: usize = 10;
 pub const CHAMP_VEC_LEN: usize = 16;
 pub const MAP_CACHE_BYTES: usize = 192;
 pub const NO_CHAMPION: u8 = 0xFF;
+/// Draft plan (offset 580): a per-camp-group table the draft computes with its 10x fuel and the
+/// whole map in view, so champions don't have to (knob2 DRAFT_PLAN).
+pub const PLAN_GROUPS: usize = 32;
+pub const PLAN_REC: usize = 4;
+pub const PLAN_BYTES: usize = 4 + PLAN_GROUPS * PLAN_REC;
+/// Distances are walking steps / 2, capped at 254; 255 = unknown / unreachable.
+pub const PLAN_DIST_UNKNOWN: u8 = 255;
 
 mod off {
     pub const MAGIC: usize = 0;
@@ -43,6 +50,8 @@ mod off {
     /// Map fingerprint (u32 LE) the draft computed (0 = not written): champions skip hashing
     /// the map themselves (~50-60k fuel on big maps, on a first turn that is already full).
     pub const MAP_FP: usize = 576;
+    /// Draft plan: version (1), group count, 2 spare, then PLAN_REC bytes per group.
+    pub const PLAN: usize = 580;
     pub const CRC: usize = 1022;
 }
 
@@ -118,7 +127,12 @@ pub mod knob2 {
     /// Local runs only: it needs `--fuel` far above the ladder's 100k.
     pub const TEACHER: usize = 26;
 
-    pub const DEFAULTS: [(usize, u8); 27] = [
+    /// Draft plan (ThetaMatch::plan) bits: 1 = discount frontier groups (walking-closer to the enemy
+    /// spawn) while the enemy is in sight or the team is behind, 2 = skip groups whose `need`
+    /// is more champions than are within reach. Slots 27/28 are PATH_CHASE / LOOT_GUARD.
+    pub const DRAFT_PLAN: usize = 29;
+
+    pub const DEFAULTS: [(usize, u8); 28] = [
         (PASSIVE_AWARE, 0),
         (FOCUS, 1),
         (ENDGAME, 1),
@@ -146,6 +160,7 @@ pub mod knob2 {
         (CLUSTER, 0),
         (KEEP_BUYING, 1),
         (TEACHER, 0),
+        (DRAFT_PLAN, 0),
     ];
 }
 
@@ -304,6 +319,28 @@ pub struct ThetaMatch {
     pub map_cache: [u8; MAP_CACHE_BYTES],
     /// `world::fingerprint` of this map, from the draft; 0 = not written.
     pub map_fp: u32,
+    /// Per camp group, in the engine's group order: walking distance (steps / 2) from our spawn,
+    /// from the enemy spawn and to the nearest altar, then how many of our champions the group
+    /// needs to be cleared without a death (0 = not computed). Empty = no plan written.
+    pub plan: Vec<PlanGroup>,
+}
+
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub struct PlanGroup {
+    pub from_us: u8,
+    pub from_them: u8,
+    pub to_altar: u8,
+    pub need: u8,
+}
+
+impl PlanGroup {
+    /// Closer (by walking) to the enemy spawn than to ours by more than `slack` steps.
+    #[must_use]
+    pub fn frontier(&self, slack: u8) -> bool {
+        self.from_us != PLAN_DIST_UNKNOWN
+            && self.from_them != PLAN_DIST_UNKNOWN
+            && u16::from(self.from_them) + u16::from(slack) / 2 < u16::from(self.from_us)
+    }
 }
 
 impl Default for ThetaMatch {
@@ -329,6 +366,7 @@ impl Default for ThetaMatch {
             champ_vecs: [[0; CHAMP_VEC_LEN]; CHAMP_SLOTS],
             map_cache: [0; MAP_CACHE_BYTES],
             map_fp: 0,
+            plan: Vec::new(),
         }
     }
 }
@@ -364,6 +402,15 @@ impl ThetaMatch {
         b[off::CHAMP_KINDS..off::CHAMP_KINDS + CHAMP_SLOTS].copy_from_slice(&self.champ_kinds);
         b[off::MAP_CACHE..off::MAP_CACHE + MAP_CACHE_BYTES].copy_from_slice(&self.map_cache);
         b[off::MAP_FP..off::MAP_FP + 4].copy_from_slice(&self.map_fp.to_le_bytes());
+        if !self.plan.is_empty() {
+            let n = self.plan.len().min(PLAN_GROUPS);
+            b[off::PLAN] = 1;
+            b[off::PLAN + 1] = n as u8;
+            for (i, g) in self.plan.iter().take(n).enumerate() {
+                let at = off::PLAN + 4 + i * PLAN_REC;
+                b[at..at + PLAN_REC].copy_from_slice(&[g.from_us, g.from_them, g.to_altar, g.need]);
+            }
+        }
         let crc = crc16(&b[..off::CRC]);
         b[off::CRC..off::CRC + 2].copy_from_slice(&crc.to_le_bytes());
         b
@@ -411,6 +458,15 @@ impl ThetaMatch {
         t.champ_kinds.copy_from_slice(&b[off::CHAMP_KINDS..off::CHAMP_KINDS + CHAMP_SLOTS]);
         t.map_cache.copy_from_slice(&b[off::MAP_CACHE..off::MAP_CACHE + MAP_CACHE_BYTES]);
         t.map_fp = u32::from_le_bytes([b[off::MAP_FP], b[off::MAP_FP + 1], b[off::MAP_FP + 2], b[off::MAP_FP + 3]]);
+        if b[off::PLAN] == 1 {
+            let n = usize::from(b[off::PLAN + 1]).min(PLAN_GROUPS);
+            t.plan = (0..n)
+                .map(|i| {
+                    let at = off::PLAN + 4 + i * PLAN_REC;
+                    PlanGroup { from_us: b[at], from_them: b[at + 1], to_altar: b[at + 2], need: b[at + 3] }
+                })
+                .collect();
+        }
         Ok(t)
     }
 
@@ -634,6 +690,20 @@ fn hp_quarter(hp_frac: f32) -> u8 {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn draft_plan_round_trips_and_stays_off_when_empty() {
+        let mut t = ThetaMatch::default();
+        assert!(ThetaMatch::decode(&t.encode()).unwrap().plan.is_empty());
+        t.plan = (0..40)
+            .map(|i| PlanGroup { from_us: i, from_them: 40 - i, to_altar: 7, need: (i % 3) + 1 })
+            .collect();
+        let back = ThetaMatch::decode(&t.encode()).unwrap();
+        assert_eq!(back.plan.len(), PLAN_GROUPS);
+        assert_eq!(back.plan[..], t.plan[..PLAN_GROUPS]);
+        assert!(back.plan[30].frontier(2) && !back.plan[1].frontier(2));
+        assert!(off::PLAN + PLAN_BYTES <= off::CRC);
+    }
 
     fn sample_theta() -> ThetaMatch {
         let mut t = ThetaMatch {
