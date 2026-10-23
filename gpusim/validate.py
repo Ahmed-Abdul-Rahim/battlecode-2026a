@@ -64,7 +64,8 @@ def infer_camp_ids(ts, md, names) -> dict[int, int]:
     return out
 
 
-def main(bundle: str, stats: str, map_name: str, max_rounds: int = 10**9) -> int:
+def main(bundle: str, stats: str, map_name: str, max_rounds: int = 10**9) -> dict:
+    """Replays the game and returns {rounds, issues, metrics: {metric: [(champion, official final, engine final, first divergent round)]}}."""
     if os.environ.get("CAMP_SLEEP"):
         import gpusim.engine as eng_mod
         eng_mod.CAMP_SLEEP, eng_mod.CAMP_SLEEP_ROUNDS = os.environ["CAMP_SLEEP"], int(os.environ["CAMP_SLEEP_ROUNDS"])
@@ -210,6 +211,7 @@ def main(bundle: str, stats: str, map_name: str, max_rounds: int = 10**9) -> int
             print(nm, m, "round: official/engine", [(r, int(b[r]), int(a[r])) for r in range(min(40, n_rounds)) if r == 0 or b[r] != b[r - 1] or a[r] != a[r - 1]])
     print(f"{map_name}: {n_rounds} rounds, {len(ts)} turns, camp ids mapped {len(camp_of)}")
     print("issues:", dict(issues))
+    report = {"rounds": n_rounds, "issues": dict(issues), "metrics": {}}
     for m in METRICS:
         errs = []
         for cid in names:
@@ -219,7 +221,8 @@ def main(bundle: str, stats: str, map_name: str, max_rounds: int = 10**9) -> int
         print(f"\n{m}: (champion: official final, engine final, first round they differ)")
         for cid, nm, b, a, fd in errs:
             print(f"   {nm:12s} {b:9.0f} {a:9.0f}   {fd}")
-    return 0
+        report["metrics"][m] = [(nm, float(b), float(a), fd) for _, nm, b, a, fd in errs]
+    return report
 
 
 e_done: dict[int, float] = {}
@@ -243,4 +246,4 @@ def first_divergence(a: np.ndarray, b: np.ndarray, tol: float = 0.5) -> int | No
 
 if __name__ == "__main__":
     torch.set_grad_enabled(False)
-    raise SystemExit(main(*sys.argv[1:4], *(int(a) for a in sys.argv[4:5])))
+    main(*sys.argv[1:4], *(int(a) for a in sys.argv[4:5]))

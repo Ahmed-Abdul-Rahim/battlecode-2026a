@@ -51,6 +51,13 @@ def load() -> dict:
 
 
 def save(reg: dict) -> None:
+    """Write `reg`, merged with the file: since experiments run inside the daemon, an
+    `experiments add` in the same checkout can land while `reg` is held in memory (that
+    overwrite lost experiments 96 and 97 once). Our entries win per id; new ids are kept."""
+    disk = L.load_json(REGISTRY, {})
+    merged = L.merge_experiments(reg, disk) if disk else reg
+    reg.clear()
+    reg.update(merged)
     L.save_json(REGISTRY, reg)
 
 
