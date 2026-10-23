@@ -92,13 +92,15 @@ def fit_value(vnet, opt, b: Batches, target: np.ndarray, epochs: int, bs: int) -
     return loss_sum / max(k, 1)
 
 
-def load_nets(init: Path | None, arch: str, width: int):
-    pol = model.make(arch, width, sum(spec.HEADS)).to(DEV)
+def load_nets(init: Path | None, arch: str, width: int, rank: int = 0):
+    """Policy (first layer factorised to `rank` if > 0) and value network (always full: it
+    never runs in the bot)."""
+    pol = model.make(arch, width, sum(spec.HEADS), rank).to(DEV)
     val = model.make(arch, width, 1).to(DEV)
-    meta = {"arch": arch, "width": width}
+    meta = {"arch": arch, "width": width, "rank": rank}
     if init:
         meta = json.loads((init / "meta.json").read_text())
-        pol = model.make(meta["arch"], meta["width"], sum(spec.HEADS)).to(DEV)
+        pol = model.make(meta["arch"], meta["width"], sum(spec.HEADS), meta.get("rank", 0)).to(DEV)
         val = model.make(meta["arch"], meta["width"], 1).to(DEV)
         pol.load_state_dict(torch.load(init / "policy.pt", map_location=DEV))
         val.load_state_dict(torch.load(init / "value.pt", map_location=DEV))
@@ -135,7 +137,7 @@ def bc(a) -> dict:
     d = data.load([Path(p) for p in a.data])
     d["A"][:, 1] = 0
     d["A"][:, 2:] = -1
-    pol, val, meta = load_nets(Path(a.init) if a.init else None, a.arch, a.width)
+    pol, val, meta = load_nets(Path(a.init) if a.init else None, a.arch, a.width, a.rank)
     traj = d["TRAJ"]
     held = (traj % 10) == 0  # every 10th champion-game held out
     b = Batches(d)
@@ -242,14 +244,26 @@ def ppo(a) -> dict:
     }
 
 
+def factorize(a) -> dict:
+    """Turn a checkpoint's policy into a rank-`a.rank` one (the value network stays full)."""
+    pol, val, meta = load_nets(Path(a.init), a.arch, a.width)
+    if meta.get("rank", 0):
+        raise SystemExit(f"{a.init} is already rank {meta['rank']}")
+    small = model.factorize(pol, a.rank)
+    meta["rank"] = a.rank
+    save(Path(a.out), small, val, meta)
+    return {"mode": "factorize", "rank": a.rank}
+
+
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser()
-    p.add_argument("mode", choices=["bc", "ppo"])
-    p.add_argument("--data", nargs="+", required=True)
+    p.add_argument("mode", choices=["bc", "ppo", "factorize"])
+    p.add_argument("--data", nargs="+", default=[])
     p.add_argument("--out", required=True)
     p.add_argument("--init")
     p.add_argument("--arch", default="mlp")
     p.add_argument("--width", type=int, default=512)
+    p.add_argument("--rank", type=int, default=0)
     p.add_argument("--lr", type=float, default=None)
     p.add_argument("--epochs", type=int, default=None)
     p.add_argument("--batch", type=int, default=4096)
@@ -265,7 +279,7 @@ def main(argv: list[str] | None = None) -> int:
     if a.epochs is None:
         a.epochs = 30 if a.mode == "bc" else 4
     t = time.time()
-    m = bc(a) if a.mode == "bc" else ppo(a)
+    m = {"bc": bc, "ppo": ppo, "factorize": factorize}[a.mode](a)
     m["seconds"] = round(time.time() - t, 1)
     print(json.dumps(m))
     return 0

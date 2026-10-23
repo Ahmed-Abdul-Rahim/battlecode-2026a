@@ -46,7 +46,10 @@ ANCHORS = [
 ]
 IMIT_GAMES = 288
 ROLL_GAMES = 56
-EVAL_EVERY = 2  # PPO iterations between evaluations
+EVAL_EVERY = 4  # PPO iterations between evaluations
+#: Teacher's first layer factorised to this rank: games ~2x faster (90 s -> 47 s per 56), no loss
+#: measured (80-game evaluation 0.528 vs the full teacher's 0.486, within noise; 2026-10-23).
+RANK = 64
 PLATEAU_EVALS = 5
 MIN_GAMES = 20_000  # PPO training games before a run may be called flat
 # The sweep, in order: early signal first. Each runs until its curve is flat.
@@ -97,6 +100,19 @@ def valid_ckpt(d: Path) -> bool:
         return ok and all((d / n).stat().st_size > 0 for n in ("policy.pt", "value.pt"))
     except (OSError, ValueError):
         return False
+
+
+def ensure_rank(ck: Path) -> Path:
+    """Factorise a full checkpoint in place to RANK (older checkpoints were full)."""
+    meta = json.loads((ck / "meta.json").read_text(encoding="utf-8"))
+    if meta.get("rank", 0) == RANK:
+        return ck
+    tmp = ck.with_name(ck.name + ".r")
+    gpu(["factorize", "--init", str(ck), "--out", str(tmp), "--rank", str(RANK)])
+    shutil.rmtree(ck)
+    tmp.rename(ck)
+    log(f"{ck.name}: first layer factorised to rank {RANK}")
+    return ck
 
 
 def last_valid(rdir: Path, it: int) -> int:
@@ -220,10 +236,11 @@ def bc_for(st: dict, width: int) -> Path:
     key = str(width)
     ck = OUT / "ckpt" / f"bc{width}"
     if key in st["bc"] and valid_ckpt(ck):
-        return ck
+        return ensure_rank(ck)
+        
     shards = sorted(str(p) for p in (OUT / "data" / "imitation").glob("*.npz"))
     log(f"imitation training, width {width}, {len(shards)} shards")
-    m = gpu(["bc", "--data", *shards, "--out", str(ck), "--width", str(width)])
+    m = gpu(["bc", "--data", *shards, "--out", str(ck), "--width", str(width), "--rank", str(RANK)])
     st["bc"][key] = m
     save_state(st)
     log(f"  held-out accuracy {m['held_out'][-1]} after {m['epochs']} epochs")
@@ -296,6 +313,8 @@ def ppo_run(st: dict, idx: int) -> None:
         run["evals"] = [e for e in run["evals"] if e["it"] <= good]
         save_state(st)
     cur = rdir / f"it{run['it']:04d}"
+    if cur.exists():
+        ensure_rank(cur)
     if run["it"] == 0 and not cur.exists():
         shutil.copytree(base, cur)
         e = evaluate(cur / "teacher.bin", width, f"r{idx}-it0")

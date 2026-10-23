@@ -17,10 +17,18 @@ from nn import spec
 
 
 class MLP(nn.Module):
-    def __init__(self, n_in: int, width: int, n_out: int, depth: int = 2):
+    """`rank` > 0 factorises the first layer (n_in -> rank, no activation, then rank -> width):
+    the first layer is ~80% of the work in the bot, and rank 64 kept 99.95% of the goal choices
+    of a full 512 teacher (2026-10-23)."""
+
+    def __init__(self, n_in: int, width: int, n_out: int, depth: int = 2, rank: int = 0):
         super().__init__()
+        self.rank = rank
         layers: list[nn.Module] = []
         d = n_in
+        if rank:
+            layers.append(nn.Linear(n_in, rank, bias=False))
+            d = rank
         for _ in range(depth):
             layers += [nn.Linear(d, width), nn.ReLU()]
             d = width
@@ -31,9 +39,9 @@ class MLP(nn.Module):
         return self.net(x)
 
 
-def make(arch: str, width: int, n_out: int) -> nn.Module:
+def make(arch: str, width: int, n_out: int, rank: int = 0) -> nn.Module:
     if arch == "mlp":
-        return MLP(spec.INPUT, width, n_out)
+        return MLP(spec.INPUT, width, n_out, rank=rank)
     raise ValueError(f"unknown arch {arch}")
 
 
@@ -41,13 +49,14 @@ def export_bcn1(model: nn.Module, path) -> None:
     """Write an MLP as a BCN1 blob (f32, little endian)."""
     if not isinstance(model, MLP):
         raise TypeError("only MLPs export to the bot")
-    lin = [m for m in model.net if isinstance(m, nn.Linear)]
+    mods = list(model.net)
+    lin = [(m, i + 1 < len(mods) and isinstance(mods[i + 1], nn.ReLU)) for i, m in enumerate(mods) if isinstance(m, nn.Linear)]
     out = bytearray(b"BCN1")
     out += struct.pack("<II", spec.SPEC, len(lin))
-    for i, l in enumerate(lin):
+    for l, relu in lin:
         w = l.weight.detach().float().cpu().numpy().astype("<f4")
-        b = l.bias.detach().float().cpu().numpy().astype("<f4")
-        out += struct.pack("<III", w.shape[1], w.shape[0], int(i + 1 < len(lin)))
+        b = (l.bias.detach().float().cpu().numpy() if l.bias is not None else np.zeros(w.shape[0])).astype("<f4")
+        out += struct.pack("<III", w.shape[1], w.shape[0], int(relu))
         out += w.tobytes(order="C") + b.tobytes()
     out += struct.pack("<I", len(spec.HEADS))
     out += struct.pack(f"<{len(spec.HEADS)}I", *spec.HEADS)
@@ -82,9 +91,30 @@ def head_logp(logits: torch.Tensor, masks: torch.Tensor, acts: torch.Tensor):
 def np_forward(model: MLP, x: np.ndarray) -> np.ndarray:
     """Reference forward in numpy (matches the bot's f32 loop up to summation order)."""
     h = x
-    lin = [m for m in model.net if isinstance(m, nn.Linear)]
-    for i, l in enumerate(lin):
-        h = h @ l.weight.detach().cpu().numpy().T + l.bias.detach().cpu().numpy()
-        if i + 1 < len(lin):
+    mods = list(model.net)
+    for i, m in enumerate(mods):
+        if isinstance(m, nn.Linear):
+            h = h @ m.weight.detach().cpu().numpy().T
+            if m.bias is not None:
+                h = h + m.bias.detach().cpu().numpy()
+        elif isinstance(m, nn.ReLU):
             h = np.maximum(h, 0)
     return h
+
+
+def factorize(full: MLP, rank: int) -> MLP:
+    """A rank-`rank` copy of a full MLP: truncated SVD of the first layer, the rest copied."""
+    lin = [m for m in full.net if isinstance(m, nn.Linear)]
+    w0 = lin[0].weight.detach()
+    u, s, vt = torch.linalg.svd(w0.float(), full_matrices=False)
+    out = MLP(lin[0].in_features, lin[0].out_features, lin[-1].out_features, depth=len(lin) - 1, rank=rank)
+    out = out.to(w0.device)
+    new = [m for m in out.net if isinstance(m, nn.Linear)]
+    with torch.no_grad():
+        new[0].weight.copy_(vt[:rank])
+        new[1].weight.copy_(u[:, :rank] * s[:rank])
+        new[1].bias.copy_(lin[0].bias)
+        for a, b in zip(new[2:], lin[1:]):
+            a.weight.copy_(b.weight)
+            a.bias.copy_(b.bias)
+    return out
