@@ -56,7 +56,7 @@ pub const PLANS: &[MapPlan] = &[
     MapPlan {
         fingerprint: 4012222300,
         name: "pilgrimage",
-        knobs: &[(knob::CAMP_FEASIBLE, 1)],
+        knobs: &[(knob::CAMP_FEASIBLE, 1), (knob::CAMP_SAFE, 3)],
         draft: 0,
     },
     // rows: shop-first (gain 0.121)
@@ -72,11 +72,23 @@ pub const PLANS: &[MapPlan] = &[
     MapPlan {
         fingerprint: 352761820,
         name: "stampede",
-        knobs: &[(knob::BUILD_PROFILE, 0)],
+        knobs: &[(knob::BUILD_PROFILE, 0), (knob::CAMP_SAFE, 3)],
         draft: 0,
     },
     // swirl: escape (gain 0.5)
     MapPlan { fingerprint: 73263638, name: "swirl", knobs: &[(knob::CAMP_SAFE, 1)], draft: 0 },
+    // corridors: elk camps kill us (ranked 2026-10-23), camp safety
+    MapPlan { fingerprint: 1889004260, name: "corridors", knobs: &[(knob::CAMP_SAFE, 3)], draft: 0 },
+    // boss-battle: elk camps kill us (ranked 2026-10-23), camp safety
+    MapPlan { fingerprint: 1264050769, name: "boss-battle", knobs: &[(knob::CAMP_SAFE, 3)], draft: 0 },
+    // starfish: elk camps kill us (ranked 2026-10-23), camp safety
+    MapPlan { fingerprint: 3096362765, name: "starfish", knobs: &[(knob::CAMP_SAFE, 3)], draft: 0 },
+    // shortcut: elk camps kill us (ranked 2026-10-23), camp safety
+    MapPlan { fingerprint: 89004249, name: "shortcut", knobs: &[(knob::CAMP_SAFE, 3)], draft: 0 },
+    // yellow-brick-road: elk camps kill us (ranked 2026-10-23), camp safety
+    MapPlan { fingerprint: 160622363, name: "yellow-brick-road", knobs: &[(knob::CAMP_SAFE, 3)], draft: 0 },
+    // the-farm: elk camps kill us (ranked 2026-10-23), camp safety
+    MapPlan { fingerprint: 451483513, name: "the-farm", knobs: &[(knob::CAMP_SAFE, 3)], draft: 0 },
 ];
 
 #[must_use]
