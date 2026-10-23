@@ -1008,6 +1008,15 @@
    "time": "2026-10-22T04:50:12.345Z",
    "win": true
   },
+  "20de418c-2f85-41fd-b9d7-bf7cd2384d42": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "pilgrimage",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T17:00:40.996Z",
+   "win": false
+  },
   "20f9db92-3cd3-4fd9-b9a0-dd2e7eef7f56": {
    "kind": "ranked",
    "live": 1,
@@ -1114,6 +1123,15 @@
    "opp": "Seacaps",
    "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
    "time": "2026-10-22T04:20:14.332Z",
+   "win": false
+  },
+  "244c425a-15cb-4ece-9111-e8ee27574648": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "broken-curve",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T17:00:41.123Z",
    "win": false
   },
   "2456ee4a-4177-43a4-8969-286fe861e1cf": {
@@ -1944,6 +1962,15 @@
    "time": "2026-10-20T16:50:05.756Z",
    "win": false
   },
+  "3ba2162a-66ab-4900-a90f-a171997be546": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "fracture",
+   "opp": "let's jump into it",
+   "oppId": "3881272c-9c7f-4b3d-94f9-4c0788a3b27a",
+   "time": "2026-10-23T17:00:26.170Z",
+   "win": true
+  },
   "3bc4a86e-6927-435f-830f-e25c8a806d28": {
    "kind": "ranked",
    "live": null,
@@ -2095,6 +2122,15 @@
    "opp": "jazz",
    "oppId": "96b0be30-6a0e-45b3-8d4b-cd2a910d6bf8",
    "time": "2026-10-21T17:00:20.988Z",
+   "win": false
+  },
+  "41253053-902c-4022-b123-0cd72f288a90": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "concentrated-wealth",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T17:00:41.103Z",
    "win": false
   },
   "41bc95c2-d828-4939-bb3c-95177dbe2858": {
@@ -3438,6 +3474,15 @@
    "time": "2026-10-20T17:51:26.777Z",
    "win": false
   },
+  "6a64cdba-deac-44b7-8879-fe44bcffd642": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "monolith",
+   "opp": "let's jump into it",
+   "oppId": "3881272c-9c7f-4b3d-94f9-4c0788a3b27a",
+   "time": "2026-10-23T17:00:26.170Z",
+   "win": false
+  },
   "6a8f671d-229e-4291-9e5f-ccd28f3848ba": {
    "kind": "ranked",
    "live": 1,
@@ -3679,6 +3724,15 @@
    "opp": "meowest",
    "oppId": "2aa08e1e-f986-4c2a-a15f-e10b10f159ba",
    "time": "2026-10-20T21:20:10.858Z",
+   "win": true
+  },
+  "70304f08-e3aa-4392-a486-7423885f9397": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "rows",
+   "opp": "let's jump into it",
+   "oppId": "3881272c-9c7f-4b3d-94f9-4c0788a3b27a",
+   "time": "2026-10-23T17:00:26.169Z",
    "win": true
   },
   "7088501a-2482-4078-a12f-405c8307a059": {
@@ -4156,6 +4210,15 @@
    "opp": "64bit",
    "oppId": "7bc404a3-e682-433f-8f33-36b810993d7c",
    "time": "2026-10-23T13:20:27.205Z",
+   "win": false
+  },
+  "828123a0-2da8-4d96-a2f0-b00e5a3cadc5": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "rushbait-v2",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T17:00:41.033Z",
    "win": false
   },
   "83195c85-9f88-4e0b-91d9-e306c667d003": {
@@ -4651,6 +4714,15 @@
    "opp": "Mackey",
    "oppId": "d5e1fbdf-184c-4e9c-9ccc-e13c53841b14",
    "time": "2026-10-21T13:40:14.979Z",
+   "win": true
+  },
+  "91276b80-8905-484d-ba68-ce275c5d89b2": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "shortcut",
+   "opp": "let's jump into it",
+   "oppId": "3881272c-9c7f-4b3d-94f9-4c0788a3b27a",
+   "time": "2026-10-23T17:00:26.169Z",
    "win": true
   },
   "915df6ef-9017-48df-bf0f-b76b814279d8": {
@@ -5371,6 +5443,15 @@
    "opp": "NameTBD",
    "oppId": "fc41f0e7-97a3-4ac1-ac0b-1019bc4f749b",
    "time": "2026-10-22T04:00:12.891Z",
+   "win": true
+  },
+  "a589ffca-d260-43ef-9f3f-58bc5ed87e74": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "gold-rush",
+   "opp": "let's jump into it",
+   "oppId": "3881272c-9c7f-4b3d-94f9-4c0788a3b27a",
+   "time": "2026-10-23T17:00:26.170Z",
    "win": true
   },
   "a5addc75-84e3-4ac6-9aec-c31085ed8b03": {
@@ -6109,6 +6190,15 @@
    "opp": "Sneaky Bush Campers",
    "oppId": "5e0c725a-b9b4-4523-8739-4427f20b9ce5",
    "time": "2026-10-23T14:12:14.168Z",
+   "win": false
+  },
+  "bc7d1dd1-c184-4ab6-afc9-d1094dcbe01f": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "corridors",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T17:00:40.978Z",
    "win": false
   },
   "bc7f1539-ab25-4206-83b1-9ec42c4fc0f4": {
@@ -17379,6 +17469,105 @@
    "status": "open",
    "time": "2026-10-23T16:50:28.903Z",
    "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 3,
+    "champion": 1
+   },
+   "deaths_them": 0,
+   "deaths_us": 4,
+   "gems_them": "1047",
+   "gems_us": "280",
+   "id": "244c425a-15cb-4ece-9111-e8ee27574648",
+   "map": "broken-curve",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T17:00:41.123Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "champion": 23
+   },
+   "deaths_them": 6,
+   "deaths_us": 23,
+   "gems_them": "1047",
+   "gems_us": "253",
+   "id": "41253053-902c-4022-b123-0cd72f288a90",
+   "map": "concentrated-wealth",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T17:00:41.103Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "champion": 17
+   },
+   "deaths_them": 10,
+   "deaths_us": 17,
+   "gems_them": "1005",
+   "gems_us": "716",
+   "id": "828123a0-2da8-4d96-a2f0-b00e5a3cadc5",
+   "map": "rushbait-v2",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T17:00:41.033Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 7,
+    "champion": 28
+   },
+   "deaths_them": 2,
+   "deaths_us": 35,
+   "gems_them": "1079",
+   "gems_us": "30",
+   "id": "20de418c-2f85-41fd-b9d7-bf7cd2384d42",
+   "map": "pilgrimage",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T17:00:40.996Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "camp": 46
+   },
+   "deaths_them": 6,
+   "deaths_us": 46,
+   "gems_them": "1036",
+   "gems_us": "314",
+   "id": "bc7d1dd1-c184-4ab6-afc9-d1094dcbe01f",
+   "map": "corridors",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T17:00:40.978Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 3,
+    "champion": 23
+   },
+   "deaths_them": 17,
+   "deaths_us": 26,
+   "gems_them": "1000",
+   "gems_us": "693",
+   "id": "6a64cdba-deac-44b7-8879-fe44bcffd642",
+   "map": "monolith",
+   "opp": "let's jump into it",
+   "oppId": "3881272c-9c7f-4b3d-94f9-4c0788a3b27a",
+   "status": "open",
+   "time": "2026-10-23T17:00:26.170Z",
+   "tries_at": 4
   }
  ],
  "map_files": {
