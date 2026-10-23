@@ -183,6 +183,10 @@ def bots() -> tuple[str, list[str]]:
         X.knob_variant(nm, {})
     with ThreadPoolExecutor(max_workers=8) as ex:
         list(ex.map(runner.build, names))
+    # Warm-up: the first game after a build finishes the build (and would overwrite a patch).
+    train, _ = R.maps()
+    runner.run_games([(b, "main", train[0]) for b in names], OUT / "games" / "warm", rounds=1, log_limit=0)
+    shutil.rmtree(OUT / "games" / "warm", ignore_errors=True)
     return names[0], names[1:]
 
 
