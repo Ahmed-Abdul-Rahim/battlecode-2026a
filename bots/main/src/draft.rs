@@ -23,6 +23,8 @@ struct DraftCache {
     plan: Option<&'static crate::map_plans::MapPlan>,
     /// Policy-pack draft for this map and team size (harness/mimic.py, ES).
     pack_draft: Vec<DraftChoice>,
+    /// Map fingerprint, passed to the champions in draft memory.
+    fp: u32,
 }
 
 thread_local! {
@@ -99,6 +101,7 @@ fn build_cache() -> Result<DraftCache> {
         vecs: ChampionKind::ALL.map(|k| from_kit(&sdk::kit(k))),
         weights: ScorerWeights::default(),
         plan,
+        fp,
         pack_draft: {
             let team_size = cambc::draft::team_size()?;
             crate::pack::lookup(fp)
@@ -169,6 +172,7 @@ pub fn play() -> Result<()> {
                     *slot = v;
                 }
             }
+            theta.map_fp = c.fp;
             cambc::draft_memory().submit(&theta.encode())?;
         }
         Ok(())

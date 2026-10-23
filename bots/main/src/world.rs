@@ -18,6 +18,8 @@ const UNSAFE_ALTAR_SPAWN_DIST: i32 = 6;
 pub struct GroupStatic {
     pub sdk: CampGroup,
     pub center: Pos,
+    /// Largest Chebyshev distance from the centre to a spawn tile.
+    pub radius: i32,
     /// Spawn tiles (capture tiles), from the SDK's group mask.
     pub tiles: Vec<Pos>,
     pub gems: u32,
@@ -106,7 +108,9 @@ pub fn fingerprint(
 impl World {
     /// `safe_altar`: drop altars next to the enemy spawn from tribute routing when another
     /// altar exists (knob SAFE_ALTAR).
-    pub fn build(safe_altar: bool) -> Result<Self> {
+    /// `cluster`: also link each group to its cluster neighbours (only knob2 CLUSTER reads them;
+    /// ~40k fuel on maps with many groups).
+    pub fn build(safe_altar: bool, cluster: bool) -> Result<Self> {
         let width = cambc::map::width()?;
         let height = cambc::map::height()?;
         let walls = cambc::map::walls()?;
@@ -142,13 +146,11 @@ impl World {
                     )
                 })
                 .collect();
-            let spawn_mask = g.spawn_tiles()?;
-            let mut tiles: Vec<Pos> = spawn_mask.positions()?.into_iter().map(pos).collect();
-            for &(_, p) in &camps {
-                if !tiles.contains(&p) {
-                    tiles.push(p);
-                }
-            }
+            // The spawn tiles are the camps' spawn positions (SDK spawn_tiles builds its mask from
+            // them), sorted like Bitboard::positions(): no mask or positions() call per group.
+            let mut tiles: Vec<Pos> = camps.iter().map(|&(_, p)| p).collect();
+            tiles.sort_unstable_by_key(|p| (p.y, p.x));
+            tiles.dedup();
             for &t in &tiles {
                 tile_group.set(t, i);
             }
@@ -157,7 +159,7 @@ impl World {
                 tiles.iter().map(|p| p.x).sum::<i32>() / n,
                 tiles.iter().map(|p| p.y).sum::<i32>() / n,
             );
-            roots.push(spawn_mask);
+            roots.push(tiles.clone());
             groups.push(GroupStatic {
                 gems: g.gem_value(),
                 gold: g.gold_value(),
@@ -167,6 +169,7 @@ impl World {
                 total_strength: camps.iter().map(|(k, _)| k.strength()).sum(),
                 has_monolith: camps.iter().any(|(k, _)| *k == CampKind::Monolith),
                 near: Vec::new(),
+                radius: tiles.iter().map(|t| t.cheb(center)).max().unwrap_or(0),
                 center,
                 tiles,
                 sdk: g,
@@ -174,7 +177,7 @@ impl World {
         }
 
         let centers: Vec<Pos> = groups.iter().map(|g| g.center).collect();
-        for (i, g) in groups.iter_mut().enumerate() {
+        for (i, g) in groups.iter_mut().enumerate().filter(|_| cluster) {
             g.near = (0..centers.len())
                 .filter(|&j| j != i && centers[j].cheb(g.center) <= CLUSTER_RADIUS)
                 .map(|j| j as u8)
@@ -227,13 +230,18 @@ impl World {
 /// Distance fields keyed by goal, computed on demand.
 pub struct FieldCache {
     blocked: Bitboard,
+    /// Spawn region, altar tribute tiles; group masks are built when their field is computed.
     roots: Vec<Bitboard>,
+    group_tiles: Vec<Vec<Pos>>,
     fields: Vec<Option<DistanceField>>,
     queue: VecDeque<Goal>,
     width: i32,
     height: i32,
-    /// Fuel estimate for one full-map compute.
+    /// Fuel estimate for one full-map compute: a conservative guess until the first compute is
+    /// measured, then the most expensive one measured (+1/8). The size-based guess alone was
+    /// too low on big maps and turns ran out of fuel after a precompute (2026-10-23).
     pub compute_cost: u64,
+    measured: bool,
 }
 
 fn slot(goal: Goal) -> usize {
@@ -249,24 +257,27 @@ impl FieldCache {
         blocked: Bitboard,
         spawn: Bitboard,
         altars: Bitboard,
-        groups: Vec<Bitboard>,
+        groups: Vec<Vec<Pos>>,
         width: i32,
         height: i32,
     ) -> Result<Self> {
-        let mut roots = vec![spawn, altars];
+        let roots = vec![spawn, altars];
         let n_groups = groups.len();
-        roots.extend(groups);
         let mut queue = VecDeque::from([Goal::AllySpawn, Goal::Altars]);
         queue.extend((0..n_groups).map(|i| Goal::Group(i as u8)));
         Ok(Self {
             blocked,
-            fields: (0..roots.len()).map(|_| None).collect(),
+            fields: (0..roots.len() + n_groups).map(|_| None).collect(),
             roots,
+            group_tiles: groups,
             queue,
             width,
             height,
-            // Measured: 19.4k for 100×100; scales roughly with tile count.
-            compute_cost: 2_000 + (width * height) as u64 * 2,
+            // First guess until a compute is measured: measured 19-37k (100x100 up to the biggest
+            // maps). Capped: an uncapped size-based guess never fit a turn on the biggest maps, so
+            // no field was ever computed (8 gems in a game, 2026-10-23).
+            compute_cost: (3_000 + (width * height) as u64 * 3).min(45_000),
+            measured: false,
         })
     }
 
@@ -281,13 +292,29 @@ impl FieldCache {
 
     pub fn compute(&mut self, goal: Goal) -> Result<()> {
         let s = slot(goal);
-        if s >= self.roots.len() || self.fields[s].is_some() {
+        if s >= self.fields.len() || self.fields[s].is_some() {
             return Ok(());
         }
+        let before = crate::sdk::fuel();
+        let group_mask;
+        let root = if s < self.roots.len() {
+            &self.roots[s]
+        } else {
+            let mut m = Bitboard::new()?;
+            for &t in &self.group_tiles[s - self.roots.len()] {
+                m.set(vec2(t), true)?;
+            }
+            group_mask = m;
+            &group_mask
+        };
         let mut field = DistanceField::new()?;
         let mut visited = Bitboard::new()?;
-        field.compute(&self.blocked, &self.roots[s], &mut visited, DistanceField::UNREACHABLE)?;
+        field.compute(&self.blocked, root, &mut visited, DistanceField::UNREACHABLE)?;
         self.fields[s] = Some(field);
+        let spent = before.saturating_sub(crate::sdk::fuel());
+        self.compute_cost =
+            if self.measured { self.compute_cost.max(spent + spent / 8) } else { spent + spent / 8 };
+        self.measured = true;
         self.queue.retain(|&g| g != goal);
         Ok(())
     }

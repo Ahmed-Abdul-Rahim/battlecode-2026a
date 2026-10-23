@@ -29,6 +29,9 @@ mod teacher;
 /// Vision radius for deciding which camp groups we can check this turn.
 const VISION: i32 = 8;
 
+/// Camps further than this (from their spawn) only count as alive; no other queries.
+const FAR_CAMP: i32 = 7;
+
 /// Assume an unreadable, camp-less group stays down this long before re-checking.
 const INFER_DOWN_ROUNDS: i32 = 8;
 
@@ -195,6 +198,10 @@ const EARLY_RAMP_KNEE: f32 = 20.0;
 const CAMP_INFEASIBLE_VALUE: f32 = 0.1;
 /// Fuel the rest of a turn needs after target scoring (path 40k + act 5k + reserve).
 const TARGET_REST_FUEL: u64 = 55_000;
+/// Fuel a turn still needs after a mid-turn field precompute (context, path, act).
+const PRECOMPUTE_REST_FUEL: u64 = 25_000;
+/// ... and when our own target has no field yet (the fresh field makes pathing cheap).
+const URGENT_REST_FUEL: u64 = 12_000;
 /// Most turns in a row a target is kept unscored when fuel is short.
 const TARGET_KEEP_MAX: u8 = 8;
 /// knob2 CLUSTER: neighbours count up to this many walking tiles from a group's centre.
@@ -229,15 +236,21 @@ const LAST_STAND_MAX_GEMS: u32 = 20;
 impl Bot {
     pub fn new() -> Result<Self> {
         let theta = ThetaMatch::decode(cambc::draft_memory().bytes()).unwrap_or_default();
-        let world = World::build(theta.knob(knob::SAFE_ALTAR) > 0)?;
-        // Policy pack: this map's learned parameters and hotspots (harness/pack.py).
-        let fp = crate::world::fingerprint(
-            world.width,
-            world.height,
-            &world.terrain.walls,
-            &world.terrain.holes,
-            &world.terrain.altars,
-        );
+        let world =
+            World::build(theta.knob(knob::SAFE_ALTAR) > 0, theta.knob2(knob2::CLUSTER) > 0)?;
+        // Policy pack: this map's learned parameters and hotspots (harness/pack.py). The draft
+        // passes the fingerprint (hashing the map here cost ~50-60k fuel on big maps).
+        let fp = if theta.map_fp != 0 {
+            theta.map_fp
+        } else {
+            crate::world::fingerprint(
+                world.width,
+                world.height,
+                &world.terrain.walls,
+                &world.terrain.holes,
+                &world.terrain.altars,
+            )
+        };
         let entry = crate::pack::lookup(fp);
         crate::learned::init(entry.theta);
         let hotspots: Vec<(Pos, f32)> = entry
@@ -474,7 +487,15 @@ impl Bot {
             mark = self.charge(Stage::Brain, mark);
             // First turns: get the fields we need right now.
             let gov = &self.gov;
-            self.world.fields.precompute(&|cost| gov.turn_allows(cost + 20_000, fuel()))?;
+            // Keep what the rest of the turn needs (context, pathing on a fresh field, actions).
+            // The out-of-fuel turns came from underestimated field costs (now measured); keeping
+            // TARGET_REST_FUEL here instead starved maps like yellow-brick-road of fields
+            // altogether (0-15 gems a game, 2026-10-23).
+            // No field for our own target yet: that is urgent (without it the bot walks straight
+            // lines and gets stuck on maze maps); a fresh field makes the rest of the turn cheap.
+            let urgent = self.target.is_some_and(|t| !self.world.fields.is_ready(Goal::Group(t as u8)));
+            let rest = if urgent { URGENT_REST_FUEL } else { PRECOMPUTE_REST_FUEL };
+            self.world.fields.precompute(&|cost| gov.turn_allows(cost + rest, fuel()))?;
             mark = self.charge(Stage::Precompute, mark);
 
             let mut ctx = self.context(round, my_pos, hp, max_hp, &vis, &chan, state, me)?;
@@ -1696,6 +1717,7 @@ impl Bot {
                 self.belief.forget(kind);
                 continue;
             }
+            let max_hp = e.max_health().unwrap_or(hp);
             let (strength, focus) =
                 (e.strength().unwrap_or(kit.base_strength), e.focus().unwrap_or(kit.base_focus));
             let dps = if stun_threat {
@@ -1707,13 +1729,13 @@ impl Bot {
             let dps = dps
                 * crate::bc_core::champion::missing_health_bonus(
                     kind,
-                    hp / e.max_health().unwrap_or(hp).max(1.0),
+                    hp / max_hp.max(1.0),
                 );
             let view = EnemyView {
                 pos: p,
                 dist: my_pos.cheb(p),
                 hp,
-                max_hp: e.max_health().unwrap_or(hp),
+                max_hp,
                 dps,
                 gems: e.gem_count().unwrap_or(0),
                 ranged: kit.attack == AttackType::Ranged,
@@ -1777,24 +1799,38 @@ impl Bot {
 
         let mut seen_groups = Vec::new();
         for c in cambc::vision::camps()? {
+            let spawn = pos(c.spawn_position());
             let Ok(state) = c.state() else { continue };
             if state.is_dead() {
                 continue;
             }
-            let p = c.position().map(pos).unwrap_or_else(|_| pos(c.spawn_position()));
-            let group = self.world.group_at(pos(c.spawn_position()));
+            let group = self.world.group_at(spawn);
             if let Some(g) = group {
                 if !seen_groups.contains(&g) {
                     seen_groups.push(g);
                     self.belief.observe_group(g, GroupObs::Alive, round);
                 }
             }
+            // Far camps (they never chase more than 3 tiles from their spawn): alive is all we
+            // need. Their position/health/strength queries cost ~450 fuel each, and maps like
+            // yellow-brick-road show 40+ camps (observe took 60k+ and turns ran out of fuel).
+            if spawn.cheb(my_pos) > FAR_CAMP {
+                continue;
+            }
+            let p = c.position().map(pos).unwrap_or(spawn);
+            let awake = state.is_awake();
+            // Sleeping camps don't hit: their kind's base strength is enough (no host query).
+            let strength = if awake {
+                c.strength().unwrap_or(0.0)
+            } else {
+                crate::bc_draft::CampKind::from_engine(c.kind() as i32).map_or(0.0, |k| k.strength())
+            };
             vis.camps.push(CampView {
                 pos: p,
                 dist: my_pos.cheb(p),
                 hp: c.health().unwrap_or(0.0),
-                awake: state.is_awake(),
-                strength: c.strength().unwrap_or(0.0),
+                awake,
+                strength,
                 group,
                 handle: c,
             });
@@ -1804,8 +1840,12 @@ impl Bot {
         // The target is always checked; others when close, at most 2 per turn.
         let mut checked = 0;
         for (i, g) in self.world.groups.iter().enumerate() {
-            let near = g.tiles.iter().map(|t| t.cheb(my_pos)).min().unwrap_or(i32::MAX);
             let is_target = self.target == Some(i);
+            // Cheap bound first: the centre's distance minus the group's radius.
+            if !is_target && g.center.cheb(my_pos) - g.radius > VISION {
+                continue;
+            }
+            let near = g.tiles.iter().map(|t| t.cheb(my_pos)).min().unwrap_or(i32::MAX);
             if seen_groups.contains(&i) || near > VISION || (!is_target && checked >= 2) {
                 continue;
             }
@@ -2008,7 +2048,20 @@ impl Bot {
         let mut f = String::new();
         let (mut t0, mut t1) = (0u64, 0u64);
         why!(t0 = fuel());
-        for (i, g) in self.world.groups.iter().enumerate() {
+        // Short on fuel (dense maps: ~1.5k per group): nearest groups first, and stop once a
+        // candidate exists and the rest of the turn's fuel is reached. With enough fuel every
+        // group is scored in index order as before.
+        let n_groups = self.world.groups.len();
+        let short = fuel() < n_groups as u64 * 1_500 + TARGET_REST_FUEL;
+        let mut order: Vec<usize> = (0..n_groups).collect();
+        if short {
+            order.sort_by_key(|&i| self.world.groups[i].center.cheb(my_pos));
+        }
+        for i in order {
+            let g = &self.world.groups[i];
+            if short && best.is_some() && fuel() < TARGET_REST_FUEL {
+                break;
+            }
             why!(f.clear());
             if g.has_monolith && live {
                 // The monolith hits the nearest champion for its strength every round: the
