@@ -162,6 +162,15 @@
    "time": "2026-10-22T07:10:14.654Z",
    "win": true
   },
+  "059733a5-4bb9-4c94-8e3b-77ce45fad473": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "fragment",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-23T15:35:46.211Z",
+   "win": true
+  },
   "05dbb82e-5f97-436b-bb6a-8859820d4542": {
    "kind": "ranked",
    "live": 16,
@@ -1125,6 +1134,15 @@
    "time": "2026-10-21T15:30:12.916Z",
    "win": true
   },
+  "25c892f8-aee6-4224-a04c-ef467b2a4cac": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "collision",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-23T15:35:46.185Z",
+   "win": true
+  },
   "26792072-1a7c-4240-8309-f560f261dfe4": {
    "kind": "unranked",
    "live": 17,
@@ -1205,6 +1223,15 @@
    "oppId": "d48d65ef-625c-4966-b2cc-a7b1b02fafec",
    "time": "2026-10-21T17:20:14.251Z",
    "win": true
+  },
+  "29aa070d-2ffb-4dfd-a6ce-3ddfa1af7ea5": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "interlock",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T15:37:33.800Z",
+   "win": false
   },
   "29d81a03-07a7-4b11-8dc3-6c4d6ee31063": {
    "kind": "ranked",
@@ -2484,6 +2511,15 @@
    "time": "2026-10-20T18:20:10.476Z",
    "win": true
   },
+  "55414f41-1f3b-4614-b43d-41861f4c740d": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "elk-arena",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-23T15:35:59.923Z",
+   "win": true
+  },
   "5565cbc5-4cc6-4483-8c80-df64713f02f1": {
    "kind": "ranked",
    "live": 1,
@@ -2952,6 +2988,15 @@
    "time": "2026-10-21T14:20:15.009Z",
    "win": false
   },
+  "62c89c9c-d13d-45ca-aeab-3eb3d66f6a3d": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "concentrated-wealth",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-23T15:35:59.895Z",
+   "win": false
+  },
   "6302f42f-98c1-45dc-a1ae-dff8d542b007": {
    "kind": "ranked",
    "live": 21,
@@ -3247,6 +3292,15 @@
    "opp": "Sneaky Bush Campers",
    "oppId": "5e0c725a-b9b4-4523-8739-4427f20b9ce5",
    "time": "2026-10-22T05:40:12.635Z",
+   "win": false
+  },
+  "6b1beb5b-bfd7-468e-9be0-93a45f538fae": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "contest",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-23T15:35:59.831Z",
    "win": false
   },
   "6b5c0a35-2105-4819-9c75-fc9da686bb7f": {
@@ -4023,6 +4077,15 @@
    "time": "2026-10-21T13:30:11.453Z",
    "win": false
   },
+  "8895865a-78af-4d6c-ab15-23b82895ee85": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "shortcut",
+   "opp": "avg larper",
+   "oppId": "d3f95349-b568-4699-b975-ce3f1f9f60fd",
+   "time": "2026-10-23T15:30:27.753Z",
+   "win": true
+  },
   "88d8aca4-2dde-4253-adc0-83e0c0591213": {
    "kind": "ranked",
    "live": 1,
@@ -4426,6 +4489,15 @@
    "opp": "let's jump into it",
    "oppId": "3881272c-9c7f-4b3d-94f9-4c0788a3b27a",
    "time": "2026-10-22T07:50:12.103Z",
+   "win": true
+  },
+  "95f39be1-ab79-4d30-84dd-2a2dc43d3d74": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "reverse-spiral",
+   "opp": "avg larper",
+   "oppId": "d3f95349-b568-4699-b975-ce3f1f9f60fd",
+   "time": "2026-10-23T15:30:27.753Z",
    "win": true
   },
   "96582c9a-54b0-43a6-92e5-cea7c846119d": {
@@ -5256,6 +5328,15 @@
    "time": "2026-10-22T08:56:57.644Z",
    "win": true
   },
+  "b0be78bc-5041-4e17-970d-e8e84d4df7a6": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "gemfight",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T15:37:33.811Z",
+   "win": false
+  },
   "b0c85ad7-b1cb-4c07-83a5-87645cd1a055": {
    "kind": "ranked",
    "live": 1,
@@ -5317,6 +5398,15 @@
    "opp": "dominos",
    "oppId": "f437e066-15f3-4a27-8ec3-9687cb68696b",
    "time": "2026-10-20T18:40:10.898Z",
+   "win": true
+  },
+  "b2288475-1251-473f-a94d-66746e774a3b": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "concentrated-wealth",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-23T15:35:46.222Z",
    "win": true
   },
   "b2e5a275-f4e0-4a8b-ba11-c91c0ee04cab": {
@@ -5687,6 +5777,15 @@
    "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
    "time": "2026-10-21T15:40:12.911Z",
    "win": false
+  },
+  "bb7b2cbd-cc7c-417e-ae64-9e7225548152": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "contest",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-23T15:35:46.199Z",
+   "win": true
   },
   "bbe370bf-a54d-4bbd-a2d5-3afd6db60da0": {
    "kind": "ranked",
@@ -6111,6 +6210,15 @@
    "time": "2026-10-21T17:50:18.948Z",
    "win": false
   },
+  "c8e6cdbd-10cb-4564-9aa0-c693e01e0561": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "fracture",
+   "opp": "avg larper",
+   "oppId": "d3f95349-b568-4699-b975-ce3f1f9f60fd",
+   "time": "2026-10-23T15:30:27.753Z",
+   "win": false
+  },
   "c8f782f5-346f-4286-b900-fcb75bc17ff2": {
    "kind": "ranked",
    "live": 1,
@@ -6163,6 +6271,15 @@
    "opp": "Rogue Lock Pickers",
    "oppId": "3421f13e-cca4-45a9-946e-c6885ec1c85b",
    "time": "2026-10-20T22:30:11.149Z",
+   "win": true
+  },
+  "ca8a80dc-f213-4a31-a243-2ef1e5a5300a": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "big-world",
+   "opp": "avg larper",
+   "oppId": "d3f95349-b568-4699-b975-ce3f1f9f60fd",
+   "time": "2026-10-23T15:30:27.753Z",
    "win": true
   },
   "ca9016f3-a4ea-4762-b3ff-db87191ec226": {
@@ -6498,6 +6615,15 @@
    "time": "2026-10-20T18:50:08.433Z",
    "win": true
   },
+  "d6776358-696b-4629-a990-37514ce4b736": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "the-farm",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T15:37:33.761Z",
+   "win": false
+  },
   "d6861ccf-1525-4a24-b488-a9393b896ec5": {
    "kind": "unranked",
    "live": 23,
@@ -6632,6 +6758,15 @@
    "oppId": "4f895cf2-77c0-4d65-91a6-320d46ecca54",
    "time": "2026-10-22T07:00:15.627Z",
    "win": true
+  },
+  "d9f33b39-e997-44ac-bb8e-3cc166ca6423": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "hooks",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T15:37:33.784Z",
+   "win": false
   },
   "da39e432-ee0c-4043-a5bc-d5c789d8eba4": {
    "kind": "ranked",
@@ -7047,6 +7182,15 @@
    "time": "2026-10-22T10:00:18.611Z",
    "win": false
   },
+  "e3b4f814-d8aa-4ba0-b422-eae592dba403": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "contest",
+   "opp": "avg larper",
+   "oppId": "d3f95349-b568-4699-b975-ce3f1f9f60fd",
+   "time": "2026-10-23T15:30:27.753Z",
+   "win": false
+  },
   "e3e5575b-55ba-4b60-b2ef-980b637c7991": {
    "kind": "ranked",
    "live": 10,
@@ -7281,6 +7425,15 @@
    "time": "2026-10-23T14:58:23.665Z",
    "win": false
   },
+  "e9c3141d-2ce1-4517-a294-195b5843cc1b": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "collision",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-23T15:35:59.797Z",
+   "win": true
+  },
   "ea2dc8bd-9deb-45b7-ad04-0e6d150ca873": {
    "kind": "ranked",
    "live": 21,
@@ -7506,6 +7659,15 @@
    "time": "2026-10-23T14:29:57.491Z",
    "win": false
   },
+  "eff0a7bc-ccd4-430d-b76e-c32b0916bbbc": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "fragment",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-23T15:35:59.870Z",
+   "win": false
+  },
   "f02347a5-5757-42c7-91ef-e74db4b06984": {
    "kind": "ranked",
    "live": 1,
@@ -7693,6 +7855,15 @@
    "opp": "Silent Fog Walkers",
    "oppId": "0e2abba9-e657-4025-a4e6-a1eed7c5dea0",
    "time": "2026-10-20T16:20:07.816Z",
+   "win": true
+  },
+  "f6956b4d-3c4f-4d5d-97b3-9cfa8ceede9d": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "elk-arena",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "time": "2026-10-23T15:35:46.232Z",
    "win": true
   },
   "f742d52b-7fd3-48ab-ae6c-bb159c4fc8c7": {
@@ -7991,6 +8162,15 @@
    "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
    "time": "2026-10-23T13:51:24.804Z",
    "win": true
+  },
+  "ff4df2a6-1fa2-488e-9dec-47f51f48dc97": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "swirl",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T15:37:33.825Z",
+   "win": false
   },
   "ff68d078-3c53-4de1-8465-f5d2f37be381": {
    "kind": "ranked",
@@ -16020,6 +16200,175 @@
    "status": "open",
    "time": "2026-10-23T15:20:25.396Z",
    "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 8,
+    "champion": 38
+   },
+   "deaths_them": 8,
+   "deaths_us": 46,
+   "gems_them": "1025",
+   "gems_us": "147",
+   "id": "ff4df2a6-1fa2-488e-9dec-47f51f48dc97",
+   "map": "swirl",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T15:37:33.825Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 19
+   },
+   "deaths_them": 8,
+   "deaths_us": 21,
+   "gems_them": "1028",
+   "gems_us": "171",
+   "id": "b0be78bc-5041-4e17-970d-e8e84d4df7a6",
+   "map": "gemfight",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T15:37:33.811Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 6,
+    "champion": 21
+   },
+   "deaths_them": 5,
+   "deaths_us": 27,
+   "gems_them": "1008",
+   "gems_us": "460",
+   "id": "29aa070d-2ffb-4dfd-a6ce-3ddfa1af7ea5",
+   "map": "interlock",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T15:37:33.800Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "champion": 37
+   },
+   "deaths_them": 6,
+   "deaths_us": 37,
+   "gems_them": "1012",
+   "gems_us": "44",
+   "id": "d9f33b39-e997-44ac-bb8e-3cc166ca6423",
+   "map": "hooks",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T15:37:33.784Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "camp": 9,
+    "champion": 11
+   },
+   "deaths_them": 0,
+   "deaths_us": 20,
+   "gems_them": "1102",
+   "gems_us": "111",
+   "id": "d6776358-696b-4629-a990-37514ce4b736",
+   "map": "the-farm",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T15:37:33.761Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 32
+   },
+   "deaths_them": 14,
+   "deaths_us": 34,
+   "gems_them": "764",
+   "gems_us": "491",
+   "id": "62c89c9c-d13d-45ca-aeab-3eb3d66f6a3d",
+   "map": "concentrated-wealth",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "status": "open",
+   "time": "2026-10-23T15:35:59.895Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "camp": 3,
+    "champion": 44
+   },
+   "deaths_them": 31,
+   "deaths_us": 47,
+   "gems_them": "618",
+   "gems_us": "450",
+   "id": "eff0a7bc-ccd4-430d-b76e-c32b0916bbbc",
+   "map": "fragment",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "status": "open",
+   "time": "2026-10-23T15:35:59.870Z",
+   "tries_at": 10
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 64
+   },
+   "deaths_them": 18,
+   "deaths_us": 66,
+   "gems_them": "0",
+   "gems_us": "0",
+   "id": "6b1beb5b-bfd7-468e-9be0-93a45f538fae",
+   "map": "contest",
+   "opp": "Gilded Fog Walkers",
+   "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
+   "status": "open",
+   "time": "2026-10-23T15:35:59.831Z",
+   "tries_at": 0
+  },
+  {
+   "contexts": {
+    "camp": 17,
+    "champion": 19
+   },
+   "deaths_them": 4,
+   "deaths_us": 36,
+   "gems_them": "833",
+   "gems_us": "4",
+   "id": "c8e6cdbd-10cb-4564-9aa0-c693e01e0561",
+   "map": "fracture",
+   "opp": "avg larper",
+   "oppId": "d3f95349-b568-4699-b975-ce3f1f9f60fd",
+   "status": "open",
+   "time": "2026-10-23T15:30:27.753Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 11,
+    "champion": 60
+   },
+   "deaths_them": 26,
+   "deaths_us": 71,
+   "gems_them": "0",
+   "gems_us": "0",
+   "id": "e3b4f814-d8aa-4ba0-b422-eae592dba403",
+   "map": "contest",
+   "opp": "avg larper",
+   "oppId": "d3f95349-b568-4699-b975-ce3f1f9f60fd",
+   "status": "open",
+   "time": "2026-10-23T15:30:27.753Z",
+   "tries_at": 0
   }
  ],
  "map_files": {
