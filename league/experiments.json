@@ -4243,13 +4243,15 @@
   {
    "added": "2026-10-23T17:36:29Z",
    "area": "rules",
+   "claimed": "2026-10-23T17:37:43Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 96,
    "notes": "Ability multipliers from the 2026-10-23 rules docs.",
    "results": {},
    "spec": {
     "ref": "origin/feat/rules-sync"
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Rules sync: Ren stun 0.75, Heart of Ruin dash 1.5"
   },
   {
