@@ -67,6 +67,17 @@ problem -> build the simulator, don't stop.
   probably outputs the goal head only unless PPO shows the teacher relies on manual fighting.
 - Rule bot itself runs out of fuel on dense maps (yellow-brick-road: 31 turns): worth fixing anyway.
 
+**Order (decided 2026-10-23):** train the teacher to a plateau, then distil, then verify the student vs
+the rule bot (80 map x side games), vs mimics incl. the 8 held-out ones, vs the teacher (gap =
+what distillation lost), on held-out maps, and in release at 100k fuel (no out-of-fuel turns).
+No further teacher compression unless training time becomes the bottleneck (rank-64 already
+halved game time at no measured loss).
+
+**LoRA / adapters:** for game patches (adapter on the frozen teacher, fast and can't drift far),
+per-map or per-opponent specialists (merged into the weights: no extra fuel), and student
+fine-tuning with PPO after distillation if the teacher-student gap is large. Not for the main
+teacher run (full update takes ~4 s on the GPU).
+
 **Zoo:** MLP 512/1024, GRU, LSTM, S4/S6, transformer over entity tokens; same inputs and training
 budget; each needs in-bot inference (recurrent state carried between turns) to play rollouts.
 
