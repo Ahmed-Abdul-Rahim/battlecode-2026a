@@ -30,8 +30,17 @@ from bctools import runner  # noqa: E402
 from nn import run as R  # noqa: E402
 
 OUT = R.OUT / "portfolio"
-STYLES = ["main", "claude-pillager", "claude-ambusher", "claude-focus", "exploit-qwen-rush",
-          "exploit-qwen-pillager", "exploit-qwen-spawn_camper"]
+# v1 (2026-10-23): the old style bots won 0-10% vs main's 83%: main was best against every
+# opponent, so no gain. v2: styles of comparable strength, variants of main by knob.
+STYLES = ["main", "_pf_aggro", "_pf_careful", "_pf_hunt", "_pf_teamfight", "_pf_search", "_pf_bank"]
+VARIANTS = {
+    "_pf_aggro": {"AGGRESSION": 210, "FIGHT_MARGIN_PCT": 5},
+    "_pf_careful": {"AGGRESSION": 60, "FIGHT_MARGIN_PCT": 60, "RETREAT_HP_PCT": 50},
+    "_pf_hunt": {"HUNT_MODE": 2},
+    "_pf_teamfight": {"TEAM_FIGHT": 1},
+    "_pf_search": {"COMBAT_SEARCH": 1},
+    "_pf_bank": {"TRIBUTE_MAX_GEMS": 40},
+}
 N_OPP = 14
 N_MAPS = 6
 
@@ -46,6 +55,9 @@ def setup() -> tuple[list[str], list[Path]]:
 
 def cmd_run(_: argparse.Namespace) -> int:
     OUT.mkdir(parents=True, exist_ok=True)
+    from harness import experiments as X
+    for name, knobs in VARIANTS.items():
+        X.knob_variant(name, knobs)
     opps, maps = setup()
     games = [(s, o, m) for s in STYLES for o in opps for m in maps] + \
             [(o, s, m) for s in STYLES for o in opps for m in maps]
