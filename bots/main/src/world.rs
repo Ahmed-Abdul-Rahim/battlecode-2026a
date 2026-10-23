@@ -32,6 +32,8 @@ pub struct GroupStatic {
     pub has_monolith: bool,
     /// Other groups whose centre is within [`CLUSTER_RADIUS`] (knob2 CLUSTER).
     pub near: Vec<u8>,
+    /// Each camp's kind (engine CampType value) and spawn tile (map dumps for nn/gpusim).
+    pub camps: Vec<(u8, Pos)>,
 }
 
 /// Groups whose centres are this close (Chebyshev) may form a cluster; the walking distance
@@ -169,6 +171,7 @@ impl World {
                 total_strength: camps.iter().map(|(k, _)| k.strength()).sum(),
                 has_monolith: camps.iter().any(|(k, _)| *k == CampKind::Monolith),
                 near: Vec::new(),
+                camps: camps.iter().map(|&(k, p)| (k as u8, p)).collect(),
                 radius: tiles.iter().map(|t| t.cheb(center)).max().unwrap_or(0),
                 center,
                 tiles,

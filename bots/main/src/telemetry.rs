@@ -49,7 +49,8 @@ pub fn map_dump(world: &crate::world::World) {
             .iter()
             .map(|g| {
                 let tiles: Vec<String> = g.tiles.iter().map(|p| format!("[{},{}]", p.x, p.y)).collect();
-                format!("{{\"c\":[{},{}],\"gems\":{},\"gold\":{},\"tiles\":[{}]}}", g.center.x, g.center.y, g.gems, g.gold, tiles.join(","))
+                let camps: Vec<String> = g.camps.iter().map(|(k, p)| format!("[{k},{},{}]", p.x, p.y)).collect();
+                format!("{{\"c\":[{},{}],\"gems\":{},\"gold\":{},\"respawn\":{},\"tiles\":[{}],\"camps\":[{}]}}", g.center.x, g.center.y, g.gems, g.gold, g.max_respawn, tiles.join(","), camps.join(","))
             })
             .collect();
         println!(
