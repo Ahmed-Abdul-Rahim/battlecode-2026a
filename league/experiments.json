@@ -4307,11 +4307,33 @@
    "host": "DESKTOP-QVEMEEE",
    "id": 97,
    "notes": "Re-queued (lost in a registry overwrite). 4 plans replaced CAMP_FEASIBLE=24 with 1.",
-   "results": {},
+   "results": {
+    "screen": {
+     "live": {
+      "deaths": 14.45,
+      "fitness": 0.449,
+      "games": 126,
+      "gem_margin": 0.09,
+      "win": 0.571
+     },
+     "paired": {
+      "mean": 0.0,
+      "pairs": 126,
+      "se": 0.0
+     },
+     "variant": {
+      "deaths": 14.45,
+      "fitness": 0.449,
+      "games": 126,
+      "gem_margin": 0.09,
+      "win": 0.571
+     }
+    }
+   },
    "spec": {
     "ref": "origin/feat/plan-feasible"
    },
-   "status": "screening",
+   "status": "full",
    "title": "Map plans keep merged camp bits (CAMP_FEASIBLE 25)"
   },
   {
@@ -4337,6 +4359,21 @@
    },
    "status": "queued",
    "title": "Chase round walls on reverse-spiral only"
+  },
+  {
+   "added": "2026-10-23T17:54:24Z",
+   "area": "economy",
+   "id": 100,
+   "notes": "Ranked: enemy captured groups we cleared up to 8x/game (contest). Local contest+elk-arena: 18/28 -> 21/28.",
+   "results": {},
+   "spec": {
+    "knobs": {
+     "LOOT_GUARD": 1
+    },
+    "ref": "origin/feat/loot-guard"
+   },
+   "status": "queued",
+   "title": "Loot guard: keep capturing a ready reward under threat"
   }
  ]
 }
