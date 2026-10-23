@@ -2043,6 +2043,15 @@
    "time": "2026-10-21T14:20:15.009Z",
    "win": false
   },
+  "463de4af-c141-4c94-836d-da043ca231ee": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "concentrated-wealth",
+   "opp": "Kuchh_bhii",
+   "oppId": "d02e5f2c-f75a-499c-b5e9-418c425a0746",
+   "time": "2026-10-23T15:20:25.397Z",
+   "win": true
+  },
   "465dd55b-edd8-4381-a136-c3a4aba681a1": {
    "kind": "ranked",
    "live": 17,
@@ -2068,6 +2077,15 @@
    "opp": "tRust me bro",
    "oppId": "4fbe2b8b-0a69-4dd5-b3f0-d8787101d7bc",
    "time": "2026-10-22T13:00:16.319Z",
+   "win": true
+  },
+  "4753702f-8d69-44ca-afbd-3efa90745286": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "boss-battle",
+   "opp": "Kuchh_bhii",
+   "oppId": "d02e5f2c-f75a-499c-b5e9-418c425a0746",
+   "time": "2026-10-23T15:20:25.396Z",
    "win": true
   },
   "4814d77b-a3d7-4913-94fa-bfa0a1095196": {
@@ -3904,6 +3922,15 @@
    "opp": "Hidden Lock Pickers",
    "oppId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
    "time": "2026-10-20T20:00:10.344Z",
+   "win": false
+  },
+  "850b9524-71c9-4921-bf39-09afeef95ffb": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "fracture",
+   "opp": "Kuchh_bhii",
+   "oppId": "d02e5f2c-f75a-499c-b5e9-418c425a0746",
+   "time": "2026-10-23T15:20:25.396Z",
    "win": false
   },
   "851f439e-515e-448f-a5a0-88f8ab305900": {
@@ -5967,6 +5994,15 @@
    "time": "2026-10-21T17:30:26.108Z",
    "win": true
   },
+  "c65a07db-9155-4204-9849-eccb36df4dcf": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "gemfight",
+   "opp": "Kuchh_bhii",
+   "oppId": "d02e5f2c-f75a-499c-b5e9-418c425a0746",
+   "time": "2026-10-23T15:20:25.397Z",
+   "win": false
+  },
   "c66e5579-face-4c1a-915e-b73317e69679": {
    "kind": "ranked",
    "live": 22,
@@ -6407,6 +6443,15 @@
    "oppId": "2173d644-f134-4b10-8cd8-2f6d9bfc0696",
    "time": "2026-10-21T14:00:16.613Z",
    "win": false
+  },
+  "d51eca60-0861-4e92-b702-8d5a538fdc8e": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "eight",
+   "opp": "Kuchh_bhii",
+   "oppId": "d02e5f2c-f75a-499c-b5e9-418c425a0746",
+   "time": "2026-10-23T15:20:25.397Z",
+   "win": true
   },
   "d5c396ba-c00f-4980-a7ce-9871ef88492c": {
    "kind": "ranked",
@@ -15940,6 +15985,40 @@
    "oppId": "afdfcf47-296e-44db-99c2-c6cc155d746f",
    "status": "open",
    "time": "2026-10-23T15:10:33.783Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 4,
+    "champion": 40
+   },
+   "deaths_them": 33,
+   "deaths_us": 44,
+   "gems_them": "1007",
+   "gems_us": "731",
+   "id": "c65a07db-9155-4204-9849-eccb36df4dcf",
+   "map": "gemfight",
+   "opp": "Kuchh_bhii",
+   "oppId": "d02e5f2c-f75a-499c-b5e9-418c425a0746",
+   "status": "open",
+   "time": "2026-10-23T15:20:25.397Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 19,
+    "champion": 13
+   },
+   "deaths_them": 18,
+   "deaths_us": 32,
+   "gems_them": "654",
+   "gems_us": "590",
+   "id": "850b9524-71c9-4921-bf39-09afeef95ffb",
+   "map": "fracture",
+   "opp": "Kuchh_bhii",
+   "oppId": "d02e5f2c-f75a-499c-b5e9-418c425a0746",
+   "status": "open",
+   "time": "2026-10-23T15:20:25.396Z",
    "tries_at": 4
   }
  ],
