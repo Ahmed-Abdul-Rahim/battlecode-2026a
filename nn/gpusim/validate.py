@@ -68,6 +68,9 @@ def main(bundle: str, stats: str, map_name: str, max_rounds: int = 10**9) -> int
     if os.environ.get("CAMP_SLEEP"):
         import nn.gpusim.engine as eng_mod
         eng_mod.CAMP_SLEEP, eng_mod.CAMP_SLEEP_ROUNDS = os.environ["CAMP_SLEEP"], int(os.environ["CAMP_SLEEP_ROUNDS"])
+    if os.environ.get("CAMP_METRIC"):
+        import nn.gpusim.engine as eng_mod
+        eng_mod.CAMP_METRIC = os.environ["CAMP_METRIC"]
     if os.environ.get("CAMP_TARGET"):
         import nn.gpusim.engine as eng_mod
         eng_mod.CAMP_TARGET = os.environ["CAMP_TARGET"]

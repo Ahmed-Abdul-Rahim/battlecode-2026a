@@ -89,6 +89,7 @@ VISION, SPELL_RANGE, SPELL_CD, RECALL_TURNS = 8, 4, 8, 5
 # Item families (cambc::ItemType = 6 x family + [str shard, str emblem, focus shard, focus emblem,
 # health shard, health emblem]); stats are the champion's growth per shard.
 CAMP_SLEEP, CAMP_SLEEP_ROUNDS = "no_target", 1  # validation experiments
+CAMP_METRIC = "cheb"
 CAMP_TARGET = "nearest"  # or "aggro_then_nearest" / "aggro_only" (validation experiments)
 MONSTER, POWER, DURABILITY, TREASURE, JUNGLE, HOME, BRUISER = range(7)
 ITEM_STAT = (0, 0, 1, 1, 2, 2)  # strength, focus, health
@@ -312,8 +313,13 @@ class Engine:
             return
         cp = s.camp_xy.view(1, -1, 1, 2)  # [1, C, 1, 2]
         chp = self.pos.view(B, 1, -1, 2)  # [B, 1, 2T, 2]
-        d = self.cheb(cp, chp)  # [B, C, 2T]
-        ok = self.alive.view(B, 1, -1) & (d <= self.camp_rng.view(1, -1, 1)) & act.unsqueeze(-1)
+        if CAMP_METRIC == "euclid":  # squared distance against squared range
+            dd = (cp - chp).pow(2).sum(-1)
+            ok = self.alive.view(B, 1, -1) & (dd <= self.camp_rng.view(1, -1, 1).pow(2)) & act.unsqueeze(-1)
+            d = dd
+        else:
+            d = self.cheb(cp, chp)  # [B, C, 2T]
+            ok = self.alive.view(B, 1, -1) & (d <= self.camp_rng.view(1, -1, 1)) & act.unsqueeze(-1)
         d = torch.where(ok, d, 10_000)
         tgt = d.argmin(-1)  # [B, C]
         hit = ok.any(-1)
