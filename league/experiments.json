@@ -4527,6 +4527,8 @@
   {
    "added": "2026-10-23T18:37:21Z",
    "area": "draft",
+   "claimed": "2026-10-24T05:15:26Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 101,
    "notes": "Match plan in draft memory; champions discount frontier groups while enemies are near. Local 4 maps 23->26/56.",
    "results": {},
@@ -4536,7 +4538,7 @@
     },
     "ref": "origin/feat/draft-plan"
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Draft memory v3 + frontier discount (DRAFT_PLAN 1)"
   }
  ]
