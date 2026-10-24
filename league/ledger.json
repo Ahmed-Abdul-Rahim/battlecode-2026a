@@ -1026,6 +1026,15 @@
    "time": "2026-10-20T15:40:12.934Z",
    "win": false
   },
+  "1caf5c37-d5a3-4c73-9964-02966d42cf98": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "hooks",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-24T04:47:39.521Z",
+   "win": false
+  },
   "1cd0cbea-6d86-40d1-8133-ffef27014141": {
    "kind": "ranked",
    "live": 22,
@@ -2095,6 +2104,15 @@
    "opp": "UnZure",
    "oppId": "9dc7b5e1-4f3e-45fb-9db5-7608f7a51bf9",
    "time": "2026-10-24T03:50:18.186Z",
+   "win": false
+  },
+  "37e719d6-4e5f-4ff0-b1f1-c78c416aa9fa": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "corners",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-24T04:47:39.529Z",
    "win": false
   },
   "384f7270-3076-4953-a45e-31394828d86a": {
@@ -3293,6 +3311,15 @@
    "oppId": "5e0c725a-b9b4-4523-8739-4427f20b9ce5",
    "time": "2026-10-23T14:12:14.052Z",
    "win": true
+  },
+  "5c6c4109-a93a-4e20-93d4-30ac1a639606": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "the-farm",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-24T04:47:39.502Z",
+   "win": false
   },
   "5c8ffbb8-b8a1-47cc-b1b9-02e19a59d83c": {
    "kind": "ranked",
@@ -7344,6 +7371,15 @@
    "time": "2026-10-23T15:40:32.971Z",
    "win": false
   },
+  "c64fe4d1-bb34-4b19-a82b-74f2fedfd745": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "starvation",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-24T04:47:39.511Z",
+   "win": false
+  },
   "c65a07db-9155-4204-9849-eccb36df4dcf": {
    "kind": "ranked",
    "live": 23,
@@ -9592,6 +9628,15 @@
    "opp": "What Are We Doing",
    "oppId": "1a73e547-36f0-42df-aba5-698de2d22685",
    "time": "2026-10-21T17:10:14.313Z",
+   "win": false
+  },
+  "f9bfb0fb-20e7-4f6c-8f5b-8442f0a7a58d": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "split",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-24T04:47:39.541Z",
    "win": false
   },
   "f9f9a652-a672-45e6-872e-3d31e7562215": {
@@ -19893,6 +19938,90 @@
    "oppId": "70573b2a-8ec1-470c-a1bd-f8a70fd9a2f3",
    "status": "open",
    "time": "2026-10-24T04:30:19.921Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 9,
+    "champion": 6
+   },
+   "deaths_them": 8,
+   "deaths_us": 15,
+   "gems_them": "1027",
+   "gems_us": "309",
+   "id": "f9bfb0fb-20e7-4f6c-8f5b-8442f0a7a58d",
+   "map": "split",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-24T04:47:39.541Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 5,
+    "champion": 10
+   },
+   "deaths_them": 2,
+   "deaths_us": 15,
+   "gems_them": "1001",
+   "gems_us": "752",
+   "id": "37e719d6-4e5f-4ff0-b1f1-c78c416aa9fa",
+   "map": "corners",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-24T04:47:39.529Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 1,
+    "champion": 42
+   },
+   "deaths_them": 4,
+   "deaths_us": 43,
+   "gems_them": "1001",
+   "gems_us": "22",
+   "id": "1caf5c37-d5a3-4c73-9964-02966d42cf98",
+   "map": "hooks",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-24T04:47:39.521Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "champion": 26
+   },
+   "deaths_them": 4,
+   "deaths_us": 26,
+   "gems_them": "1016",
+   "gems_us": "140",
+   "id": "c64fe4d1-bb34-4b19-a82b-74f2fedfd745",
+   "map": "starvation",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-24T04:47:39.511Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "camp": 8,
+    "champion": 10
+   },
+   "deaths_them": 0,
+   "deaths_us": 18,
+   "gems_them": "1043",
+   "gems_us": "22",
+   "id": "5c6c4109-a93a-4e20-93d4-30ac1a639606",
+   "map": "the-farm",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-24T04:47:39.502Z",
    "tries_at": 4
   }
  ],
