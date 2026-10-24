@@ -4427,13 +4427,15 @@
   {
    "added": "2026-10-23T17:44:20Z",
    "area": "pathing",
+   "claimed": "2026-10-24T05:02:40Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 99,
    "notes": "PATH_CHASE via the new per-map knob2 table; exp 95 (all maps) won h2h 0.55 but lost vs mimics.",
    "results": {},
    "spec": {
     "ref": "origin/feat/path-chase-rs"
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Chase round walls on reverse-spiral only"
   },
   {
