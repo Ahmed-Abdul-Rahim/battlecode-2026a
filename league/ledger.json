@@ -1278,6 +1278,15 @@
    "time": "2026-10-20T19:20:09.080Z",
    "win": false
   },
+  "241a0c61-3cc4-4fc8-a01b-6c2ca653bef1": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "quadrants",
+   "opp": "bandit",
+   "oppId": "d58450ba-8deb-4236-b389-6cfde9165a10",
+   "time": "2026-10-24T04:50:17.318Z",
+   "win": true
+  },
   "241acf6c-6076-4c94-a6ee-90ab4c616abc": {
    "kind": "ranked",
    "live": 15,
@@ -1591,6 +1600,15 @@
    "opp": "CHERI Blossom",
    "oppId": "7d07c0f3-d4ef-4722-aad2-2531397e3be9",
    "time": "2026-10-21T18:40:17.384Z",
+   "win": true
+  },
+  "2b5939e6-b6e8-4100-bd90-5272bc632291": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "interlock",
+   "opp": "bandit",
+   "oppId": "d58450ba-8deb-4236-b389-6cfde9165a10",
+   "time": "2026-10-24T04:50:17.319Z",
    "win": true
   },
   "2b6f1ceb-f55e-42ab-ba76-710fa6ae371d": {
@@ -3652,6 +3670,15 @@
    "opp": "Gilded Fog Walkers",
    "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
    "time": "2026-10-22T10:50:13.670Z",
+   "win": true
+  },
+  "649558f2-7efb-436c-96f3-4b56b26ae811": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "reverse-spiral",
+   "opp": "bandit",
+   "oppId": "d58450ba-8deb-4236-b389-6cfde9165a10",
+   "time": "2026-10-24T04:50:17.318Z",
    "win": true
   },
   "652ed4c7-b412-46a5-b134-3cb80a193b91": {
@@ -6560,6 +6587,15 @@
    "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
    "time": "2026-10-23T15:35:46.222Z",
    "win": true
+  },
+  "b26863e8-cc84-4e6d-90db-1671e757f093": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "yellow-brick-road",
+   "opp": "bandit",
+   "oppId": "d58450ba-8deb-4236-b389-6cfde9165a10",
+   "time": "2026-10-24T04:50:17.318Z",
+   "win": false
   },
   "b2e5a275-f4e0-4a8b-ba11-c91c0ee04cab": {
    "kind": "ranked",
@@ -9637,6 +9673,15 @@
    "opp": "Santa Claude",
    "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
    "time": "2026-10-24T04:47:39.541Z",
+   "win": false
+  },
+  "f9d74bdd-f625-4edd-a239-975f39594537": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "corners",
+   "opp": "bandit",
+   "oppId": "d58450ba-8deb-4236-b389-6cfde9165a10",
+   "time": "2026-10-24T04:50:17.319Z",
    "win": false
   },
   "f9f9a652-a672-45e6-872e-3d31e7562215": {
@@ -20023,6 +20068,40 @@
    "status": "open",
    "time": "2026-10-24T04:47:39.502Z",
    "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 6,
+    "champion": 16
+   },
+   "deaths_them": 1,
+   "deaths_us": 22,
+   "gems_them": "1011",
+   "gems_us": "551",
+   "id": "f9d74bdd-f625-4edd-a239-975f39594537",
+   "map": "corners",
+   "opp": "bandit",
+   "oppId": "d58450ba-8deb-4236-b389-6cfde9165a10",
+   "status": "open",
+   "time": "2026-10-24T04:50:17.319Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 13,
+    "champion": 19
+   },
+   "deaths_them": 3,
+   "deaths_us": 32,
+   "gems_them": "1044",
+   "gems_us": "144",
+   "id": "b26863e8-cc84-4e6d-90db-1671e757f093",
+   "map": "yellow-brick-road",
+   "opp": "bandit",
+   "oppId": "d58450ba-8deb-4236-b389-6cfde9165a10",
+   "status": "open",
+   "time": "2026-10-24T04:50:17.318Z",
+   "tries_at": 1
   }
  ],
  "map_files": {
