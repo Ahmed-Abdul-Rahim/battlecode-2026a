@@ -56,6 +56,16 @@ def save(reg: dict) -> None:
     overwrite lost experiments 96 and 97 once). Our entries win per id; new ids are kept."""
     disk = L.load_json(REGISTRY, {})
     merged = L.merge_experiments(reg, disk) if disk else reg
+    # Keep the caller's entry objects: when the disk copy wins the merge (claim() ties go to the
+    # older claim), an `e` held by evaluate() would otherwise drop out of `reg` and its result
+    # would never be saved (exp 98 passed on 2026-10-24, stayed "screening" and was re-run).
+    held = {(e["id"], e.get("title"), e.get("added")): e for e in reg.get("experiments", [])}
+    for i, m in enumerate(merged.get("experiments", [])):
+        o = held.get((m["id"], m.get("title"), m.get("added")))
+        if o is not None and o is not m:
+            o.clear()
+            o.update(m)
+            merged["experiments"][i] = o
     reg.clear()
     reg.update(merged)
     L.save_json(REGISTRY, reg)
