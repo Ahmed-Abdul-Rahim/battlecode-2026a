@@ -189,6 +189,15 @@
    "time": "2026-10-21T15:20:15.263Z",
    "win": false
   },
+  "04ff4505-8c0a-4b78-8acf-faf8ff95ec30": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "hooks",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-24T05:46:16.946Z",
+   "win": false
+  },
   "052acd04-e068-4f82-b91f-463ad86bf0ed": {
    "kind": "ranked",
    "live": 17,
@@ -314,6 +323,15 @@
    "oppId": "605c150e-bd88-4cb3-b77a-8140a3915609",
    "time": "2026-10-22T07:40:13.075Z",
    "win": true
+  },
+  "08783c90-a939-4af5-8f66-b1ceda3e0b0c": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "corridors",
+   "opp": "it\u2019s the first that we thought that it\u2019s they but what if it\u2019s the time for team",
+   "oppId": "d3e47e1f-ec5d-4dfb-8d42-6c5fe35e2710",
+   "time": "2026-10-24T05:40:21.042Z",
+   "win": false
   },
   "08a34fe6-84bd-4b17-9214-be0619aa9503": {
    "kind": "unranked",
@@ -826,6 +844,15 @@
    "opp": "Electric Shard Casters",
    "oppId": "1fd7861b-b197-4ea9-b94d-0d5a70f69758",
    "time": "2026-10-22T09:20:19.205Z",
+   "win": true
+  },
+  "14a9103b-8c18-4c8e-a518-f6b21a39fc08": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "gem-fields",
+   "opp": "it\u2019s the first that we thought that it\u2019s they but what if it\u2019s the time for team",
+   "oppId": "d3e47e1f-ec5d-4dfb-8d42-6c5fe35e2710",
+   "time": "2026-10-24T05:40:21.042Z",
    "win": true
   },
   "14cc696e-e93e-4a3e-8a63-3f92b1761b48": {
@@ -3006,6 +3033,15 @@
    "time": "2026-10-21T13:20:11.646Z",
    "win": false
   },
+  "51f0057d-f315-4a74-87ec-cd3e37303b77": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "monolith",
+   "opp": "it\u2019s the first that we thought that it\u2019s they but what if it\u2019s the time for team",
+   "oppId": "d3e47e1f-ec5d-4dfb-8d42-6c5fe35e2710",
+   "time": "2026-10-24T05:40:21.042Z",
+   "win": false
+  },
   "52045ee6-8537-4aaf-8d53-fd1917f3dda0": {
    "kind": "ranked",
    "live": 21,
@@ -3879,6 +3915,15 @@
    "time": "2026-10-22T06:40:14.275Z",
    "win": true
   },
+  "677d547d-9caa-4f7d-8cb4-ef134811ef40": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "yellow-brick-road",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-24T05:46:16.855Z",
+   "win": false
+  },
   "67af3823-022b-46b9-a319-ea3e9e8eed46": {
    "kind": "ranked",
    "live": null,
@@ -4372,6 +4417,15 @@
    "opp": "Seacaps",
    "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
    "time": "2026-10-22T04:20:14.332Z",
+   "win": false
+  },
+  "72d0c5d9-6039-465a-b8eb-743af74b5ee3": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "corners",
+   "opp": "it\u2019s the first that we thought that it\u2019s they but what if it\u2019s the time for team",
+   "oppId": "d3e47e1f-ec5d-4dfb-8d42-6c5fe35e2710",
+   "time": "2026-10-24T05:40:21.043Z",
    "win": false
   },
   "73536aa3-6bce-4294-89d5-bdf152dd66e2": {
@@ -8001,6 +8055,15 @@
    "time": "2026-10-20T21:10:08.566Z",
    "win": false
   },
+  "d0b6fdb8-591b-4e1e-b240-f1a1423d8bb2": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "gemfight",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-24T05:46:16.844Z",
+   "win": false
+  },
   "d0bde8f2-1724-49fe-8380-eab1b704320e": {
    "kind": "ranked",
    "live": 23,
@@ -8937,6 +9000,15 @@
    "time": "2026-10-21T15:10:10.876Z",
    "win": false
   },
+  "e404ad9e-3402-462f-bc60-79bd088f5fd4": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "split",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-24T05:46:16.893Z",
+   "win": false
+  },
   "e41b8304-ddde-42df-9669-59ed3506dec8": {
    "kind": "ranked",
    "live": 21,
@@ -9252,6 +9324,15 @@
    "time": "2026-10-22T07:40:13.075Z",
    "win": false
   },
+  "eb369350-17f3-47fd-ac6b-b93dc51e4bfc": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "gem-fields",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-24T05:46:16.863Z",
+   "win": false
+  },
   "eb72f8b9-f60a-4561-b217-6535e73f49eb": {
    "kind": "ranked",
    "live": 21,
@@ -9421,6 +9502,15 @@
    "opp": "Slough Reps",
    "oppId": "fd3a404c-954b-4628-a418-7a8e57fb3783",
    "time": "2026-10-20T15:10:13.186Z",
+   "win": true
+  },
+  "ee560b4b-f785-4d04-a13b-dfafc91abb88": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "hooks",
+   "opp": "it\u2019s the first that we thought that it\u2019s they but what if it\u2019s the time for team",
+   "oppId": "d3e47e1f-ec5d-4dfb-8d42-6c5fe35e2710",
+   "time": "2026-10-24T05:40:21.043Z",
    "win": true
   },
   "eed9a6fc-8aeb-494d-a0b9-4a38ee0048fb": {
@@ -20549,6 +20639,139 @@
    "status": "open",
    "time": "2026-10-24T05:20:24.859Z",
    "tries_at": 2
+  },
+  {
+   "contexts": {
+    "champion": 39
+   },
+   "deaths_them": 16,
+   "deaths_us": 39,
+   "gems_them": "1012",
+   "gems_us": "220",
+   "id": "04ff4505-8c0a-4b78-8acf-faf8ff95ec30",
+   "map": "hooks",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-24T05:46:16.946Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "camp": 5,
+    "champion": 6
+   },
+   "deaths_them": 4,
+   "deaths_us": 11,
+   "gems_them": "1012",
+   "gems_us": "302",
+   "id": "e404ad9e-3402-462f-bc60-79bd088f5fd4",
+   "map": "split",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-24T05:46:16.893Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 11
+   },
+   "deaths_them": 2,
+   "deaths_us": 13,
+   "gems_them": "1021",
+   "gems_us": "567",
+   "id": "eb369350-17f3-47fd-ac6b-b93dc51e4bfc",
+   "map": "gem-fields",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-24T05:46:16.863Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 4,
+    "champion": 3
+   },
+   "deaths_them": 1,
+   "deaths_us": 7,
+   "gems_them": "1003",
+   "gems_us": "0",
+   "id": "677d547d-9caa-4f7d-8cb4-ef134811ef40",
+   "map": "yellow-brick-road",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-24T05:46:16.855Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "champion": 23
+   },
+   "deaths_them": 3,
+   "deaths_us": 23,
+   "gems_them": "1028",
+   "gems_us": "36",
+   "id": "d0b6fdb8-591b-4e1e-b240-f1a1423d8bb2",
+   "map": "gemfight",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-24T05:46:16.844Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 6,
+    "champion": 4
+   },
+   "deaths_them": 5,
+   "deaths_us": 10,
+   "gems_them": "1006",
+   "gems_us": "937",
+   "id": "72d0c5d9-6039-465a-b8eb-743af74b5ee3",
+   "map": "corners",
+   "opp": "it\u2019s the first that we thought that it\u2019s they but what if it\u2019s the time for team",
+   "oppId": "d3e47e1f-ec5d-4dfb-8d42-6c5fe35e2710",
+   "status": "open",
+   "time": "2026-10-24T05:40:21.043Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 39
+   },
+   "deaths_them": 26,
+   "deaths_us": 39,
+   "gems_them": "788",
+   "gems_us": "755",
+   "id": "08783c90-a939-4af5-8f66-b1ceda3e0b0c",
+   "map": "corridors",
+   "opp": "it\u2019s the first that we thought that it\u2019s they but what if it\u2019s the time for team",
+   "oppId": "d3e47e1f-ec5d-4dfb-8d42-6c5fe35e2710",
+   "status": "open",
+   "time": "2026-10-24T05:40:21.042Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 21
+   },
+   "deaths_them": 10,
+   "deaths_us": 23,
+   "gems_them": "1024",
+   "gems_us": "858",
+   "id": "51f0057d-f315-4a74-87ec-cd3e37303b77",
+   "map": "monolith",
+   "opp": "it\u2019s the first that we thought that it\u2019s they but what if it\u2019s the time for team",
+   "oppId": "d3e47e1f-ec5d-4dfb-8d42-6c5fe35e2710",
+   "status": "open",
+   "time": "2026-10-24T05:40:21.042Z",
+   "tries_at": 4
   }
  ],
  "map_files": {
