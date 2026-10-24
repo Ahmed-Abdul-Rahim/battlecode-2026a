@@ -371,7 +371,7 @@ class MapSearch:
 
     def oof(self, cid: str) -> int:
         base = {(r["opp"], r["side"]): r for r in self.store.select("base", map=self.name)}
-        return sum(max(r.get("oof", 0), 0) - max(base[(r["opp"], r["side"])].get("oof", 0), 0)
+        return sum(C.stalls(r) - C.stalls(base[(r["opp"], r["side"])])
                    for r in self.store.select(cid, map=self.name) if (r["opp"], r["side"]) in base)
 
 

@@ -349,6 +349,11 @@ class Store:
         ]
 
 
+def stalls(r: dict) -> int:
+    """Out-of-fuel turns after start-up (rows without oof_init: start-up included)."""
+    return max(r.get("oof", 0), 0) - r.get("oof_init", 0)
+
+
 def fitness(r: dict) -> float:
     margin = (r["ours"] - r["theirs"]) / max(r["ours"] + r["theirs"], 1)
     return r["res"] + MARGIN_W * margin - DEATH_W * r["deaths"]
@@ -385,6 +390,11 @@ def _row(res: runner.MatchResult, g: Game, snap: str, us: str) -> dict:
         champ = log.fuel[k:]
         row["draft_fuel"] = log.fuel[:k]
         row["oof"] = replay.exhausted_turns(log)
+        # Each body's first turn runs start-up (Bot::new: ~200k on maps with many camps). Losing
+        # that turn at spawn costs nothing (league main skips it on purpose when start-up leaves
+        # under 70k), so it is counted apart from real stalls.
+        bodies = len(row["picks"]) + ("Cassi & Issac" in row["picks"])
+        row["oof_init"] = sum(1 for f in champ[:bodies] if f in replay.EXHAUSTED)
         if champ:
             srt = sorted(champ)
             row["fmean"] = round(sum(champ) / len(champ))
