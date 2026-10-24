@@ -990,6 +990,15 @@
    "time": "2026-10-21T15:30:12.915Z",
    "win": true
   },
+  "18c965fc-00c0-4d74-9cc3-03240f1fea87": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "corridors",
+   "opp": "du.RAM",
+   "oppId": "d1cb1906-76ed-46c7-b005-90fac23a59cd",
+   "time": "2026-10-24T06:00:18.933Z",
+   "win": false
+  },
   "18e42fa3-b54c-4316-9628-9177b87e9f77": {
    "kind": "ranked",
    "live": 15,
@@ -3987,6 +3996,15 @@
    "time": "2026-10-23T16:10:40.121Z",
    "win": false
   },
+  "6895c079-399d-497b-a446-48d7c6fbf51f": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "lanes",
+   "opp": "du.RAM",
+   "oppId": "d1cb1906-76ed-46c7-b005-90fac23a59cd",
+   "time": "2026-10-24T06:00:18.933Z",
+   "win": false
+  },
   "68af59f5-f6dc-447f-a7e4-e42328ecb7a1": {
    "kind": "ranked",
    "live": 1,
@@ -6552,6 +6570,15 @@
    "time": "2026-10-21T18:50:18.155Z",
    "win": false
   },
+  "aa2e0800-fc50-4271-9c41-d7cfd419f80f": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "swirl",
+   "opp": "du.RAM",
+   "oppId": "d1cb1906-76ed-46c7-b005-90fac23a59cd",
+   "time": "2026-10-24T06:00:18.933Z",
+   "win": true
+  },
   "aa8695de-a1cb-453d-9d96-075ecef6026a": {
    "kind": "ranked",
    "live": 1,
@@ -6884,6 +6911,15 @@
    "oppId": "7d07c0f3-d4ef-4722-aad2-2531397e3be9",
    "time": "2026-10-22T08:20:16.706Z",
    "win": true
+  },
+  "b43e0dbb-01ab-4291-b7e0-be77d870fb2c": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "reverse-spiral",
+   "opp": "du.RAM",
+   "oppId": "d1cb1906-76ed-46c7-b005-90fac23a59cd",
+   "time": "2026-10-24T06:00:18.932Z",
+   "win": false
   },
   "b4539a7b-de75-41a2-a5d9-7aca0320a0aa": {
    "kind": "ranked",
@@ -9079,6 +9115,15 @@
    "opp": "LiquidSwords",
    "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
    "time": "2026-10-24T05:00:24.244Z",
+   "win": false
+  },
+  "e4a57a61-d44f-4a07-ae0e-029add8a4258": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "fragment",
+   "opp": "du.RAM",
+   "oppId": "d1cb1906-76ed-46c7-b005-90fac23a59cd",
+   "time": "2026-10-24T06:00:18.932Z",
    "win": false
   },
   "e4bd7274-a182-4428-a32e-7972f59e79db": {
@@ -20868,6 +20913,73 @@
    "status": "open",
    "time": "2026-10-24T05:50:21.850Z",
    "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 53,
+    "champion": 2
+   },
+   "deaths_them": 4,
+   "deaths_us": 55,
+   "gems_them": "582",
+   "gems_us": "546",
+   "id": "18c965fc-00c0-4d74-9cc3-03240f1fea87",
+   "map": "corridors",
+   "opp": "du.RAM",
+   "oppId": "d1cb1906-76ed-46c7-b005-90fac23a59cd",
+   "status": "open",
+   "time": "2026-10-24T06:00:18.933Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 5,
+    "champion": 7
+   },
+   "deaths_them": 10,
+   "deaths_us": 12,
+   "gems_them": "1004",
+   "gems_us": "726",
+   "id": "6895c079-399d-497b-a446-48d7c6fbf51f",
+   "map": "lanes",
+   "opp": "du.RAM",
+   "oppId": "d1cb1906-76ed-46c7-b005-90fac23a59cd",
+   "status": "open",
+   "time": "2026-10-24T06:00:18.933Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "champion": 1
+   },
+   "deaths_them": 8,
+   "deaths_us": 1,
+   "gems_them": "1012",
+   "gems_us": "0",
+   "id": "b43e0dbb-01ab-4291-b7e0-be77d870fb2c",
+   "map": "reverse-spiral",
+   "opp": "du.RAM",
+   "oppId": "d1cb1906-76ed-46c7-b005-90fac23a59cd",
+   "status": "open",
+   "time": "2026-10-24T06:00:18.932Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 4,
+    "champion": 49
+   },
+   "deaths_them": 25,
+   "deaths_us": 53,
+   "gems_them": "858",
+   "gems_us": "376",
+   "id": "e4a57a61-d44f-4a07-ae0e-029add8a4258",
+   "map": "fragment",
+   "opp": "du.RAM",
+   "oppId": "d1cb1906-76ed-46c7-b005-90fac23a59cd",
+   "status": "open",
+   "time": "2026-10-24T06:00:18.932Z",
+   "tries_at": 10
   }
  ],
  "map_files": {
