@@ -63,6 +63,15 @@
    "time": "2026-10-22T11:10:50.507Z",
    "win": false
   },
+  "0208f0a6-c16d-4ab6-890f-f4acd037d47a": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "pilgrimage",
+   "opp": "Opus 5.5",
+   "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
+   "time": "2026-10-24T05:10:17.864Z",
+   "win": false
+  },
   "0287dfce-bd95-4b1a-83e5-0857511954ef": {
    "kind": "unranked",
    "live": 23,
@@ -97,6 +106,15 @@
    "opp": "Velvet Wolves",
    "oppId": "47a066ba-5cc9-4ee9-ad57-ab0c0fcc1b59",
    "time": "2026-10-22T04:50:12.344Z",
+   "win": false
+  },
+  "037c9429-9bb6-4a7e-9875-3b370ff5b252": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "eight",
+   "opp": "Opus 5.5",
+   "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
+   "time": "2026-10-24T05:10:17.864Z",
    "win": false
   },
   "03ea9a96-e109-4418-9614-617e51d0e37d": {
@@ -999,6 +1017,15 @@
    "time": "2026-10-22T10:10:16.175Z",
    "win": false
   },
+  "1b4f63a0-b33f-4413-b1b2-77b724fcb6f5": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "elkring",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "time": "2026-10-24T05:00:24.243Z",
+   "win": false
+  },
   "1bfb2d1c-c351-40d7-97f7-41b525716554": {
    "kind": "ranked",
    "live": null,
@@ -1862,6 +1889,15 @@
    "oppId": "5d4e6798-122b-4cbb-a685-78c5f075ff46",
    "time": "2026-10-21T13:10:15.673Z",
    "win": true
+  },
+  "32bd67a6-a7ad-46a0-a419-04b9f1e2ee11": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "ambush",
+   "opp": "Opus 5.5",
+   "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
+   "time": "2026-10-24T05:10:17.864Z",
+   "win": false
   },
   "32f9b532-0243-4348-9af9-7559a623041d": {
    "kind": "ranked",
@@ -3105,6 +3141,15 @@
    "time": "2026-10-22T11:10:50.506Z",
    "win": true
   },
+  "55f2d992-9f9e-43f2-82dc-10cbb7015811": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "gold-rush",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "time": "2026-10-24T05:00:24.243Z",
+   "win": false
+  },
   "5636bed5-9fc7-4472-8d23-1f012a198de4": {
    "kind": "ranked",
    "live": 16,
@@ -4346,6 +4391,15 @@
    "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
    "time": "2026-10-22T11:20:16.890Z",
    "win": false
+  },
+  "7497a825-3959-45ee-a856-a91f6c058399": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "collision",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "time": "2026-10-24T05:00:24.243Z",
+   "win": true
   },
   "74d65cd6-3399-46ba-9658-90f8ea3cd55a": {
    "kind": "ranked",
@@ -6687,6 +6741,15 @@
    "time": "2026-10-23T14:54:32.655Z",
    "win": false
   },
+  "b4bc9c26-ab03-4bf2-9d67-a20be69e9597": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "eight",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "time": "2026-10-24T05:00:24.243Z",
+   "win": false
+  },
   "b4f07aeb-2db8-46c0-872f-508a0a5cdf43": {
    "kind": "ranked",
    "live": 22,
@@ -7722,6 +7785,15 @@
    "time": "2026-10-21T18:00:19.739Z",
    "win": false
   },
+  "cdb41dc7-6bfd-4893-8c18-73fdbe17a587": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "packs",
+   "opp": "Opus 5.5",
+   "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
+   "time": "2026-10-24T05:10:17.865Z",
+   "win": false
+  },
   "ce0ca8c8-7f4e-463c-9fd1-e7be5f1d3e24": {
    "kind": "unranked",
    "live": 23,
@@ -7919,6 +7991,15 @@
    "oppId": "ee461d0b-afa8-4943-ae64-d0605ffa01a4",
    "time": "2026-10-22T09:30:19.246Z",
    "win": true
+  },
+  "d230b84a-3f1e-421a-9d6c-8addb1c95417": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "yellow-brick-road",
+   "opp": "Opus 5.5",
+   "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
+   "time": "2026-10-24T05:10:17.865Z",
+   "win": false
   },
   "d33ff9a7-e1ea-4fc2-9f45-31dd8d2fd56a": {
    "kind": "ranked",
@@ -8791,6 +8872,15 @@
    "opp": "let's jump into it",
    "oppId": "3881272c-9c7f-4b3d-94f9-4c0788a3b27a",
    "time": "2026-10-23T14:40:37.395Z",
+   "win": false
+  },
+  "e4a069b1-0354-4244-ba9d-47d968933a96": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "road-of-riches",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "time": "2026-10-24T05:00:24.244Z",
    "win": false
   },
   "e4bd7274-a182-4428-a32e-7972f59e79db": {
@@ -20102,6 +20192,157 @@
    "status": "open",
    "time": "2026-10-24T04:50:17.318Z",
    "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 6,
+    "champion": 3
+   },
+   "deaths_them": 30,
+   "deaths_us": 9,
+   "gems_them": "1003",
+   "gems_us": "171",
+   "id": "d230b84a-3f1e-421a-9d6c-8addb1c95417",
+   "map": "yellow-brick-road",
+   "opp": "Opus 5.5",
+   "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
+   "status": "open",
+   "time": "2026-10-24T05:10:17.865Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "champion": 40
+   },
+   "deaths_them": 1,
+   "deaths_us": 40,
+   "gems_them": "1018",
+   "gems_us": "112",
+   "id": "cdb41dc7-6bfd-4893-8c18-73fdbe17a587",
+   "map": "packs",
+   "opp": "Opus 5.5",
+   "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
+   "status": "open",
+   "time": "2026-10-24T05:10:17.865Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 18,
+    "champion": 18
+   },
+   "deaths_them": 18,
+   "deaths_us": 36,
+   "gems_them": "1014",
+   "gems_us": "83",
+   "id": "0208f0a6-c16d-4ab6-890f-f4acd037d47a",
+   "map": "pilgrimage",
+   "opp": "Opus 5.5",
+   "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
+   "status": "open",
+   "time": "2026-10-24T05:10:17.864Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "camp": 6,
+    "champion": 27
+   },
+   "deaths_them": 61,
+   "deaths_us": 33,
+   "gems_them": "1039",
+   "gems_us": "875",
+   "id": "037c9429-9bb6-4a7e-9875-3b370ff5b252",
+   "map": "eight",
+   "opp": "Opus 5.5",
+   "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
+   "status": "open",
+   "time": "2026-10-24T05:10:17.864Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 8,
+    "champion": 6
+   },
+   "deaths_them": 32,
+   "deaths_us": 14,
+   "gems_them": "1008",
+   "gems_us": "902",
+   "id": "32bd67a6-a7ad-46a0-a419-04b9f1e2ee11",
+   "map": "ambush",
+   "opp": "Opus 5.5",
+   "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
+   "status": "open",
+   "time": "2026-10-24T05:10:17.864Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 10,
+    "champion": 2
+   },
+   "deaths_them": 9,
+   "deaths_us": 12,
+   "gems_them": "1025",
+   "gems_us": "0",
+   "id": "e4a069b1-0354-4244-ba9d-47d968933a96",
+   "map": "road-of-riches",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "status": "open",
+   "time": "2026-10-24T05:00:24.244Z",
+   "tries_at": 10
+  },
+  {
+   "contexts": {
+    "camp": 6,
+    "champion": 30
+   },
+   "deaths_them": 18,
+   "deaths_us": 36,
+   "gems_them": "1020",
+   "gems_us": "333",
+   "id": "1b4f63a0-b33f-4413-b1b2-77b724fcb6f5",
+   "map": "elkring",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "status": "open",
+   "time": "2026-10-24T05:00:24.243Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 3,
+    "champion": 35
+   },
+   "deaths_them": 9,
+   "deaths_us": 38,
+   "gems_them": "490",
+   "gems_us": "148",
+   "id": "55f2d992-9f9e-43f2-82dc-10cbb7015811",
+   "map": "gold-rush",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "status": "open",
+   "time": "2026-10-24T05:00:24.243Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "champion": 53
+   },
+   "deaths_them": 30,
+   "deaths_us": 53,
+   "gems_them": "1044",
+   "gems_us": "186",
+   "id": "b4bc9c26-ab03-4bf2-9d67-a20be69e9597",
+   "map": "eight",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "status": "open",
+   "time": "2026-10-24T05:00:24.243Z",
+   "tries_at": 4
   }
  ],
  "map_files": {
