@@ -28,6 +28,8 @@ struct DraftCache {
     fp: u32,
     /// The draft's map analysis for the match plan (draft memory v3), from the first pick.
     analysis: Option<crate::plan_build::MapAnalysis>,
+    /// Searched plan settings for this map (patched block or pack TAG_PLAN; settings.rs).
+    settings: Option<crate::settings::Settings>,
 }
 
 thread_local! {
@@ -109,6 +111,7 @@ fn build_cache() -> Result<DraftCache> {
         weights: ScorerWeights::default(),
         plan,
         fp,
+        settings: crate::settings::for_map(fp),
         analysis: crate::plan_build::analyse().ok(),
         pack_draft: {
             let team_size = cambc::draft::team_size()?;
@@ -154,7 +157,11 @@ pub fn play() -> Result<()> {
             enemy: picks(Team::Enemy)?,
             team_size: c.team_size,
         };
-        let mut prefs = draft_prefs(c.plan.map_or(0, |p| p.draft), &state);
+        let profile = match c.settings.as_ref().map_or(0, |s| s.draft) {
+            0 => c.plan.map_or(0, |p| p.draft),
+            p => p,
+        };
+        let mut prefs = draft_prefs(profile, &state);
         if prefs.is_empty() && !c.pack_draft.is_empty() {
             prefs = c.pack_draft.clone();
         }
@@ -225,6 +232,9 @@ fn theta_for(
         if let Some(slot) = theta.knobs.get_mut(k) {
             *slot = v;
         }
+    }
+    if let Some(s) = &c.settings {
+        s.apply(&mut theta);
     }
     theta.map_fp = c.fp;
     if let Some(a) = &c.analysis {
@@ -326,6 +336,18 @@ fn draft_prefs(profile: u8, state: &DraftState) -> Vec<DraftChoice> {
         // Per-map plans: the best ladder bot's draft / the Tavi meta draft.
         8 => BEST.to_vec(),
         9 => META.to_vec(),
+        // The meta draft with its third pick swapped (harness/search rosters).
+        10..=14 => {
+            let third = [
+                DraftChoice::Stellar,
+                DraftChoice::Prism,
+                DraftChoice::Ren,
+                DraftChoice::Ryth,
+                DraftChoice::VesperVale,
+            ][usize::from(profile - 10)];
+            let head = [META[0], META[1], third];
+            head.into_iter().chain(META.into_iter().filter(|ch| !head.contains(ch))).collect()
+        }
         4 => {
             // Counter: they lean ranged -> divers; they lean melee -> kiters.
             let n_ranged = state.enemy.iter().filter(|ch| RANGED.contains(ch)).count();

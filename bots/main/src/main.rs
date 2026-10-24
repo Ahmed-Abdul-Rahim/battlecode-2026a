@@ -23,6 +23,7 @@ mod map_plans;
 mod pack;
 mod plan_build;
 mod sdk;
+mod settings;
 mod skirmish;
 mod telemetry;
 mod utility;

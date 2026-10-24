@@ -6,7 +6,8 @@
 //! bytes). Tags: 1 θ (f32 × learned::P_N), 2 hotspots ((x u8, y u8, weight u8) × n),
 //! 3 opening (n sides u8, then per side: spawn x u8, y u8, KINDS × OPENING_LEN group
 //! indices, 255 = none), 4 draft (team sizes 3/4/5 × DRAFT_LEN DraftChoice, 255 = none),
-//! 5 build (KINDS × BUILD_LEN emblems as family * 3 + stat, 255 = end).
+//! 5 build (KINDS × BUILD_LEN emblems as family * 3 + stat, 255 = end), 6 plan settings
+//! (settings.rs record: draft profile and knob / knob2 overrides from harness/search).
 //! An empty pack (no entries) leaves the bot exactly as compiled.
 
 static PACK: &[u8] = include_bytes!("pack/pack.bin");
@@ -16,6 +17,7 @@ pub const TAG_HOTSPOTS: u8 = 2;
 pub const TAG_OPENING: u8 = 3;
 pub const TAG_DRAFT: u8 = 4;
 pub const TAG_BUILD: u8 = 5;
+pub const TAG_PLAN: u8 = 6;
 pub const KINDS: usize = 13;
 pub const OPENING_LEN: usize = 4;
 pub const DRAFT_LEN: usize = 5;
@@ -28,6 +30,7 @@ pub struct Entry {
     pub opening: &'static [u8],
     pub draft: &'static [u8],
     pub build: &'static [u8],
+    pub plan: &'static [u8],
 }
 
 impl Entry {
@@ -98,6 +101,7 @@ pub fn lookup(fingerprint: u32) -> Entry {
                 TAG_OPENING => e.opening = data,
                 TAG_DRAFT => e.draft = data,
                 TAG_BUILD => e.build = data,
+                TAG_PLAN => e.plan = data,
                 _ => {}
             }
             at = start + len as usize;
