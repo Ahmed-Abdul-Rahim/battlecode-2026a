@@ -4528,17 +4528,63 @@
    "added": "2026-10-23T18:37:21Z",
    "area": "draft",
    "claimed": "2026-10-24T05:15:26Z",
+   "finished": "2026-10-24T05:25:59Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 101,
    "notes": "Match plan in draft memory; champions discount frontier groups while enemies are near. Local 4 maps 23->26/56.",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.525,
+     "h2h_games": 80,
+     "live": {
+      "deaths": 22.77,
+      "fitness": 0.375,
+      "games": 1040,
+      "gem_margin": 0.103,
+      "win": 0.577
+     },
+     "sparring": {
+      "mean": -0.138,
+      "pairs": 14,
+      "se": 0.2489
+     },
+     "variant": {
+      "deaths": 23.35,
+      "fitness": 0.36,
+      "games": 1040,
+      "gem_margin": 0.081,
+      "win": 0.573
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 14.42,
+      "fitness": 0.489,
+      "games": 182,
+      "gem_margin": 0.113,
+      "win": 0.604
+     },
+     "paired": {
+      "mean": -0.0339,
+      "pairs": 182,
+      "se": 0.0538
+     },
+     "variant": {
+      "deaths": 14.91,
+      "fitness": 0.455,
+      "games": 182,
+      "gem_margin": 0.085,
+      "win": 0.582
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "DRAFT_PLAN": 1
     },
     "ref": "origin/feat/draft-plan"
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "Draft memory v3 + frontier discount (DRAFT_PLAN 1)"
   }
  ]
