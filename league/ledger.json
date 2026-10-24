@@ -612,6 +612,15 @@
    "time": "2026-10-23T14:58:30.379Z",
    "win": false
   },
+  "10880cf7-6e6f-4744-a105-32351848acca": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "contest",
+   "opp": "WOLVES",
+   "oppId": "6257cfdb-cfac-492c-b71c-3d55eacdd547",
+   "time": "2026-10-24T05:20:24.859Z",
+   "win": true
+  },
   "108f9ca9-6661-410b-9085-35aa14688ca1": {
    "kind": "ranked",
    "live": 16,
@@ -2376,6 +2385,15 @@
    "time": "2026-10-20T20:40:10.182Z",
    "win": true
   },
+  "3dd05e26-e09c-46e1-8040-5f466446eeb1": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "elkring",
+   "opp": "Turbo Elk",
+   "oppId": "d793f432-203a-4593-b13a-b108b09cfaeb",
+   "time": "2026-10-24T05:30:20.851Z",
+   "win": false
+  },
   "3df226d5-aae1-4dff-8a70-4281425260dd": {
    "kind": "ranked",
    "live": 1,
@@ -2493,6 +2511,15 @@
    "time": "2026-10-20T20:40:10.182Z",
    "win": true
   },
+  "422c3929-65a9-4796-a8fa-7ac42d292430": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "collision",
+   "opp": "WOLVES",
+   "oppId": "6257cfdb-cfac-492c-b71c-3d55eacdd547",
+   "time": "2026-10-24T05:20:24.860Z",
+   "win": false
+  },
   "427cfdf3-0cf6-452e-bf47-3402b67541db": {
    "kind": "unranked",
    "live": 23,
@@ -2564,6 +2591,15 @@
    "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
    "time": "2026-10-24T03:10:14.332Z",
    "win": true
+  },
+  "4598561f-2660-4e05-8f36-b22d120c2513": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "pilgrimage",
+   "opp": "WOLVES",
+   "oppId": "6257cfdb-cfac-492c-b71c-3d55eacdd547",
+   "time": "2026-10-24T05:20:24.859Z",
+   "win": false
   },
   "45c2a333-9fae-4356-88ef-4653a4393d44": {
    "kind": "ranked",
@@ -5346,6 +5382,15 @@
    "time": "2026-10-21T15:50:14.108Z",
    "win": true
   },
+  "8ea4c2cb-6952-4190-acf5-9817187a56cb": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "lost-world",
+   "opp": "WOLVES",
+   "oppId": "6257cfdb-cfac-492c-b71c-3d55eacdd547",
+   "time": "2026-10-24T05:20:24.860Z",
+   "win": true
+  },
   "8ead6544-1532-4943-9a6b-3e3552e2c693": {
    "kind": "ranked",
    "live": 23,
@@ -5588,6 +5633,15 @@
    "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
    "time": "2026-10-22T08:56:57.627Z",
    "win": true
+  },
+  "948515ee-01b6-41a7-8431-636bb956e058": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "islands",
+   "opp": "Turbo Elk",
+   "oppId": "d793f432-203a-4593-b13a-b108b09cfaeb",
+   "time": "2026-10-24T05:30:20.850Z",
+   "win": false
   },
   "94dde361-839a-4d56-bd25-efd718c09bb2": {
    "kind": "ranked",
@@ -6019,6 +6073,15 @@
    "opp": "Rogue.ai",
    "oppId": "f1b13689-8bce-4cf2-ac51-b5103c5dde2d",
    "time": "2026-10-23T16:40:21.780Z",
+   "win": false
+  },
+  "9e5d2db2-ce2f-462e-a924-e410016a9ab4": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "elk-arena",
+   "opp": "Turbo Elk",
+   "oppId": "d793f432-203a-4593-b13a-b108b09cfaeb",
+   "time": "2026-10-24T05:30:20.852Z",
    "win": false
   },
   "9e707e6f-b168-4925-bdc5-5514f23e6506": {
@@ -7290,6 +7353,15 @@
    "time": "2026-10-21T15:30:43.099Z",
    "win": true
   },
+  "c001bf62-e3b6-42e0-899f-c47b823502f1": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "split",
+   "opp": "Turbo Elk",
+   "oppId": "d793f432-203a-4593-b13a-b108b09cfaeb",
+   "time": "2026-10-24T05:30:20.851Z",
+   "win": true
+  },
   "c008fa13-b83d-4392-8cf5-4b13a704f09e": {
    "kind": "ranked",
    "live": 21,
@@ -8242,6 +8314,15 @@
    "opp": "let's jump into it",
    "oppId": "3881272c-9c7f-4b3d-94f9-4c0788a3b27a",
    "time": "2026-10-23T14:58:24.411Z",
+   "win": false
+  },
+  "d834b2ed-1c43-46ef-9a20-577700a77924": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "the-farm",
+   "opp": "Turbo Elk",
+   "oppId": "d793f432-203a-4593-b13a-b108b09cfaeb",
+   "time": "2026-10-24T05:30:20.852Z",
    "win": false
   },
   "d86409f6-3c5c-4925-a90e-c6eff70b5cfd": {
@@ -9539,6 +9620,15 @@
    "oppId": "70dc8c4e-5d63-4f8d-8915-1b9c7fe7fee7",
    "time": "2026-10-20T17:20:08.638Z",
    "win": true
+  },
+  "f40573f9-35d7-47ec-890d-fd536eeb9239": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "elk-arena",
+   "opp": "WOLVES",
+   "oppId": "6257cfdb-cfac-492c-b71c-3d55eacdd547",
+   "time": "2026-10-24T05:20:24.859Z",
+   "win": false
   },
   "f4386295-0a8a-4275-9ab4-87b1ff1cb1ba": {
    "kind": "ranked",
@@ -20343,6 +20433,122 @@
    "status": "open",
    "time": "2026-10-24T05:00:24.243Z",
    "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 20,
+    "champion": 12
+   },
+   "deaths_them": 20,
+   "deaths_us": 32,
+   "gems_them": "694",
+   "gems_us": "74",
+   "id": "d834b2ed-1c43-46ef-9a20-577700a77924",
+   "map": "the-farm",
+   "opp": "Turbo Elk",
+   "oppId": "d793f432-203a-4593-b13a-b108b09cfaeb",
+   "status": "open",
+   "time": "2026-10-24T05:30:20.852Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "champion": 38
+   },
+   "deaths_them": 56,
+   "deaths_us": 38,
+   "gems_them": "576",
+   "gems_us": "504",
+   "id": "9e5d2db2-ce2f-462e-a924-e410016a9ab4",
+   "map": "elk-arena",
+   "opp": "Turbo Elk",
+   "oppId": "d793f432-203a-4593-b13a-b108b09cfaeb",
+   "status": "open",
+   "time": "2026-10-24T05:30:20.852Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 4,
+    "champion": 20
+   },
+   "deaths_them": 6,
+   "deaths_us": 24,
+   "gems_them": "1012",
+   "gems_us": "440",
+   "id": "3dd05e26-e09c-46e1-8040-5f466446eeb1",
+   "map": "elkring",
+   "opp": "Turbo Elk",
+   "oppId": "d793f432-203a-4593-b13a-b108b09cfaeb",
+   "status": "open",
+   "time": "2026-10-24T05:30:20.851Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "champion": 6
+   },
+   "deaths_them": 4,
+   "deaths_us": 6,
+   "gems_them": "1028",
+   "gems_us": "386",
+   "id": "948515ee-01b6-41a7-8431-636bb956e058",
+   "map": "islands",
+   "opp": "Turbo Elk",
+   "oppId": "d793f432-203a-4593-b13a-b108b09cfaeb",
+   "status": "open",
+   "time": "2026-10-24T05:30:20.850Z",
+   "tries_at": 5
+  },
+  {
+   "contexts": {
+    "champion": 32
+   },
+   "deaths_them": 14,
+   "deaths_us": 32,
+   "gems_them": "1031",
+   "gems_us": "823",
+   "id": "422c3929-65a9-4796-a8fa-7ac42d292430",
+   "map": "collision",
+   "opp": "WOLVES",
+   "oppId": "6257cfdb-cfac-492c-b71c-3d55eacdd547",
+   "status": "open",
+   "time": "2026-10-24T05:20:24.860Z",
+   "tries_at": 6
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 33
+   },
+   "deaths_them": 12,
+   "deaths_us": 35,
+   "gems_them": "1008",
+   "gems_us": "36",
+   "id": "f40573f9-35d7-47ec-890d-fd536eeb9239",
+   "map": "elk-arena",
+   "opp": "WOLVES",
+   "oppId": "6257cfdb-cfac-492c-b71c-3d55eacdd547",
+   "status": "open",
+   "time": "2026-10-24T05:20:24.859Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 10,
+    "champion": 30
+   },
+   "deaths_them": 25,
+   "deaths_us": 40,
+   "gems_them": "1000",
+   "gems_us": "144",
+   "id": "4598561f-2660-4e05-8f36-b22d120c2513",
+   "map": "pilgrimage",
+   "opp": "WOLVES",
+   "oppId": "6257cfdb-cfac-492c-b71c-3d55eacdd547",
+   "status": "open",
+   "time": "2026-10-24T05:20:24.859Z",
+   "tries_at": 2
   }
  ],
  "map_files": {
