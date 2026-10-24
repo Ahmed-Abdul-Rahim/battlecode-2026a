@@ -4,7 +4,8 @@
     python harness/pack.py write runs/pack/spec.json [--out bots/main/src/pack/pack.bin]
 
 spec.json: {"global": {"theta": [P_N floats]}, "maps": {"<map>": {"theta": [...],
-"hotspots": [[x, y, w0..255], ...], "opening": [u8 * 6 * 4]}}}. Map names resolve to
+"hotspots": [[x, y, w0..255], ...], "opening": [u8 * 6 * 4], "plan": "<settings record hex>"}}}.
+Map names resolve to
 fingerprints through data/fingerprints.json (world::fingerprint values).
 Hotspots: tiles where our champions died most (local league games of our engine and
 ladder summaries), 3x3-smoothed, non-maximum-suppressed, weights scaled to 0..255.
@@ -23,7 +24,7 @@ ROOT = Path(__file__).resolve().parents[1]
 FINGERPRINTS = ROOT / "data" / "fingerprints.json"
 PACK = ROOT / "bots" / "main" / "src" / "pack" / "pack.bin"
 OUR_ENGINE = ("main", "_lg-", "auto-v", "_es-", "_v6-", "_sr-", "_mt-", "_oos-", "_var-", "_tune")
-TAG_THETA, TAG_HOTSPOTS, TAG_OPENING, TAG_DRAFT, TAG_BUILD = 1, 2, 3, 4, 5
+TAG_THETA, TAG_HOTSPOTS, TAG_OPENING, TAG_DRAFT, TAG_BUILD, TAG_PLAN = 1, 2, 3, 4, 5, 6
 KINDS, OPENING_LEN, DRAFT_LEN, BUILD_LEN = 13, 4, 5, 12
 
 
@@ -79,6 +80,8 @@ def write(spec: dict, out: Path = PACK) -> int:
             sections.append((TAG_DRAFT, _draft_bytes(e["draft"])))
         if e.get("build"):
             sections.append((TAG_BUILD, _build_bytes(e["build"])))
+        if e.get("plan"):  # bots/main/src/settings.rs record, hex (harness/search table)
+            sections.append((TAG_PLAN, bytes.fromhex(e["plan"])))
         blob += struct.pack("<IH", fp, len(sections))
         for tag, data in sections:
             blob += struct.pack("<BI", tag, len(data)) + data

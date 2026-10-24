@@ -1,0 +1,13 @@
+{
+  "_doc": "Plan-search styles (portfolio v2): named knob bundles, knob names from memory.rs (knob2 with a K2_ prefix). harness/search expands a style into settings overrides; the bot never sees the names.",
+  "base": {},
+  "aggro": {"AGGRESSION": 210, "FIGHT_MARGIN_PCT": 5},
+  "careful": {"AGGRESSION": 60, "FIGHT_MARGIN_PCT": 60, "RETREAT_HP_PCT": 50},
+  "hunt": {"HUNT_MODE": 2},
+  "teamfight": {"TEAM_FIGHT": 1},
+  "search": {"COMBAT_SEARCH": 1},
+  "bank": {"TRIBUTE_MAX_GEMS": 40},
+  "farmer": {"AGGRESSION": 70, "DENY_TRIBUTE": 0, "K2_TEAM_UP": 0, "TRIBUTE_MAX_GEMS": 160, "CAMP_SAFE": 3},
+  "contest": {"AGGRESSION": 190, "FIGHT_V6": 7, "K2_PUNISH_RECALL": 6, "HUNT_MODE": 2},
+  "safe": {"CAMP_SAFE": 3, "RECALL_SAFE": 2, "K2_LOS_RETREAT": 1, "RETREAT_HP_PCT": 45}
+}

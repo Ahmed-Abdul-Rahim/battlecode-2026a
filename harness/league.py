@@ -80,6 +80,8 @@ FINGERPRINTS = ROOT / "data" / "fingerprints.json"
 GEOMETRY = ROOT / "data" / "map_geometry.json"
 PACK = ROOT / "bots" / "main" / "src" / "pack" / "pack.bin"
 SCRATCH = ROOT / "runs" / "league"
+#: Searched plan settings per map (harness/search export): pack tag 6, kept in every pack.
+PLAN_TABLE = LEAGUE / "plan_table.json"
 LOCAL = SCRATCH / "local.json"
 LOCK = SCRATCH / "lock"
 GAMES = ROOT / "runs" / "ladder_top"  # downloaded summaries + match lists (mimic.SUMMARY_DIRS)
@@ -387,6 +389,8 @@ def pack_bytes_for(maps: dict[str, list[float]], base_spec: dict | None = None) 
     dflt = params.defaults(ROOT / "bots" / "main" / "src" / "learned.rs")
     for m, th in maps.items():
         spec.setdefault(m, {})["theta"] = params.to_bot(th, dflt)
+    for m, rec in load_json(PLAN_TABLE, {}).get("maps", {}).items():
+        spec.setdefault(m, {})["plan"] = rec
     tmp = SCRATCH / f"pack-{os.getpid()}.bin"
     SCRATCH.mkdir(parents=True, exist_ok=True)
     packlib.write({"maps": spec}, tmp)

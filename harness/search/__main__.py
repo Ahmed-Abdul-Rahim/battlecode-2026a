@@ -4,6 +4,11 @@
     python -m harness.search smoke               # patch path: null = identical, settings take effect
     python -m harness.search baseline [--hours H] # snapshot vs every opponent, all maps, both sides
     python -m harness.search splits              # opponent A/B and map train/held-out splits
+    python -m harness.search audit [--hours H]   # probe every plan-settable decision
+    python -m harness.search search [--maps a,b] [--hours H]  # per-map search (train maps)
+    python -m harness.search table | sstatus     # accepted settings per map / search progress
+    python -m harness.search mvp [--hours H]     # honest (cross-fitted) gain + h2h vs our rules
+    python -m harness.search export              # league/plan_table.json + this worktree's pack.bin
     python -m harness.search status
 
 Every job resumes where it stopped (rows in runs/search/<job>/games.jsonl).
@@ -128,6 +133,43 @@ def cmd_splits(a) -> None:
     print("held-out maps:", s["maps_heldout"])
 
 
+def cmd_audit(a) -> None:
+    from harness.search import audit
+
+    if not audit.run(a.hours):
+        print("stopped at the deadline: run audit again to continue")
+
+
+def cmd_search(a) -> None:
+    from harness.search import search
+
+    search.run(a.maps.split(",") if a.maps else None, a.hours)
+
+
+def cmd_table(a) -> None:
+    from harness.search import search
+
+    search.table()
+
+
+def cmd_sstatus(a) -> None:
+    from harness.search import search
+
+    search.status()
+
+
+def cmd_mvp(a) -> None:
+    from harness.search import mvp
+
+    mvp.evaluate(a.hours)
+
+
+def cmd_export(a) -> None:
+    from harness.search import mvp
+
+    mvp.export()
+
+
 def cmd_status(a) -> None:
     snap = C.load_json(C.RUNS / "snapshot.json", {})
     print("snapshot:", snap.get("wasm", "-")[:12], snap.get("time", ""))
@@ -145,9 +187,21 @@ def main() -> None:
     p = sub.add_parser("baseline")
     p.add_argument("--hours", type=float)
     sub.add_parser("splits")
+    p = sub.add_parser("audit")
+    p.add_argument("--hours", type=float)
+    p = sub.add_parser("search")
+    p.add_argument("--maps")
+    p.add_argument("--hours", type=float)
+    sub.add_parser("table")
+    sub.add_parser("sstatus")
+    p = sub.add_parser("mvp")
+    p.add_argument("--hours", type=float)
+    sub.add_parser("export")
     sub.add_parser("status")
     a = ap.parse_args()
     {"setup": cmd_setup, "smoke": cmd_smoke, "baseline": cmd_baseline, "splits": cmd_splits,
+     "audit": cmd_audit, "search": cmd_search, "table": cmd_table, "sstatus": cmd_sstatus,
+     "mvp": cmd_mvp, "export": cmd_export,
      "status": cmd_status}[a.cmd](a)
 
 
