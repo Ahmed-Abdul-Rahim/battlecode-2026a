@@ -4488,17 +4488,40 @@
    "added": "2026-10-23T17:54:24Z",
    "area": "economy",
    "claimed": "2026-10-24T05:13:44Z",
+   "finished": "2026-10-24T05:15:21Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 100,
-   "notes": "Ranked: enemy captured groups we cleared up to 8x/game (contest). Local contest+elk-arena: 18/28 -> 21/28.",
-   "results": {},
+   "notes": "Ranked: enemy captured groups we cleared up to 8x/game (contest). Local contest+elk-arena: 18/28 -> 21/28. Screen: win 0.571 vs 0.604, fitness 0.442 vs 0.489 (paired -0.046 +- 0.043).",
+   "results": {
+    "screen": {
+     "live": {
+      "deaths": 14.42,
+      "fitness": 0.489,
+      "games": 182,
+      "gem_margin": 0.113,
+      "win": 0.604
+     },
+     "paired": {
+      "mean": -0.0462,
+      "pairs": 182,
+      "se": 0.0434
+     },
+     "variant": {
+      "deaths": 15.28,
+      "fitness": 0.442,
+      "games": 182,
+      "gem_margin": 0.095,
+      "win": 0.571
+     }
+    }
+   },
    "spec": {
     "knobs": {
      "LOOT_GUARD": 1
     },
     "ref": "origin/feat/loot-guard"
    },
-   "status": "screening",
+   "status": "rejected",
    "title": "Loot guard: keep capturing a ready reward under threat"
   },
   {
