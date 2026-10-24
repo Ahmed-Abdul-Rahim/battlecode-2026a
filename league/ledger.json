@@ -1935,6 +1935,15 @@
    "time": "2026-10-20T17:40:07.590Z",
    "win": true
   },
+  "34cdfe9d-6475-4c3a-90b1-e92a8e4b1332": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "gem-fields",
+   "opp": "Rogue.ai",
+   "oppId": "f1b13689-8bce-4cf2-ac51-b5103c5dde2d",
+   "time": "2026-10-24T04:40:19.299Z",
+   "win": false
+  },
   "34d04183-d83c-45a0-acd9-1517026db2cf": {
    "kind": "ranked",
    "live": 1,
@@ -3636,6 +3645,15 @@
    "time": "2026-10-23T15:00:25.894Z",
    "win": true
   },
+  "65908a69-438e-4b6b-a97f-73209e806ab9": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "boss-battle",
+   "opp": "Electric Fog Walkers",
+   "oppId": "70573b2a-8ec1-470c-a1bd-f8a70fd9a2f3",
+   "time": "2026-10-24T04:30:19.921Z",
+   "win": true
+  },
   "65ce77b9-e8f0-46b3-bfb8-78e6d8ab7b0b": {
    "kind": "ranked",
    "live": 23,
@@ -4158,6 +4176,15 @@
    "time": "2026-10-20T19:50:11.277Z",
    "win": false
   },
+  "70df8f1a-c6a5-49b1-a034-989645ec2e70": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "reverse-spiral",
+   "opp": "Electric Fog Walkers",
+   "oppId": "70573b2a-8ec1-470c-a1bd-f8a70fd9a2f3",
+   "time": "2026-10-24T04:30:19.921Z",
+   "win": true
+  },
   "71cf9a7e-ffbd-455c-9ba1-c81a8a00a7d8": {
    "kind": "ranked",
    "live": null,
@@ -4491,6 +4518,15 @@
    "time": "2026-10-20T21:50:14.541Z",
    "win": false
   },
+  "7b9032db-0a39-4d9f-93cf-aa51b2b9a853": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "starfish",
+   "opp": "Rogue.ai",
+   "oppId": "f1b13689-8bce-4cf2-ac51-b5103c5dde2d",
+   "time": "2026-10-24T04:40:19.299Z",
+   "win": false
+  },
   "7bdca26a-2602-4987-8098-21e7d77cd1be": {
    "kind": "ranked",
    "live": 23,
@@ -4589,6 +4625,15 @@
    "oppId": "58e98a11-6404-4f00-83f2-3943c3b72e94",
    "time": "2026-10-20T21:30:09.967Z",
    "win": false
+  },
+  "7f0d6a75-a30e-4140-9bc1-c71152ead21e": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "eight",
+   "opp": "BigHero6",
+   "oppId": "f06e2db0-f987-4960-93c8-26cf6969c216",
+   "time": "2026-10-24T04:20:19.452Z",
+   "win": true
   },
   "7f61c645-d61f-4f80-a2bf-7ba6546c6af5": {
    "kind": "ranked",
@@ -4858,6 +4903,15 @@
    "opp": "** sudo rm -rf Victory**",
    "oppId": "05f7f6ef-25e7-4707-b0aa-51d1106c980a",
    "time": "2026-10-23T17:30:31.351Z",
+   "win": true
+  },
+  "8666d751-9322-4ede-998c-66c684d3fdf3": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "corners",
+   "opp": "BigHero6",
+   "oppId": "f06e2db0-f987-4960-93c8-26cf6969c216",
+   "time": "2026-10-24T04:20:19.452Z",
    "win": true
   },
   "86780620-e6a0-483b-93c6-06f1c6a767d4": {
@@ -5337,6 +5391,15 @@
    "time": "2026-10-20T17:00:08.371Z",
    "win": false
   },
+  "9192dcb3-21b5-42d4-b105-bd7dc0265dd4": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "lost-world",
+   "opp": "Electric Fog Walkers",
+   "oppId": "70573b2a-8ec1-470c-a1bd-f8a70fd9a2f3",
+   "time": "2026-10-24T04:30:19.922Z",
+   "win": false
+  },
   "91e10ee6-0359-49cd-8da6-6eb3e3d1fd08": {
    "kind": "unranked",
    "live": 23,
@@ -5389,6 +5452,15 @@
    "opp": "B-Team",
    "oppId": "e39c3d57-1813-4a18-a7e7-2b1df6bb3594",
    "time": "2026-10-21T14:10:17.167Z",
+   "win": true
+  },
+  "93aa163e-bd66-40f7-a597-76318ce31fd0": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "lost-world",
+   "opp": "Rogue.ai",
+   "oppId": "f1b13689-8bce-4cf2-ac51-b5103c5dde2d",
+   "time": "2026-10-24T04:40:19.299Z",
    "win": true
   },
   "93ec278f-9c7d-4cfb-9082-b1c36fcc7970": {
@@ -6516,6 +6588,15 @@
    "time": "2026-10-23T14:10:33.363Z",
    "win": false
   },
+  "b3d837a4-b634-4f75-aac2-1bb4afcaec8d": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "broken-curve",
+   "opp": "Rogue.ai",
+   "oppId": "f1b13689-8bce-4cf2-ac51-b5103c5dde2d",
+   "time": "2026-10-24T04:40:19.299Z",
+   "win": false
+  },
   "b40593d9-8956-49ef-b7d5-67705c6c4a2a": {
    "kind": "ranked",
    "live": 17,
@@ -7146,6 +7227,15 @@
    "time": "2026-10-22T11:10:50.507Z",
    "win": true
   },
+  "c24abbf3-da01-48b4-905f-00a5db3f6797": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "quadrants",
+   "opp": "Electric Fog Walkers",
+   "oppId": "70573b2a-8ec1-470c-a1bd-f8a70fd9a2f3",
+   "time": "2026-10-24T04:30:19.922Z",
+   "win": false
+  },
   "c28e7039-fe1d-45e3-a313-07c504895841": {
    "kind": "ranked",
    "live": 16,
@@ -7226,6 +7316,15 @@
    "oppId": "ee461d0b-afa8-4943-ae64-d0605ffa01a4",
    "time": "2026-10-22T09:30:19.246Z",
    "win": false
+  },
+  "c5a8d2d0-99ee-4417-985d-8fdcea6a7af7": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "monolith",
+   "opp": "BigHero6",
+   "oppId": "f06e2db0-f987-4960-93c8-26cf6969c216",
+   "time": "2026-10-24T04:20:19.452Z",
+   "win": true
   },
   "c5aba51e-604f-4c18-8505-b91d6cf55685": {
    "kind": "ranked",
@@ -7722,6 +7821,15 @@
    "time": "2026-10-21T17:40:16.367Z",
    "win": true
   },
+  "d1b58eda-6a58-4dbb-b8cc-8c7c17621ea1": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "road-of-riches",
+   "opp": "BigHero6",
+   "oppId": "f06e2db0-f987-4960-93c8-26cf6969c216",
+   "time": "2026-10-24T04:20:19.452Z",
+   "win": true
+  },
   "d1db2b04-843a-497c-b4fa-61224787ea68": {
    "kind": "ranked",
    "live": 23,
@@ -7792,6 +7900,15 @@
    "opp": "preachers of ttts",
    "oppId": "2173d644-f134-4b10-8cd8-2f6d9bfc0696",
    "time": "2026-10-21T14:00:16.613Z",
+   "win": false
+  },
+  "d4c6f9aa-d9e6-4900-a57f-97dfdecf7dd0": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "fragment",
+   "opp": "Rogue.ai",
+   "oppId": "f1b13689-8bce-4cf2-ac51-b5103c5dde2d",
+   "time": "2026-10-24T04:40:19.299Z",
    "win": false
   },
   "d51eca60-0861-4e92-b702-8d5a538fdc8e": {
@@ -8180,6 +8297,15 @@
    "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
    "time": "2026-10-23T16:37:39.390Z",
    "win": false
+  },
+  "dcd8c0c2-d2e1-4f3c-b6c0-8ca96b6aaa2d": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "stampede",
+   "opp": "BigHero6",
+   "oppId": "f06e2db0-f987-4960-93c8-26cf6969c216",
+   "time": "2026-10-24T04:20:19.452Z",
+   "win": true
   },
   "dcdf81e6-edcb-4bde-848d-a760570856fc": {
    "kind": "ranked",
@@ -8620,6 +8746,15 @@
    "opp": "Sneaky Bush Campers",
    "oppId": "5e0c725a-b9b4-4523-8739-4427f20b9ce5",
    "time": "2026-10-24T04:10:21.530Z",
+   "win": false
+  },
+  "e5474d4e-1f42-45db-8fc3-31584005d7a1": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "swirl",
+   "opp": "Electric Fog Walkers",
+   "oppId": "70573b2a-8ec1-470c-a1bd-f8a70fd9a2f3",
+   "time": "2026-10-24T04:30:19.921Z",
    "win": false
   },
   "e5641c81-dc05-4150-8caa-64efc13e765e": {
@@ -19640,6 +19775,124 @@
    "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
    "status": "open",
    "time": "2026-10-24T03:10:14.331Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 3,
+    "champion": 46
+   },
+   "deaths_them": 13,
+   "deaths_us": 49,
+   "gems_them": "1005",
+   "gems_us": "193",
+   "id": "d4c6f9aa-d9e6-4900-a57f-97dfdecf7dd0",
+   "map": "fragment",
+   "opp": "Rogue.ai",
+   "oppId": "f1b13689-8bce-4cf2-ac51-b5103c5dde2d",
+   "status": "open",
+   "time": "2026-10-24T04:40:19.299Z",
+   "tries_at": 10
+  },
+  {
+   "contexts": {
+    "camp": 17,
+    "champion": 45
+   },
+   "deaths_them": 68,
+   "deaths_us": 62,
+   "gems_them": "1031",
+   "gems_us": "280",
+   "id": "7b9032db-0a39-4d9f-93cf-aa51b2b9a853",
+   "map": "starfish",
+   "opp": "Rogue.ai",
+   "oppId": "f1b13689-8bce-4cf2-ac51-b5103c5dde2d",
+   "status": "open",
+   "time": "2026-10-24T04:40:19.299Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 17
+   },
+   "deaths_them": 28,
+   "deaths_us": 19,
+   "gems_them": "1012",
+   "gems_us": "925",
+   "id": "34cdfe9d-6475-4c3a-90b1-e92a8e4b1332",
+   "map": "gem-fields",
+   "opp": "Rogue.ai",
+   "oppId": "f1b13689-8bce-4cf2-ac51-b5103c5dde2d",
+   "status": "open",
+   "time": "2026-10-24T04:40:19.299Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 5
+   },
+   "deaths_them": 6,
+   "deaths_us": 5,
+   "gems_them": "1003",
+   "gems_us": "368",
+   "id": "b3d837a4-b634-4f75-aac2-1bb4afcaec8d",
+   "map": "broken-curve",
+   "opp": "Rogue.ai",
+   "oppId": "f1b13689-8bce-4cf2-ac51-b5103c5dde2d",
+   "status": "open",
+   "time": "2026-10-24T04:40:19.299Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 5,
+    "champion": 4
+   },
+   "deaths_them": 9,
+   "deaths_us": 9,
+   "gems_them": "1002",
+   "gems_us": "824",
+   "id": "c24abbf3-da01-48b4-905f-00a5db3f6797",
+   "map": "quadrants",
+   "opp": "Electric Fog Walkers",
+   "oppId": "70573b2a-8ec1-470c-a1bd-f8a70fd9a2f3",
+   "status": "open",
+   "time": "2026-10-24T04:30:19.922Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 6,
+    "champion": 33
+   },
+   "deaths_them": 23,
+   "deaths_us": 39,
+   "gems_them": "1003",
+   "gems_us": "797",
+   "id": "9192dcb3-21b5-42d4-b105-bd7dc0265dd4",
+   "map": "lost-world",
+   "opp": "Electric Fog Walkers",
+   "oppId": "70573b2a-8ec1-470c-a1bd-f8a70fd9a2f3",
+   "status": "open",
+   "time": "2026-10-24T04:30:19.922Z",
+   "tries_at": 5
+  },
+  {
+   "contexts": {
+    "camp": 7,
+    "champion": 58
+   },
+   "deaths_them": 37,
+   "deaths_us": 65,
+   "gems_them": "1000",
+   "gems_us": "842",
+   "id": "e5474d4e-1f42-45db-8fc3-31584005d7a1",
+   "map": "swirl",
+   "opp": "Electric Fog Walkers",
+   "oppId": "70573b2a-8ec1-470c-a1bd-f8a70fd9a2f3",
+   "status": "open",
+   "time": "2026-10-24T04:30:19.921Z",
    "tries_at": 4
   }
  ],
