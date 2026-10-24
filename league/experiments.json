@@ -4368,14 +4368,60 @@
    "added": "2026-10-23T17:37:36Z",
    "area": "safety",
    "claimed": "2026-10-23T18:10:05Z",
+   "finished": "2026-10-24T05:02:28Z",
    "host": "DESKTOP-QVEMEEE",
    "id": 98,
    "notes": "Re-queued. CAMP_SAFE=3 only on 8 elk-heavy maps.",
-   "results": {},
+   "results": {
+    "full": {
+     "h2h": 0.475,
+     "h2h_games": 80,
+     "live": {
+      "deaths": 22.77,
+      "fitness": 0.375,
+      "games": 1040,
+      "gem_margin": 0.103,
+      "win": 0.577
+     },
+     "sparring": {
+      "mean": -0.1009,
+      "pairs": 14,
+      "se": 0.1115
+     },
+     "variant": {
+      "deaths": 21.83,
+      "fitness": 0.389,
+      "games": 1040,
+      "gem_margin": 0.106,
+      "win": 0.581
+     }
+    },
+    "screen": {
+     "live": {
+      "deaths": 14.42,
+      "fitness": 0.489,
+      "games": 182,
+      "gem_margin": 0.113,
+      "win": 0.604
+     },
+     "paired": {
+      "mean": 0.0,
+      "pairs": 182,
+      "se": 0.0
+     },
+     "variant": {
+      "deaths": 14.42,
+      "fitness": 0.489,
+      "games": 182,
+      "gem_margin": 0.113,
+      "win": 0.604
+     }
+    }
+   },
    "spec": {
     "ref": "origin/feat/elk-safe"
    },
-   "status": "screening",
+   "status": "passed",
    "title": "Camp safety on elk-heavy maps (plans)"
   },
   {
