@@ -1287,6 +1287,15 @@
    "time": "2026-10-23T16:37:39.475Z",
    "win": false
   },
+  "22df09ae-c4c1-48d8-8f52-322ee07c0b21": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "collision",
+   "opp": "Kuchh_bhii",
+   "oppId": "d02e5f2c-f75a-499c-b5e9-418c425a0746",
+   "time": "2026-10-24T06:10:15.366Z",
+   "win": true
+  },
   "2318685e-0e2b-464f-b1ad-3487ece29a90": {
    "kind": "ranked",
    "live": 1,
@@ -2618,6 +2627,15 @@
    "oppId": "d5e1fbdf-184c-4e9c-9ccc-e13c53841b14",
    "time": "2026-10-21T16:50:14.905Z",
    "win": true
+  },
+  "4463b3c1-3299-4def-b328-86201cab9c77": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "yellow-brick-road",
+   "opp": "Kuchh_bhii",
+   "oppId": "d02e5f2c-f75a-499c-b5e9-418c425a0746",
+   "time": "2026-10-24T06:10:15.365Z",
+   "win": false
   },
   "45040f85-3231-49bb-804a-0afd1044f4f8": {
    "kind": "ranked",
@@ -7254,6 +7272,15 @@
    "time": "2026-10-21T14:20:15.008Z",
    "win": false
   },
+  "ba10c142-3d5c-40a7-b43c-0f7f23d76f1f": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "expanse",
+   "opp": "Kuchh_bhii",
+   "oppId": "d02e5f2c-f75a-499c-b5e9-418c425a0746",
+   "time": "2026-10-24T06:10:15.365Z",
+   "win": true
+  },
   "bb0bffd5-38c4-4438-9e40-0e2da854a496": {
    "kind": "ranked",
    "live": 15,
@@ -7333,6 +7360,15 @@
    "opp": "ggez",
    "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
    "time": "2026-10-21T15:10:26.195Z",
+   "win": true
+  },
+  "bd1d08b4-cd36-49ce-92e3-996bcf35ccb4": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "ambush",
+   "opp": "Kuchh_bhii",
+   "oppId": "d02e5f2c-f75a-499c-b5e9-418c425a0746",
+   "time": "2026-10-24T06:10:15.366Z",
    "win": true
   },
   "bd1d26e2-b57d-4ff3-bd1f-bea0dae959fd": {
@@ -8935,6 +8971,15 @@
    "opp": "Kvantai",
    "oppId": "0580c098-a7c9-46d7-b414-bf39c02c3dcc",
    "time": "2026-10-22T11:50:22.938Z",
+   "win": false
+  },
+  "e1183ba8-a556-4c8f-9f20-9f54a05a43f6": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "stampede",
+   "opp": "Kuchh_bhii",
+   "oppId": "d02e5f2c-f75a-499c-b5e9-418c425a0746",
+   "time": "2026-10-24T06:10:15.366Z",
    "win": false
   },
   "e1234c1d-bd7e-4955-add3-9992ee9fb8c1": {
@@ -20980,6 +21025,40 @@
    "status": "open",
    "time": "2026-10-24T06:00:18.932Z",
    "tries_at": 10
+  },
+  {
+   "contexts": {
+    "camp": 14,
+    "champion": 25
+   },
+   "deaths_them": 18,
+   "deaths_us": 39,
+   "gems_them": "320",
+   "gems_us": "160",
+   "id": "e1183ba8-a556-4c8f-9f20-9f54a05a43f6",
+   "map": "stampede",
+   "opp": "Kuchh_bhii",
+   "oppId": "d02e5f2c-f75a-499c-b5e9-418c425a0746",
+   "status": "open",
+   "time": "2026-10-24T06:10:15.366Z",
+   "tries_at": 10
+  },
+  {
+   "contexts": {
+    "camp": 13,
+    "champion": 24
+   },
+   "deaths_them": 47,
+   "deaths_us": 37,
+   "gems_them": "1006",
+   "gems_us": "580",
+   "id": "4463b3c1-3299-4def-b328-86201cab9c77",
+   "map": "yellow-brick-road",
+   "opp": "Kuchh_bhii",
+   "oppId": "d02e5f2c-f75a-499c-b5e9-418c425a0746",
+   "status": "open",
+   "time": "2026-10-24T06:10:15.365Z",
+   "tries_at": 1
   }
  ],
  "map_files": {
