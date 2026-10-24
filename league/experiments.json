@@ -4487,6 +4487,8 @@
   {
    "added": "2026-10-23T17:54:24Z",
    "area": "economy",
+   "claimed": "2026-10-24T05:13:44Z",
+   "host": "DESKTOP-QVEMEEE",
    "id": 100,
    "notes": "Ranked: enemy captured groups we cleared up to 8x/game (contest). Local contest+elk-arena: 18/28 -> 21/28.",
    "results": {},
@@ -4496,7 +4498,7 @@
     },
     "ref": "origin/feat/loot-guard"
    },
-   "status": "queued",
+   "status": "screening",
    "title": "Loot guard: keep capturing a ready reward under threat"
   },
   {
