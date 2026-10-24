@@ -9,6 +9,15 @@
    "time": "2026-10-22T06:56:06.323Z",
    "win": false
   },
+  "00269c4c-b724-450c-b10c-665ecb6f9c6b": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "broken-curve",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-24T04:06:24.934Z",
+   "win": false
+  },
   "005bc512-fe29-4382-b430-e5b8804906cb": {
    "kind": "ranked",
    "live": 21,
@@ -54,6 +63,15 @@
    "time": "2026-10-22T11:10:50.507Z",
    "win": false
   },
+  "0208f0a6-c16d-4ab6-890f-f4acd037d47a": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "pilgrimage",
+   "opp": "Opus 5.5",
+   "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
+   "time": "2026-10-24T05:10:17.864Z",
+   "win": false
+  },
   "0287dfce-bd95-4b1a-83e5-0857511954ef": {
    "kind": "unranked",
    "live": 23,
@@ -88,6 +106,15 @@
    "opp": "Velvet Wolves",
    "oppId": "47a066ba-5cc9-4ee9-ad57-ab0c0fcc1b59",
    "time": "2026-10-22T04:50:12.344Z",
+   "win": false
+  },
+  "037c9429-9bb6-4a7e-9875-3b370ff5b252": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "eight",
+   "opp": "Opus 5.5",
+   "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
+   "time": "2026-10-24T05:10:17.864Z",
    "win": false
   },
   "03ea9a96-e109-4418-9614-617e51d0e37d": {
@@ -126,6 +153,15 @@
    "time": "2026-10-22T06:50:20.044Z",
    "win": false
   },
+  "048ba1e0-b812-4992-8062-35d1d905ff83": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "elkring",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-24T03:33:45.554Z",
+   "win": false
+  },
   "04a9e326-cb30-4b4c-a790-db3ebfb064a6": {
    "kind": "ranked",
    "live": 16,
@@ -151,6 +187,15 @@
    "opp": "Hidden Lock Pickers",
    "oppId": "3e0b8502-991b-4fa8-a4f7-d7e08c57a97e",
    "time": "2026-10-21T15:20:15.263Z",
+   "win": false
+  },
+  "04ff4505-8c0a-4b78-8acf-faf8ff95ec30": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "hooks",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-24T05:46:16.946Z",
    "win": false
   },
   "052acd04-e068-4f82-b91f-463ad86bf0ed": {
@@ -279,6 +324,15 @@
    "time": "2026-10-22T07:40:13.075Z",
    "win": true
   },
+  "08783c90-a939-4af5-8f66-b1ceda3e0b0c": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "corridors",
+   "opp": "it\u2019s the first that we thought that it\u2019s they but what if it\u2019s the time for team",
+   "oppId": "d3e47e1f-ec5d-4dfb-8d42-6c5fe35e2710",
+   "time": "2026-10-24T05:40:21.042Z",
+   "win": false
+  },
   "08a34fe6-84bd-4b17-9214-be0619aa9503": {
    "kind": "unranked",
    "live": 1,
@@ -405,6 +459,24 @@
    "time": "2026-10-21T18:30:14.997Z",
    "win": true
   },
+  "0bcf30d5-763c-4271-8fee-cae8cbea7871": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "starvation",
+   "opp": "Azerbaijan Technologies",
+   "oppId": "7218a6a8-8211-4587-bdf8-3bae779e930e",
+   "time": "2026-10-23T18:20:41.206Z",
+   "win": false
+  },
+  "0c068793-48dd-4512-a942-002cb7574c33": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "swirl",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T18:20:48.383Z",
+   "win": false
+  },
   "0c41b204-1e4e-42a3-a88b-61479ac2ecc4": {
    "kind": "ranked",
    "live": null,
@@ -421,6 +493,15 @@
    "opp": "CHERI Blossom",
    "oppId": "7d07c0f3-d4ef-4722-aad2-2531397e3be9",
    "time": "2026-10-22T08:20:16.706Z",
+   "win": true
+  },
+  "0c996f98-6d5f-46e0-95e2-0f407221f185": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "reverse-spiral",
+   "opp": "Return by Death",
+   "oppId": "07278352-d849-4c77-9ce1-0f8307fd4fa9",
+   "time": "2026-10-23T18:30:33.139Z",
    "win": true
   },
   "0ca251c6-ad8e-4e8b-8c07-6a8d452f619a": {
@@ -477,6 +558,15 @@
    "time": "2026-10-22T10:22:12.991Z",
    "win": false
   },
+  "0f0f2354-1fa7-4038-aa28-3f3c0518b7d1": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "elk-arena",
+   "opp": "ohhhhhh caml",
+   "oppId": "5bfa785b-3a15-4398-96b7-624e1a1e103c",
+   "time": "2026-10-24T04:00:22.060Z",
+   "win": true
+  },
   "0f29af4f-41da-4b28-997f-77749a077df6": {
    "kind": "ranked",
    "live": 1,
@@ -494,6 +584,15 @@
    "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
    "time": "2026-10-21T15:40:12.911Z",
    "win": false
+  },
+  "0f76c60e-4963-46f9-8a3c-489d390baf6f": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "shortcut",
+   "opp": "Opus 5.5",
+   "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
+   "time": "2026-10-24T03:10:14.331Z",
+   "win": true
   },
   "0fc3d9f3-0436-4c52-b4ab-7e7b908282af": {
    "kind": "unranked",
@@ -530,6 +629,15 @@
    "oppId": "1890540d-1ffc-4847-adbf-d0d08772f268",
    "time": "2026-10-23T14:58:30.379Z",
    "win": false
+  },
+  "10880cf7-6e6f-4744-a105-32351848acca": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "contest",
+   "opp": "WOLVES",
+   "oppId": "6257cfdb-cfac-492c-b71c-3d55eacdd547",
+   "time": "2026-10-24T05:20:24.859Z",
+   "win": true
   },
   "108f9ca9-6661-410b-9085-35aa14688ca1": {
    "kind": "ranked",
@@ -702,6 +810,15 @@
    "time": "2026-10-23T16:01:14.007Z",
    "win": false
   },
+  "1430af52-daf5-428b-9860-dc0ff917c40c": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "swirl",
+   "opp": "V4.1 Flash",
+   "oppId": "fd795986-cfd3-4732-9fa9-94caba40067a",
+   "time": "2026-10-23T18:00:41.141Z",
+   "win": true
+  },
   "143985eb-8591-4f7c-9080-e81c97d22d0e": {
    "kind": "ranked",
    "live": 17,
@@ -711,6 +828,15 @@
    "time": "2026-10-22T09:30:19.246Z",
    "win": false
   },
+  "143c3b3c-b89b-460d-95ee-c4b1bf1f8394": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "collision",
+   "opp": "Chocolate icecream",
+   "oppId": "1157d9bd-a9b4-4481-ba1c-fc87d797809e",
+   "time": "2026-10-24T03:30:20.844Z",
+   "win": false
+  },
   "149bd108-3d50-4157-bec7-6fb796c5fe71": {
    "kind": "ranked",
    "live": 17,
@@ -718,6 +844,15 @@
    "opp": "Electric Shard Casters",
    "oppId": "1fd7861b-b197-4ea9-b94d-0d5a70f69758",
    "time": "2026-10-22T09:20:19.205Z",
+   "win": true
+  },
+  "14a9103b-8c18-4c8e-a518-f6b21a39fc08": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "gem-fields",
+   "opp": "it\u2019s the first that we thought that it\u2019s they but what if it\u2019s the time for team",
+   "oppId": "d3e47e1f-ec5d-4dfb-8d42-6c5fe35e2710",
+   "time": "2026-10-24T05:40:21.042Z",
    "win": true
   },
   "14cc696e-e93e-4a3e-8a63-3f92b1761b48": {
@@ -747,6 +882,15 @@
    "time": "2026-10-23T14:40:37.395Z",
    "win": false
   },
+  "14fd9b7d-f3cb-4fd3-b399-57916ab9e832": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "reverse-spiral",
+   "opp": "Electric Shard Casters",
+   "oppId": "1fd7861b-b197-4ea9-b94d-0d5a70f69758",
+   "time": "2026-10-23T18:42:25.798Z",
+   "win": false
+  },
   "150a9e2c-aa8c-4091-a10e-0a36d36d77b9": {
    "kind": "unranked",
    "live": 23,
@@ -755,6 +899,15 @@
    "oppId": "3881272c-9c7f-4b3d-94f9-4c0788a3b27a",
    "time": "2026-10-23T14:58:24.369Z",
    "win": false
+  },
+  "15ba1ce8-f5b7-40d7-b610-eb37a0da278c": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "hooks",
+   "opp": "Dangel & Claude",
+   "oppId": "417114b2-d24d-4000-8165-ad523b89cea1",
+   "time": "2026-10-24T05:50:21.851Z",
+   "win": true
   },
   "15c0fd50-f0db-40a0-b55e-7297a9304e7b": {
    "kind": "ranked",
@@ -772,6 +925,15 @@
    "opp": "Opus 5.5",
    "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
    "time": "2026-10-23T13:30:31.234Z",
+   "win": false
+  },
+  "161c190d-f6be-4885-9860-85cc1e6e37fc": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "elkring",
+   "opp": "UnZure",
+   "oppId": "9dc7b5e1-4f3e-45fb-9db5-7608f7a51bf9",
+   "time": "2026-10-24T03:50:18.186Z",
    "win": false
   },
   "16259795-a167-46e8-976b-fda7458a70b2": {
@@ -827,6 +989,15 @@
    "oppId": "da1c0f93-a0cc-43df-8aca-059e15923cda",
    "time": "2026-10-21T15:30:12.915Z",
    "win": true
+  },
+  "18c965fc-00c0-4d74-9cc3-03240f1fea87": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "corridors",
+   "opp": "du.RAM",
+   "oppId": "d1cb1906-76ed-46c7-b005-90fac23a59cd",
+   "time": "2026-10-24T06:00:18.933Z",
+   "win": false
   },
   "18e42fa3-b54c-4316-9628-9177b87e9f77": {
    "kind": "ranked",
@@ -900,6 +1071,15 @@
    "time": "2026-10-22T10:10:16.175Z",
    "win": false
   },
+  "1b4f63a0-b33f-4413-b1b2-77b724fcb6f5": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "elkring",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "time": "2026-10-24T05:00:24.243Z",
+   "win": false
+  },
   "1bfb2d1c-c351-40d7-97f7-41b525716554": {
    "kind": "ranked",
    "live": null,
@@ -927,6 +1107,15 @@
    "time": "2026-10-20T15:40:12.934Z",
    "win": false
   },
+  "1caf5c37-d5a3-4c73-9964-02966d42cf98": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "hooks",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-24T04:47:39.521Z",
+   "win": false
+  },
   "1cd0cbea-6d86-40d1-8133-ffef27014141": {
    "kind": "ranked",
    "live": 22,
@@ -934,6 +1123,15 @@
    "opp": "Lucky Gem Thieves",
    "oppId": "f28f8525-f0d5-423b-bf3a-fcaf78b3b028",
    "time": "2026-10-22T14:20:13.420Z",
+   "win": false
+  },
+  "1d63fadb-599d-4f63-bac4-d0601b96aa38": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "gemfight",
+   "opp": "Return by Death",
+   "oppId": "07278352-d849-4c77-9ce1-0f8307fd4fa9",
+   "time": "2026-10-23T18:30:33.139Z",
    "win": false
   },
   "1e1c34ae-fefe-472d-92d8-f93a7e5910b9": {
@@ -1089,6 +1287,15 @@
    "time": "2026-10-23T16:37:39.475Z",
    "win": false
   },
+  "22df09ae-c4c1-48d8-8f52-322ee07c0b21": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "collision",
+   "opp": "Kuchh_bhii",
+   "oppId": "d02e5f2c-f75a-499c-b5e9-418c425a0746",
+   "time": "2026-10-24T06:10:15.366Z",
+   "win": true
+  },
   "2318685e-0e2b-464f-b1ad-3487ece29a90": {
    "kind": "ranked",
    "live": 1,
@@ -1097,6 +1304,15 @@
    "oppId": "5e0c725a-b9b4-4523-8739-4427f20b9ce5",
    "time": "2026-10-21T16:10:12.194Z",
    "win": true
+  },
+  "232b2685-e922-4290-930b-8354fcd9bb7f": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "packs",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T18:20:48.366Z",
+   "win": false
   },
   "2352a73c-1986-429d-969e-216225aaddd3": {
    "kind": "ranked",
@@ -1107,6 +1323,15 @@
    "time": "2026-10-20T22:00:11.532Z",
    "win": true
   },
+  "2356eae3-6e53-4a02-ae24-1aaaa02e53ec": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "gem-fields",
+   "opp": "Invincible Coders",
+   "oppId": "afdfcf47-296e-44db-99c2-c6cc155d746f",
+   "time": "2026-10-23T18:53:01.552Z",
+   "win": true
+  },
   "23804cf8-ea8e-4a5b-bbcc-0eac036d048f": {
    "kind": "ranked",
    "live": 23,
@@ -1115,6 +1340,15 @@
    "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
    "time": "2026-10-23T13:51:24.803Z",
    "win": false
+  },
+  "239abb5c-9777-4fab-b465-915bc9b324a7": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "lanes",
+   "opp": "Electric Shard Casters",
+   "oppId": "1fd7861b-b197-4ea9-b94d-0d5a70f69758",
+   "time": "2026-10-23T18:42:25.798Z",
+   "win": true
   },
   "23a318f0-b34f-48e3-a3bd-220f03523f28": {
    "kind": "ranked",
@@ -1133,6 +1367,15 @@
    "oppId": "0a7f58a2-84f8-4c83-abdc-82d7fe4d4558",
    "time": "2026-10-20T19:20:09.080Z",
    "win": false
+  },
+  "241a0c61-3cc4-4fc8-a01b-6c2ca653bef1": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "quadrants",
+   "opp": "bandit",
+   "oppId": "d58450ba-8deb-4236-b389-6cfde9165a10",
+   "time": "2026-10-24T04:50:17.318Z",
+   "win": true
   },
   "241acf6c-6076-4c94-a6ee-90ab4c616abc": {
    "kind": "ranked",
@@ -1242,6 +1485,15 @@
    "time": "2026-10-20T19:30:09.721Z",
    "win": true
   },
+  "25a6357b-8fae-4b58-8231-b14455e21eb9": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "elk-arena",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T18:20:48.413Z",
+   "win": false
+  },
   "25ac7a65-b2f9-4eda-814f-7b1546e081cc": {
    "kind": "ranked",
    "live": 1,
@@ -1295,6 +1547,24 @@
    "oppId": "8d8f5160-f68e-4660-916f-6729a42537e3",
    "time": "2026-10-20T15:32:13.244Z",
    "win": true
+  },
+  "277dd9fd-c4a5-4bcd-9b3c-c8399cb59716": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "eight",
+   "opp": ":blauerdrache:",
+   "oppId": "56492446-eca6-4557-9a40-559bd4c318dc",
+   "time": "2026-10-23T18:10:50.416Z",
+   "win": false
+  },
+  "27e44d88-cd37-442f-bcac-c8b51cd0ac26": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "elkring",
+   "opp": "V4.1 Flash",
+   "oppId": "fd795986-cfd3-4732-9fa9-94caba40067a",
+   "time": "2026-10-23T18:00:41.141Z",
+   "win": false
   },
   "281a0f84-befc-4821-8aad-ecfb079d751a": {
    "kind": "ranked",
@@ -1404,6 +1674,15 @@
    "time": "2026-10-21T15:30:43.114Z",
    "win": false
   },
+  "2b189bef-fa53-4f7f-bffe-8817cd34ed78": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "great-wall",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-24T04:06:24.946Z",
+   "win": false
+  },
   "2b55a3d6-37bb-43be-bbde-d13e8935bf04": {
    "kind": "ranked",
    "live": 15,
@@ -1411,6 +1690,15 @@
    "opp": "CHERI Blossom",
    "oppId": "7d07c0f3-d4ef-4722-aad2-2531397e3be9",
    "time": "2026-10-21T18:40:17.384Z",
+   "win": true
+  },
+  "2b5939e6-b6e8-4100-bd90-5272bc632291": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "interlock",
+   "opp": "bandit",
+   "oppId": "d58450ba-8deb-4236-b389-6cfde9165a10",
+   "time": "2026-10-24T04:50:17.319Z",
    "win": true
   },
   "2b6f1ceb-f55e-42ab-ba76-710fa6ae371d": {
@@ -1448,6 +1736,15 @@
    "oppId": "a159726f-af79-424d-85ac-fcfd76f2ec1e",
    "time": "2026-10-22T07:20:21.361Z",
    "win": false
+  },
+  "2c0752df-b513-4e86-a691-13f92168a9bf": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "rows",
+   "opp": "Azerbaijan Technologies",
+   "oppId": "7218a6a8-8211-4587-bdf8-3bae779e930e",
+   "time": "2026-10-23T18:20:41.207Z",
+   "win": true
   },
   "2c8266d4-1075-483c-8ba7-332613892767": {
    "kind": "ranked",
@@ -1502,6 +1799,15 @@
    "oppId": "910ccbab-531b-4efa-a223-0335a686ad83",
    "time": "2026-10-20T21:50:14.541Z",
    "win": true
+  },
+  "2d4064f3-322c-410f-9bc3-5801b70d40f6": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "the-farm",
+   "opp": "Chocolate icecream",
+   "oppId": "1157d9bd-a9b4-4481-ba1c-fc87d797809e",
+   "time": "2026-10-24T03:30:20.844Z",
+   "win": false
   },
   "2d742f10-cbb4-472a-a471-cbcfa18363e0": {
    "kind": "ranked",
@@ -1620,6 +1926,15 @@
    "time": "2026-10-20T15:32:13.244Z",
    "win": true
   },
+  "3183544e-7354-4ddd-ade5-cfdd46d8320d": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "reverse-spiral",
+   "opp": "Invincible Coders",
+   "oppId": "afdfcf47-296e-44db-99c2-c6cc155d746f",
+   "time": "2026-10-23T18:53:01.553Z",
+   "win": false
+  },
   "3233d49a-3ec5-4ad4-be55-ad9924f41183": {
    "kind": "ranked",
    "live": 1,
@@ -1637,6 +1952,15 @@
    "oppId": "5d4e6798-122b-4cbb-a685-78c5f075ff46",
    "time": "2026-10-21T13:10:15.673Z",
    "win": true
+  },
+  "32bd67a6-a7ad-46a0-a419-04b9f1e2ee11": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "ambush",
+   "opp": "Opus 5.5",
+   "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
+   "time": "2026-10-24T05:10:17.864Z",
+   "win": false
   },
   "32f9b532-0243-4348-9af9-7559a623041d": {
    "kind": "ranked",
@@ -1736,6 +2060,15 @@
    "oppId": "625bb51a-8d9e-4035-a16e-ce4eea8eb739",
    "time": "2026-10-20T17:40:07.590Z",
    "win": true
+  },
+  "34cdfe9d-6475-4c3a-90b1-e92a8e4b1332": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "gem-fields",
+   "opp": "Rogue.ai",
+   "oppId": "f1b13689-8bce-4cf2-ac51-b5103c5dde2d",
+   "time": "2026-10-24T04:40:19.299Z",
+   "win": false
   },
   "34d04183-d83c-45a0-acd9-1517026db2cf": {
    "kind": "ranked",
@@ -1872,6 +2205,33 @@
    "time": "2026-10-21T16:50:14.906Z",
    "win": true
   },
+  "37ac21c2-ada9-4da8-bdb2-49c8eb330917": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "road-of-riches",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-24T04:06:24.974Z",
+   "win": false
+  },
+  "37e518e4-1d7a-40ec-8171-e8ef24d1b2e8": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "ambush",
+   "opp": "UnZure",
+   "oppId": "9dc7b5e1-4f3e-45fb-9db5-7608f7a51bf9",
+   "time": "2026-10-24T03:50:18.186Z",
+   "win": false
+  },
+  "37e719d6-4e5f-4ff0-b1f1-c78c416aa9fa": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "corners",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-24T04:47:39.529Z",
+   "win": false
+  },
   "384f7270-3076-4953-a45e-31394828d86a": {
    "kind": "ranked",
    "live": 21,
@@ -1879,6 +2239,15 @@
    "opp": "avg larper",
    "oppId": "d3f95349-b568-4699-b975-ce3f1f9f60fd",
    "time": "2026-10-22T12:10:14.425Z",
+   "win": false
+  },
+  "389e3de4-0b9b-4bae-ab36-45a114fffed7": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "elk-arena",
+   "opp": "Azerbaijan Technologies",
+   "oppId": "7218a6a8-8211-4587-bdf8-3bae779e930e",
+   "time": "2026-10-23T18:20:41.206Z",
    "win": false
   },
   "38f20b05-cef8-40e6-92c6-c384d7aa6432": {
@@ -2034,6 +2403,15 @@
    "time": "2026-10-20T18:00:13.679Z",
    "win": false
   },
+  "3c83960d-40a4-4502-bf4a-b8fae582c3e2": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "split",
+   "opp": "Invincible Coders",
+   "oppId": "afdfcf47-296e-44db-99c2-c6cc155d746f",
+   "time": "2026-10-23T18:53:01.551Z",
+   "win": true
+  },
   "3cd7ec81-4613-467e-8a97-add187e76469": {
    "kind": "ranked",
    "live": 21,
@@ -2060,6 +2438,15 @@
    "oppId": "dba8d35f-fd1d-432d-8ba5-9f076cb3dcac",
    "time": "2026-10-20T20:40:10.182Z",
    "win": true
+  },
+  "3dd05e26-e09c-46e1-8040-5f466446eeb1": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "elkring",
+   "opp": "Turbo Elk",
+   "oppId": "d793f432-203a-4593-b13a-b108b09cfaeb",
+   "time": "2026-10-24T05:30:20.851Z",
+   "win": false
   },
   "3df226d5-aae1-4dff-8a70-4281425260dd": {
    "kind": "ranked",
@@ -2178,6 +2565,15 @@
    "time": "2026-10-20T20:40:10.182Z",
    "win": true
   },
+  "422c3929-65a9-4796-a8fa-7ac42d292430": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "collision",
+   "opp": "WOLVES",
+   "oppId": "6257cfdb-cfac-492c-b71c-3d55eacdd547",
+   "time": "2026-10-24T05:20:24.860Z",
+   "win": false
+  },
   "427cfdf3-0cf6-452e-bf47-3402b67541db": {
    "kind": "unranked",
    "live": 23,
@@ -2232,6 +2628,15 @@
    "time": "2026-10-21T16:50:14.905Z",
    "win": true
   },
+  "4463b3c1-3299-4def-b328-86201cab9c77": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "yellow-brick-road",
+   "opp": "Kuchh_bhii",
+   "oppId": "d02e5f2c-f75a-499c-b5e9-418c425a0746",
+   "time": "2026-10-24T06:10:15.365Z",
+   "win": false
+  },
   "45040f85-3231-49bb-804a-0afd1044f4f8": {
    "kind": "ranked",
    "live": 15,
@@ -2240,6 +2645,24 @@
    "oppId": "598ea864-6da9-41d1-984f-63136069bc50",
    "time": "2026-10-22T05:20:12.742Z",
    "win": true
+  },
+  "45831676-a433-49a4-95cb-b7e822eb1fd8": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "concentrated-wealth",
+   "opp": "Opus 5.5",
+   "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
+   "time": "2026-10-24T03:10:14.332Z",
+   "win": true
+  },
+  "4598561f-2660-4e05-8f36-b22d120c2513": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "pilgrimage",
+   "opp": "WOLVES",
+   "oppId": "6257cfdb-cfac-492c-b71c-3d55eacdd547",
+   "time": "2026-10-24T05:20:24.859Z",
+   "win": false
   },
   "45c2a333-9fae-4356-88ef-4653a4393d44": {
    "kind": "ranked",
@@ -2484,6 +2907,15 @@
    "time": "2026-10-22T12:40:18.485Z",
    "win": true
   },
+  "4bdbb056-9acd-4fce-a735-a66a887a6dcb": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "broken-curve",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-24T03:33:45.540Z",
+   "win": false
+  },
   "4c097b2c-e5b3-4e86-8c9f-c60d2c810ce4": {
    "kind": "ranked",
    "live": 17,
@@ -2635,6 +3067,15 @@
    "opp": "Sigma Coder",
    "oppId": "db94d858-5170-41ef-ad90-b2faf85dd5e8",
    "time": "2026-10-21T13:20:11.646Z",
+   "win": false
+  },
+  "51f0057d-f315-4a74-87ec-cd3e37303b77": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "monolith",
+   "opp": "it\u2019s the first that we thought that it\u2019s they but what if it\u2019s the time for team",
+   "oppId": "d3e47e1f-ec5d-4dfb-8d42-6c5fe35e2710",
+   "time": "2026-10-24T05:40:21.042Z",
    "win": false
   },
   "52045ee6-8537-4aaf-8d53-fd1917f3dda0": {
@@ -2808,6 +3249,15 @@
    "time": "2026-10-22T11:10:50.506Z",
    "win": true
   },
+  "55f2d992-9f9e-43f2-82dc-10cbb7015811": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "gold-rush",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "time": "2026-10-24T05:00:24.243Z",
+   "win": false
+  },
   "5636bed5-9fc7-4472-8d23-1f012a198de4": {
    "kind": "ranked",
    "live": 16,
@@ -2888,6 +3338,24 @@
    "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
    "time": "2026-10-21T15:10:26.178Z",
    "win": true
+  },
+  "587c231d-06e4-4062-9214-57d7136aaa33": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "collision",
+   "opp": "Dangel & Claude",
+   "oppId": "417114b2-d24d-4000-8165-ad523b89cea1",
+   "time": "2026-10-24T05:50:21.852Z",
+   "win": false
+  },
+  "5881fa92-7c44-4d89-b37a-abca511ea0ee": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "the-farm",
+   "opp": ":blauerdrache:",
+   "oppId": "56492446-eca6-4557-9a40-559bd4c318dc",
+   "time": "2026-10-23T18:10:50.416Z",
+   "win": false
   },
   "588e4c0d-3d81-4d16-9718-cfc0bf7d8c6d": {
    "kind": "ranked",
@@ -3024,6 +3492,15 @@
    "time": "2026-10-23T14:12:14.052Z",
    "win": true
   },
+  "5c6c4109-a93a-4e20-93d4-30ac1a639606": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "the-farm",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-24T04:47:39.502Z",
+   "win": false
+  },
   "5c8ffbb8-b8a1-47cc-b1b9-02e19a59d83c": {
    "kind": "ranked",
    "live": null,
@@ -3094,6 +3571,15 @@
    "opp": "Sigma Coder",
    "oppId": "db94d858-5170-41ef-ad90-b2faf85dd5e8",
    "time": "2026-10-21T13:20:11.646Z",
+   "win": true
+  },
+  "5ef8c5b6-be63-4ecc-9c27-8531a3d6e36a": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "fragment",
+   "opp": ":blauerdrache:",
+   "oppId": "56492446-eca6-4557-9a40-559bd4c318dc",
+   "time": "2026-10-23T18:10:50.417Z",
    "win": true
   },
   "5effbf92-5caa-44d2-8e69-f2a6dcf07cc7": {
@@ -3267,6 +3753,15 @@
    "time": "2026-10-23T15:35:59.895Z",
    "win": false
   },
+  "62e207f3-bb0d-40eb-b093-93e1eed4e874": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "gold-rush",
+   "opp": "Electric Shard Casters",
+   "oppId": "1fd7861b-b197-4ea9-b94d-0d5a70f69758",
+   "time": "2026-10-23T18:42:25.799Z",
+   "win": false
+  },
   "6302f42f-98c1-45dc-a1ae-dff8d542b007": {
    "kind": "ranked",
    "live": 21,
@@ -3339,6 +3834,15 @@
    "time": "2026-10-22T10:50:13.670Z",
    "win": true
   },
+  "649558f2-7efb-436c-96f3-4b56b26ae811": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "reverse-spiral",
+   "opp": "bandit",
+   "oppId": "d58450ba-8deb-4236-b389-6cfde9165a10",
+   "time": "2026-10-24T04:50:17.318Z",
+   "win": true
+  },
   "652ed4c7-b412-46a5-b134-3cb80a193b91": {
    "kind": "ranked",
    "live": 1,
@@ -3355,6 +3859,15 @@
    "opp": "Math Have Mercy",
    "oppId": "f43512ab-25ea-4bcd-ada6-9a303b63c153",
    "time": "2026-10-23T15:00:25.894Z",
+   "win": true
+  },
+  "65908a69-438e-4b6b-a97f-73209e806ab9": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "boss-battle",
+   "opp": "Electric Fog Walkers",
+   "oppId": "70573b2a-8ec1-470c-a1bd-f8a70fd9a2f3",
+   "time": "2026-10-24T04:30:19.921Z",
    "win": true
   },
   "65ce77b9-e8f0-46b3-bfb8-78e6d8ab7b0b": {
@@ -3447,6 +3960,15 @@
    "time": "2026-10-22T06:40:14.275Z",
    "win": true
   },
+  "677d547d-9caa-4f7d-8cb4-ef134811ef40": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "yellow-brick-road",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-24T05:46:16.855Z",
+   "win": false
+  },
   "67af3823-022b-46b9-a319-ea3e9e8eed46": {
    "kind": "ranked",
    "live": null,
@@ -3492,6 +4014,15 @@
    "time": "2026-10-23T16:10:40.121Z",
    "win": false
   },
+  "6895c079-399d-497b-a446-48d7c6fbf51f": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "lanes",
+   "opp": "du.RAM",
+   "oppId": "d1cb1906-76ed-46c7-b005-90fac23a59cd",
+   "time": "2026-10-24T06:00:18.933Z",
+   "win": false
+  },
   "68af59f5-f6dc-447f-a7e4-e42328ecb7a1": {
    "kind": "ranked",
    "live": 1,
@@ -3527,6 +4058,15 @@
    "oppId": "dba8d35f-fd1d-432d-8ba5-9f076cb3dcac",
    "time": "2026-10-21T16:00:12.834Z",
    "win": true
+  },
+  "69caac4d-2a23-4360-8212-e87d53d54fad": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "eight",
+   "opp": "Chocolate icecream",
+   "oppId": "1157d9bd-a9b4-4481-ba1c-fc87d797809e",
+   "time": "2026-10-24T03:30:20.843Z",
+   "win": false
   },
   "6a1a8e73-3efd-4f6b-a6c2-915283213694": {
    "kind": "ranked",
@@ -3663,6 +4203,15 @@
    "time": "2026-10-22T11:00:15.199Z",
    "win": false
   },
+  "6c7be596-1a6e-43cc-b1a1-ab6fca36dfee": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "rushbait-v2",
+   "opp": "Opus 5.5",
+   "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
+   "time": "2026-10-24T03:10:14.331Z",
+   "win": false
+  },
   "6c89b757-e98b-4c54-93b7-87493e063fd8": {
    "kind": "unranked",
    "live": 23,
@@ -3716,6 +4265,15 @@
    "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
    "time": "2026-10-22T10:50:13.670Z",
    "win": true
+  },
+  "6d9e78a0-1518-4f50-b9d3-02dd43abd226": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "fracture",
+   "opp": "Dangel & Claude",
+   "oppId": "417114b2-d24d-4000-8165-ad523b89cea1",
+   "time": "2026-10-24T05:50:21.852Z",
+   "win": false
   },
   "6dfe4487-639f-4bcb-b868-21da68ba68bd": {
    "kind": "ranked",
@@ -3843,6 +4401,15 @@
    "time": "2026-10-22T08:20:16.706Z",
    "win": false
   },
+  "70b28882-bfe7-48f3-ba6b-51c2a9658db9": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "road-of-riches",
+   "opp": "Return by Death",
+   "oppId": "07278352-d849-4c77-9ce1-0f8307fd4fa9",
+   "time": "2026-10-23T18:30:33.138Z",
+   "win": false
+  },
   "70bb89c4-2b52-4b41-aa7c-eccae8e64bcb": {
    "kind": "ranked",
    "live": 1,
@@ -3851,6 +4418,15 @@
    "oppId": "4b09b8ff-b429-43dc-9be1-180565784e87",
    "time": "2026-10-20T19:50:11.277Z",
    "win": false
+  },
+  "70df8f1a-c6a5-49b1-a034-989645ec2e70": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "reverse-spiral",
+   "opp": "Electric Fog Walkers",
+   "oppId": "70573b2a-8ec1-470c-a1bd-f8a70fd9a2f3",
+   "time": "2026-10-24T04:30:19.921Z",
+   "win": true
   },
   "71cf9a7e-ffbd-455c-9ba1-c81a8a00a7d8": {
    "kind": "ranked",
@@ -3879,6 +4455,15 @@
    "time": "2026-10-20T15:10:13.185Z",
    "win": false
   },
+  "72847834-b770-4ddf-8a9b-2ff6041d2863": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "corners",
+   "opp": "Azerbaijan Technologies",
+   "oppId": "7218a6a8-8211-4587-bdf8-3bae779e930e",
+   "time": "2026-10-23T18:20:41.206Z",
+   "win": true
+  },
   "72b0e9ba-e618-4ce4-b5c1-449f5f2383ef": {
    "kind": "ranked",
    "live": 1,
@@ -3897,6 +4482,15 @@
    "time": "2026-10-22T04:20:14.332Z",
    "win": false
   },
+  "72d0c5d9-6039-465a-b8eb-743af74b5ee3": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "corners",
+   "opp": "it\u2019s the first that we thought that it\u2019s they but what if it\u2019s the time for team",
+   "oppId": "d3e47e1f-ec5d-4dfb-8d42-6c5fe35e2710",
+   "time": "2026-10-24T05:40:21.043Z",
+   "win": false
+  },
   "73536aa3-6bce-4294-89d5-bdf152dd66e2": {
    "kind": "ranked",
    "live": 1,
@@ -3905,6 +4499,15 @@
    "oppId": "23f1309e-917f-4666-8747-a5898a677aa2",
    "time": "2026-10-21T13:30:11.453Z",
    "win": false
+  },
+  "735efd65-451f-43c5-babe-60dc771a2b1a": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "rushbait-v2",
+   "opp": "Birla Bots",
+   "oppId": "85eb5c58-76b8-40f9-a759-b81b9a3e8f41",
+   "time": "2026-10-24T03:20:16.861Z",
+   "win": true
   },
   "73919c99-adaf-4cb7-97b6-9f111c0d2582": {
    "kind": "ranked",
@@ -3941,6 +4544,15 @@
    "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
    "time": "2026-10-22T11:20:16.890Z",
    "win": false
+  },
+  "7497a825-3959-45ee-a856-a91f6c058399": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "collision",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "time": "2026-10-24T05:00:24.243Z",
+   "win": true
   },
   "74d65cd6-3399-46ba-9658-90f8ea3cd55a": {
    "kind": "ranked",
@@ -4068,6 +4680,15 @@
    "time": "2026-10-21T17:10:14.313Z",
    "win": true
   },
+  "79018d25-34d8-4236-bbb9-c81b5308a77e": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "broken-curve",
+   "opp": "UnZure",
+   "oppId": "9dc7b5e1-4f3e-45fb-9db5-7608f7a51bf9",
+   "time": "2026-10-24T03:50:18.186Z",
+   "win": false
+  },
   "7a413e8c-a42e-483d-8e10-e7ef3c4a2b23": {
    "kind": "unranked",
    "live": 23,
@@ -4140,6 +4761,15 @@
    "time": "2026-10-23T16:50:28.903Z",
    "win": false
   },
+  "7b530274-4800-4ef3-947f-16861ff9434a": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "split",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-24T04:06:24.959Z",
+   "win": false
+  },
   "7b7243d3-64bd-4c3c-81cb-c7ea9f861d45": {
    "kind": "ranked",
    "live": 1,
@@ -4147,6 +4777,24 @@
    "opp": "vc?",
    "oppId": "910ccbab-531b-4efa-a223-0335a686ad83",
    "time": "2026-10-20T21:50:14.541Z",
+   "win": false
+  },
+  "7b9032db-0a39-4d9f-93cf-aa51b2b9a853": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "starfish",
+   "opp": "Rogue.ai",
+   "oppId": "f1b13689-8bce-4cf2-ac51-b5103c5dde2d",
+   "time": "2026-10-24T04:40:19.299Z",
+   "win": false
+  },
+  "7bdca26a-2602-4987-8098-21e7d77cd1be": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "pilgrimage",
+   "opp": "Birla Bots",
+   "oppId": "85eb5c58-76b8-40f9-a759-b81b9a3e8f41",
+   "time": "2026-10-24T03:20:16.861Z",
    "win": false
   },
   "7c342c78-7490-4a7b-a088-00d7a606e86c": {
@@ -4158,6 +4806,15 @@
    "time": "2026-10-22T14:00:12.311Z",
    "win": true
   },
+  "7c8492c7-c1cf-4529-b033-230f5490cc71": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "interlock",
+   "opp": "Opus 5.5",
+   "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
+   "time": "2026-10-24T03:10:14.331Z",
+   "win": true
+  },
   "7cb76357-8c00-461c-8e41-bef6791229c3": {
    "kind": "ranked",
    "live": null,
@@ -4166,6 +4823,15 @@
    "oppId": "defd3e5d-1b62-4e15-b751-fe842a33be3a",
    "time": "2026-10-20T17:10:06.134Z",
    "win": false
+  },
+  "7cc6e22f-21a1-4615-8231-5efd4c9563bb": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "eight",
+   "opp": "ohhhhhh caml",
+   "oppId": "5bfa785b-3a15-4398-96b7-624e1a1e103c",
+   "time": "2026-10-24T04:00:22.059Z",
+   "win": true
   },
   "7cede8e3-7f49-4e1b-b53e-81a90f529038": {
    "kind": "unranked",
@@ -4184,6 +4850,15 @@
    "oppId": "9608c441-389d-4dcd-961c-e19258e4a236",
    "time": "2026-10-22T10:00:18.610Z",
    "win": true
+  },
+  "7dcf914a-1e0a-47f1-b8ff-bb4e80c252d7": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "gemfight",
+   "opp": "V4.1 Flash",
+   "oppId": "fd795986-cfd3-4732-9fa9-94caba40067a",
+   "time": "2026-10-23T18:00:41.141Z",
+   "win": false
   },
   "7df61bb9-02dd-47a1-9a90-bf6732c1d5f6": {
    "kind": "ranked",
@@ -4211,6 +4886,15 @@
    "oppId": "58e98a11-6404-4f00-83f2-3943c3b72e94",
    "time": "2026-10-20T21:30:09.967Z",
    "win": false
+  },
+  "7f0d6a75-a30e-4140-9bc1-c71152ead21e": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "eight",
+   "opp": "BigHero6",
+   "oppId": "f06e2db0-f987-4960-93c8-26cf6969c216",
+   "time": "2026-10-24T04:20:19.452Z",
+   "win": true
   },
   "7f61c645-d61f-4f80-a2bf-7ba6546c6af5": {
    "kind": "ranked",
@@ -4482,6 +5166,15 @@
    "time": "2026-10-23T17:30:31.351Z",
    "win": true
   },
+  "8666d751-9322-4ede-998c-66c684d3fdf3": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "corners",
+   "opp": "BigHero6",
+   "oppId": "f06e2db0-f987-4960-93c8-26cf6969c216",
+   "time": "2026-10-24T04:20:19.452Z",
+   "win": true
+  },
   "86780620-e6a0-483b-93c6-06f1c6a767d4": {
    "kind": "ranked",
    "live": 17,
@@ -4489,6 +5182,15 @@
    "opp": "Pikachu",
    "oppId": "dc24ee25-0f21-4353-8ebf-1ce5a82e22bb",
    "time": "2026-10-22T09:00:17.841Z",
+   "win": true
+  },
+  "868a7faf-acdc-4952-a0b3-9b601f750780": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "hooks",
+   "opp": "Electric Shard Casters",
+   "oppId": "1fd7861b-b197-4ea9-b94d-0d5a70f69758",
+   "time": "2026-10-23T18:42:25.799Z",
    "win": true
   },
   "86b6cc95-0eb3-45ba-954f-af8e95e42af3": {
@@ -4534,6 +5236,15 @@
    "opp": "avg larper",
    "oppId": "d3f95349-b568-4699-b975-ce3f1f9f60fd",
    "time": "2026-10-23T15:30:27.753Z",
+   "win": true
+  },
+  "88a02f74-b5c4-45f3-8229-fbb7fa51793a": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "yellow-brick-road",
+   "opp": "UnZure",
+   "oppId": "9dc7b5e1-4f3e-45fb-9db5-7608f7a51bf9",
+   "time": "2026-10-24T03:50:18.186Z",
    "win": true
   },
   "88b9884b-91d4-4ae1-ac29-090e9182815d": {
@@ -4662,6 +5373,33 @@
    "time": "2026-10-22T08:52:34.499Z",
    "win": true
   },
+  "8bc0434a-3554-4798-a501-59c46b62639c": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "concentrated-wealth",
+   "opp": "ohhhhhh caml",
+   "oppId": "5bfa785b-3a15-4398-96b7-624e1a1e103c",
+   "time": "2026-10-24T04:00:22.059Z",
+   "win": false
+  },
+  "8be1ce74-bffd-4330-ac1c-937484f3da67": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "fracture",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-24T04:06:24.968Z",
+   "win": false
+  },
+  "8bf90dcc-a539-49e7-bbdb-3d7859ac94ff": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "lanes",
+   "opp": "Dangel & Claude",
+   "oppId": "417114b2-d24d-4000-8165-ad523b89cea1",
+   "time": "2026-10-24T05:50:21.850Z",
+   "win": false
+  },
   "8c101b00-39c8-44dc-835f-7b87c07355a1": {
    "kind": "ranked",
    "live": 21,
@@ -4770,6 +5508,15 @@
    "time": "2026-10-21T15:50:14.108Z",
    "win": true
   },
+  "8ea4c2cb-6952-4190-acf5-9817187a56cb": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "lost-world",
+   "opp": "WOLVES",
+   "oppId": "6257cfdb-cfac-492c-b71c-3d55eacdd547",
+   "time": "2026-10-24T05:20:24.860Z",
+   "win": true
+  },
   "8ead6544-1532-4943-9a6b-3e3552e2c693": {
    "kind": "ranked",
    "live": 23,
@@ -4778,6 +5525,15 @@
    "oppId": "5e0c725a-b9b4-4523-8739-4427f20b9ce5",
    "time": "2026-10-23T14:00:22.454Z",
    "win": false
+  },
+  "8ec6449e-ed3b-4803-aa81-36eee38f70f2": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "packs",
+   "opp": "ohhhhhh caml",
+   "oppId": "5bfa785b-3a15-4398-96b7-624e1a1e103c",
+   "time": "2026-10-24T04:00:22.060Z",
+   "win": true
   },
   "8edc05bc-234f-42c2-ad98-f1b2fa29691a": {
    "kind": "ranked",
@@ -4805,6 +5561,15 @@
    "oppId": "2aa08e1e-f986-4c2a-a15f-e10b10f159ba",
    "time": "2026-10-20T21:20:10.858Z",
    "win": false
+  },
+  "8f96513b-8bb2-4857-91a1-9954331a6b9d": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "eight",
+   "opp": "Electric Shard Casters",
+   "oppId": "1fd7861b-b197-4ea9-b94d-0d5a70f69758",
+   "time": "2026-10-23T18:42:25.798Z",
+   "win": true
   },
   "8f9a8c02-3122-41b8-af2d-baf6140bcfc5": {
    "kind": "unranked",
@@ -4896,6 +5661,15 @@
    "time": "2026-10-23T17:00:26.169Z",
    "win": true
   },
+  "9157272d-eacd-49eb-a52b-e2524a526452": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "rows",
+   "opp": "Dangel & Claude",
+   "oppId": "417114b2-d24d-4000-8165-ad523b89cea1",
+   "time": "2026-10-24T05:50:21.852Z",
+   "win": true
+  },
   "915df6ef-9017-48df-bf0f-b76b814279d8": {
    "kind": "ranked",
    "live": null,
@@ -4903,6 +5677,15 @@
    "opp": "knownasjason",
    "oppId": "51c7519c-1a77-43a5-aa76-daf667556a8d",
    "time": "2026-10-20T17:00:08.371Z",
+   "win": false
+  },
+  "9192dcb3-21b5-42d4-b105-bd7dc0265dd4": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "lost-world",
+   "opp": "Electric Fog Walkers",
+   "oppId": "70573b2a-8ec1-470c-a1bd-f8a70fd9a2f3",
+   "time": "2026-10-24T04:30:19.922Z",
    "win": false
   },
   "91e10ee6-0359-49cd-8da6-6eb3e3d1fd08": {
@@ -4922,6 +5705,15 @@
    "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
    "time": "2026-10-21T16:20:14.380Z",
    "win": true
+  },
+  "92027d53-c803-4a84-89a8-2252aa9d822b": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "hooks",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T18:20:48.400Z",
+   "win": false
   },
   "92430394-d51f-4caf-a089-835137690b95": {
    "kind": "ranked",
@@ -4950,6 +5742,15 @@
    "time": "2026-10-21T14:10:17.167Z",
    "win": true
   },
+  "93aa163e-bd66-40f7-a597-76318ce31fd0": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "lost-world",
+   "opp": "Rogue.ai",
+   "oppId": "f1b13689-8bce-4cf2-ac51-b5103c5dde2d",
+   "time": "2026-10-24T04:40:19.299Z",
+   "win": true
+  },
   "93ec278f-9c7d-4cfb-9082-b1c36fcc7970": {
    "kind": "ranked",
    "live": 23,
@@ -4967,6 +5768,24 @@
    "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
    "time": "2026-10-22T08:56:57.627Z",
    "win": true
+  },
+  "948515ee-01b6-41a7-8431-636bb956e058": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "islands",
+   "opp": "Turbo Elk",
+   "oppId": "d793f432-203a-4593-b13a-b108b09cfaeb",
+   "time": "2026-10-24T05:30:20.850Z",
+   "win": false
+  },
+  "94dde361-839a-4d56-bd25-efd718c09bb2": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "split",
+   "opp": "Sneaky Bush Campers",
+   "oppId": "5e0c725a-b9b4-4523-8739-4427f20b9ce5",
+   "time": "2026-10-24T04:10:21.529Z",
+   "win": false
   },
   "94e9e58f-4c0f-4b1c-ab0a-ab7314473c3c": {
    "kind": "ranked",
@@ -5166,6 +5985,15 @@
    "time": "2026-10-23T17:20:24.400Z",
    "win": true
   },
+  "99c6bec2-0f3b-45c4-b36e-7ffbc3f54e60": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "reverse-spiral",
+   "opp": "Sneaky Bush Campers",
+   "oppId": "5e0c725a-b9b4-4523-8739-4427f20b9ce5",
+   "time": "2026-10-24T04:10:21.530Z",
+   "win": true
+  },
   "9a6ce9a7-11af-4300-8a08-2a5841b3eba3": {
    "kind": "ranked",
    "live": 1,
@@ -5292,6 +6120,15 @@
    "time": "2026-10-21T15:30:43.074Z",
    "win": true
   },
+  "9c943dbc-cea1-41a0-9c41-d9e0acecda69": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "boss-battle",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-24T03:33:45.574Z",
+   "win": false
+  },
   "9cb1a85a-1985-4abd-bc26-746061c244c7": {
    "kind": "ranked",
    "live": null,
@@ -5371,6 +6208,15 @@
    "opp": "Rogue.ai",
    "oppId": "f1b13689-8bce-4cf2-ac51-b5103c5dde2d",
    "time": "2026-10-23T16:40:21.780Z",
+   "win": false
+  },
+  "9e5d2db2-ce2f-462e-a924-e410016a9ab4": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "elk-arena",
+   "opp": "Turbo Elk",
+   "oppId": "d793f432-203a-4593-b13a-b108b09cfaeb",
+   "time": "2026-10-24T05:30:20.852Z",
    "win": false
   },
   "9e707e6f-b168-4925-bdc5-5514f23e6506": {
@@ -5562,6 +6408,15 @@
    "time": "2026-10-22T12:00:30.597Z",
    "win": true
   },
+  "a3070b67-42a3-43cb-a1a1-cd399d4ea9d3": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "quadrants",
+   "opp": "V4.1 Flash",
+   "oppId": "fd795986-cfd3-4732-9fa9-94caba40067a",
+   "time": "2026-10-23T18:00:41.142Z",
+   "win": true
+  },
   "a3ce4ac7-7b6d-424c-be43-a9a912426dd2": {
    "kind": "ranked",
    "live": 23,
@@ -5732,6 +6587,15 @@
    "oppId": "fd795986-cfd3-4732-9fa9-94caba40067a",
    "time": "2026-10-21T18:50:18.155Z",
    "win": false
+  },
+  "aa2e0800-fc50-4271-9c41-d7cfd419f80f": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "swirl",
+   "opp": "du.RAM",
+   "oppId": "d1cb1906-76ed-46c7-b005-90fac23a59cd",
+   "time": "2026-10-24T06:00:18.933Z",
+   "win": true
   },
   "aa8695de-a1cb-453d-9d96-075ecef6026a": {
    "kind": "ranked",
@@ -5985,6 +6849,15 @@
    "time": "2026-10-23T15:35:46.222Z",
    "win": true
   },
+  "b26863e8-cc84-4e6d-90db-1671e757f093": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "yellow-brick-road",
+   "opp": "bandit",
+   "oppId": "d58450ba-8deb-4236-b389-6cfde9165a10",
+   "time": "2026-10-24T04:50:17.318Z",
+   "win": false
+  },
   "b2e5a275-f4e0-4a8b-ba11-c91c0ee04cab": {
    "kind": "ranked",
    "live": 1,
@@ -6039,6 +6912,15 @@
    "time": "2026-10-23T14:10:33.363Z",
    "win": false
   },
+  "b3d837a4-b634-4f75-aac2-1bb4afcaec8d": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "broken-curve",
+   "opp": "Rogue.ai",
+   "oppId": "f1b13689-8bce-4cf2-ac51-b5103c5dde2d",
+   "time": "2026-10-24T04:40:19.299Z",
+   "win": false
+  },
   "b40593d9-8956-49ef-b7d5-67705c6c4a2a": {
    "kind": "ranked",
    "live": 17,
@@ -6047,6 +6929,15 @@
    "oppId": "7d07c0f3-d4ef-4722-aad2-2531397e3be9",
    "time": "2026-10-22T08:20:16.706Z",
    "win": true
+  },
+  "b43e0dbb-01ab-4291-b7e0-be77d870fb2c": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "reverse-spiral",
+   "opp": "du.RAM",
+   "oppId": "d1cb1906-76ed-46c7-b005-90fac23a59cd",
+   "time": "2026-10-24T06:00:18.932Z",
+   "win": false
   },
   "b4539a7b-de75-41a2-a5d9-7aca0320a0aa": {
    "kind": "ranked",
@@ -6064,6 +6955,15 @@
    "opp": "tRust me bro",
    "oppId": "4fbe2b8b-0a69-4dd5-b3f0-d8787101d7bc",
    "time": "2026-10-23T14:54:32.655Z",
+   "win": false
+  },
+  "b4bc9c26-ab03-4bf2-9d67-a20be69e9597": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "eight",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "time": "2026-10-24T05:00:24.243Z",
    "win": false
   },
   "b4f07aeb-2db8-46c0-872f-508a0a5cdf43": {
@@ -6300,6 +7200,15 @@
    "time": "2026-10-22T07:00:15.627Z",
    "win": false
   },
+  "b912e6ca-5a7e-4a21-a8a7-0124c70193df": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "elkring",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-23T18:20:48.424Z",
+   "win": false
+  },
   "b9139497-9f87-4b2d-9fa5-59697e948962": {
    "kind": "ranked",
    "live": 1,
@@ -6336,6 +7245,15 @@
    "time": "2026-10-20T20:50:10.904Z",
    "win": false
   },
+  "b957a49c-5235-4f9e-9521-8e993fd70eb8": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "swirl",
+   "opp": "WOLVES",
+   "oppId": "6257cfdb-cfac-492c-b71c-3d55eacdd547",
+   "time": "2026-10-24T03:40:17.574Z",
+   "win": true
+  },
   "b9d6940a-9658-4de6-8ed0-e421cf45a859": {
    "kind": "ranked",
    "live": 1,
@@ -6353,6 +7271,15 @@
    "oppId": "c8773982-afe9-4f64-99ba-0cc1fb3fe3c2",
    "time": "2026-10-21T14:20:15.008Z",
    "win": false
+  },
+  "ba10c142-3d5c-40a7-b43c-0f7f23d76f1f": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "expanse",
+   "opp": "Kuchh_bhii",
+   "oppId": "d02e5f2c-f75a-499c-b5e9-418c425a0746",
+   "time": "2026-10-24T06:10:15.365Z",
+   "win": true
   },
   "bb0bffd5-38c4-4438-9e40-0e2da854a496": {
    "kind": "ranked",
@@ -6435,6 +7362,15 @@
    "time": "2026-10-21T15:10:26.195Z",
    "win": true
   },
+  "bd1d08b4-cd36-49ce-92e3-996bcf35ccb4": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "ambush",
+   "opp": "Kuchh_bhii",
+   "oppId": "d02e5f2c-f75a-499c-b5e9-418c425a0746",
+   "time": "2026-10-24T06:10:15.366Z",
+   "win": true
+  },
   "bd1d26e2-b57d-4ff3-bd1f-bea0dae959fd": {
    "kind": "unranked",
    "live": 23,
@@ -6452,6 +7388,15 @@
    "oppId": "c7ab1030-abf5-4f1b-89d5-f8b930f96265",
    "time": "2026-10-22T06:40:14.275Z",
    "win": false
+  },
+  "bd44bb5d-b458-4b2e-9262-cfe04eeabb2b": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "hooks",
+   "opp": "Sneaky Bush Campers",
+   "oppId": "5e0c725a-b9b4-4523-8739-4427f20b9ce5",
+   "time": "2026-10-24T04:10:21.528Z",
+   "win": true
   },
   "bd6f80d3-e3d9-44f3-9208-cfec933eb895": {
    "kind": "ranked",
@@ -6579,6 +7524,15 @@
    "time": "2026-10-21T15:30:43.099Z",
    "win": true
   },
+  "c001bf62-e3b6-42e0-899f-c47b823502f1": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "split",
+   "opp": "Turbo Elk",
+   "oppId": "d793f432-203a-4593-b13a-b108b09cfaeb",
+   "time": "2026-10-24T05:30:20.851Z",
+   "win": true
+  },
   "c008fa13-b83d-4392-8cf5-4b13a704f09e": {
    "kind": "ranked",
    "live": 21,
@@ -6641,6 +7595,15 @@
    "oppId": "dc24ee25-0f21-4353-8ebf-1ce5a82e22bb",
    "time": "2026-10-22T11:10:50.507Z",
    "win": true
+  },
+  "c24abbf3-da01-48b4-905f-00a5db3f6797": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "quadrants",
+   "opp": "Electric Fog Walkers",
+   "oppId": "70573b2a-8ec1-470c-a1bd-f8a70fd9a2f3",
+   "time": "2026-10-24T04:30:19.922Z",
+   "win": false
   },
   "c28e7039-fe1d-45e3-a313-07c504895841": {
    "kind": "ranked",
@@ -6723,6 +7686,15 @@
    "time": "2026-10-22T09:30:19.246Z",
    "win": false
   },
+  "c5a8d2d0-99ee-4417-985d-8fdcea6a7af7": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "monolith",
+   "opp": "BigHero6",
+   "oppId": "f06e2db0-f987-4960-93c8-26cf6969c216",
+   "time": "2026-10-24T04:20:19.452Z",
+   "win": true
+  },
   "c5aba51e-604f-4c18-8505-b91d6cf55685": {
    "kind": "ranked",
    "live": 1,
@@ -6739,6 +7711,15 @@
    "opp": "Azerbaijan Technologies",
    "oppId": "7218a6a8-8211-4587-bdf8-3bae779e930e",
    "time": "2026-10-23T15:40:32.971Z",
+   "win": false
+  },
+  "c64fe4d1-bb34-4b19-a82b-74f2fedfd745": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "starvation",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-24T04:47:39.511Z",
    "win": false
   },
   "c65a07db-9155-4204-9849-eccb36df4dcf": {
@@ -6777,6 +7758,15 @@
    "time": "2026-10-23T16:00:22.633Z",
    "win": false
   },
+  "c6b05426-bbfe-4ac7-8bcd-25f9a561f43a": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "corridors",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-24T03:33:45.564Z",
+   "win": false
+  },
   "c6b69406-0eb4-461d-9a99-92343f108688": {
    "kind": "ranked",
    "live": 1,
@@ -6785,6 +7775,15 @@
    "oppId": "1a73e547-36f0-42df-aba5-698de2d22685",
    "time": "2026-10-21T17:10:14.313Z",
    "win": true
+  },
+  "c71205fb-1f08-4bfe-b1b8-b718d8f1ec95": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "collision",
+   "opp": "Birla Bots",
+   "oppId": "85eb5c58-76b8-40f9-a759-b81b9a3e8f41",
+   "time": "2026-10-24T03:20:16.861Z",
+   "win": false
   },
   "c720b8c6-ab06-4602-b9e8-284ff8881d9b": {
    "kind": "ranked",
@@ -6930,6 +7929,15 @@
    "time": "2026-10-20T22:30:11.149Z",
    "win": true
   },
+  "ca8a098f-5844-4945-910b-fe116651207e": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "yellow-brick-road",
+   "opp": "Birla Bots",
+   "oppId": "85eb5c58-76b8-40f9-a759-b81b9a3e8f41",
+   "time": "2026-10-24T03:20:16.861Z",
+   "win": true
+  },
   "ca8a80dc-f213-4a31-a243-2ef1e5a5300a": {
    "kind": "ranked",
    "live": 23,
@@ -6946,6 +7954,15 @@
    "opp": "Santa Claude",
    "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
    "time": "2026-10-23T14:03:34.427Z",
+   "win": false
+  },
+  "caabb4cd-f4dd-4afa-bf96-3142bf4fe236": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "eight",
+   "opp": "Opus 5.5",
+   "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
+   "time": "2026-10-24T03:10:14.331Z",
    "win": false
   },
   "cad1b99a-b69b-49de-90d9-889b534bdbd2": {
@@ -7011,6 +8028,15 @@
    "time": "2026-10-21T18:00:19.739Z",
    "win": false
   },
+  "cdb41dc7-6bfd-4893-8c18-73fdbe17a587": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "packs",
+   "opp": "Opus 5.5",
+   "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
+   "time": "2026-10-24T05:10:17.865Z",
+   "win": false
+  },
   "ce0ca8c8-7f4e-463c-9fd1-e7be5f1d3e24": {
    "kind": "unranked",
    "live": 23,
@@ -7063,6 +8089,15 @@
    "opp": "V4.1 Flash",
    "oppId": "fd795986-cfd3-4732-9fa9-94caba40067a",
    "time": "2026-10-21T18:50:18.155Z",
+   "win": true
+  },
+  "cf1c56b6-68e5-4750-b9c9-2cccf42fcce8": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "quadrants",
+   "opp": "Return by Death",
+   "oppId": "07278352-d849-4c77-9ce1-0f8307fd4fa9",
+   "time": "2026-10-23T18:30:33.138Z",
    "win": true
   },
   "cf48ace7-8c5e-4eb8-b40c-a934120ac0a9": {
@@ -7137,6 +8172,24 @@
    "time": "2026-10-20T21:10:08.566Z",
    "win": false
   },
+  "d0b6fdb8-591b-4e1e-b240-f1a1423d8bb2": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "gemfight",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-24T05:46:16.844Z",
+   "win": false
+  },
+  "d0bde8f2-1724-49fe-8380-eab1b704320e": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "elkring",
+   "opp": "Chocolate icecream",
+   "oppId": "1157d9bd-a9b4-4481-ba1c-fc87d797809e",
+   "time": "2026-10-24T03:30:20.843Z",
+   "win": false
+  },
   "d0f6ff85-9761-465d-9009-82ebd8f44273": {
    "kind": "ranked",
    "live": 22,
@@ -7164,6 +8217,24 @@
    "time": "2026-10-21T17:40:16.367Z",
    "win": true
   },
+  "d1b58eda-6a58-4dbb-b8cc-8c7c17621ea1": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "road-of-riches",
+   "opp": "BigHero6",
+   "oppId": "f06e2db0-f987-4960-93c8-26cf6969c216",
+   "time": "2026-10-24T04:20:19.452Z",
+   "win": true
+  },
+  "d1db2b04-843a-497c-b4fa-61224787ea68": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "gem-fields",
+   "opp": "Azerbaijan Technologies",
+   "oppId": "7218a6a8-8211-4587-bdf8-3bae779e930e",
+   "time": "2026-10-23T18:20:41.206Z",
+   "win": true
+  },
   "d20da4d9-47bf-4711-b63d-a9f4c54b8f52": {
    "kind": "ranked",
    "live": 17,
@@ -7172,6 +8243,15 @@
    "oppId": "ee461d0b-afa8-4943-ae64-d0605ffa01a4",
    "time": "2026-10-22T09:30:19.246Z",
    "win": true
+  },
+  "d230b84a-3f1e-421a-9d6c-8addb1c95417": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "yellow-brick-road",
+   "opp": "Opus 5.5",
+   "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
+   "time": "2026-10-24T05:10:17.865Z",
+   "win": false
   },
   "d33ff9a7-e1ea-4fc2-9f45-31dd8d2fd56a": {
    "kind": "ranked",
@@ -7227,6 +8307,15 @@
    "time": "2026-10-21T14:00:16.613Z",
    "win": false
   },
+  "d4c6f9aa-d9e6-4900-a57f-97dfdecf7dd0": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "fragment",
+   "opp": "Rogue.ai",
+   "oppId": "f1b13689-8bce-4cf2-ac51-b5103c5dde2d",
+   "time": "2026-10-24T04:40:19.299Z",
+   "win": false
+  },
   "d51eca60-0861-4e92-b702-8d5a538fdc8e": {
    "kind": "ranked",
    "live": 23,
@@ -7243,6 +8332,15 @@
    "opp": "WhatIsQuantTrading??????",
    "oppId": "d88df6e3-53c7-44ed-874f-67f3caa0578c",
    "time": "2026-10-23T17:40:17.814Z",
+   "win": false
+  },
+  "d5b5cc7e-759e-4a76-b8b1-a680315a12c1": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "rushbait-v2",
+   "opp": "UnZure",
+   "oppId": "9dc7b5e1-4f3e-45fb-9db5-7608f7a51bf9",
+   "time": "2026-10-24T03:50:18.186Z",
    "win": false
   },
   "d5c396ba-c00f-4980-a7ce-9871ef88492c": {
@@ -7398,6 +8496,15 @@
    "time": "2026-10-23T14:58:24.411Z",
    "win": false
   },
+  "d834b2ed-1c43-46ef-9a20-577700a77924": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "the-farm",
+   "opp": "Turbo Elk",
+   "oppId": "d793f432-203a-4593-b13a-b108b09cfaeb",
+   "time": "2026-10-24T05:30:20.852Z",
+   "win": false
+  },
   "d86409f6-3c5c-4925-a90e-c6eff70b5cfd": {
    "kind": "ranked",
    "live": 17,
@@ -7434,6 +8541,24 @@
    "time": "2026-10-22T07:06:57.925Z",
    "win": true
   },
+  "d96d54d7-0b9f-4a83-9ef8-493ceefd8e05": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "elk-arena",
+   "opp": "WOLVES",
+   "oppId": "6257cfdb-cfac-492c-b71c-3d55eacdd547",
+   "time": "2026-10-24T03:40:17.573Z",
+   "win": false
+  },
+  "d9876eb1-1517-466d-a405-b645ae50598c": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "gold-rush",
+   "opp": "WOLVES",
+   "oppId": "6257cfdb-cfac-492c-b71c-3d55eacdd547",
+   "time": "2026-10-24T03:40:17.573Z",
+   "win": false
+  },
   "d9a3e715-0e54-4032-93a2-7b0e866d3023": {
    "kind": "ranked",
    "live": 17,
@@ -7441,6 +8566,24 @@
    "opp": "The Flotte Experience",
    "oppId": "4f895cf2-77c0-4d65-91a6-320d46ecca54",
    "time": "2026-10-22T07:00:15.627Z",
+   "win": true
+  },
+  "d9a558ae-ff50-4716-840b-8199cf7e647a": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "road-of-riches",
+   "opp": "WOLVES",
+   "oppId": "6257cfdb-cfac-492c-b71c-3d55eacdd547",
+   "time": "2026-10-24T03:40:17.574Z",
+   "win": true
+  },
+  "d9ea22af-9ede-42c4-bc02-3a2347de0df0": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "great-wall",
+   "opp": "Invincible Coders",
+   "oppId": "afdfcf47-296e-44db-99c2-c6cc155d746f",
+   "time": "2026-10-23T18:53:01.551Z",
    "win": true
   },
   "d9f33b39-e997-44ac-bb8e-3cc166ca6423": {
@@ -7478,6 +8621,15 @@
    "oppId": "7218a6a8-8211-4587-bdf8-3bae779e930e",
    "time": "2026-10-22T08:50:14.543Z",
    "win": false
+  },
+  "dab6f689-bbc1-41d3-841a-9e4d19da8677": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "fracture",
+   "opp": "WOLVES",
+   "oppId": "6257cfdb-cfac-492c-b71c-3d55eacdd547",
+   "time": "2026-10-24T03:40:17.575Z",
+   "win": true
   },
   "daf3d119-3a50-4452-821e-4837e55bf0bf": {
    "kind": "ranked",
@@ -7559,6 +8711,15 @@
    "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
    "time": "2026-10-23T16:37:39.390Z",
    "win": false
+  },
+  "dcd8c0c2-d2e1-4f3c-b6c0-8ca96b6aaa2d": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "stampede",
+   "opp": "BigHero6",
+   "oppId": "f06e2db0-f987-4960-93c8-26cf6969c216",
+   "time": "2026-10-24T04:20:19.452Z",
+   "win": true
   },
   "dcdf81e6-edcb-4bde-848d-a760570856fc": {
    "kind": "ranked",
@@ -7812,6 +8973,15 @@
    "time": "2026-10-22T11:50:22.938Z",
    "win": false
   },
+  "e1183ba8-a556-4c8f-9f20-9f54a05a43f6": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "stampede",
+   "opp": "Kuchh_bhii",
+   "oppId": "d02e5f2c-f75a-499c-b5e9-418c425a0746",
+   "time": "2026-10-24T06:10:15.366Z",
+   "win": false
+  },
   "e1234c1d-bd7e-4955-add3-9992ee9fb8c1": {
    "kind": "unranked",
    "live": 23,
@@ -7857,6 +9027,24 @@
    "time": "2026-10-22T08:10:22.177Z",
    "win": false
   },
+  "e2d2b779-499d-4910-8cc0-5b4787efe9c8": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "stampede",
+   "opp": "Invincible Coders",
+   "oppId": "afdfcf47-296e-44db-99c2-c6cc155d746f",
+   "time": "2026-10-23T18:53:01.552Z",
+   "win": true
+  },
+  "e2db92bc-a629-43eb-8427-525aaba81dbf": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "lost-world",
+   "opp": "Return by Death",
+   "oppId": "07278352-d849-4c77-9ce1-0f8307fd4fa9",
+   "time": "2026-10-23T18:30:33.139Z",
+   "win": false
+  },
   "e32655b7-d134-4d05-b718-e9d5537a0d15": {
    "kind": "ranked",
    "live": 22,
@@ -7883,6 +9071,15 @@
    "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
    "time": "2026-10-23T14:16:11.868Z",
    "win": false
+  },
+  "e34aac50-d621-40b6-9308-053e96e82b2a": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "starfish",
+   "opp": "Sneaky Bush Campers",
+   "oppId": "5e0c725a-b9b4-4523-8739-4427f20b9ce5",
+   "time": "2026-10-24T04:10:21.530Z",
+   "win": true
   },
   "e36a7ea2-0a23-4fa7-b1ed-454a017da8ca": {
    "kind": "unranked",
@@ -7911,6 +9108,15 @@
    "time": "2026-10-23T15:30:27.753Z",
    "win": false
   },
+  "e3b6abe8-3af1-41a0-bcd4-45a7ee05f9ca": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "boss-battle",
+   "opp": "ohhhhhh caml",
+   "oppId": "5bfa785b-3a15-4398-96b7-624e1a1e103c",
+   "time": "2026-10-24T04:00:22.059Z",
+   "win": true
+  },
   "e3e5575b-55ba-4b60-b2ef-980b637c7991": {
    "kind": "ranked",
    "live": 10,
@@ -7918,6 +9124,15 @@
    "opp": "Lucky Stunner",
    "oppId": "d48d65ef-625c-4966-b2cc-a7b1b02fafec",
    "time": "2026-10-21T15:10:10.876Z",
+   "win": false
+  },
+  "e404ad9e-3402-462f-bc60-79bd088f5fd4": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "split",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-24T05:46:16.893Z",
    "win": false
   },
   "e41b8304-ddde-42df-9669-59ed3506dec8": {
@@ -7938,6 +9153,24 @@
    "time": "2026-10-23T14:40:37.395Z",
    "win": false
   },
+  "e4a069b1-0354-4244-ba9d-47d968933a96": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "road-of-riches",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "time": "2026-10-24T05:00:24.244Z",
+   "win": false
+  },
+  "e4a57a61-d44f-4a07-ae0e-029add8a4258": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "fragment",
+   "opp": "du.RAM",
+   "oppId": "d1cb1906-76ed-46c7-b005-90fac23a59cd",
+   "time": "2026-10-24T06:00:18.932Z",
+   "win": false
+  },
   "e4bd7274-a182-4428-a32e-7972f59e79db": {
    "kind": "ranked",
    "live": 1,
@@ -7955,6 +9188,24 @@
    "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
    "time": "2026-10-22T09:01:09.069Z",
    "win": true
+  },
+  "e50ca172-d7fc-4e10-961c-91f959735f4e": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "the-farm",
+   "opp": "Sneaky Bush Campers",
+   "oppId": "5e0c725a-b9b4-4523-8739-4427f20b9ce5",
+   "time": "2026-10-24T04:10:21.530Z",
+   "win": false
+  },
+  "e5474d4e-1f42-45db-8fc3-31584005d7a1": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "swirl",
+   "opp": "Electric Fog Walkers",
+   "oppId": "70573b2a-8ec1-470c-a1bd-f8a70fd9a2f3",
+   "time": "2026-10-24T04:30:19.921Z",
+   "win": false
   },
   "e5641c81-dc05-4150-8caa-64efc13e765e": {
    "kind": "unranked",
@@ -8127,6 +9378,15 @@
    "time": "2026-10-21T18:10:15.060Z",
    "win": true
   },
+  "e9637abc-ed53-4d42-9082-4857adf2a579": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "gold-rush",
+   "opp": "Chocolate icecream",
+   "oppId": "1157d9bd-a9b4-4481-ba1c-fc87d797809e",
+   "time": "2026-10-24T03:30:20.844Z",
+   "win": false
+  },
   "e97fbe83-8f3a-490e-b4c8-5665f2a0efb5": {
    "kind": "ranked",
    "live": 22,
@@ -8153,6 +9413,15 @@
    "oppId": "c2fa831a-bbf9-41dd-b588-dbc33b9af1bb",
    "time": "2026-10-23T15:35:59.797Z",
    "win": true
+  },
+  "e9d41dfc-7f30-42cf-b486-5b1579bd1423": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "reverse-spiral",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-24T03:33:45.531Z",
+   "win": false
   },
   "ea2dc8bd-9deb-45b7-ad04-0e6d150ca873": {
    "kind": "ranked",
@@ -8188,6 +9457,15 @@
    "opp": "fa_kyuu",
    "oppId": "605c150e-bd88-4cb3-b77a-8140a3915609",
    "time": "2026-10-22T07:40:13.075Z",
+   "win": false
+  },
+  "eb369350-17f3-47fd-ac6b-b93dc51e4bfc": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "gem-fields",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-24T05:46:16.863Z",
    "win": false
   },
   "eb72f8b9-f60a-4561-b217-6535e73f49eb": {
@@ -8359,6 +9637,24 @@
    "opp": "Slough Reps",
    "oppId": "fd3a404c-954b-4628-a418-7a8e57fb3783",
    "time": "2026-10-20T15:10:13.186Z",
+   "win": true
+  },
+  "ee560b4b-f785-4d04-a13b-dfafc91abb88": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "hooks",
+   "opp": "it\u2019s the first that we thought that it\u2019s they but what if it\u2019s the time for team",
+   "oppId": "d3e47e1f-ec5d-4dfb-8d42-6c5fe35e2710",
+   "time": "2026-10-24T05:40:21.043Z",
+   "win": true
+  },
+  "eed9a6fc-8aeb-494d-a0b9-4a38ee0048fb": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "hooks",
+   "opp": ":blauerdrache:",
+   "oppId": "56492446-eca6-4557-9a40-559bd4c318dc",
+   "time": "2026-10-23T18:10:50.416Z",
    "win": true
   },
   "eedc3368-54bc-4887-b93e-0e1c8d7242fa": {
@@ -8550,6 +9846,15 @@
    "time": "2026-10-20T17:20:08.638Z",
    "win": true
   },
+  "f40573f9-35d7-47ec-890d-fd536eeb9239": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "elk-arena",
+   "opp": "WOLVES",
+   "oppId": "6257cfdb-cfac-492c-b71c-3d55eacdd547",
+   "time": "2026-10-24T05:20:24.859Z",
+   "win": false
+  },
   "f4386295-0a8a-4275-9ab4-87b1ff1cb1ba": {
    "kind": "ranked",
    "live": 1,
@@ -8647,6 +9952,15 @@
    "opp": "LiquidSwords",
    "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
    "time": "2026-10-22T10:30:12.501Z",
+   "win": false
+  },
+  "f785ec2a-5431-4254-a8e0-fdc5ef807540": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "corners",
+   "opp": "V4.1 Flash",
+   "oppId": "fd795986-cfd3-4732-9fa9-94caba40067a",
+   "time": "2026-10-23T18:00:41.141Z",
    "win": false
   },
   "f78ccba8-cc3e-4374-a295-b8370c406162": {
@@ -8755,6 +10069,24 @@
    "opp": "What Are We Doing",
    "oppId": "1a73e547-36f0-42df-aba5-698de2d22685",
    "time": "2026-10-21T17:10:14.313Z",
+   "win": false
+  },
+  "f9bfb0fb-20e7-4f6c-8f5b-8442f0a7a58d": {
+   "kind": "unranked",
+   "live": 23,
+   "map": "split",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "time": "2026-10-24T04:47:39.541Z",
+   "win": false
+  },
+  "f9d74bdd-f625-4edd-a239-975f39594537": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "corners",
+   "opp": "bandit",
+   "oppId": "d58450ba-8deb-4236-b389-6cfde9165a10",
+   "time": "2026-10-24T04:50:17.319Z",
    "win": false
   },
   "f9f9a652-a672-45e6-872e-3d31e7562215": {
@@ -8892,6 +10224,15 @@
    "time": "2026-10-23T16:30:32.740Z",
    "win": false
   },
+  "fd88c33b-5880-46d4-9322-54dbeafadc87": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "packs",
+   "opp": ":blauerdrache:",
+   "oppId": "56492446-eca6-4557-9a40-559bd4c318dc",
+   "time": "2026-10-23T18:10:50.417Z",
+   "win": true
+  },
   "fd8f8c8c-2f52-4143-81f4-2db66cf002b0": {
    "kind": "ranked",
    "live": 1,
@@ -8900,6 +10241,15 @@
    "oppId": "1158c8e5-3ab7-47da-9a7a-344e175243d0",
    "time": "2026-10-20T21:00:10.929Z",
    "win": true
+  },
+  "fd9797db-dbe3-4558-bf99-826f8c881aad": {
+   "kind": "ranked",
+   "live": 23,
+   "map": "gem-fields",
+   "opp": "Birla Bots",
+   "oppId": "85eb5c58-76b8-40f9-a759-b81b9a3e8f41",
+   "time": "2026-10-24T03:20:16.861Z",
+   "win": false
   },
   "fdb961ae-9766-4749-886b-8fe8b8333b60": {
    "kind": "ranked",
@@ -18138,6 +19488,1577 @@
    "status": "open",
    "time": "2026-10-23T17:39:00.857Z",
    "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 11,
+    "champion": 6
+   },
+   "deaths_them": 25,
+   "deaths_us": 17,
+   "gems_them": "880",
+   "gems_us": "132",
+   "id": "62e207f3-bb0d-40eb-b093-93e1eed4e874",
+   "map": "gold-rush",
+   "opp": "Electric Shard Casters",
+   "oppId": "1fd7861b-b197-4ea9-b94d-0d5a70f69758",
+   "status": "open",
+   "time": "2026-10-23T18:42:25.799Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {},
+   "deaths_them": 22,
+   "deaths_us": 0,
+   "gems_them": "214",
+   "gems_us": "0",
+   "id": "14fd9b7d-f3cb-4fd3-b399-57916ab9e832",
+   "map": "reverse-spiral",
+   "opp": "Electric Shard Casters",
+   "oppId": "1fd7861b-b197-4ea9-b94d-0d5a70f69758",
+   "status": "open",
+   "time": "2026-10-23T18:42:25.798Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 4,
+    "champion": 31
+   },
+   "deaths_them": 16,
+   "deaths_us": 35,
+   "gems_them": "1009",
+   "gems_us": "927",
+   "id": "e2db92bc-a629-43eb-8427-525aaba81dbf",
+   "map": "lost-world",
+   "opp": "Return by Death",
+   "oppId": "07278352-d849-4c77-9ce1-0f8307fd4fa9",
+   "status": "open",
+   "time": "2026-10-23T18:30:33.139Z",
+   "tries_at": 5
+  },
+  {
+   "contexts": {
+    "camp": 4,
+    "champion": 23
+   },
+   "deaths_them": 17,
+   "deaths_us": 27,
+   "gems_them": "1025",
+   "gems_us": "787",
+   "id": "1d63fadb-599d-4f63-bac4-d0601b96aa38",
+   "map": "gemfight",
+   "opp": "Return by Death",
+   "oppId": "07278352-d849-4c77-9ce1-0f8307fd4fa9",
+   "status": "open",
+   "time": "2026-10-23T18:30:33.139Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 7
+   },
+   "deaths_them": 2,
+   "deaths_us": 7,
+   "gems_them": "1001",
+   "gems_us": "148",
+   "id": "70b28882-bfe7-48f3-ba6b-51c2a9658db9",
+   "map": "road-of-riches",
+   "opp": "Return by Death",
+   "oppId": "07278352-d849-4c77-9ce1-0f8307fd4fa9",
+   "status": "open",
+   "time": "2026-10-23T18:30:33.138Z",
+   "tries_at": 10
+  },
+  {
+   "contexts": {
+    "camp": 12,
+    "champion": 12
+   },
+   "deaths_them": 5,
+   "deaths_us": 24,
+   "gems_them": "1012",
+   "gems_us": "286",
+   "id": "b912e6ca-5a7e-4a21-a8a7-0124c70193df",
+   "map": "elkring",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T18:20:48.424Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "champion": 16
+   },
+   "deaths_them": 19,
+   "deaths_us": 16,
+   "gems_them": "1008",
+   "gems_us": "144",
+   "id": "25a6357b-8fae-4b58-8231-b14455e21eb9",
+   "map": "elk-arena",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T18:20:48.413Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 35
+   },
+   "deaths_them": 4,
+   "deaths_us": 37,
+   "gems_them": "1001",
+   "gems_us": "0",
+   "id": "92027d53-c803-4a84-89a8-2252aa9d822b",
+   "map": "hooks",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T18:20:48.400Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "camp": 3,
+    "champion": 49
+   },
+   "deaths_them": 10,
+   "deaths_us": 52,
+   "gems_them": "1047",
+   "gems_us": "129",
+   "id": "0c068793-48dd-4512-a942-002cb7574c33",
+   "map": "swirl",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T18:20:48.383Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "champion": 30
+   },
+   "deaths_them": 3,
+   "deaths_us": 30,
+   "gems_them": "1020",
+   "gems_us": "552",
+   "id": "232b2685-e922-4290-930b-8354fcd9bb7f",
+   "map": "packs",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-23T18:20:48.366Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 33
+   },
+   "deaths_them": 22,
+   "deaths_us": 35,
+   "gems_them": "596",
+   "gems_us": "216",
+   "id": "0bcf30d5-763c-4271-8fee-cae8cbea7871",
+   "map": "starvation",
+   "opp": "Azerbaijan Technologies",
+   "oppId": "7218a6a8-8211-4587-bdf8-3bae779e930e",
+   "status": "open",
+   "time": "2026-10-23T18:20:41.206Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "camp": 1,
+    "champion": 28
+   },
+   "deaths_them": 22,
+   "deaths_us": 29,
+   "gems_them": "1008",
+   "gems_us": "144",
+   "id": "389e3de4-0b9b-4bae-ab36-45a114fffed7",
+   "map": "elk-arena",
+   "opp": "Azerbaijan Technologies",
+   "oppId": "7218a6a8-8211-4587-bdf8-3bae779e930e",
+   "status": "open",
+   "time": "2026-10-23T18:20:41.206Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 4,
+    "champion": 44
+   },
+   "deaths_them": 33,
+   "deaths_us": 48,
+   "gems_them": "1018",
+   "gems_us": "201",
+   "id": "277dd9fd-c4a5-4bcd-9b3c-c8399cb59716",
+   "map": "eight",
+   "opp": ":blauerdrache:",
+   "oppId": "56492446-eca6-4557-9a40-559bd4c318dc",
+   "status": "open",
+   "time": "2026-10-23T18:10:50.416Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 10,
+    "champion": 19
+   },
+   "deaths_them": 16,
+   "deaths_us": 29,
+   "gems_them": "895",
+   "gems_us": "463",
+   "id": "5881fa92-7c44-4d89-b37a-abca511ea0ee",
+   "map": "the-farm",
+   "opp": ":blauerdrache:",
+   "oppId": "56492446-eca6-4557-9a40-559bd4c318dc",
+   "status": "open",
+   "time": "2026-10-23T18:10:50.416Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 17
+   },
+   "deaths_them": 12,
+   "deaths_us": 19,
+   "gems_them": "1003",
+   "gems_us": "659",
+   "id": "7dcf914a-1e0a-47f1-b8ff-bb4e80c252d7",
+   "map": "gemfight",
+   "opp": "V4.1 Flash",
+   "oppId": "fd795986-cfd3-4732-9fa9-94caba40067a",
+   "status": "open",
+   "time": "2026-10-23T18:00:41.141Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 5,
+    "champion": 4
+   },
+   "deaths_them": 5,
+   "deaths_us": 9,
+   "gems_them": "1001",
+   "gems_us": "451",
+   "id": "27e44d88-cd37-442f-bcac-c8b51cd0ac26",
+   "map": "elkring",
+   "opp": "V4.1 Flash",
+   "oppId": "fd795986-cfd3-4732-9fa9-94caba40067a",
+   "status": "open",
+   "time": "2026-10-23T18:00:41.141Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 8,
+    "champion": 13
+   },
+   "deaths_them": 3,
+   "deaths_us": 21,
+   "gems_them": "1003",
+   "gems_us": "535",
+   "id": "f785ec2a-5431-4254-a8e0-fdc5ef807540",
+   "map": "corners",
+   "opp": "V4.1 Flash",
+   "oppId": "fd795986-cfd3-4732-9fa9-94caba40067a",
+   "status": "open",
+   "time": "2026-10-23T18:00:41.141Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {},
+   "deaths_them": 0,
+   "deaths_us": 0,
+   "gems_them": "0",
+   "gems_us": "0",
+   "id": "3183544e-7354-4ddd-ade5-cfdd46d8320d",
+   "map": "reverse-spiral",
+   "opp": "Invincible Coders",
+   "oppId": "afdfcf47-296e-44db-99c2-c6cc155d746f",
+   "status": "open",
+   "time": "2026-10-23T18:53:01.553Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 10,
+    "champion": 7
+   },
+   "deaths_them": 34,
+   "deaths_us": 17,
+   "gems_them": "221",
+   "gems_us": "90",
+   "id": "e50ca172-d7fc-4e10-961c-91f959735f4e",
+   "map": "the-farm",
+   "opp": "Sneaky Bush Campers",
+   "oppId": "5e0c725a-b9b4-4523-8739-4427f20b9ce5",
+   "status": "open",
+   "time": "2026-10-24T04:10:21.530Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 13,
+    "champion": 3
+   },
+   "deaths_them": 26,
+   "deaths_us": 16,
+   "gems_them": "1000",
+   "gems_us": "567",
+   "id": "94dde361-839a-4d56-bd25-efd718c09bb2",
+   "map": "split",
+   "opp": "Sneaky Bush Campers",
+   "oppId": "5e0c725a-b9b4-4523-8739-4427f20b9ce5",
+   "status": "open",
+   "time": "2026-10-24T04:10:21.529Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 7,
+    "champion": 2
+   },
+   "deaths_them": 6,
+   "deaths_us": 9,
+   "gems_them": "1079",
+   "gems_us": "0",
+   "id": "37ac21c2-ada9-4da8-bdb2-49c8eb330917",
+   "map": "road-of-riches",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-24T04:06:24.974Z",
+   "tries_at": 10
+  },
+  {
+   "contexts": {
+    "camp": 16,
+    "champion": 3
+   },
+   "deaths_them": 1,
+   "deaths_us": 19,
+   "gems_them": "1006",
+   "gems_us": "143",
+   "id": "8be1ce74-bffd-4330-ac1c-937484f3da67",
+   "map": "fracture",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-24T04:06:24.968Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 7,
+    "champion": 1
+   },
+   "deaths_them": 1,
+   "deaths_us": 8,
+   "gems_them": "1032",
+   "gems_us": "205",
+   "id": "7b530274-4800-4ef3-947f-16861ff9434a",
+   "map": "split",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-24T04:06:24.959Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 22,
+    "champion": 13
+   },
+   "deaths_them": 4,
+   "deaths_us": 35,
+   "gems_them": "1028",
+   "gems_us": "465",
+   "id": "2b189bef-fa53-4f7f-bffe-8817cd34ed78",
+   "map": "great-wall",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-24T04:06:24.946Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 3
+   },
+   "deaths_them": 0,
+   "deaths_us": 3,
+   "gems_them": "1023",
+   "gems_us": "391",
+   "id": "00269c4c-b724-450c-b10c-665ecb6f9c6b",
+   "map": "broken-curve",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-24T04:06:24.934Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 1,
+    "champion": 41
+   },
+   "deaths_them": 29,
+   "deaths_us": 42,
+   "gems_them": "578",
+   "gems_us": "498",
+   "id": "8bc0434a-3554-4798-a501-59c46b62639c",
+   "map": "concentrated-wealth",
+   "opp": "ohhhhhh caml",
+   "oppId": "5bfa785b-3a15-4398-96b7-624e1a1e103c",
+   "status": "open",
+   "time": "2026-10-24T04:00:22.059Z",
+   "tries_at": 3
+  },
+  {
+   "contexts": {
+    "champion": 37
+   },
+   "deaths_them": 23,
+   "deaths_us": 37,
+   "gems_them": "1015",
+   "gems_us": "534",
+   "id": "d5b5cc7e-759e-4a76-b8b1-a680315a12c1",
+   "map": "rushbait-v2",
+   "opp": "UnZure",
+   "oppId": "9dc7b5e1-4f3e-45fb-9db5-7608f7a51bf9",
+   "status": "open",
+   "time": "2026-10-24T03:50:18.186Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 3,
+    "champion": 39
+   },
+   "deaths_them": 35,
+   "deaths_us": 42,
+   "gems_them": "1029",
+   "gems_us": "907",
+   "id": "161c190d-f6be-4885-9860-85cc1e6e37fc",
+   "map": "elkring",
+   "opp": "UnZure",
+   "oppId": "9dc7b5e1-4f3e-45fb-9db5-7608f7a51bf9",
+   "status": "open",
+   "time": "2026-10-24T03:50:18.186Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 3,
+    "champion": 11
+   },
+   "deaths_them": 5,
+   "deaths_us": 14,
+   "gems_them": "1036",
+   "gems_us": "658",
+   "id": "37e518e4-1d7a-40ec-8171-e8ef24d1b2e8",
+   "map": "ambush",
+   "opp": "UnZure",
+   "oppId": "9dc7b5e1-4f3e-45fb-9db5-7608f7a51bf9",
+   "status": "open",
+   "time": "2026-10-24T03:50:18.186Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 15,
+    "champion": 4
+   },
+   "deaths_them": 14,
+   "deaths_us": 19,
+   "gems_them": "1000",
+   "gems_us": "958",
+   "id": "79018d25-34d8-4236-bbb9-c81b5308a77e",
+   "map": "broken-curve",
+   "opp": "UnZure",
+   "oppId": "9dc7b5e1-4f3e-45fb-9db5-7608f7a51bf9",
+   "status": "open",
+   "time": "2026-10-24T03:50:18.186Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 14
+   },
+   "deaths_them": 7,
+   "deaths_us": 16,
+   "gems_them": "1008",
+   "gems_us": "0",
+   "id": "d96d54d7-0b9f-4a83-9ef8-493ceefd8e05",
+   "map": "elk-arena",
+   "opp": "WOLVES",
+   "oppId": "6257cfdb-cfac-492c-b71c-3d55eacdd547",
+   "status": "open",
+   "time": "2026-10-24T03:40:17.573Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 11,
+    "champion": 4
+   },
+   "deaths_them": 3,
+   "deaths_us": 15,
+   "gems_them": "457",
+   "gems_us": "99",
+   "id": "d9876eb1-1517-466d-a405-b645ae50598c",
+   "map": "gold-rush",
+   "opp": "WOLVES",
+   "oppId": "6257cfdb-cfac-492c-b71c-3d55eacdd547",
+   "status": "open",
+   "time": "2026-10-24T03:40:17.573Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 22,
+    "champion": 6
+   },
+   "deaths_them": 1,
+   "deaths_us": 28,
+   "gems_them": "1070",
+   "gems_us": "0",
+   "id": "9c943dbc-cea1-41a0-9c41-d9e0acecda69",
+   "map": "boss-battle",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-24T03:33:45.574Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 37
+   },
+   "deaths_them": 1,
+   "deaths_us": 37,
+   "gems_them": "1062",
+   "gems_us": "180",
+   "id": "c6b05426-bbfe-4ac7-8bcd-25f9a561f43a",
+   "map": "corridors",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-24T03:33:45.564Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 9,
+    "champion": 15
+   },
+   "deaths_them": 2,
+   "deaths_us": 24,
+   "gems_them": "1012",
+   "gems_us": "154",
+   "id": "048ba1e0-b812-4992-8062-35d1d905ff83",
+   "map": "elkring",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-24T03:33:45.554Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 3
+   },
+   "deaths_them": 0,
+   "deaths_us": 3,
+   "gems_them": "1023",
+   "gems_us": "391",
+   "id": "4bdbb056-9acd-4fce-a735-a66a887a6dcb",
+   "map": "broken-curve",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-24T03:33:45.540Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "champion": 1
+   },
+   "deaths_them": 9,
+   "deaths_us": 1,
+   "gems_them": "340",
+   "gems_us": "0",
+   "id": "e9d41dfc-7f30-42cf-b486-5b1579bd1423",
+   "map": "reverse-spiral",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-24T03:33:45.531Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 1,
+    "champion": 29
+   },
+   "deaths_them": 3,
+   "deaths_us": 30,
+   "gems_them": "321",
+   "gems_us": "121",
+   "id": "e9637abc-ed53-4d42-9082-4857adf2a579",
+   "map": "gold-rush",
+   "opp": "Chocolate icecream",
+   "oppId": "1157d9bd-a9b4-4481-ba1c-fc87d797809e",
+   "status": "open",
+   "time": "2026-10-24T03:30:20.844Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 13,
+    "champion": 39
+   },
+   "deaths_them": 14,
+   "deaths_us": 52,
+   "gems_them": "757",
+   "gems_us": "296",
+   "id": "2d4064f3-322c-410f-9bc3-5801b70d40f6",
+   "map": "the-farm",
+   "opp": "Chocolate icecream",
+   "oppId": "1157d9bd-a9b4-4481-ba1c-fc87d797809e",
+   "status": "open",
+   "time": "2026-10-24T03:30:20.844Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "champion": 59
+   },
+   "deaths_them": 14,
+   "deaths_us": 59,
+   "gems_them": "516",
+   "gems_us": "51",
+   "id": "143c3b3c-b89b-460d-95ee-c4b1bf1f8394",
+   "map": "collision",
+   "opp": "Chocolate icecream",
+   "oppId": "1157d9bd-a9b4-4481-ba1c-fc87d797809e",
+   "status": "open",
+   "time": "2026-10-24T03:30:20.844Z",
+   "tries_at": 6
+  },
+  {
+   "contexts": {
+    "champion": 88
+   },
+   "deaths_them": 21,
+   "deaths_us": 88,
+   "gems_them": "1023",
+   "gems_us": "52",
+   "id": "69caac4d-2a23-4360-8212-e87d53d54fad",
+   "map": "eight",
+   "opp": "Chocolate icecream",
+   "oppId": "1157d9bd-a9b4-4481-ba1c-fc87d797809e",
+   "status": "open",
+   "time": "2026-10-24T03:30:20.843Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 80
+   },
+   "deaths_them": 26,
+   "deaths_us": 82,
+   "gems_them": "1012",
+   "gems_us": "352",
+   "id": "d0bde8f2-1724-49fe-8380-eab1b704320e",
+   "map": "elkring",
+   "opp": "Chocolate icecream",
+   "oppId": "1157d9bd-a9b4-4481-ba1c-fc87d797809e",
+   "status": "open",
+   "time": "2026-10-24T03:30:20.843Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 11,
+    "champion": 30
+   },
+   "deaths_them": 25,
+   "deaths_us": 41,
+   "gems_them": "1069",
+   "gems_us": "220",
+   "id": "7bdca26a-2602-4987-8098-21e7d77cd1be",
+   "map": "pilgrimage",
+   "opp": "Birla Bots",
+   "oppId": "85eb5c58-76b8-40f9-a759-b81b9a3e8f41",
+   "status": "open",
+   "time": "2026-10-24T03:20:16.861Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "camp": 1,
+    "champion": 51
+   },
+   "deaths_them": 30,
+   "deaths_us": 52,
+   "gems_them": "559",
+   "gems_us": "342",
+   "id": "c71205fb-1f08-4bfe-b1b8-b718d8f1ec95",
+   "map": "collision",
+   "opp": "Birla Bots",
+   "oppId": "85eb5c58-76b8-40f9-a759-b81b9a3e8f41",
+   "status": "open",
+   "time": "2026-10-24T03:20:16.861Z",
+   "tries_at": 6
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 44
+   },
+   "deaths_them": 48,
+   "deaths_us": 46,
+   "gems_them": "1013",
+   "gems_us": "687",
+   "id": "fd9797db-dbe3-4558-bf99-826f8c881aad",
+   "map": "gem-fields",
+   "opp": "Birla Bots",
+   "oppId": "85eb5c58-76b8-40f9-a759-b81b9a3e8f41",
+   "status": "open",
+   "time": "2026-10-24T03:20:16.861Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 6,
+    "champion": 47
+   },
+   "deaths_them": 59,
+   "deaths_us": 53,
+   "gems_them": "1012",
+   "gems_us": "639",
+   "id": "caabb4cd-f4dd-4afa-bf96-3142bf4fe236",
+   "map": "eight",
+   "opp": "Opus 5.5",
+   "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
+   "status": "open",
+   "time": "2026-10-24T03:10:14.331Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 6,
+    "champion": 15
+   },
+   "deaths_them": 5,
+   "deaths_us": 21,
+   "gems_them": "1002",
+   "gems_us": "695",
+   "id": "6c7be596-1a6e-43cc-b1a1-ab6fca36dfee",
+   "map": "rushbait-v2",
+   "opp": "Opus 5.5",
+   "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
+   "status": "open",
+   "time": "2026-10-24T03:10:14.331Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 3,
+    "champion": 46
+   },
+   "deaths_them": 13,
+   "deaths_us": 49,
+   "gems_them": "1005",
+   "gems_us": "193",
+   "id": "d4c6f9aa-d9e6-4900-a57f-97dfdecf7dd0",
+   "map": "fragment",
+   "opp": "Rogue.ai",
+   "oppId": "f1b13689-8bce-4cf2-ac51-b5103c5dde2d",
+   "status": "open",
+   "time": "2026-10-24T04:40:19.299Z",
+   "tries_at": 10
+  },
+  {
+   "contexts": {
+    "camp": 17,
+    "champion": 45
+   },
+   "deaths_them": 68,
+   "deaths_us": 62,
+   "gems_them": "1031",
+   "gems_us": "280",
+   "id": "7b9032db-0a39-4d9f-93cf-aa51b2b9a853",
+   "map": "starfish",
+   "opp": "Rogue.ai",
+   "oppId": "f1b13689-8bce-4cf2-ac51-b5103c5dde2d",
+   "status": "open",
+   "time": "2026-10-24T04:40:19.299Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 17
+   },
+   "deaths_them": 28,
+   "deaths_us": 19,
+   "gems_them": "1012",
+   "gems_us": "925",
+   "id": "34cdfe9d-6475-4c3a-90b1-e92a8e4b1332",
+   "map": "gem-fields",
+   "opp": "Rogue.ai",
+   "oppId": "f1b13689-8bce-4cf2-ac51-b5103c5dde2d",
+   "status": "open",
+   "time": "2026-10-24T04:40:19.299Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 5
+   },
+   "deaths_them": 6,
+   "deaths_us": 5,
+   "gems_them": "1003",
+   "gems_us": "368",
+   "id": "b3d837a4-b634-4f75-aac2-1bb4afcaec8d",
+   "map": "broken-curve",
+   "opp": "Rogue.ai",
+   "oppId": "f1b13689-8bce-4cf2-ac51-b5103c5dde2d",
+   "status": "open",
+   "time": "2026-10-24T04:40:19.299Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 5,
+    "champion": 4
+   },
+   "deaths_them": 9,
+   "deaths_us": 9,
+   "gems_them": "1002",
+   "gems_us": "824",
+   "id": "c24abbf3-da01-48b4-905f-00a5db3f6797",
+   "map": "quadrants",
+   "opp": "Electric Fog Walkers",
+   "oppId": "70573b2a-8ec1-470c-a1bd-f8a70fd9a2f3",
+   "status": "open",
+   "time": "2026-10-24T04:30:19.922Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 6,
+    "champion": 33
+   },
+   "deaths_them": 23,
+   "deaths_us": 39,
+   "gems_them": "1003",
+   "gems_us": "797",
+   "id": "9192dcb3-21b5-42d4-b105-bd7dc0265dd4",
+   "map": "lost-world",
+   "opp": "Electric Fog Walkers",
+   "oppId": "70573b2a-8ec1-470c-a1bd-f8a70fd9a2f3",
+   "status": "open",
+   "time": "2026-10-24T04:30:19.922Z",
+   "tries_at": 5
+  },
+  {
+   "contexts": {
+    "camp": 7,
+    "champion": 58
+   },
+   "deaths_them": 37,
+   "deaths_us": 65,
+   "gems_them": "1000",
+   "gems_us": "842",
+   "id": "e5474d4e-1f42-45db-8fc3-31584005d7a1",
+   "map": "swirl",
+   "opp": "Electric Fog Walkers",
+   "oppId": "70573b2a-8ec1-470c-a1bd-f8a70fd9a2f3",
+   "status": "open",
+   "time": "2026-10-24T04:30:19.921Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 9,
+    "champion": 6
+   },
+   "deaths_them": 8,
+   "deaths_us": 15,
+   "gems_them": "1027",
+   "gems_us": "309",
+   "id": "f9bfb0fb-20e7-4f6c-8f5b-8442f0a7a58d",
+   "map": "split",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-24T04:47:39.541Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 5,
+    "champion": 10
+   },
+   "deaths_them": 2,
+   "deaths_us": 15,
+   "gems_them": "1001",
+   "gems_us": "752",
+   "id": "37e719d6-4e5f-4ff0-b1f1-c78c416aa9fa",
+   "map": "corners",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-24T04:47:39.529Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 1,
+    "champion": 42
+   },
+   "deaths_them": 4,
+   "deaths_us": 43,
+   "gems_them": "1001",
+   "gems_us": "22",
+   "id": "1caf5c37-d5a3-4c73-9964-02966d42cf98",
+   "map": "hooks",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-24T04:47:39.521Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "champion": 26
+   },
+   "deaths_them": 4,
+   "deaths_us": 26,
+   "gems_them": "1016",
+   "gems_us": "140",
+   "id": "c64fe4d1-bb34-4b19-a82b-74f2fedfd745",
+   "map": "starvation",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-24T04:47:39.511Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "camp": 8,
+    "champion": 10
+   },
+   "deaths_them": 0,
+   "deaths_us": 18,
+   "gems_them": "1043",
+   "gems_us": "22",
+   "id": "5c6c4109-a93a-4e20-93d4-30ac1a639606",
+   "map": "the-farm",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-24T04:47:39.502Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 6,
+    "champion": 16
+   },
+   "deaths_them": 1,
+   "deaths_us": 22,
+   "gems_them": "1011",
+   "gems_us": "551",
+   "id": "f9d74bdd-f625-4edd-a239-975f39594537",
+   "map": "corners",
+   "opp": "bandit",
+   "oppId": "d58450ba-8deb-4236-b389-6cfde9165a10",
+   "status": "open",
+   "time": "2026-10-24T04:50:17.319Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 13,
+    "champion": 19
+   },
+   "deaths_them": 3,
+   "deaths_us": 32,
+   "gems_them": "1044",
+   "gems_us": "144",
+   "id": "b26863e8-cc84-4e6d-90db-1671e757f093",
+   "map": "yellow-brick-road",
+   "opp": "bandit",
+   "oppId": "d58450ba-8deb-4236-b389-6cfde9165a10",
+   "status": "open",
+   "time": "2026-10-24T04:50:17.318Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 6,
+    "champion": 3
+   },
+   "deaths_them": 30,
+   "deaths_us": 9,
+   "gems_them": "1003",
+   "gems_us": "171",
+   "id": "d230b84a-3f1e-421a-9d6c-8addb1c95417",
+   "map": "yellow-brick-road",
+   "opp": "Opus 5.5",
+   "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
+   "status": "open",
+   "time": "2026-10-24T05:10:17.865Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "champion": 40
+   },
+   "deaths_them": 1,
+   "deaths_us": 40,
+   "gems_them": "1018",
+   "gems_us": "112",
+   "id": "cdb41dc7-6bfd-4893-8c18-73fdbe17a587",
+   "map": "packs",
+   "opp": "Opus 5.5",
+   "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
+   "status": "open",
+   "time": "2026-10-24T05:10:17.865Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 18,
+    "champion": 18
+   },
+   "deaths_them": 18,
+   "deaths_us": 36,
+   "gems_them": "1014",
+   "gems_us": "83",
+   "id": "0208f0a6-c16d-4ab6-890f-f4acd037d47a",
+   "map": "pilgrimage",
+   "opp": "Opus 5.5",
+   "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
+   "status": "open",
+   "time": "2026-10-24T05:10:17.864Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "camp": 6,
+    "champion": 27
+   },
+   "deaths_them": 61,
+   "deaths_us": 33,
+   "gems_them": "1039",
+   "gems_us": "875",
+   "id": "037c9429-9bb6-4a7e-9875-3b370ff5b252",
+   "map": "eight",
+   "opp": "Opus 5.5",
+   "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
+   "status": "open",
+   "time": "2026-10-24T05:10:17.864Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 8,
+    "champion": 6
+   },
+   "deaths_them": 32,
+   "deaths_us": 14,
+   "gems_them": "1008",
+   "gems_us": "902",
+   "id": "32bd67a6-a7ad-46a0-a419-04b9f1e2ee11",
+   "map": "ambush",
+   "opp": "Opus 5.5",
+   "oppId": "cd168e4d-952a-47db-aa97-a9cae638dea1",
+   "status": "open",
+   "time": "2026-10-24T05:10:17.864Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 10,
+    "champion": 2
+   },
+   "deaths_them": 9,
+   "deaths_us": 12,
+   "gems_them": "1025",
+   "gems_us": "0",
+   "id": "e4a069b1-0354-4244-ba9d-47d968933a96",
+   "map": "road-of-riches",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "status": "open",
+   "time": "2026-10-24T05:00:24.244Z",
+   "tries_at": 10
+  },
+  {
+   "contexts": {
+    "camp": 6,
+    "champion": 30
+   },
+   "deaths_them": 18,
+   "deaths_us": 36,
+   "gems_them": "1020",
+   "gems_us": "333",
+   "id": "1b4f63a0-b33f-4413-b1b2-77b724fcb6f5",
+   "map": "elkring",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "status": "open",
+   "time": "2026-10-24T05:00:24.243Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 3,
+    "champion": 35
+   },
+   "deaths_them": 9,
+   "deaths_us": 38,
+   "gems_them": "490",
+   "gems_us": "148",
+   "id": "55f2d992-9f9e-43f2-82dc-10cbb7015811",
+   "map": "gold-rush",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "status": "open",
+   "time": "2026-10-24T05:00:24.243Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "champion": 53
+   },
+   "deaths_them": 30,
+   "deaths_us": 53,
+   "gems_them": "1044",
+   "gems_us": "186",
+   "id": "b4bc9c26-ab03-4bf2-9d67-a20be69e9597",
+   "map": "eight",
+   "opp": "LiquidSwords",
+   "oppId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "status": "open",
+   "time": "2026-10-24T05:00:24.243Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 20,
+    "champion": 12
+   },
+   "deaths_them": 20,
+   "deaths_us": 32,
+   "gems_them": "694",
+   "gems_us": "74",
+   "id": "d834b2ed-1c43-46ef-9a20-577700a77924",
+   "map": "the-farm",
+   "opp": "Turbo Elk",
+   "oppId": "d793f432-203a-4593-b13a-b108b09cfaeb",
+   "status": "open",
+   "time": "2026-10-24T05:30:20.852Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "champion": 38
+   },
+   "deaths_them": 56,
+   "deaths_us": 38,
+   "gems_them": "576",
+   "gems_us": "504",
+   "id": "9e5d2db2-ce2f-462e-a924-e410016a9ab4",
+   "map": "elk-arena",
+   "opp": "Turbo Elk",
+   "oppId": "d793f432-203a-4593-b13a-b108b09cfaeb",
+   "status": "open",
+   "time": "2026-10-24T05:30:20.852Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 4,
+    "champion": 20
+   },
+   "deaths_them": 6,
+   "deaths_us": 24,
+   "gems_them": "1012",
+   "gems_us": "440",
+   "id": "3dd05e26-e09c-46e1-8040-5f466446eeb1",
+   "map": "elkring",
+   "opp": "Turbo Elk",
+   "oppId": "d793f432-203a-4593-b13a-b108b09cfaeb",
+   "status": "open",
+   "time": "2026-10-24T05:30:20.851Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "champion": 6
+   },
+   "deaths_them": 4,
+   "deaths_us": 6,
+   "gems_them": "1028",
+   "gems_us": "386",
+   "id": "948515ee-01b6-41a7-8431-636bb956e058",
+   "map": "islands",
+   "opp": "Turbo Elk",
+   "oppId": "d793f432-203a-4593-b13a-b108b09cfaeb",
+   "status": "open",
+   "time": "2026-10-24T05:30:20.850Z",
+   "tries_at": 5
+  },
+  {
+   "contexts": {
+    "champion": 32
+   },
+   "deaths_them": 14,
+   "deaths_us": 32,
+   "gems_them": "1031",
+   "gems_us": "823",
+   "id": "422c3929-65a9-4796-a8fa-7ac42d292430",
+   "map": "collision",
+   "opp": "WOLVES",
+   "oppId": "6257cfdb-cfac-492c-b71c-3d55eacdd547",
+   "status": "open",
+   "time": "2026-10-24T05:20:24.860Z",
+   "tries_at": 6
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 33
+   },
+   "deaths_them": 12,
+   "deaths_us": 35,
+   "gems_them": "1008",
+   "gems_us": "36",
+   "id": "f40573f9-35d7-47ec-890d-fd536eeb9239",
+   "map": "elk-arena",
+   "opp": "WOLVES",
+   "oppId": "6257cfdb-cfac-492c-b71c-3d55eacdd547",
+   "status": "open",
+   "time": "2026-10-24T05:20:24.859Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 10,
+    "champion": 30
+   },
+   "deaths_them": 25,
+   "deaths_us": 40,
+   "gems_them": "1000",
+   "gems_us": "144",
+   "id": "4598561f-2660-4e05-8f36-b22d120c2513",
+   "map": "pilgrimage",
+   "opp": "WOLVES",
+   "oppId": "6257cfdb-cfac-492c-b71c-3d55eacdd547",
+   "status": "open",
+   "time": "2026-10-24T05:20:24.859Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "champion": 39
+   },
+   "deaths_them": 16,
+   "deaths_us": 39,
+   "gems_them": "1012",
+   "gems_us": "220",
+   "id": "04ff4505-8c0a-4b78-8acf-faf8ff95ec30",
+   "map": "hooks",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-24T05:46:16.946Z",
+   "tries_at": 2
+  },
+  {
+   "contexts": {
+    "camp": 5,
+    "champion": 6
+   },
+   "deaths_them": 4,
+   "deaths_us": 11,
+   "gems_them": "1012",
+   "gems_us": "302",
+   "id": "e404ad9e-3402-462f-bc60-79bd088f5fd4",
+   "map": "split",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-24T05:46:16.893Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 11
+   },
+   "deaths_them": 2,
+   "deaths_us": 13,
+   "gems_them": "1021",
+   "gems_us": "567",
+   "id": "eb369350-17f3-47fd-ac6b-b93dc51e4bfc",
+   "map": "gem-fields",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-24T05:46:16.863Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 4,
+    "champion": 3
+   },
+   "deaths_them": 1,
+   "deaths_us": 7,
+   "gems_them": "1003",
+   "gems_us": "0",
+   "id": "677d547d-9caa-4f7d-8cb4-ef134811ef40",
+   "map": "yellow-brick-road",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-24T05:46:16.855Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "champion": 23
+   },
+   "deaths_them": 3,
+   "deaths_us": 23,
+   "gems_them": "1028",
+   "gems_us": "36",
+   "id": "d0b6fdb8-591b-4e1e-b240-f1a1423d8bb2",
+   "map": "gemfight",
+   "opp": "Santa Claude",
+   "oppId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "status": "open",
+   "time": "2026-10-24T05:46:16.844Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 6,
+    "champion": 4
+   },
+   "deaths_them": 5,
+   "deaths_us": 10,
+   "gems_them": "1006",
+   "gems_us": "937",
+   "id": "72d0c5d9-6039-465a-b8eb-743af74b5ee3",
+   "map": "corners",
+   "opp": "it\u2019s the first that we thought that it\u2019s they but what if it\u2019s the time for team",
+   "oppId": "d3e47e1f-ec5d-4dfb-8d42-6c5fe35e2710",
+   "status": "open",
+   "time": "2026-10-24T05:40:21.043Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 39
+   },
+   "deaths_them": 26,
+   "deaths_us": 39,
+   "gems_them": "788",
+   "gems_us": "755",
+   "id": "08783c90-a939-4af5-8f66-b1ceda3e0b0c",
+   "map": "corridors",
+   "opp": "it\u2019s the first that we thought that it\u2019s they but what if it\u2019s the time for team",
+   "oppId": "d3e47e1f-ec5d-4dfb-8d42-6c5fe35e2710",
+   "status": "open",
+   "time": "2026-10-24T05:40:21.042Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 21
+   },
+   "deaths_them": 10,
+   "deaths_us": 23,
+   "gems_them": "1024",
+   "gems_us": "858",
+   "id": "51f0057d-f315-4a74-87ec-cd3e37303b77",
+   "map": "monolith",
+   "opp": "it\u2019s the first that we thought that it\u2019s they but what if it\u2019s the time for team",
+   "oppId": "d3e47e1f-ec5d-4dfb-8d42-6c5fe35e2710",
+   "status": "open",
+   "time": "2026-10-24T05:40:21.042Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 2,
+    "champion": 48
+   },
+   "deaths_them": 5,
+   "deaths_us": 50,
+   "gems_them": "1044",
+   "gems_us": "368",
+   "id": "587c231d-06e4-4062-9214-57d7136aaa33",
+   "map": "collision",
+   "opp": "Dangel & Claude",
+   "oppId": "417114b2-d24d-4000-8165-ad523b89cea1",
+   "status": "open",
+   "time": "2026-10-24T05:50:21.852Z",
+   "tries_at": 6
+  },
+  {
+   "contexts": {
+    "camp": 21,
+    "champion": 2
+   },
+   "deaths_them": 5,
+   "deaths_us": 23,
+   "gems_them": "1007",
+   "gems_us": "417",
+   "id": "6d9e78a0-1518-4f50-b9d3-02dd43abd226",
+   "map": "fracture",
+   "opp": "Dangel & Claude",
+   "oppId": "417114b2-d24d-4000-8165-ad523b89cea1",
+   "status": "open",
+   "time": "2026-10-24T05:50:21.852Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 1,
+    "champion": 15
+   },
+   "deaths_them": 4,
+   "deaths_us": 16,
+   "gems_them": "1004",
+   "gems_us": "572",
+   "id": "8bf90dcc-a539-49e7-bbdb-3d7859ac94ff",
+   "map": "lanes",
+   "opp": "Dangel & Claude",
+   "oppId": "417114b2-d24d-4000-8165-ad523b89cea1",
+   "status": "open",
+   "time": "2026-10-24T05:50:21.850Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "camp": 53,
+    "champion": 2
+   },
+   "deaths_them": 4,
+   "deaths_us": 55,
+   "gems_them": "582",
+   "gems_us": "546",
+   "id": "18c965fc-00c0-4d74-9cc3-03240f1fea87",
+   "map": "corridors",
+   "opp": "du.RAM",
+   "oppId": "d1cb1906-76ed-46c7-b005-90fac23a59cd",
+   "status": "open",
+   "time": "2026-10-24T06:00:18.933Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 5,
+    "champion": 7
+   },
+   "deaths_them": 10,
+   "deaths_us": 12,
+   "gems_them": "1004",
+   "gems_us": "726",
+   "id": "6895c079-399d-497b-a446-48d7c6fbf51f",
+   "map": "lanes",
+   "opp": "du.RAM",
+   "oppId": "d1cb1906-76ed-46c7-b005-90fac23a59cd",
+   "status": "open",
+   "time": "2026-10-24T06:00:18.933Z",
+   "tries_at": 4
+  },
+  {
+   "contexts": {
+    "champion": 1
+   },
+   "deaths_them": 8,
+   "deaths_us": 1,
+   "gems_them": "1012",
+   "gems_us": "0",
+   "id": "b43e0dbb-01ab-4291-b7e0-be77d870fb2c",
+   "map": "reverse-spiral",
+   "opp": "du.RAM",
+   "oppId": "d1cb1906-76ed-46c7-b005-90fac23a59cd",
+   "status": "open",
+   "time": "2026-10-24T06:00:18.932Z",
+   "tries_at": 1
+  },
+  {
+   "contexts": {
+    "camp": 4,
+    "champion": 49
+   },
+   "deaths_them": 25,
+   "deaths_us": 53,
+   "gems_them": "858",
+   "gems_us": "376",
+   "id": "e4a57a61-d44f-4a07-ae0e-029add8a4258",
+   "map": "fragment",
+   "opp": "du.RAM",
+   "oppId": "d1cb1906-76ed-46c7-b005-90fac23a59cd",
+   "status": "open",
+   "time": "2026-10-24T06:00:18.932Z",
+   "tries_at": 10
+  },
+  {
+   "contexts": {
+    "camp": 14,
+    "champion": 25
+   },
+   "deaths_them": 18,
+   "deaths_us": 39,
+   "gems_them": "320",
+   "gems_us": "160",
+   "id": "e1183ba8-a556-4c8f-9f20-9f54a05a43f6",
+   "map": "stampede",
+   "opp": "Kuchh_bhii",
+   "oppId": "d02e5f2c-f75a-499c-b5e9-418c425a0746",
+   "status": "open",
+   "time": "2026-10-24T06:10:15.366Z",
+   "tries_at": 10
+  },
+  {
+   "contexts": {
+    "camp": 13,
+    "champion": 24
+   },
+   "deaths_them": 47,
+   "deaths_us": 37,
+   "gems_them": "1006",
+   "gems_us": "580",
+   "id": "4463b3c1-3299-4def-b328-86201cab9c77",
+   "map": "yellow-brick-road",
+   "opp": "Kuchh_bhii",
+   "oppId": "d02e5f2c-f75a-499c-b5e9-418c425a0746",
+   "status": "open",
+   "time": "2026-10-24T06:10:15.365Z",
+   "tries_at": 1
   }
  ],
  "map_files": {
@@ -18226,133 +21147,133 @@
  ],
  "pool": [
   {
-   "games": 15,
-   "macro_hash": "60ec08e06b33",
-   "name": "prism best girl",
-   "since": "2026-10-23T17:58:33Z",
-   "slug": "prism-best-girl",
-   "static": false,
-   "teamId": "38e6d8c4-1608-44f5-956b-08390f564336",
+   "games": 25,
+   "macro_hash": "2c323f8f900c",
+   "name": "Intercontinental Fish",
+   "since": "2026-10-23T18:52:11Z",
+   "slug": "intercontinental-fish",
+   "static": true,
+   "teamId": "1890540d-1ffc-4847-adbf-d0d08772f268",
    "why": "top1"
   },
   {
-   "games": 20,
-   "macro_hash": "19525dc54931",
-   "name": "Intercontinental Fish",
-   "since": "2026-10-23T17:58:59Z",
-   "slug": "intercontinental-fish",
+   "games": 35,
+   "macro_hash": "7028292d90cb",
+   "name": "prism best girl",
+   "since": "2026-10-24T04:22:35Z",
+   "slug": "prism-best-girl",
    "static": false,
-   "teamId": "1890540d-1ffc-4847-adbf-d0d08772f268",
+   "teamId": "38e6d8c4-1608-44f5-956b-08390f564336",
    "why": "top2"
   },
   {
-   "games": 35,
-   "macro_hash": "2988c510cc1d",
-   "name": "Pantheon",
-   "since": "2026-10-23T17:59:31Z",
-   "slug": "pantheon",
+   "games": 10,
+   "macro_hash": "e9fd5a49c6cb",
+   "name": "willow best girl",
+   "since": "2026-10-24T04:22:59Z",
+   "slug": "willow-best-girl",
    "static": false,
    "teamId": "547efb5b-57e5-4355-8501-3b331f506d62",
    "why": "top3"
   },
   {
-   "games": 20,
-   "macro_hash": "0d727a16a38f",
-   "name": "policy wonk",
-   "since": "2026-10-23T17:59:59Z",
-   "slug": "policy-wonk",
-   "static": false,
-   "teamId": "3ec4a701-a9b5-498f-9361-eea4a6dd1cde",
-   "why": "top4"
-  },
-  {
-   "games": 13,
-   "macro_hash": "98534b15782d",
+   "games": 23,
+   "macro_hash": "4521e9805b41",
    "name": "Univardisty of Shingtonwash",
-   "since": "2026-10-23T18:00:35Z",
+   "since": "2026-10-24T04:23:17Z",
    "slug": "univardisty-of-shingtonwash",
    "static": false,
    "teamId": "a4350547-b7a1-47b1-9031-4f7f084ad0d8",
+   "why": "top4"
+  },
+  {
+   "games": 166,
+   "macro_hash": "53c045860d88",
+   "name": ":3",
+   "since": "2026-10-24T04:23:35Z",
+   "slug": "3",
+   "static": false,
+   "teamId": "bbe481a7-4575-4826-9a3e-f81c28205de8",
    "why": "top5"
   },
   {
-   "games": 50,
-   "macro_hash": "fd9c7508df48",
+   "games": 60,
+   "macro_hash": "acb37d58d7e1",
    "name": "procless",
-   "since": "2026-10-23T18:01:44Z",
+   "since": "2026-10-24T04:23:59Z",
    "slug": "procless",
    "static": false,
    "teamId": "8df7e1cd-0d60-413b-9331-f5427ce9ca88",
    "why": "top6"
   },
   {
-   "games": 156,
-   "macro_hash": "fe8916292d12",
-   "name": ":3",
-   "since": "2026-10-23T18:02:52Z",
-   "slug": "3",
+   "games": 35,
+   "macro_hash": "21eb781c65fb",
+   "name": "policy wonk",
+   "since": "2026-10-24T04:24:15Z",
+   "slug": "policy-wonk",
    "static": false,
-   "teamId": "bbe481a7-4575-4826-9a3e-f81c28205de8",
+   "teamId": "3ec4a701-a9b5-498f-9361-eea4a6dd1cde",
    "why": "top7"
   },
   {
-   "games": 20,
-   "macro_hash": "1710650fb0dd",
-   "name": "new team(4)",
-   "since": "2026-10-23T18:04:01Z",
-   "slug": "new-team-4",
+   "games": 5,
+   "macro_hash": "91fc67609c77",
+   "name": "Claudus Maximus",
+   "since": "2026-10-24T04:24:32Z",
+   "slug": "claudus-maximus",
    "static": false,
-   "teamId": "616e95e4-36ee-4669-b9b6-edfe818a7470",
+   "teamId": "ad5474c2-784c-4f91-b8da-5fec554e4de4",
    "why": "top8"
   },
   {
-   "games": 30,
-   "macro_hash": "5facb9ac5df7",
-   "name": "NEETCoders",
-   "since": "2026-10-23T18:04:29Z",
-   "slug": "neetcoders",
-   "static": false,
-   "teamId": "882106d4-9deb-40cc-9d5c-8522c1d32129",
-   "why": "top9"
-  },
-  {
-   "games": 175,
-   "macro_hash": "3c1a25bbc59f",
+   "games": 185,
+   "macro_hash": "2b80aba54a1c",
    "name": "Trzy Kwaterki",
-   "since": "2026-10-23T18:05:05Z",
+   "since": "2026-10-24T04:24:58Z",
    "slug": "trzy-kwaterki",
    "static": false,
    "teamId": "36258abf-3fd0-4827-8fa5-2a217438cf6f",
+   "why": "top9"
+  },
+  {
+   "games": 170,
+   "macro_hash": "0cd7f89e2eef",
+   "name": "Sponge(Albert and Bob)",
+   "since": "2026-10-24T04:25:24Z",
+   "slug": "sponge-albert-and-bob",
+   "static": false,
+   "teamId": "26824601-d225-427f-bd2d-ce8aa9faa392",
    "why": "top10"
   },
   {
-   "games": 10,
-   "macro_hash": "972dc05d9163",
-   "name": "LiquidSwords",
-   "since": "2026-10-23T18:06:25Z",
-   "slug": "liquidswords",
+   "games": 45,
+   "macro_hash": "20fca6c6a8e7",
+   "name": "Sneaky Bush Campers",
+   "since": "2026-10-24T04:26:00Z",
+   "slug": "sneaky-bush-campers",
    "static": false,
-   "teamId": "852a4c8c-7b85-4417-8faf-3287d22aedf2",
+   "teamId": "5e0c725a-b9b4-4523-8739-4427f20b9ce5",
    "why": "loss"
   },
   {
-   "games": 15,
-   "macro_hash": "894e37aac3d3",
-   "name": "WhatIsQuantTrading??????",
-   "since": "2026-10-23T18:08:01Z",
-   "slug": "whatisquanttrading",
-   "static": false,
-   "teamId": "d88df6e3-53c7-44ed-874f-67f3caa0578c",
-   "why": "loss"
-  },
-  {
-   "games": 20,
-   "macro_hash": "1bf2f92e8fe0",
+   "games": 40,
+   "macro_hash": "5e3715a2972e",
    "name": "Santa Claude",
-   "since": "2026-10-23T18:10:02Z",
+   "since": "2026-10-24T04:26:25Z",
    "slug": "santa-claude",
    "static": false,
    "teamId": "14f0c09e-8234-4056-b8a8-93be730312f6",
+   "why": "loss"
+  },
+  {
+   "games": 10,
+   "macro_hash": "9bdd7a357ee3",
+   "name": "ohhhhhh caml",
+   "since": "2026-10-24T04:26:50Z",
+   "slug": "ohhhhhh-caml",
+   "static": false,
+   "teamId": "5bfa785b-3a15-4398-96b7-624e1a1e103c",
    "why": "loss"
   }
  ],
@@ -19798,6 +22719,231 @@
     }
    ],
    "time": "2026-10-23T17:57:50Z"
+  },
+  {
+   "teams": [
+    {
+     "name": "prism best girl",
+     "rank": 1,
+     "rating": 2261.7,
+     "slug": "prism-best-girl",
+     "teamId": "38e6d8c4-1608-44f5-956b-08390f564336"
+    },
+    {
+     "name": "Intercontinental Fish",
+     "rank": 2,
+     "rating": 2244.2,
+     "slug": "intercontinental-fish",
+     "teamId": "1890540d-1ffc-4847-adbf-d0d08772f268"
+    },
+    {
+     "name": "Pantheon",
+     "rank": 3,
+     "rating": 2207.8,
+     "slug": "pantheon",
+     "teamId": "547efb5b-57e5-4355-8501-3b331f506d62"
+    },
+    {
+     "name": "policy wonk",
+     "rank": 4,
+     "rating": 2201.9,
+     "slug": "policy-wonk",
+     "teamId": "3ec4a701-a9b5-498f-9361-eea4a6dd1cde"
+    },
+    {
+     "name": "Univardisty of Shingtonwash",
+     "rank": 5,
+     "rating": 2165.4,
+     "slug": "univardisty-of-shingtonwash",
+     "teamId": "a4350547-b7a1-47b1-9031-4f7f084ad0d8"
+    },
+    {
+     "name": "procless",
+     "rank": 6,
+     "rating": 2150.7,
+     "slug": "procless",
+     "teamId": "8df7e1cd-0d60-413b-9331-f5427ce9ca88"
+    },
+    {
+     "name": ":3",
+     "rank": 7,
+     "rating": 2141.2,
+     "slug": "3",
+     "teamId": "bbe481a7-4575-4826-9a3e-f81c28205de8"
+    },
+    {
+     "name": "new team(4)",
+     "rank": 8,
+     "rating": 2134.6,
+     "slug": "new-team-4",
+     "teamId": "616e95e4-36ee-4669-b9b6-edfe818a7470"
+    },
+    {
+     "name": "Trzy Kwaterki",
+     "rank": 9,
+     "rating": 2097.1,
+     "slug": "trzy-kwaterki",
+     "teamId": "36258abf-3fd0-4827-8fa5-2a217438cf6f"
+    },
+    {
+     "name": "NEETCoders",
+     "rank": 10,
+     "rating": 2078.5,
+     "slug": "neetcoders",
+     "teamId": "882106d4-9deb-40cc-9d5c-8522c1d32129"
+    }
+   ],
+   "time": "2026-10-23T18:50:21Z"
+  },
+  {
+   "teams": [
+    {
+     "name": "prism best girl",
+     "rank": 1,
+     "rating": 2253.1,
+     "slug": "prism-best-girl",
+     "teamId": "38e6d8c4-1608-44f5-956b-08390f564336"
+    },
+    {
+     "name": "Intercontinental Fish",
+     "rank": 2,
+     "rating": 2236.8,
+     "slug": "intercontinental-fish",
+     "teamId": "1890540d-1ffc-4847-adbf-d0d08772f268"
+    },
+    {
+     "name": "Pantheon",
+     "rank": 3,
+     "rating": 2210.8,
+     "slug": "pantheon",
+     "teamId": "547efb5b-57e5-4355-8501-3b331f506d62"
+    },
+    {
+     "name": "policy wonk",
+     "rank": 4,
+     "rating": 2199.0,
+     "slug": "policy-wonk",
+     "teamId": "3ec4a701-a9b5-498f-9361-eea4a6dd1cde"
+    },
+    {
+     "name": "Univardisty of Shingtonwash",
+     "rank": 5,
+     "rating": 2171.0,
+     "slug": "univardisty-of-shingtonwash",
+     "teamId": "a4350547-b7a1-47b1-9031-4f7f084ad0d8"
+    },
+    {
+     "name": "procless",
+     "rank": 6,
+     "rating": 2158.1,
+     "slug": "procless",
+     "teamId": "8df7e1cd-0d60-413b-9331-f5427ce9ca88"
+    },
+    {
+     "name": ":3",
+     "rank": 7,
+     "rating": 2149.8,
+     "slug": "3",
+     "teamId": "bbe481a7-4575-4826-9a3e-f81c28205de8"
+    },
+    {
+     "name": "new team(4)",
+     "rank": 8,
+     "rating": 2129.6,
+     "slug": "new-team-4",
+     "teamId": "616e95e4-36ee-4669-b9b6-edfe818a7470"
+    },
+    {
+     "name": "Trzy Kwaterki",
+     "rank": 9,
+     "rating": 2102.1,
+     "slug": "trzy-kwaterki",
+     "teamId": "36258abf-3fd0-4827-8fa5-2a217438cf6f"
+    },
+    {
+     "name": "NEETCoders",
+     "rank": 10,
+     "rating": 2093.5,
+     "slug": "neetcoders",
+     "teamId": "882106d4-9deb-40cc-9d5c-8522c1d32129"
+    }
+   ],
+   "time": "2026-10-23T18:59:47Z"
+  },
+  {
+   "teams": [
+    {
+     "name": "Intercontinental Fish",
+     "rank": 1,
+     "rating": 2260.7,
+     "slug": "intercontinental-fish",
+     "teamId": "1890540d-1ffc-4847-adbf-d0d08772f268"
+    },
+    {
+     "name": "prism best girl",
+     "rank": 2,
+     "rating": 2246.9,
+     "slug": "prism-best-girl",
+     "teamId": "38e6d8c4-1608-44f5-956b-08390f564336"
+    },
+    {
+     "name": "willow best girl",
+     "rank": 3,
+     "rating": 2210.8,
+     "slug": "willow-best-girl",
+     "teamId": "547efb5b-57e5-4355-8501-3b331f506d62"
+    },
+    {
+     "name": "Univardisty of Shingtonwash",
+     "rank": 4,
+     "rating": 2199.8,
+     "slug": "univardisty-of-shingtonwash",
+     "teamId": "a4350547-b7a1-47b1-9031-4f7f084ad0d8"
+    },
+    {
+     "name": ":3",
+     "rank": 5,
+     "rating": 2173.6,
+     "slug": "3",
+     "teamId": "bbe481a7-4575-4826-9a3e-f81c28205de8"
+    },
+    {
+     "name": "procless",
+     "rank": 6,
+     "rating": 2167.5,
+     "slug": "procless",
+     "teamId": "8df7e1cd-0d60-413b-9331-f5427ce9ca88"
+    },
+    {
+     "name": "policy wonk",
+     "rank": 7,
+     "rating": 2166.0,
+     "slug": "policy-wonk",
+     "teamId": "3ec4a701-a9b5-498f-9361-eea4a6dd1cde"
+    },
+    {
+     "name": "Claudus Maximus",
+     "rank": 8,
+     "rating": 2149.7,
+     "slug": "claudus-maximus",
+     "teamId": "ad5474c2-784c-4f91-b8da-5fec554e4de4"
+    },
+    {
+     "name": "Trzy Kwaterki",
+     "rank": 9,
+     "rating": 2106.7,
+     "slug": "trzy-kwaterki",
+     "teamId": "36258abf-3fd0-4827-8fa5-2a217438cf6f"
+    },
+    {
+     "name": "Sponge(Albert and Bob)",
+     "rank": 10,
+     "rating": 2100.1,
+     "slug": "sponge-albert-and-bob",
+     "teamId": "26824601-d225-427f-bd2d-ce8aa9faa392"
+    }
+   ],
+   "time": "2026-10-24T04:21:44Z"
   }
  ]
 }

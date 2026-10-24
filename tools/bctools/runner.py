@@ -19,6 +19,11 @@ from pathlib import Path
 from bctools import CAMBC, ROOT
 
 DEFAULT_LOG_LIMIT = 20_000_000
+#: Wall-clock seconds per match (cambc --timeout); games take seconds, so this only stops hangs.
+MATCH_TIMEOUT = 900
+#: Seconds without a new statistics file before the whole batch is killed (2026-10-24: a batch
+#: stopped starting games at 00:14 and blocked the experiment queue until a restart at 09:20).
+STALL_TIMEOUT = 1800
 
 
 @dataclass
@@ -128,6 +133,28 @@ def _parse(stats_path: Path, map_name: str, a: str, b: str, replay: Path) -> Mat
     )
 
 
+def _run_watched(args: list[str], log: Path, stats: list[Path], stall: int) -> bool:
+    """Run cambc with its output in `log`; kill the process tree when no statistics file has
+    appeared for `stall` seconds (returns False then). Games that never ran parse as unfinished."""
+    with open(log, "w", encoding="utf-8") as f:
+        proc = subprocess.Popen(args, cwd=ROOT, env=_env(), stdout=f, stderr=subprocess.STDOUT, text=True)
+        done, last = 0, time.time()
+        while proc.poll() is None:
+            time.sleep(10)
+            n = sum(1 for p in stats if p.exists())
+            if n > done:
+                done, last = n, time.time()
+            elif time.time() - last > stall:
+                if os.name == "nt":
+                    subprocess.run(["taskkill", "/PID", str(proc.pid), "/T", "/F"], capture_output=True)
+                proc.kill()
+                proc.wait()
+                f.write(f"\nbctools: killed after {stall}s without a finished game ({done}/{len(stats)} done)\n")
+                print(f"run-batch stalled: killed after {done}/{len(stats)} games ({log})", flush=True)
+                return False
+    return True
+
+
 def run_matches(
     candidate: str,
     opponent: str,
@@ -202,12 +229,19 @@ def run_games(
         args += ["--rounds", str(rounds)]
     if fuel:
         args += ["--fuel-quantum", str(fuel)]
-    if timeout:
-        args += ["--timeout", str(timeout)]
+    # A match without a wall-clock limit can hang the batch (and the league daemon) for hours.
+    timeout = timeout or int(os.environ.get("BCTOOLS_TIMEOUT") or 0) or MATCH_TIMEOUT
+    args += ["--timeout", str(timeout)]
     if release:
         args.append("--release")
-    proc = subprocess.run(args, cwd=ROOT, env=_env(), capture_output=True, text=True)
-    (out_dir / "run-batch.log").write_text(proc.stdout + proc.stderr, encoding="utf-8")
+    stall = max(STALL_TIMEOUT, 2 * timeout)
+    if not _run_watched(args, out_dir / "run-batch.log", [e[0] for e in expected], stall):
+        # One retry of the games that never finished, so a stall doesn't skew the results.
+        left = [(r, e) for r, e in zip(rows, expected) if not Path(e[0]).exists()]
+        retry = out_dir / "manifest-retry.txt"
+        retry.write_text("\n".join(r for r, _ in left) + "\n", encoding="utf-8")
+        args[2] = str(retry)
+        _run_watched(args, out_dir / "run-batch-retry.log", [e[0] for _, e in left], stall)
     results = [_parse(*e) for e in expected]
     (out_dir / "results.json").write_text(
         json.dumps([r.to_dict() for r in results], indent=1), encoding="utf-8"
