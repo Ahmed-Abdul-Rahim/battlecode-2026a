@@ -132,44 +132,49 @@ impl World {
         blocked.union_assign(altars)?;
         blocked.union_assign(enemy_spawn)?;
 
-        let mut groups = Vec::new();
+        // One pass per group, no intermediate vectors and no regrowth: start-up on maps with many
+        // camps ran past the 200k first-turn budget (~83k in this loop on yellow-brick-road).
+        let sdk_groups = cambc::map::camp_groups()?;
+        let mut groups = Vec::with_capacity(sdk_groups.len());
         let mut tile_group = TileIndex::new(width, height);
-        let mut roots = Vec::new();
-        for (i, g) in cambc::map::camp_groups()?.into_iter().enumerate() {
-            let camps: Vec<(CampKind, Pos)> = g
-                .camps()
-                .iter()
-                .map(|c| {
-                    (
-                        CampKind::from_engine(c.kind() as i32).unwrap_or(CampKind::Wolf),
-                        pos(c.spawn_position()),
-                    )
-                })
-                .collect();
+        let mut roots = Vec::with_capacity(sdk_groups.len());
+        for (i, g) in sdk_groups.into_iter().enumerate() {
+            let mut tiles: Vec<Pos> = Vec::with_capacity(g.camps().len());
+            let (mut total_hp, mut max_strength, mut total_strength) = (0.0f32, 0.0f32, 0.0f32);
+            let mut has_monolith = false;
+            for c in g.camps() {
+                let k = CampKind::from_engine(c.kind() as i32).unwrap_or(CampKind::Wolf);
+                let (hp, st) = (k.health(), k.strength());
+                total_hp += hp;
+                total_strength += st;
+                max_strength = max_strength.max(st);
+                has_monolith |= k == CampKind::Monolith;
+                tiles.push(pos(c.spawn_position()));
+            }
             // The spawn tiles are the camps' spawn positions (SDK spawn_tiles builds its mask from
             // them), sorted like Bitboard::positions(): no mask or positions() call per group.
-            let mut tiles: Vec<Pos> = camps.iter().map(|&(_, p)| p).collect();
-            tiles.sort_unstable_by_key(|p| (p.y, p.x));
+            tiles.sort_unstable_by_key(|p| p.y * width + p.x);
             tiles.dedup();
+            let (mut sx, mut sy) = (0, 0);
             for &t in &tiles {
                 tile_group.set(t, i);
+                sx += t.x;
+                sy += t.y;
             }
             let n = tiles.len().max(1) as i32;
-            let center = Pos::new(
-                tiles.iter().map(|p| p.x).sum::<i32>() / n,
-                tiles.iter().map(|p| p.y).sum::<i32>() / n,
-            );
+            let center = Pos::new(sx / n, sy / n);
+            let radius = tiles.iter().map(|t| t.cheb(center)).max().unwrap_or(0);
             roots.push(tiles.clone());
             groups.push(GroupStatic {
                 gems: g.gem_value(),
                 gold: g.gold_value(),
                 max_respawn: g.max_respawn_timer().max(0) as u32,
-                total_hp: camps.iter().map(|(k, _)| k.health()).sum(),
-                max_strength: camps.iter().map(|(k, _)| k.strength()).fold(0.0, f32::max),
-                total_strength: camps.iter().map(|(k, _)| k.strength()).sum(),
-                has_monolith: camps.iter().any(|(k, _)| *k == CampKind::Monolith),
+                total_hp,
+                max_strength,
+                total_strength,
+                has_monolith,
                 near: Vec::new(),
-                radius: tiles.iter().map(|t| t.cheb(center)).max().unwrap_or(0),
+                radius,
                 center,
                 tiles,
                 sdk: g,

@@ -376,11 +376,9 @@ impl ThetaMatch {
         if b.len() < DRAFT_MEMORY_BYTES {
             return Err(DecodeError::TooShort);
         }
-        if b.iter().all(|&x| x == 0) {
-            return Err(DecodeError::Empty);
-        }
+        // Magic first: a written memory then skips the 1 KB zero scan (~10 fuel a byte).
         if b[off::MAGIC..off::MAGIC + 2] != MAGIC {
-            return Err(DecodeError::BadMagic);
+            return Err(if b.iter().all(|&x| x == 0) { DecodeError::Empty } else { DecodeError::BadMagic });
         }
         if b[off::VERSION] != THETA_VERSION {
             return Err(DecodeError::UnsupportedVersion(b[off::VERSION]));
