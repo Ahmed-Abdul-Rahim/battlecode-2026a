@@ -97,10 +97,9 @@ def run(maps: list[str], hours: float | None) -> None:
     table = {m: r for m, r in S.table().items() if r["accepted"]}
     deadline = C.deadline_from(hours)
     for m in maps:
-        if m in table:
-            print(f"{m} is already searched; pick an unsearched map")
-            continue
-        if not WarmSearch(m, splits, snap["wasm"], table).run(deadline):
+        # The donor must come from the other maps (a map's own plan is its full-search result).
+        donors = {k: v for k, v in table.items() if k != m}
+        if not WarmSearch(m, splits, snap["wasm"], donors).run(deadline):
             print(f"stopped at the deadline in {m}: run warm again to continue")
             return
     report()
