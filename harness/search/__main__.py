@@ -17,6 +17,7 @@ Every job resumes where it stopped (rows in runs/search/<job>/games.jsonl).
 from __future__ import annotations
 
 import argparse
+import os
 import statistics
 import time
 
@@ -178,7 +179,18 @@ def cmd_status(a) -> None:
         print(f"  {d.parent.name}: {n} game rows")
 
 
+def stay_awake() -> None:
+    """Keep Windows from sleeping while a job runs (it slept after 60 idle minutes mid-search,
+    freezing games). The display may still turn off; normal sleep returns when we exit."""
+    if os.name == "nt":
+        import ctypes
+
+        es_continuous, es_system_required = 0x80000000, 0x00000001
+        ctypes.windll.kernel32.SetThreadExecutionState(es_continuous | es_system_required)
+
+
 def main() -> None:
+    stay_awake()
     ap = argparse.ArgumentParser(prog="harness.search")
     sub = ap.add_subparsers(dest="cmd", required=True)
     p = sub.add_parser("setup")
