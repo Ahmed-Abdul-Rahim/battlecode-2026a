@@ -66,7 +66,7 @@ HALVING = [8, 20, None]  # None = every A opponent
 CMA_OPPS = 12
 MAX_GENS = 10
 STALL_GENS = 4
-BUDGET = 10_000  # games per map
+BUDGET = 6_000  # games per map (trimmed 2026-10-25: ~45-50 min a map)
 TOP_C = 4
 
 
@@ -288,7 +288,7 @@ class MapSearch:
             space = Space(items, audit.styles()[style])
             if space.empty():
                 continue
-            c = st["cma"].setdefault(key, {"starts": ["default", "random", "corner"], "opt": None,
+            c = st["cma"].setdefault(key, {"starts": ["default", "random"], "opt": None,
                                            "gen": 0, "best": -9.0, "stall": 0, "pending": None, "done": False})
             if c["done"]:
                 continue
