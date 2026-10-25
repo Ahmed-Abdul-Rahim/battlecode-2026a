@@ -43,6 +43,7 @@ DECISIONS_PER_GAME = 8
 MIN_GAP = 25
 NULL_EVERY = 10
 N_OPPS = 32
+LABEL_MAPS = 8
 BATCH = 600
 LOG_LIMIT = 4_000_000
 DIR = C.RUNS / "b"
@@ -181,7 +182,10 @@ class Log:
 def _setups(splits: dict, plans: dict) -> list[tuple[str, str, str]]:
     rng = random.Random(2026)
     opps = rng.sample(splits["opps_A"], N_OPPS)
-    return [(m, o, s) for m in plans for o in opps for s in "ab"]
+    # Labels from at most LABEL_MAPS searched maps (all 30 would be ~45k branch games).
+    maps = sorted(plans)
+    maps = sorted(rng.sample(maps, min(LABEL_MAPS, len(maps))))
+    return [(m, o, s) for m in maps for o in opps for s in "ab"]
 
 
 def labels(hours: float | None = None, decision: str = "contact") -> None:
