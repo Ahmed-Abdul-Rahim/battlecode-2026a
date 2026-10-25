@@ -276,6 +276,19 @@ def opponents() -> dict[str, str]:
     rules = ROOT / "bots" / "_rules"
     if injected(rules).exists():
         out["rules"] = str(rules)
+    out.update(fresh_top())
+    return out
+
+
+def fresh_top() -> dict[str, str]:
+    """The ladder top 10 (+ recent losses) refreshed into this worktree (league sync +
+    ensure_mimics, 2026-10-25): "top-<slug>", used only as the final MVP test, never to choose."""
+    led = load_json(ROOT / "league" / "ledger.json", {})
+    out = {}
+    for p in led.get("pool", []):
+        d = ROOT / "bots" / f"mimic-{p['slug']}"
+        if injected(d).exists():
+            out[f"top-{p['slug']}"] = str(d)
     return out
 
 

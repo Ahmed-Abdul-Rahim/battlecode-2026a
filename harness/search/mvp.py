@@ -30,7 +30,8 @@ def evaluate(hours: float | None = None) -> dict:
     splits = C.load_json(C.RUNS / "splits.json", None)
     table = S.table()
     deadline = C.deadline_from(hours)
-    h2h = [o for o in splits["head_to_head"]]
+    # Final test: our rule bots + the refreshed ladder top 10 (no search ever chose against them).
+    h2h = [o for o in splits["head_to_head"]] + sorted(C.fresh_top())
     per_map, est, est_win = {}, [], []
     for m, r in sorted(table.items()):
         ms = S.MapSearch(m, splits, snap["wasm"])
@@ -78,7 +79,7 @@ def evaluate(hours: float | None = None) -> dict:
     out["ceiling_report"] = ceiling
     C.save_json(C.RUNS / "mvp.json", out)
     print(f"{out['accepted']}/{len(per_map)} maps accepted; honest Δwin {mean_w:+.3f} ± {se_w:.3f}, "
-          f"Δfit {out['honest_fit']:+.3f}; vs our rules Δwin {out['h2h_dwin']:+.3f}; gate "
+          f"Δfit {out['honest_fit']:+.3f}; vs our rules + fresh top 10 Δwin {out['h2h_dwin']:+.3f}; gate "
           f"{'PASS' if out['gate'] else 'FAIL'}{' (ceiling: the rules expressiveness is the limit)' if ceiling else ''}")
     return out
 
