@@ -1,45 +1,49 @@
-"""B ceiling test (plan Phase B): is there anything for an in-game net to learn?
+"""B (plan Phase B): labels from branch games, then the B net.
 
-At sampled contact decisions (an enemy champion within 6 tiles) of real games played with
-A's searched plans active, replay the game with the choice forced to fight or retreat for a
-few rounds (bots/main/src/branch.rs), play to the end, and compare with the base game.
-Port of archive nn/expert.py's branch games: null branches (choice 0) must reproduce the
-base game exactly, winners are verified with a second hold length.
+At sampled contact decisions (an enemy champion within 6 tiles) of games played with A's
+searched plans active, the game is replayed with the choice forced to fight or retreat for
+HOLD rounds (bots/main/src/branch.rs) and played to the end; the fitness difference to the
+base game is the label. Null branches (choice 0) must reproduce the base game exactly.
+Port of archive nn/expert.py's branch games.
 
-    python -m harness.search branch setup
-    python -m harness.search branch run [--hours H]
+Each game gets its own patched copy of the compiled wasm (cambc runs a .wasm directly, with
+no build step), so batches are large.
+
+    python -m harness.search branch setup        # build the B wasm (one slot)
+    python -m harness.search branch labels [--hours H]
+    python -m harness.search branch train        # MLP on the labels, int8, CV report
+    python -m harness.search branch eval [--hours H]   # rules+A+B vs rules+A, paired
 """
 
 from __future__ import annotations
 
 import json
+import os
 import random
 import shutil
 import time
 import zipfile
+from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
 from harness.search import common as C
 from harness.search import search as S
 
 MAGIC = bytes([0x42, 0x52, 0x43, 0x48, 0x02, 0x5A, 0xA5, 0x3C])
+NET_MAGIC = bytes([0x42, 0x4E, 0x45, 0x54, 0x01, 0x3C, 0xA5, 0x5A])
 BLOCK = 32
+IN, HIDDEN, OUT = 19, 16, 2
+NET_LEN = 16 + IN * HIDDEN + HIDDEN * 4 + HIDDEN * OUT + OUT * 4 + 8
 OFF = 0xFFFFFFFF
-N_SLOTS = 28
-HOLD, VERIFY_HOLD = 10, 6
-DECISIONS_PER_GAME = 4
-MIN_GAP = 30
-MARGIN = 0.05  # fitness: a verified alternative must beat the rules by this much
-NULL_EVERY = 6
-OPPS = 8
+HOLD = 10
+DECISIONS_PER_GAME = 8
+MIN_GAP = 25
+NULL_EVERY = 10
+N_OPPS = 32
+BATCH = 600
 LOG_LIMIT = 4_000_000
 DIR = C.RUNS / "b"
-
-
-def _use_b_pool() -> None:
-    C.SLOT = "_pb{}"
-    C.N_SLOTS = N_SLOTS
-    C.RUNS = DIR
+SEARCH_RUNS = C.RUNS
 
 
 def block(frm: int = OFF, kind: int = 0, choice: int = 0, hold: int = 0, log: int = 1) -> bytes:
@@ -47,73 +51,61 @@ def block(frm: int = OFF, kind: int = 0, choice: int = 0, hold: int = 0, log: in
     return (MAGIC + words).ljust(BLOCK, b"\0")
 
 
-def patch(bot: Path, blk: bytes) -> None:
-    n = 0
-    for f in C.wasm_files(bot):
-        b = bytearray(f.read_bytes())
-        i = b.find(MAGIC)
-        if i < 0:
-            continue
-        if b[i : i + BLOCK] != blk:
-            b[i : i + BLOCK] = blk
-            f.write_bytes(b)
-        n += 1
-    if n == 0:
-        raise RuntimeError(f"{bot}: branch block not found")
+def _put(b: bytearray, magic: bytes, data: bytes) -> None:
+    i = b.find(magic)
+    if i < 0 or b.find(magic, i + 1) >= 0:
+        raise RuntimeError("block not found exactly once")
+    b[i : i + len(data)] = data
+
+
+def base_wasm() -> bytes:
+    return C.injected(C.slot_dir(0)).read_bytes()
 
 
 def setup() -> None:
-    _use_b_pool()
-    snap = C.build_slots(N_SLOTS)
-    print(f"B pool {snap['wasm'][:12]} ({N_SLOTS} slots)")
+    C.SLOT, C.RUNS = "_pb{}", DIR
+    snap = C.build_slots(1)
+    print(f"B wasm {snap['wasm'][:12]}")
+
+
+def _load_plans() -> dict[str, bytes]:
+    C.RUNS = SEARCH_RUNS
+    snap_a = C.load_json(SEARCH_RUNS / "snapshot.json", {})["wasm"]
+    table = {m: r for m, r in S.table().items() if r["accepted"]}
+    plans = {m: bytes.fromhex(C.Store(f"search/{m}", snap_a).cands[r["accepted"]]) for m, r in table.items()}
+    C.SLOT, C.RUNS = "_pb{}", DIR
+    return plans
 
 
 # ---------------------------------------------------------------- games
 
 
-def _stdout(replay: str, side: str) -> str:
+def _parse(args) -> dict:
+    r, side, keep_d = args
+    us = r["bot_a"] if side == "a" else r["bot_b"]
+    res = C.runner.MatchResult(**r)
+    row = C._row(res, C.Game("x", "", "", side), "b", us)
+    text = ""
     try:
-        with zipfile.ZipFile(replay) as z:
-            return z.read(f"team-{side}.stdout").decode("utf-8", "replace").replace("\x00", "")
+        with zipfile.ZipFile(r["replay"]) as z:
+            text = z.read(f"team-{side}.stdout").decode("utf-8", "replace").replace("\x00", "")
     except (OSError, KeyError, zipfile.BadZipFile):
-        return ""
-
-
-def _play(jobs: list[dict], plans: dict[str, bytes], opps: dict[str, str]) -> list[dict]:
-    """jobs: {map, opp, side, blk}; one slot per job (each job may carry its own branch)."""
-    out: list[dict] = []
-    maps = C.maps()
-    for i in range(0, len(jobs), N_SLOTS):
-        chunk = jobs[i : i + N_SLOTS]
-        triples, meta = [], []
-        for k, j in enumerate(chunk):
-            slot = C.slot_dir(k)
-            C.patch(slot, plans.get(j["map"], C.record()))
-            patch(slot, j["blk"])
-            us, them = str(slot), opps[j["opp"]]
-            a, b = (us, them) if j["side"] == "a" else (them, us)
-            triples.append((a, b, maps[j["map"]]))
-            meta.append((j, us))
-        tmp = DIR / "tmp" / f"b{int(time.time() * 1000)}"
-        res = C.runner.run_games(triples, tmp, release=True, log_limit=LOG_LIMIT)
-        for r, (j, us) in zip(res, meta):
-            row = C._row(r, C.Game("x", j["map"], j["opp"], j["side"]), "b", us)
-            text = _stdout(r.replay, "a" if r.bot_a == us else "b")
-            row["D"] = [list(map(int, ln.split()[1:])) for ln in text.splitlines() if ln.startswith("D ")]
-            row["fired"] = sum(1 for ln in text.splitlines() if ln.startswith("B "))
-            out.append({**j, "blk": j["blk"].hex(), "row": row})
-        shutil.rmtree(tmp, ignore_errors=True)
-    return out
+        pass
+    lines = text.splitlines()
+    if keep_d:
+        row["D"] = [list(map(int, ln.split()[1:])) for ln in lines if ln.startswith("D ")]
+    row["fired"] = sum(1 for ln in lines if ln.startswith("B "))
+    return row
 
 
 def _key(j: dict) -> str:
-    return f"{j['map']}|{j['opp']}|{j['side']}|{j['blk'] if isinstance(j['blk'], str) else j['blk'].hex()}"
+    return f"{j['map']}|{j['opp']}|{j['side']}|{j['tag']}"
 
 
 class Log:
-    def __init__(self) -> None:
+    def __init__(self, name: str) -> None:
         DIR.mkdir(parents=True, exist_ok=True)
-        self.path = DIR / "branch.jsonl"
+        self.path = DIR / f"{name}.jsonl"
         self.rows: dict[str, dict] = {}
         if self.path.exists():
             for ln in self.path.read_text(encoding="utf-8").splitlines():
@@ -121,57 +113,106 @@ class Log:
                     r = json.loads(ln)
                 except json.JSONDecodeError:
                     continue
-                self.rows[_key(r)] = r
-
-    def todo(self, jobs: list[dict]) -> list[dict]:
-        return [j for j in jobs if _key(j) not in self.rows]
-
-    def add(self, rows: list[dict]) -> None:
-        with open(self.path, "a", encoding="utf-8") as f:
-            for r in rows:
-                f.write(json.dumps(r, separators=(",", ":")) + "\n")
-                self.rows[_key(r)] = r
+                self.rows[_key(r)] = r["row"]
 
     def get(self, j: dict) -> dict | None:
-        r = self.rows.get(_key(j))
-        return r["row"] if r else None
+        return self.rows.get(_key(j))
 
+    def play(self, jobs: list[dict], plans: dict[str, bytes], deadline) -> bool:
+        """jobs: {map, opp, side, tag, blk (bytes), net (bytes|None), keep_d}. One `cambc run`
+        per game on its own patched wasm copy (run-batch only takes project directories)."""
+        from concurrent.futures import ThreadPoolExecutor
 
-def run(hours: float | None = None) -> dict:
-    _use_b_pool()
-    C.check_snapshot()
-    deadline = C.deadline_from(hours)
-    splits = json.loads((C.ROOT / "runs" / "search" / "splits.json").read_text(encoding="utf-8"))
-    C.RUNS = C.ROOT / "runs" / "search"
-    table = {m: r for m, r in S.table().items() if r["accepted"]}
-    snap_a = C.load_json(C.RUNS / "snapshot.json", {})["wasm"]
-    plans = {m: bytes.fromhex(C.Store(f"search/{m}", snap_a).cands[r["accepted"]]) for m, r in table.items()}
-    C.RUNS = DIR
-    rng = random.Random(2026)
-    opps_all = C.opponents()
-    opps = rng.sample(splits["opps_A"], OPPS)
-    log = Log()
-
-    def step(jobs: list[dict]) -> bool:
-        todo = log.todo(jobs)
-        for i in range(0, len(todo), N_SLOTS * 4):
+        todo = [j for j in jobs if _key(j) not in self.rows]
+        wasm = base_wasm()
+        opps, maps = C.opponents(), C.maps()
+        for o in {j["opp"] for j in todo}:
+            C.runner.build(opps[o], release=True)
+        jobs_n = max(1, (os.cpu_count() or 2) - 2)
+        for i in range(0, len(todo), BATCH):
             if deadline and time.time() > deadline:
                 return False
-            log.add(_play(todo[i : i + N_SLOTS * 4], plans, opps_all))
-            print(f"  {len(log.rows)} games logged", flush=True)
+            chunk = todo[i : i + BATCH]
+            tmp = DIR / "tmp" / f"b{int(time.time() * 1000)}"
+            tmp.mkdir(parents=True, exist_ok=True)
+
+            def one(n: int) -> dict:
+                j = chunk[n]
+                d = tmp / f"j{n}"
+                d.mkdir()
+                b = bytearray(wasm)
+                _put(b, C.MAGIC, C.block(plans.get(j["map"], C.record())))
+                _put(b, MAGIC, j["blk"])
+                if j.get("net"):
+                    _put(b, NET_MAGIC, j["net"])
+                w = d / "bot.wasm"
+                w.write_bytes(b)
+                a, bb = (str(w), opps[j["opp"]]) if j["side"] == "a" else (opps[j["opp"]], str(w))
+                stats = d / "stats.json"
+                import subprocess
+
+                subprocess.run([str(C.runner.CAMBC), "run", a, bb, "--map", str(maps[j["map"]]), "--release",
+                                "-o", str(d), "--log-limit", str(LOG_LIMIT), "--statistics", str(stats), "--json"],
+                               cwd=C.ROOT, env=C.runner._env(), capture_output=True, timeout=900)
+                rep = next(d.glob("*.repl26a"), d / "missing.repl26a")
+                res = C.runner._parse(stats, j["map"], a, bb, rep)
+                return res.to_dict()
+
+            t0 = time.time()
+            with ThreadPoolExecutor(max_workers=jobs_n) as ex:
+                res = list(ex.map(one, range(len(chunk))))
+            with ProcessPoolExecutor(max_workers=jobs_n) as ex:
+                rows = list(ex.map(_parse, [(r, j["side"], j.get("keep_d", False)) for r, j in zip(res, chunk)], chunksize=8))
+            with open(self.path, "a", encoding="utf-8") as f:
+                for j, row in zip(chunk, rows):
+                    rec = {k: j[k] for k in ("map", "opp", "side", "tag")}
+                    f.write(json.dumps({**rec, "row": row}, separators=(",", ":")) + chr(10))
+                    self.rows[_key(rec)] = row
+                f.flush()
+                os.fsync(f.fileno())
+            shutil.rmtree(tmp, ignore_errors=True)
+            print(f"  {len(chunk)} games in {time.time() - t0:.0f}s ({len(self.rows)} logged)", flush=True)
         return True
 
-    # 1. base games, A active, decisions logged
-    base = [{"map": m, "opp": o, "side": s, "blk": block()} for m in plans for o in opps for s in "ab"]
-    if not step(base):
-        return {}
-    # 2. sample decisions and branch them
-    branches, decisions = [], []
+
+def _setups(splits: dict, plans: dict) -> list[tuple[str, str, str]]:
+    rng = random.Random(2026)
+    opps = rng.sample(splits["opps_A"], N_OPPS)
+    return [(m, o, s) for m in plans for o in opps for s in "ab"]
+
+
+def labels(hours: float | None = None) -> None:
+    C.SLOT, C.RUNS = "_pb{}", DIR
+    C.check_snapshot()
+    plans = _load_plans()
+    splits = json.loads((SEARCH_RUNS / "splits.json").read_text(encoding="utf-8"))
+    deadline = C.deadline_from(hours)
+    log = Log("labels")
+    # The base games take the same code path as a branch (a kind that never plays), so a null
+    # branch replays them exactly.
+    base = [{"map": m, "opp": o, "side": s, "tag": "base", "blk": block(0, 999, 0, 0), "keep_d": True}
+            for m, o, s in _setups(splits, plans)]
+    if not log.play(base, plans, deadline):
+        return print("stopped: run labels again to continue")
+    decisions, branches = sample(base, log), []
+    for d in decisions:
+        for c in d["alts"]:
+            branches.append({**{k: d[k] for k in ("map", "opp", "side")}, "tag": f"{d['round']}:{d['kind']}:{c}",
+                             "blk": block(d["round"], d["kind"], c, HOLD)})
+    print(f"{len(decisions)} decisions, {len(branches)} branch games", flush=True)
+    if not log.play(branches, plans, deadline):
+        return print("stopped: run labels again to continue")
+    export(decisions, log)
+
+
+def sample(base: list[dict], log: Log) -> list[dict]:
+    out, n = [], 0
     for j in base:
         row = log.get(j)
-        ds = row["D"] if row else []
-        rng2 = random.Random(f"{j['map']}{j['opp']}{j['side']}")
-        rng2.shuffle(ds)
+        if not row:
+            continue
+        ds = list(row.get("D", []))
+        random.Random(_key(j)).shuffle(ds)
         picked: list[list[int]] = []
         for d in ds:
             if d[0] < 20 or d[0] > row["rounds"] - 50:
@@ -183,80 +224,172 @@ def run(hours: float | None = None) -> dict:
         for d in picked:
             rnd, kind, cls = d[0], d[1], d[2]
             alts = [c for c in (1, 2) if c != cls]
-            if len(decisions) % NULL_EVERY == 0:
+            if n % NULL_EVERY == 0:
                 alts.append(0)
-            decisions.append({"base": j, "round": rnd, "kind": kind, "cls": cls, "dist": d[3], "gems": d[4], "alts": alts})
-            for c in alts:
-                branches.append({**{k: j[k] for k in ("map", "opp", "side")}, "blk": block(rnd, kind, c, HOLD)})
-    if not step(branches):
-        return {}
-    # 3. verify winners with a shorter hold
-    def gain(j, c, hold) -> float | None:
-        b = log.get({**j, "blk": block()})
-        r = log.get({**{k: j[k] for k in ("map", "opp", "side")}, "blk": block(dd["round"], dd["kind"], c, hold)})
-        if not b or not r or (c and not r["fired"]):
-            return None
-        return C.fitness(r) - C.fitness(b)
-
-    verify = []
-    for dd in decisions:
-        for c in dd["alts"]:
-            if c and (g := gain(dd["base"], c, HOLD)) is not None and g > MARGIN:
-                verify.append({**{k: dd["base"][k] for k in ("map", "opp", "side")},
-                               "blk": block(dd["round"], dd["kind"], c, VERIFY_HOLD)})
-    if not step(verify):
-        return {}
-    return report(decisions, log)
+            n += 1
+            out.append({"map": j["map"], "opp": j["opp"], "side": j["side"], "round": rnd, "kind": kind,
+                        "cls": cls, "f": d[4:], "alts": alts})
+    return out
 
 
-def report(decisions: list[dict], log: Log) -> dict:
-    def g(dd, c, hold):
-        j = dd["base"]
-        b = log.get({**j, "blk": block()})
-        r = log.get({**{k: j[k] for k in ("map", "opp", "side")}, "blk": block(dd["round"], dd["kind"], c, hold)})
-        if not b or not r:
-            return None
-        if c and not r["fired"]:
-            return None
-        return C.fitness(r) - C.fitness(b), r["res"] - b["res"]
-
-    nulls_bad = sum(1 for dd in decisions if 0 in dd["alts"] and (x := g(dd, 0, HOLD)) and x[0] != 0)
-    fired = overruled = 0
-    gains, wins, by_cls = [], [], {0: [0, 0], 1: [0, 0], 2: [0, 0]}
-    for dd in decisions:
-        best = None
-        any_fired = False
-        for c in dd["alts"]:
-            if not c:
+def export(decisions: list[dict], log: Log) -> dict:
+    """labels.json: features + the measured gain of each forced choice over the rules'."""
+    rows, nulls_bad, fired = [], 0, 0
+    for d in decisions:
+        b = log.get({**d, "tag": "base"})
+        if not b:
+            continue
+        g = {}
+        for c in d["alts"]:
+            r = log.get({**d, "tag": f"{d['round']}:{d['kind']}:{c}"})
+            if not r:
                 continue
-            a = g(dd, c, HOLD)
-            if a is None:
+            if c == 0:
+                nulls_bad += C.fitness(r) != C.fitness(b)
                 continue
-            any_fired = True
-            v = g(dd, c, VERIFY_HOLD)
-            ver = min(a[0], v[0]) if v else None
-            if ver is not None and ver > MARGIN and (best is None or ver > best[0]):
-                best = (ver, min(a[1], v[1]))
-        if not any_fired:
+            if r["fired"]:
+                g[c] = round(C.fitness(r) - C.fitness(b), 4)
+        if not g:
             continue
         fired += 1
-        by_cls[dd["cls"]][0] += 1
-        if best:
-            overruled += 1
-            by_cls[dd["cls"]][1] += 1
-            gains.append(best[0])
-            wins.append(best[1])
-    rate = overruled / max(fired, 1)
-    out = {
-        "decisions": len(decisions),
-        "fired": fired,
-        "null_mismatches": nulls_bad,
-        "overrule_rate": round(rate, 4),
-        "mean_gain_when_overruled": round(sum(gains) / max(len(gains), 1), 4),
-        "win_flips_when_overruled": round(sum(wins) / max(len(wins), 1), 4),
-        "by_rules_choice": {["other", "fight", "flee"][k]: {"n": v[0], "overruled": v[1]} for k, v in by_cls.items()},
-        "verdict": "worth training B" if rate >= 0.02 else "no gain: stop B",
+        rows.append({"map": d["map"], "game": f"{d['map']}|{d['opp']}|{d['side']}", "cls": d["cls"],
+                     "f": [v / 100 for v in d["f"]], "fight": g.get(1, 0.0), "retreat": g.get(2, 0.0)})
+    C.save_json(DIR / "labels.json", rows)
+    over = sum(1 for r in rows if max(r["fight"] if r["cls"] != 1 else 0, r["retreat"] if r["cls"] != 2 else 0) > 0.05)
+    print(f"labels: {len(rows)} decisions ({fired} fired), null mismatches {nulls_bad}, "
+          f"raw overrule share {over / max(len(rows), 1):.3f}")
+    return {"n": len(rows), "null_bad": nulls_bad}
+
+
+# ---------------------------------------------------------------- the net
+
+
+def train() -> dict:
+    import numpy as np
+
+    rows = C.load_json(DIR / "labels.json", [])
+    X = np.array([r["f"] for r in rows], dtype=np.float32)
+    Y = np.array([[r["fight"], r["retreat"]] for r in rows], dtype=np.float32)
+    # The rules' own class has gain 0 by definition (masked out of the loss).
+    M = np.array([[r["cls"] != 1, r["cls"] != 2] for r in rows], dtype=np.float32)
+    games = sorted({r["game"] for r in rows})
+    gid = np.array([games.index(r["game"]) for r in rows])
+    rng = np.random.default_rng(0)
+    fold = rng.permutation(len(games)) % 5
+
+    def fit(Xt, Yt, Mt, epochs=400, wd=1e-3, lr=0.01, seed=0):
+        r = np.random.default_rng(seed)
+        W1 = r.normal(0, 0.3, (IN, HIDDEN)).astype(np.float32)
+        b1 = np.zeros(HIDDEN, np.float32)
+        W2 = r.normal(0, 0.3, (HIDDEN, OUT)).astype(np.float32)
+        b2 = np.zeros(OUT, np.float32)
+        params = [W1, b1, W2, b2]
+        m = [np.zeros_like(p) for p in params]
+        v = [np.zeros_like(p) for p in params]
+        for t in range(1, epochs + 1):
+            H = np.maximum(Xt @ W1 + b1, 0)
+            P = H @ W2 + b2
+            E = (P - Yt) * Mt / max(Mt.sum(), 1)
+            gW2 = H.T @ E + wd * W2
+            gb2 = E.sum(0)
+            dH = (E @ W2.T) * (H > 0)
+            gW1 = Xt.T @ dH + wd * W1
+            gb1 = dH.sum(0)
+            for k, g in enumerate((gW1, gb1, gW2, gb2)):
+                m[k] = 0.9 * m[k] + 0.1 * g
+                v[k] = 0.999 * v[k] + 0.001 * g * g
+                params[k] -= lr * (m[k] / (1 - 0.9**t)) / (np.sqrt(v[k] / (1 - 0.999**t)) + 1e-8)
+        return params
+
+    def predict(p, Xs):
+        W1, b1, W2, b2 = p
+        return np.maximum(Xs @ W1 + b1, 0) @ W2 + b2
+
+    def captured(P, Y, M, tau):
+        """Mean realised gain per decision when the net overrules above tau (0 = keep rules)."""
+        Pm = np.where(M > 0, P, -9)
+        k = Pm.argmax(1)
+        take = Pm.max(1) > tau
+        return float(np.where(take, Y[np.arange(len(Y)), k], 0).mean()), float(take.mean())
+
+    oracle = float(np.where(M > 0, np.maximum(Y, 0), 0).max(1).mean())
+    taus = [0.0, 0.02, 0.05, 0.1, 0.15, 0.2]
+    cv = {t: [0.0, 0.0] for t in taus}
+    for f in range(5):
+        tr, te = np.isin(gid, np.where(fold != f)[0]), np.isin(gid, np.where(fold == f)[0])
+        p = fit(X[tr], Y[tr], M[tr])
+        P = predict(p, X[te])
+        for t in taus:
+            g, share = captured(P, Y[te], M[te], t)
+            cv[t][0] += g * te.sum() / len(X)
+            cv[t][1] += share * te.sum() / len(X)
+    best_tau = max(taus, key=lambda t: cv[t][0])
+    p = fit(X, Y, M)
+    net = quantise(p, best_tau)
+    (DIR / "net.bin").write_bytes(net)
+    rep = {
+        "n": len(rows),
+        "oracle_gain_per_decision": round(oracle, 4),
+        "cv_gain_per_decision": {str(t): round(cv[t][0], 4) for t in taus},
+        "cv_overrule_share": {str(t): round(cv[t][1], 3) for t in taus},
+        "tau": best_tau,
     }
-    C.save_json(DIR / "branch_report.json", out)
+    C.save_json(DIR / "train_report.json", rep)
+    print(json.dumps(rep, indent=1))
+    return rep
+
+
+def quantise(p, tau: float) -> bytes:
+    import numpy as np
+
+    W1, b1, W2, b2 = p
+    s_w1 = max(np.abs(W1).max(), 1e-6) / 127
+    s1 = s_w1 / 64  # inputs are int8 at 1/64
+    q1 = np.clip(np.round(W1.T / s_w1), -127, 127).astype(np.int8)  # [HIDDEN][IN]
+    qb1 = np.round(b1 / s1).astype(np.int32)
+    s2 = max(np.abs(W2).max(), 1e-6) / 127
+    q2 = np.clip(np.round(W2.T / s2), -127, 127).astype(np.int8)  # [OUT][HIDDEN]
+    qb2 = np.round(b2 / s2).astype(np.int32)
+    head = NET_MAGIC + bytes([1, int(np.clip(round(tau * 100), -127, 127)) & 0xFF]) + b"\0" * 6
+    body = q1.tobytes() + qb1.astype("<i4").tobytes() + q2.tobytes() + qb2.astype("<i4").tobytes()
+    body += np.array([s1, s2], dtype="<f4").tobytes()
+    out = head + body
+    assert len(out) == NET_LEN, (len(out), NET_LEN)
+    return out
+
+
+def evaluate(hours: float | None = None) -> dict:
+    """rules+A+B vs rules+A on the searched maps, B opponents (never used to choose), both sides."""
+    C.SLOT, C.RUNS = "_pb{}", DIR
+    C.check_snapshot()
+    plans = _load_plans()
+    splits = json.loads((SEARCH_RUNS / "splits.json").read_text(encoding="utf-8"))
+    net = (DIR / "net.bin").read_bytes()
+    log = Log("eval")
+    opps = splits["opps_B"] + [o for o in splits["head_to_head"]] + sorted(C.fresh_top())
+    jobs = []
+    for m in plans:
+        for o in opps:
+            for s in "ab":
+                jobs.append({"map": m, "opp": o, "side": s, "tag": "A", "blk": block()})
+                jobs.append({"map": m, "opp": o, "side": s, "tag": "AB", "blk": block(), "net": net})
+    if not log.play(jobs, plans, C.deadline_from(hours)):
+        print("stopped: run eval again to continue")
+        return {}
+    out = {}
+    for name, group in (("scoring", splits["opps_B"]), ("our rules", splits["head_to_head"]),
+                        ("fresh top 10", sorted(C.fresh_top()))):
+        df, dw = [], []
+        for m in plans:
+            for o in group:
+                for s in "ab":
+                    a, ab = log.get({"map": m, "opp": o, "side": s, "tag": "A"}), log.get({"map": m, "opp": o, "side": s, "tag": "AB"})
+                    if a and ab:
+                        df.append(C.fitness(ab) - C.fitness(a))
+                        dw.append(ab["res"] - a["res"])
+        out[name] = {"n": len(df), **C._mean_se(df, "fit"), **C._mean_se(dw, "win")}
+    fired = sum(r.get("fired", 0) for k, r in log.rows.items() if k.endswith("|AB"))
+    out["net_overrules_logged"] = fired
+    C.save_json(DIR / "eval_report.json", out)
     print(json.dumps(out, indent=1))
     return out

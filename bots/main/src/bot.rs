@@ -1041,9 +1041,7 @@ impl Bot {
                 let tp_crystal = self.theta.knob2(knob2::TP_CRYSTAL) > 0;
                 let weak_first = self.theta.knob2(knob2::WEAK_CAMP_FIRST) > 0;
                 // harness/search branch study: at contact, optionally force fight / retreat.
-                let nearest = vis.enemies.first().map(|e| (e.pos, e.dist));
-                let forced =
-                    crate::branch::apply(&mut intent, round, self.kind as u32, nearest, ctx.gems as u32);
+                let forced = crate::branch::apply(&mut intent, round, self.kind as u32, &ctx, &vis);
                 let micro = if forced { None } else { self.micro_policy(&ctx, &vis, me, my_pos, intent, round) };
                 let mut exec = self.exec(me, &vis, my_pos, hurt_this_round);
                 exec.gold_order = gold_order;
