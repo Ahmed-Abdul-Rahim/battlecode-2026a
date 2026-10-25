@@ -7,7 +7,8 @@
 #   powershell -ExecutionPolicy Bypass -File scripts\search.ps1 candidate # pack the table into a submission zip (no upload)
 # `run` order: per-map search over all training maps in 3-hour sessions -> cross-map
 # generalisation study -> MVP check (A + rules vs our rule bot, the fresh top 10 and the scoring
-# opponents). The PC stays awake while a step runs.
+# opponents) -> B on top of A (tribute timing: labels with A active, net, A+B vs A+rules).
+# The PC stays awake while a step runs.
 param([Parameter(Position = 0)][ValidateSet("run", "status", "stop", "results", "candidate")][string]$cmd = "status")
 
 $root = Split-Path -Parent $PSScriptRoot
@@ -32,6 +33,11 @@ switch ($cmd) {
         Py crossmap run *>> (Join-Path $logs "crossmap.log")
         Log "generalisation study done; MVP check (A + rules vs our rule bot)"
         Py mvp *>> (Join-Path $logs "mvp.log")
+        Log "MVP check done; B on top of A (tribute timing)"
+        Py branch setup *>> (Join-Path $logs "b_tribute.log")
+        Py branch labels --decision tribute *>> (Join-Path $logs "b_tribute.log")
+        Py branch train --decision tribute *>> (Join-Path $logs "b_tribute.log")
+        Py branch eval --decision tribute *>> (Join-Path $logs "b_tribute.log")
         Log "all done: scripts\search.ps1 results"
     }
     "status" {
@@ -50,6 +56,8 @@ switch ($cmd) {
         Py table
         if (Test-Path (Join-Path $logs "crossmap.json")) { Py crossmap report }
         if (Test-Path (Join-Path $logs "mvp.log")) { Get-Content (Join-Path $logs "mvp.log") -Tail 3 }
+        $b = Join-Path $logs "b\eval_tribute.json"
+        if (Test-Path $b) { Write-Host "A+B vs A+rules:"; Get-Content $b }
     }
     "candidate" {
         Py export
