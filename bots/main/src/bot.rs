@@ -1040,7 +1040,11 @@ impl Bot {
                 let los_retreat = self.theta.knob2(knob2::LOS_RETREAT) > 0;
                 let tp_crystal = self.theta.knob2(knob2::TP_CRYSTAL) > 0;
                 let weak_first = self.theta.knob2(knob2::WEAK_CAMP_FIRST) > 0;
-                let micro = self.micro_policy(&ctx, &vis, me, my_pos, intent, round);
+                // harness/search branch study: at contact, optionally force fight / retreat.
+                let nearest = vis.enemies.first().map(|e| (e.pos, e.dist));
+                let forced =
+                    crate::branch::apply(&mut intent, round, self.kind as u32, nearest, ctx.gems as u32);
+                let micro = if forced { None } else { self.micro_policy(&ctx, &vis, me, my_pos, intent, round) };
                 let mut exec = self.exec(me, &vis, my_pos, hurt_this_round);
                 exec.gold_order = gold_order;
                 exec.lock_contested_only = lock_contested_only;
@@ -1058,7 +1062,7 @@ impl Bot {
                 exec.combo = fsm_bits & (64 | 8) == 64 | 8;
                 exec.stun_lock = stun_lock;
                 exec.dash_in = fsm_bits & (64 | 16) == 64 | 16;
-                let nn_micro = nn_choice.filter(|c| c.a[1] > 0).zip(nn_obs.as_ref()).map(|(c, o)| {
+                let nn_micro = nn_choice.filter(|c| !forced && c.a[1] > 0).zip(nn_obs.as_ref()).map(|(c, o)| {
                     let step = (c.a[1] >= 2).then(|| o.steps[c.a[1] as usize - 1]);
                     let target = (c.a[2] > 0).then(|| o.enemies[c.a[2] as usize - 1]).flatten();
                     (step, target, c.a[3] == 1)

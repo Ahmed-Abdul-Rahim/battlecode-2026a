@@ -17,6 +17,7 @@ mod bc_path;
 
 mod act;
 mod bot;
+mod branch;
 mod draft;
 mod learned;
 mod map_plans;
