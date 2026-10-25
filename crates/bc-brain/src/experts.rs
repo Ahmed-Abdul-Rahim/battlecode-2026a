@@ -108,7 +108,7 @@ pub enum Intent {
     WalkHome,
 }
 
-fn farm(ctx: &Context) -> Intent {
+pub fn farm(ctx: &Context) -> Intent {
     let Some(t) = ctx.target else { return Intent::Shop };
     match t.state {
         GroupState::RewardAvailable => Intent::Capture(t.index),

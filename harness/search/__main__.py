@@ -180,8 +180,8 @@ def cmd_generalize(a) -> None:
 def cmd_branch(a) -> None:
     from harness.search import branch
 
-    {"setup": lambda: branch.setup(), "labels": lambda: branch.labels(a.hours),
-     "train": lambda: branch.train(), "eval": lambda: branch.evaluate(a.hours)}[a.action]()
+    {"setup": lambda: branch.setup(), "labels": lambda: branch.labels(a.hours, a.decision),
+     "train": lambda: branch.train(a.decision), "eval": lambda: branch.evaluate(a.hours, a.decision)}[a.action]()
 
 
 def cmd_status(a) -> None:
@@ -224,6 +224,7 @@ def main() -> None:
     sub.add_parser("export")
     p = sub.add_parser("branch")
     p.add_argument("action", choices=["setup", "labels", "train", "eval"])
+    p.add_argument("--decision", choices=["contact", "tribute"], default="contact")
     p.add_argument("--hours", type=float)
     p = sub.add_parser("generalize")
     p.add_argument("--hours", type=float)

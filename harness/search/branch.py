@@ -36,6 +36,9 @@ IN, HIDDEN, OUT = 19, 16, 2
 NET_LEN = 16 + IN * HIDDEN + HIDDEN * 4 + HIDDEN * OUT + OUT * 4 + 8
 OFF = 0xFFFFFFFF
 HOLD = 10
+VERIFY_HOLD = 6
+#: decision kind -> (log prefix, branch-block id, the two forced choices)
+DECISIONS = {"contact": ("D ", 0, (1, 2)), "tribute": ("T ", 1, (3, 4))}
 DECISIONS_PER_GAME = 8
 MIN_GAP = 25
 NULL_EVERY = 10
@@ -46,8 +49,8 @@ DIR = C.RUNS / "b"
 SEARCH_RUNS = C.RUNS
 
 
-def block(frm: int = OFF, kind: int = 0, choice: int = 0, hold: int = 0, log: int = 1) -> bytes:
-    words = b"".join(int(x).to_bytes(4, "little") for x in (frm, kind, choice, hold, log))
+def block(frm: int = OFF, kind: int = 0, choice: int = 0, hold: int = 0, log: int = 1, decision: int = 0) -> bytes:
+    words = b"".join(int(x).to_bytes(4, "little") for x in (frm, kind, choice, hold, log, decision))
     return (MAGIC + words).ljust(BLOCK, b"\0")
 
 
@@ -81,7 +84,7 @@ def _load_plans() -> dict[str, bytes]:
 
 
 def _parse(args) -> dict:
-    r, side, keep_d = args
+    r, side, keep_d, prefix = args
     us = r["bot_a"] if side == "a" else r["bot_b"]
     res = C.runner.MatchResult(**r)
     row = C._row(res, C.Game("x", "", "", side), "b", us)
@@ -93,7 +96,7 @@ def _parse(args) -> dict:
         pass
     lines = text.splitlines()
     if keep_d:
-        row["D"] = [list(map(int, ln.split()[1:])) for ln in lines if ln.startswith("D ")]
+        row["D"] = [list(map(int, ln.split()[1:])) for ln in lines if ln.startswith(prefix)]
     row["fired"] = sum(1 for ln in lines if ln.startswith("B "))
     return row
 
@@ -162,7 +165,7 @@ class Log:
             with ThreadPoolExecutor(max_workers=jobs_n) as ex:
                 res = list(ex.map(one, range(len(chunk))))
             with ProcessPoolExecutor(max_workers=jobs_n) as ex:
-                rows = list(ex.map(_parse, [(r, j["side"], j.get("keep_d", False)) for r, j in zip(res, chunk)], chunksize=8))
+                rows = list(ex.map(_parse, [(r, j["side"], j.get("keep_d", False), j.get("prefix", "D ")) for r, j in zip(res, chunk)], chunksize=8))
             with open(self.path, "a", encoding="utf-8") as f:
                 for j, row in zip(chunk, rows):
                     rec = {k: j[k] for k in ("map", "opp", "side", "tag")}
@@ -181,31 +184,34 @@ def _setups(splits: dict, plans: dict) -> list[tuple[str, str, str]]:
     return [(m, o, s) for m in plans for o in opps for s in "ab"]
 
 
-def labels(hours: float | None = None) -> None:
+def labels(hours: float | None = None, decision: str = "contact") -> None:
+    prefix, did, choices = DECISIONS[decision]
     C.SLOT, C.RUNS = "_pb{}", DIR
     C.check_snapshot()
     plans = _load_plans()
     splits = json.loads((SEARCH_RUNS / "splits.json").read_text(encoding="utf-8"))
     deadline = C.deadline_from(hours)
-    log = Log("labels")
+    log = Log("labels" if decision == "contact" else f"labels_{decision}")
     # The base games take the same code path as a branch (a kind that never plays), so a null
     # branch replays them exactly.
-    base = [{"map": m, "opp": o, "side": s, "tag": "base", "blk": block(0, 999, 0, 0), "keep_d": True}
-            for m, o, s in _setups(splits, plans)]
+    base = [{"map": m, "opp": o, "side": s, "tag": "base", "blk": block(0, 999, 0, 0, 1, did),
+             "keep_d": True, "prefix": prefix} for m, o, s in _setups(splits, plans)]
     if not log.play(base, plans, deadline):
         return print("stopped: run labels again to continue")
-    decisions, branches = sample(base, log), []
+    decisions, branches = sample(base, log, choices), []
     for d in decisions:
         for c in d["alts"]:
-            branches.append({**{k: d[k] for k in ("map", "opp", "side")}, "tag": f"{d['round']}:{d['kind']}:{c}",
-                             "blk": block(d["round"], d["kind"], c, HOLD)})
-    print(f"{len(decisions)} decisions, {len(branches)} branch games", flush=True)
+            for hold in (HOLD, VERIFY_HOLD) if c else (HOLD,):
+                branches.append({**{k: d[k] for k in ("map", "opp", "side")},
+                                 "tag": f"{d['round']}:{d['kind']}:{c}:{hold}",
+                                 "blk": block(d["round"], d["kind"], c, hold, 1, did)})
+    print(f"{len(decisions)} {decision} decisions, {len(branches)} branch games", flush=True)
     if not log.play(branches, plans, deadline):
         return print("stopped: run labels again to continue")
-    export(decisions, log)
+    export(decisions, log, decision, choices)
 
 
-def sample(base: list[dict], log: Log) -> list[dict]:
+def sample(base: list[dict], log: Log, choices: tuple[int, int]) -> list[dict]:
     out, n = [], 0
     for j in base:
         row = log.get(j)
@@ -223,7 +229,7 @@ def sample(base: list[dict], log: Log) -> list[dict]:
                 break
         for d in picked:
             rnd, kind, cls = d[0], d[1], d[2]
-            alts = [c for c in (1, 2) if c != cls]
+            alts = [c for c in choices if c != cls]
             if n % NULL_EVERY == 0:
                 alts.append(0)
             n += 1
@@ -232,8 +238,9 @@ def sample(base: list[dict], log: Log) -> list[dict]:
     return out
 
 
-def export(decisions: list[dict], log: Log) -> dict:
-    """labels.json: features + the measured gain of each forced choice over the rules'."""
+def export(decisions: list[dict], log: Log, decision: str, choices: tuple[int, int]) -> dict:
+    """labels_<decision>.json: features + the verified gain of each forced choice over the
+    rules': both hold lengths must agree in sign (the smaller one counts), else 0."""
     rows, nulls_bad, fired = [], 0, 0
     for d in decisions:
         b = log.get({**d, "tag": "base"})
@@ -241,37 +248,47 @@ def export(decisions: list[dict], log: Log) -> dict:
             continue
         g = {}
         for c in d["alts"]:
-            r = log.get({**d, "tag": f"{d['round']}:{d['kind']}:{c}"})
+            r = log.get({**d, "tag": f"{d['round']}:{d['kind']}:{c}:{HOLD}"})
             if not r:
                 continue
             if c == 0:
                 nulls_bad += C.fitness(r) != C.fitness(b)
                 continue
-            if r["fired"]:
-                g[c] = round(C.fitness(r) - C.fitness(b), 4)
+            v = log.get({**d, "tag": f"{d['round']}:{d['kind']}:{c}:{VERIFY_HOLD}"})
+            if not r["fired"] or not v:
+                continue
+            g1, g2 = C.fitness(r) - C.fitness(b), C.fitness(v) - C.fitness(b)
+            if g1 > 0 and g2 > 0:
+                g[c] = round(min(g1, g2), 4)
+            elif g1 < 0 and g2 < 0:
+                g[c] = round(max(g1, g2), 4)
+            else:
+                g[c] = 0.0
         if not g:
             continue
         fired += 1
         rows.append({"map": d["map"], "game": f"{d['map']}|{d['opp']}|{d['side']}", "cls": d["cls"],
-                     "f": [v / 100 for v in d["f"]], "fight": g.get(1, 0.0), "retreat": g.get(2, 0.0)})
-    C.save_json(DIR / "labels.json", rows)
-    over = sum(1 for r in rows if max(r["fight"] if r["cls"] != 1 else 0, r["retreat"] if r["cls"] != 2 else 0) > 0.05)
-    print(f"labels: {len(rows)} decisions ({fired} fired), null mismatches {nulls_bad}, "
-          f"raw overrule share {over / max(len(rows), 1):.3f}")
+                     "f": [v / 100 for v in d["f"]], "a": g.get(choices[0], 0.0), "b": g.get(choices[1], 0.0)})
+    C.save_json(DIR / f"labels_{decision}.json", rows)
+    gains = [x for r in rows for x, c in ((r["a"], choices[0]), (r["b"], choices[1])) if c != r["cls"]]
+    pos, neg = sum(x > 0.05 for x in gains), sum(x < -0.05 for x in gains)
+    print(f"labels ({decision}): {len(rows)} decisions ({fired} fired), null mismatches {nulls_bad}, "
+          f"verified better {pos} / worse {neg} of {len(gains)}")
     return {"n": len(rows), "null_bad": nulls_bad}
 
 
 # ---------------------------------------------------------------- the net
 
 
-def train() -> dict:
+def train(decision: str = "contact") -> dict:
     import numpy as np
 
-    rows = C.load_json(DIR / "labels.json", [])
+    _, did, choices = DECISIONS[decision]
+    rows = C.load_json(DIR / f"labels_{decision}.json", [])
     X = np.array([r["f"] for r in rows], dtype=np.float32)
-    Y = np.array([[r["fight"], r["retreat"]] for r in rows], dtype=np.float32)
+    Y = np.array([[r["a"], r["b"]] for r in rows], dtype=np.float32)
     # The rules' own class has gain 0 by definition (masked out of the loss).
-    M = np.array([[r["cls"] != 1, r["cls"] != 2] for r in rows], dtype=np.float32)
+    M = np.array([[r["cls"] != choices[0], r["cls"] != choices[1]] for r in rows], dtype=np.float32)
     games = sorted({r["game"] for r in rows})
     gid = np.array([games.index(r["game"]) for r in rows])
     rng = np.random.default_rng(0)
@@ -325,8 +342,8 @@ def train() -> dict:
             cv[t][1] += share * te.sum() / len(X)
     best_tau = max(taus, key=lambda t: cv[t][0])
     p = fit(X, Y, M)
-    net = quantise(p, best_tau)
-    (DIR / "net.bin").write_bytes(net)
+    net = quantise(p, best_tau, did)
+    (DIR / f"net_{decision}.bin").write_bytes(net)
     rep = {
         "n": len(rows),
         "oracle_gain_per_decision": round(oracle, 4),
@@ -334,12 +351,12 @@ def train() -> dict:
         "cv_overrule_share": {str(t): round(cv[t][1], 3) for t in taus},
         "tau": best_tau,
     }
-    C.save_json(DIR / "train_report.json", rep)
+    C.save_json(DIR / f"train_{decision}.json", rep)
     print(json.dumps(rep, indent=1))
     return rep
 
 
-def quantise(p, tau: float) -> bytes:
+def quantise(p, tau: float, did: int = 0) -> bytes:
     import numpy as np
 
     W1, b1, W2, b2 = p
@@ -350,7 +367,7 @@ def quantise(p, tau: float) -> bytes:
     s2 = max(np.abs(W2).max(), 1e-6) / 127
     q2 = np.clip(np.round(W2.T / s2), -127, 127).astype(np.int8)  # [OUT][HIDDEN]
     qb2 = np.round(b2 / s2).astype(np.int32)
-    head = NET_MAGIC + bytes([1, int(np.clip(round(tau * 100), -127, 127)) & 0xFF]) + b"\0" * 6
+    head = NET_MAGIC + bytes([1, int(np.clip(round(tau * 100), -127, 127)) & 0xFF, did]) + b"\0" * 5
     body = q1.tobytes() + qb1.astype("<i4").tobytes() + q2.tobytes() + qb2.astype("<i4").tobytes()
     body += np.array([s1, s2], dtype="<f4").tobytes()
     out = head + body
@@ -358,14 +375,14 @@ def quantise(p, tau: float) -> bytes:
     return out
 
 
-def evaluate(hours: float | None = None) -> dict:
+def evaluate(hours: float | None = None, decision: str = "contact") -> dict:
     """rules+A+B vs rules+A on the searched maps, B opponents (never used to choose), both sides."""
     C.SLOT, C.RUNS = "_pb{}", DIR
     C.check_snapshot()
     plans = _load_plans()
     splits = json.loads((SEARCH_RUNS / "splits.json").read_text(encoding="utf-8"))
-    net = (DIR / "net.bin").read_bytes()
-    log = Log("eval")
+    net = (DIR / f"net_{decision}.bin").read_bytes()
+    log = Log(f"eval_{decision}")
     opps = splits["opps_B"] + [o for o in splits["head_to_head"]] + sorted(C.fresh_top())
     jobs = []
     for m in plans:
@@ -390,6 +407,6 @@ def evaluate(hours: float | None = None) -> dict:
         out[name] = {"n": len(df), **C._mean_se(df, "fit"), **C._mean_se(dw, "win")}
     fired = sum(r.get("fired", 0) for k, r in log.rows.items() if k.endswith("|AB"))
     out["net_overrules_logged"] = fired
-    C.save_json(DIR / "eval_report.json", out)
+    C.save_json(DIR / f"eval_{decision}.json", out)
     print(json.dumps(out, indent=1))
     return out
