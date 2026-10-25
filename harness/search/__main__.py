@@ -171,6 +171,12 @@ def cmd_export(a) -> None:
     mvp.export()
 
 
+def cmd_generalize(a) -> None:
+    from harness.search import generalize
+
+    generalize.run(a.hours)
+
+
 def cmd_status(a) -> None:
     snap = C.load_json(C.RUNS / "snapshot.json", {})
     print("snapshot:", snap.get("wasm", "-")[:12], snap.get("time", ""))
@@ -209,11 +215,13 @@ def main() -> None:
     p = sub.add_parser("mvp")
     p.add_argument("--hours", type=float)
     sub.add_parser("export")
+    p = sub.add_parser("generalize")
+    p.add_argument("--hours", type=float)
     sub.add_parser("status")
     a = ap.parse_args()
     {"setup": cmd_setup, "smoke": cmd_smoke, "baseline": cmd_baseline, "splits": cmd_splits,
      "audit": cmd_audit, "search": cmd_search, "table": cmd_table, "sstatus": cmd_sstatus,
-     "mvp": cmd_mvp, "export": cmd_export,
+     "mvp": cmd_mvp, "export": cmd_export, "generalize": cmd_generalize,
      "status": cmd_status}[a.cmd](a)
 
 
