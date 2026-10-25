@@ -5,8 +5,9 @@
 #   powershell -ExecutionPolicy Bypass -File scripts\search.ps1 stop      # stop safely (resume with run)
 #   powershell -ExecutionPolicy Bypass -File scripts\search.ps1 results   # per-map results, warm trial, study
 #   powershell -ExecutionPolicy Bypass -File scripts\search.ps1 candidate # pack the table into a submission zip (no upload)
-# `run` order: warm-start trial (interlock, starvation) -> per-map search over all training maps in
-# 3-hour sessions -> cross-map generalisation study. The PC stays awake while a step runs.
+# `run` order: per-map search over all training maps in 3-hour sessions -> cross-map
+# generalisation study -> MVP check (A + rules vs our rule bot, the fresh top 10 and the scoring
+# opponents). The PC stays awake while a step runs.
 param([Parameter(Position = 0)][ValidateSet("run", "status", "stop", "results", "candidate")][string]$cmd = "status")
 
 $root = Split-Path -Parent $PSScriptRoot
@@ -23,14 +24,14 @@ function TrainLeft {
 switch ($cmd) {
     "run" {
         if (Running) { Write-Host "a search step is already running (scripts\search.ps1 status)" -ForegroundColor Yellow; exit 1 }
-        Log "warm-start trial"
-        Py warm --maps interlock,starvation *>> (Join-Path $logs "warm.log")
         while ([int](TrainLeft) -gt 0) {
             Log "search session ($(TrainLeft) training maps left)"
             Py search --hours 3 *>> (Join-Path $logs "search.log")
         }
         Log "training maps done; cross-map generalisation study"
         Py crossmap run *>> (Join-Path $logs "crossmap.log")
+        Log "generalisation study done; MVP check (A + rules vs our rule bot)"
+        Py mvp *>> (Join-Path $logs "mvp.log")
         Log "all done: scripts\search.ps1 results"
     }
     "status" {
@@ -47,8 +48,8 @@ switch ($cmd) {
     }
     "results" {
         Py table
-        Py warm-report
         if (Test-Path (Join-Path $logs "crossmap.json")) { Py crossmap report }
+        if (Test-Path (Join-Path $logs "mvp.log")) { Get-Content (Join-Path $logs "mvp.log") -Tail 3 }
     }
     "candidate" {
         Py export
