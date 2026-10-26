@@ -50,7 +50,9 @@ def accepted(name: str, side: str) -> str | None:
     import pickle
 
     p = C.RUNS / "side" / f"{name}@{side}" / "state.pkl"
-    if not p.exists():
+    # Only with approved.txt next to it: the side plan must beat the map plan on fresh opponents
+    # (broken-curve team A, 2026-10-26: +0.13 vs +0.13 there, so not approved).
+    if not p.exists() or not (p.parent / "approved.txt").exists():
         return None
     with open(p, "rb") as f:
         st = pickle.load(f)
