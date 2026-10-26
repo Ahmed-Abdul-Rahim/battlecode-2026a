@@ -81,6 +81,8 @@ pub struct CampView {
     pub awake: bool,
     pub strength: f32,
     pub group: Option<usize>,
+    /// Attack range from the camp's kind (3 to 5).
+    pub range: i32,
 }
 
 #[derive(Default)]
@@ -102,7 +104,7 @@ impl Visible {
             .filter(|c| {
                 c.awake && c.strength > 0.0 && (ignore_group.is_none() || c.group != ignore_group)
             })
-            .map(|c| Threat { pos: c.pos, range: 3, dps: c.strength });
+            .map(|c| Threat { pos: c.pos, range: c.range, dps: c.strength });
         let enemies =
             self.enemies.iter().map(|e| Threat { pos: e.pos, range: e.range + 1, dps: e.dps });
         camps.chain(enemies).chain(self.ghosts.iter().copied()).collect()
@@ -909,7 +911,7 @@ impl Exec<'_> {
             return Ok(());
         }
         let under_fire = self.hurt_this_round
-            || vis.camps.iter().any(|c| c.awake && c.dist <= 3)
+            || vis.camps.iter().any(|c| c.awake && c.dist <= c.range)
             || vis.enemies.iter().any(|e| e.dist <= e.range + 1);
         for ability in me.abilities() {
             if ability.is_shield() && under_fire && ability.is_ready()? {
@@ -1106,7 +1108,7 @@ impl Exec<'_> {
         if let Some(altar) = self.world.altar_in_range(self.my_pos) {
             // Damage doesn't stop a tribute but death does (and drops the bag to the
             // killer): don't start a channel that enemies can kill us during.
-            let ticks = (self.me.gem_count()?.div_ceil(10)).max(1) as i32;
+            let ticks = self.ledger.tribute_ticks(self.me.gem_count()?) as i32;
             let danger = self.vis.reachable_dps(self.my_pos, ticks);
             if danger > 0.0 && danger * ticks as f32 >= self.me.health()? {
                 telemetry::event(0, "", "tribute_unsafe", 1);
@@ -1218,12 +1220,14 @@ impl Exec<'_> {
         self.step_by(|p| p.cheb(goal))
     }
 
-    /// Aggro swap: move to the edge of `from`'s reach (camps hit range 3; spells reach 4)
+    /// Aggro swap: move to the edge of `from`'s reach (camps hit range 3-5; spells reach 4)
     /// preferring tiles near allies, then cast at it if it is a camp still in spell range.
     fn step_back(&mut self, from: Pos) -> Result<()> {
         let vis = self.vis;
         let allies: Vec<Pos> = vis.allies.iter().map(|a| a.pos).collect();
-        let reach = vis.enemies.iter().find(|e| e.pos == from).map_or(3, |e| e.range + 1);
+        let reach = vis.enemies.iter().find(|e| e.pos == from).map(|e| e.range + 1).unwrap_or_else(|| {
+            vis.camps.iter().find(|c| c.pos == from).map_or(3, |c| c.range)
+        });
         self.step_by(|p| {
             let d = p.cheb(from);
             let edge = if d > reach { (d - reach - 1).abs() } else { 10 * (reach + 1 - d) };

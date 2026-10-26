@@ -254,6 +254,8 @@ const TEMPO_GOLD_LATE: f32 = 0.25;
 /// DENY_TRIBUTE 4 (altar guard): team size, altar contest slack (|our walk - theirs|, tiles),
 /// start round, health floor, and camps it still farms (centre within this of the altar).
 const GUARD_MIN_TEAM: usize = 4;
+/// Allies within this many tiles are rated with live strength / focus (items included).
+const ALLY_LIVE_STATS_RADIUS: i32 = 8;
 const GUARD_CONTESTED_SLACK: i32 = 4;
 const GUARD_FROM_ROUND: u32 = 150;
 const GUARD_MIN_HP: f32 = 0.4;
@@ -322,7 +324,10 @@ impl Bot {
                     Some((*Family::ALL.get(usize::from(f))?, *Stat::ALL.get(usize::from(s))?))
                 })
                 .collect()
-        } else if theta.knob(knob::TAVI_META) > 0 && kind == ChampionKind::Tavi {
+        } else if theta.knob(knob::TAVI_META) & 1 != 0
+            && theta.knob(knob::TAVI_META) & 4 == 0
+            && kind == ChampionKind::Tavi
+        {
             shop::build_order_profile(kind, TAVI_BUILD_PROFILE)
         } else {
             shop::build_order_profile(kind, build_profile)
@@ -950,7 +955,7 @@ impl Bot {
                 )
             {
                 if let Some(steps) = ctx.dist_altar.filter(|&d| d <= PANIC_BANK_STEPS) {
-                    let turns = i32::from(steps) + ctx.gems.div_ceil(10).max(1) as i32;
+                    let turns = i32::from(steps) + self.ledger.tribute_ticks(ctx.gems) as i32;
                     let danger = vis.reachable_dps(my_pos, turns);
                     if danger * (turns as f32) < ctx.hp * PANIC_BANK_HP {
                         intent = Intent::Tribute;
@@ -1398,8 +1403,8 @@ impl Bot {
         let _ = (out_call, chan);
         // A channel (capture 5 turns, tribute 1 per 10 gems) must finish before anything arrives.
         let channel_turns = match intent {
-            Intent::Capture(_) => 5,
-            Intent::Tribute => ctx.gems.div_ceil(10).max(1) as i32,
+            Intent::Capture(_) => self.ledger.capture_ticks() as i32,
+            Intent::Tribute => self.ledger.tribute_ticks(ctx.gems) as i32,
             _ => 0,
         };
         let seen_eta =
@@ -1966,12 +1971,21 @@ impl Bot {
             }
             let kind = a.champion_name().map(sdk::kind).unwrap_or(ChampionKind::Ryth);
             let kit = sdk::kit(kind);
+            let dist = my_pos.cheb(p);
+            // Live (geared) stats for allies close enough to fight with us; enemies were already
+            // rated live, allies at base kit stats, so every team estimate (fight advantage,
+            // team-ups, regroup) underrated our side once items came in. ~250 fuel per ally.
+            let (strength, focus) = if dist <= ALLY_LIVE_STATS_RADIUS {
+                (a.strength().unwrap_or(kit.base_strength), a.focus().unwrap_or(kit.base_focus))
+            } else {
+                (kit.base_strength, kit.base_focus)
+            };
             vis.allies.push(AllyView {
                 pos: p,
-                dist: my_pos.cheb(p),
+                dist,
                 hp: a.health().unwrap_or(0.0),
                 max_hp: a.max_health().unwrap_or(1.0),
-                dps: sdk::dps(kit.base_strength, kit.base_focus, &kit),
+                dps: sdk::dps(strength, focus, &kit),
                 kind,
                 handle: a,
             });
@@ -2000,12 +2014,14 @@ impl Bot {
             let p = c.position().map(pos).unwrap_or(spawn);
             let awake = state.is_awake();
             // Sleeping camps don't hit: their kind's base strength is enough (no host query).
+            let camp_kind = crate::bc_draft::CampKind::from_engine(c.kind() as i32);
             let strength = if awake {
                 c.strength().unwrap_or(0.0)
             } else {
-                crate::bc_draft::CampKind::from_engine(c.kind() as i32).map_or(0.0, |k| k.strength())
+                camp_kind.map_or(0.0, |k| k.strength())
             };
             vis.camps.push(CampView {
+                range: camp_kind.map_or(3, |k| k.attack_range()),
                 pos: p,
                 dist: my_pos.cheb(p),
                 hp: c.health().unwrap_or(0.0),
@@ -2789,7 +2805,7 @@ impl Bot {
             camp_threat_here: vis
                 .camps
                 .iter()
-                .filter(|c| c.awake && c.dist <= 3)
+                .filter(|c| c.awake && c.dist <= c.range)
                 .map(|c| c.strength)
                 .sum(),
             threat_here: self.belief.threat_at(my_pos, round),
@@ -3060,15 +3076,15 @@ fn camp_safety(
         let on_me: Vec<&CampView> = vis
             .camps
             .iter()
-            .filter(|c| c.awake && c.hp > 0.0 && c.dist <= 3)
+            .filter(|c| c.awake && c.hp > 0.0 && c.dist <= c.range)
             .filter(|c| !vis.allies.iter().any(|a| a.pos.cheb(c.pos) < c.dist))
             .collect();
         if !on_me.is_empty() {
             let est: f32 = on_me.iter().map(|c| c.strength).sum::<f32>() * CAMP_DMG_FLOOR;
             let incoming = dmg_taken.max(est).max(1.0);
-            let nearest = on_me.iter().map(|c| c.dist).min().unwrap_or(3);
-            // Hits still taken while walking out of range 3, one tile per turn.
-            let hits_out = (3 - nearest).max(0) as f32 + 1.0;
+            // Hits still taken while walking out of every camp's range, one tile per turn (Elk
+            // and Golem reach 4, the Monolith 5).
+            let hits_out = on_me.iter().map(|c| (c.range - c.dist).max(0)).max().unwrap_or(0) as f32 + 1.0;
             let groups: Vec<Option<usize>> = on_me.iter().map(|c| c.group).collect();
             let group_hp: f32 = vis
                 .camps

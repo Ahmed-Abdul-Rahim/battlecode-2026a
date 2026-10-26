@@ -39,6 +39,17 @@ impl CampKind {
         }
     }
 
+    /// Attack range (Chebyshev). Engine 2.0.0 camp designs (bots/_probe): Elk and Golem reach 4
+    /// and the Monolith 5; code that assumed 3 for every camp walked into Elk / Golem fire.
+    #[must_use]
+    pub fn attack_range(self) -> i32 {
+        match self {
+            Self::Wolf | Self::GemCluster | Self::GoldCluster => 3,
+            Self::Elk | Self::Golem => 4,
+            Self::Monolith => 5,
+        }
+    }
+
     #[must_use]
     pub fn strength(self) -> f32 {
         match self {

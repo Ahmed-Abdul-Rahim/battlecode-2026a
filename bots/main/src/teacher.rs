@@ -324,7 +324,7 @@ impl Bot {
         let threat = vis
             .camps
             .iter()
-            .filter(|c| c.awake && c.hp > 0.0 && c.dist <= 3)
+            .filter(|c| c.awake && c.hp > 0.0 && c.dist <= c.range)
             .map(|c| (c.dist, c.pos))
             .chain(vis.enemies.iter().filter(|e| !e.on_spawn && e.dist <= 3).map(|e| (e.dist, e.pos)))
             .min_by_key(|t| t.0);
@@ -357,7 +357,7 @@ impl Bot {
             p.b(free[i]);
             let n = vis.enemies.iter().filter(|e| !e.on_spawn && e.pos.cheb(sp) <= e.range).count();
             p.v(n as f32 / 3.0);
-            let c = vis.camps.iter().filter(|c| c.awake && c.hp > 0.0 && c.pos.cheb(sp) <= 3).count();
+            let c = vis.camps.iter().filter(|c| c.awake && c.hp > 0.0 && c.pos.cheb(sp) <= c.range).count();
             p.v(c as f32 / 3.0);
             p.v(sign(here_spawn, fields.distance(Goal::AllySpawn, sp)));
             p.v(sign(here_altar, fields.distance(Goal::Altars, sp)));

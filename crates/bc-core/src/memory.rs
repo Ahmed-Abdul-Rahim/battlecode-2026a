@@ -221,7 +221,9 @@ pub mod knob {
     /// Ladder meta (v7): draft Varg/Tavi/Cassi&Issac/Stellar/Prism; Tavi buys shards in the
     /// field (its passive), builds Strength on every passive, and hunts once geared.
     /// Bit 2: where no plan / pack chose a roster, draft with the map-aware scorer instead of the
-    /// META list (the Tavi field shop / build / hunt still follow bit 1).
+    /// META list (the Tavi field shop / hunt still follow bit 1). Bit 4: Tavi builds the map's
+    /// BUILD_PROFILE like everyone else instead of the fixed field build (profile 12), which
+    /// ignored what the per-map search chose.
     pub const TAVI_META: usize = 19;
     /// 1 = cancel a recall when an enemy closes in (recall is a free kill otherwise);
     /// 2 = also only start one when nothing seen or remembered can reach us during it.
@@ -237,7 +239,7 @@ pub mod knob {
     /// capturer per group (the others move on while no enemy is near).
     pub const CAMP_FEASIBLE: usize = 23;
     /// 1 = play to passives: Vesper Vale (+20/40% gold) farms gold groups until geared,
-    /// Prism (+0.2 Focus per carried gem) collects gems and carries bigger bags.
+    /// Prism (+1.5 Focus per carried gem) collects gems and carries bigger bags.
     pub const PASSIVE_ROLES: usize = 24;
     /// 1 = draft like the best ladder bot: Stellar, Ren, Cassi & Issac, Ryth, Varg.
     pub const DRAFT_BEST: usize = 25;
@@ -285,7 +287,7 @@ pub mod knob {
         (COMBAT_SEARCH, 0),
         (CAMP_SAFE, 0),
         (ALTAR_LOCK, 1),
-        (TAVI_META, 3),
+        (TAVI_META, 7),
         (RECALL_SAFE, 2),
         (FIGHT_V6, 16),
         (STUN_THREAT, 0),

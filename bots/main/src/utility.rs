@@ -66,13 +66,13 @@ pub fn choose(
     let camp_on_me = vis
         .camps
         .iter()
-        .filter(|c| c.awake && c.hp > 0.0 && c.dist <= 3)
+        .filter(|c| c.awake && c.hp > 0.0 && c.dist <= c.range)
         .filter(|c| !vis.allies.iter().any(|a| a.pos.cheb(c.pos) < c.dist))
         .min_by_key(|c| c.dist);
     let camp_dps: f32 = vis
         .camps
         .iter()
-        .filter(|c| c.awake && c.hp > 0.0 && c.dist <= 3)
+        .filter(|c| c.awake && c.hp > 0.0 && c.dist <= c.range)
         .filter(|c| !vis.allies.iter().any(|a| a.pos.cheb(c.pos) < c.dist))
         .map(|c| c.strength * 0.7)
         .sum();

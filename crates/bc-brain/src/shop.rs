@@ -135,11 +135,10 @@ pub fn build_order_profile(kind: ChampionKind, profile: u8) -> Vec<(Family, Stat
 
 fn default_order(kind: ChampionKind) -> Vec<(Family, Stat)> {
     let primary = primary_stat(kind);
-    let mut order = vec![(Family::Jungle, Stat::Health)];
-    if kind == ChampionKind::VesperVale {
-        // +10% gold (engine 2.0.0; was +20%) stacks with her passive.
-        order.push((Family::Treasure, Stat::Strength));
-    }
+    // (Vesper Vale used to take a Treasure emblem here for +20% gold; engine 2.0.0 cut it to
+    // +10%, less than the Power emblem it delays. Profiles 6 and 11 still offer it.)
+    let order = vec![(Family::Jungle, Stat::Health)];
+    let mut order = order;
     order.push((Family::Monster, primary));
     order.push((Family::Power, primary));
     order.push((Family::Durability, Stat::Health));

@@ -217,6 +217,28 @@ impl Ledger {
             .sum()
     }
 
+    /// Turn ends a tribute of `gems` channels: max(1, ceil(gems / 10)), cut by a third (rounded
+    /// up, at least 1) with a Tribute emblem (engine 2.0.0).
+    #[must_use]
+    pub fn tribute_ticks(&self, gems: u32) -> u32 {
+        let base = gems.div_ceil(10).max(1);
+        if self.emblems(Family::Tribute) > 0 {
+            (base * 2).div_ceil(3).max(1)
+        } else {
+            base
+        }
+    }
+
+    /// Capture timer: 5 rounds, 3 with a Capture emblem (engine 2.0.0).
+    #[must_use]
+    pub fn capture_ticks(&self) -> u32 {
+        if self.emblems(Family::Capture) > 0 {
+            3
+        } else {
+            5
+        }
+    }
+
     /// Gems still needed by our team to win outright.
     #[must_use]
     pub fn gems_to_win(&self, winning_gems: u32) -> u32 {
@@ -257,6 +279,17 @@ mod tests {
             assert_eq!(item_id(f, s, e), id);
         }
         assert!(decode_item(84).is_none());
+    }
+
+    #[test]
+    fn emblems_shorten_channels() {
+        let mut l = Ledger::new(ChampionKind::Varg);
+        assert_eq!((l.tribute_ticks(0), l.tribute_ticks(10), l.tribute_ticks(31)), (1, 1, 4));
+        assert_eq!(l.capture_ticks(), 5);
+        l.items[item_id(Family::Tribute, Stat::Health, true) as usize] = 1;
+        l.items[item_id(Family::Capture, Stat::Health, true) as usize] = 1;
+        assert_eq!((l.tribute_ticks(10), l.tribute_ticks(31), l.tribute_ticks(90)), (1, 3, 6));
+        assert_eq!(l.capture_ticks(), 3);
     }
 
     #[test]
