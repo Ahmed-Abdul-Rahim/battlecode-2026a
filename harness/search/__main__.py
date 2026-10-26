@@ -208,6 +208,12 @@ def cmd_side(a) -> None:
     side.run(a.map, a.side, a.hours)
 
 
+def cmd_verify(a) -> None:
+    from harness.search import verify
+
+    verify.run()
+
+
 def cmd_status(a) -> None:
     snap = C.load_json(C.RUNS / "snapshot.json", {})
     print("snapshot:", snap.get("wasm", "-")[:12], snap.get("time", ""))
@@ -250,6 +256,7 @@ def main() -> None:
     p.add_argument("--maps", required=True)
     p.add_argument("--hours", type=float)
     sub.add_parser("warm-report")
+    sub.add_parser("verify")
     p = sub.add_parser("side")
     p.add_argument("--map", required=True)
     p.add_argument("--side", choices=["a", "b"], required=True)
@@ -269,7 +276,7 @@ def main() -> None:
      "audit": cmd_audit, "search": cmd_search, "table": cmd_table, "sstatus": cmd_sstatus,
      "mvp": cmd_mvp, "export": cmd_export, "generalize": cmd_generalize,
      "branch": cmd_branch, "warm": cmd_warm, "warm-report": cmd_warm_report,
-     "crossmap": cmd_crossmap, "side": cmd_side,
+     "crossmap": cmd_crossmap, "side": cmd_side, "verify": cmd_verify,
      "status": cmd_status}[a.cmd](a)
 
 
