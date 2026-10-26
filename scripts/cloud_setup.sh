@@ -17,6 +17,8 @@ get opponents-fresh.tar.gz | tar -xz -C bots         # our rule bot (_rules) + t
 get mapcache.tar.gz | tar -xz -C runs/gpusim         # map features for the generalisation study
 get search-states.tar.gz | tar -xz -C runs/search    # per-map search states + result summaries
 get live-pack.bin > runs/search/live-pack.bin        # the pack the search's slots were built with
+# Engine 2.0.0: map_plans.rs was folded into the packs; this branch keeps the folded reference.
+[ -f data/search/live-pack.bin ] && cp data/search/live-pack.bin runs/search/live-pack.bin
 
 # The slots must use the live pack (bots/main's pack.bin on this branch holds the plan table).
 export BC_MAIN="$PWD"
