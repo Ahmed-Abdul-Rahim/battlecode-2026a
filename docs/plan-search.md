@@ -54,7 +54,7 @@ above.
 
     git fetch origin && git checkout claude/vigilant-archimedes-ptm9fj
     .venv\Scripts\pip install --upgrade cambc==4.0.0
-    .venv\Scripts\python -m bctools.sync --bot main --check ; cargo test --workspace ; .venv\Scripts\pytest -q
+    bctools sync --check ; cargo test --workspace ; pytest -q
 
 1. Check the new rule defaults with paired A/Bs (each ~30-60 min on 16 threads; flip a default
    when dwin is below -2 SE). `--no-table` tests the rule itself, without the per-map plans:
@@ -73,7 +73,7 @@ above.
    yellow-brick-road included, then crossmap, mvp, B, held-out maps). Resumable; `status`, `stop`.
 4. `python -m harness.search verify` (submission build vs no table: per-map / per-opponent loss
    table) and `scripts\search.ps1 candidate` (zip, not uploaded).
-5. Debug a weak map: `python -m bctools run main <opponent> --maps <map>` (debug build), then
+5. Debug a weak map: `bctools run main <opponent> --maps <map>` (debug build), then
    `python -m harness.diagnose runs\<dir> main` (loops, arbiter overrides, deaths while
    retreating / alone, bag losses near altars, extra capturers).
 
