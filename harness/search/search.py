@@ -389,6 +389,12 @@ def run(maps: list[str] | None, hours: float | None) -> None:
     splits = C.load_json(C.RUNS / "splits.json", None)
     if not splits:
         raise SystemExit("no splits: run splits first")
+    from harness.search import split
+
+    splits, added = split.extend(splits)
+    if added:
+        C.save_json(C.RUNS / "splits.json", splits)
+        print(f"splits: added {len(added)} new maps ({', '.join(added)})")
     deadline = C.deadline_from(hours)
     todo = maps or splits["maps_train"]
     for m in todo:
