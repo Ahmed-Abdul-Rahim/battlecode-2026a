@@ -79,5 +79,5 @@ PC awake).
   is recomputed under the new snapshot.
 - A cloud box has fewer cores than the 16-thread PC: 4 cores ran ~0.8 games/s (5 s a game), so
   a 6k-game map search takes about 2 hours. Set `BCTOOLS_JOBS` to the core count.
-- The fresh top-10 mimics and lg-v23-fuel build on first use; `verify` fails with a KeyError if
-  an opponent isn't built yet (build them with `C.runner.build`, see the session log).
+- The fresh top-10 mimics and lg-v23-fuel build on first use (`verify` builds any that are
+  missing).

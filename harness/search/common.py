@@ -292,6 +292,15 @@ def fresh_top() -> dict[str, str]:
     return out
 
 
+def ensure_opponents(names: list[str]) -> None:
+    """Build these opponents if their wasm is missing (a fresh checkout builds lazily, and
+    opponents() lists only built bots). Names as opponents() keys: "top-<slug>" = mimic-<slug>."""
+    for n in names:
+        d = ROOT / "bots" / ("_rules" if n == "rules" else ("mimic-" + n[4:] if n.startswith("top-") else n))
+        if not injected(d).exists() and (d / "src").exists():
+            runner.build(str(d), release=True)
+
+
 def build_rules() -> None:
     """Our rule bot as it is on league today (the main checkout's bots/main), as an opponent."""
     d = ROOT / "bots" / "_rules"

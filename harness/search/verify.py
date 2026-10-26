@@ -32,6 +32,8 @@ def build_submission() -> str:
 def run(maps_only: list[str] | None = None) -> dict:
     splits = C.load_json(C.RUNS / "splits.json", None)
     cand, ref = build_submission(), build_reference()
+    led = C.load_json(C.ROOT / "league" / "ledger.json", {})
+    C.ensure_opponents(list(splits["head_to_head"]) + [f"top-{p['slug']}" for p in led.get("pool", [])])
     opps = C.opponents()
     test = [o for o in splits["head_to_head"]] + sorted(C.fresh_top())
     maps = {m: p for m, p in C.maps().items() if not maps_only or m in maps_only}
