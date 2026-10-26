@@ -92,6 +92,19 @@ def _league():
     return mod
 
 
+def _layer(base: bytes, cand: bytes) -> bytes:
+    """settings.rs for_map: the candidate's draft (if set) and knobs over the base record."""
+    def parse(r: bytes) -> tuple[int, dict[int, int]]:
+        if not r or r[0] != 1:
+            return 0, {}
+        n = r[2]
+        return r[1], dict(zip(r[4 : 4 + 2 * n : 2], r[5 : 4 + 2 * n : 2]))
+
+    bd, bo = parse(base)
+    cd, co = parse(cand)
+    return C.record(draft=cd or bd, overrides={**bo, **co})
+
+
 def export() -> None:
     table = S.table()
     recs = {}
@@ -99,6 +112,12 @@ def export() -> None:
         if r["accepted"]:
             s = C.Store(f"search/{m}", C.check_snapshot()["wasm"])
             recs[m] = s.cands[r["accepted"]]
+    # The reference pack's plans (the folded engine-1 hand plans) stay under the searched ones,
+    # as settings.rs layers a candidate over the pack: same knobs the search measured.
+    from harness import pack as packlib
+
+    for m, base in packlib.read_plans(C.REFERENCE_PACK).items():
+        recs[m] = _layer(base, bytes.fromhex(recs[m]) if m in recs else b"").hex()
     # Side-specific maps (harness/search/side.py): v2 record = team A's spawn tile, then team A's
     # and team B's records; a side without its own plan keeps the map plan (or the defaults).
     from harness.search import side as SD

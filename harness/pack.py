@@ -90,6 +90,24 @@ def write(spec: dict, out: Path = PACK) -> int:
     return len(blob)
 
 
+def read_plans(path: Path) -> dict[str, bytes]:
+    """Map name -> the pack's plan record (tag 6), for the maps that have one."""
+    fps = {v: k for k, v in json.loads(FINGERPRINTS.read_text(encoding="utf-8")).items()}
+    blob = path.read_bytes()
+    _, n = struct.unpack_from("<HH", blob, 4)
+    at, out = 8, {}
+    for _ in range(n):
+        fp, ns = struct.unpack_from("<IH", blob, at)
+        at += 6
+        for _ in range(ns):
+            tag, ln = struct.unpack_from("<BI", blob, at)
+            at += 5
+            if tag == TAG_PLAN and fp in fps:
+                out[fps[fp]] = blob[at : at + ln]
+            at += ln
+    return out
+
+
 def _deaths_local(stats: Path, results: list[dict]) -> list[tuple[str, int, int, int, int]]:
     """(map, w, h, x, y) for every death of our engine's champions in local games."""
     out = []
