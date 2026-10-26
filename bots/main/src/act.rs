@@ -29,6 +29,8 @@ const ALTAR_LOCK_RANGE: i32 = 2;
 const ALTAR_LOCK_COST: u32 = 10;
 /// ALTAR_LOCK 2: an altar within this many tiles of equal distance to both spawns is contested.
 const CONTESTED_SLACK: i32 = 3;
+/// DENY_TRIBUTE 4: the guard stands within this many tiles of its altar.
+const GUARD_HOLD_RADIUS: i32 = 2;
 /// TP_CRYSTAL: teleport only when it saves this many steps (the channel itself takes 3
 /// turns), with no enemy this close, and buy one only with this much gold left over.
 const TP_MIN_SAVING: u16 = 7;
@@ -215,7 +217,29 @@ impl Exec<'_> {
                 let threats = self.vis.threats(None);
                 self.walk(Goal::AllySpawn, &threats)
             }
+            Intent::Guard(altar) => self.guard(altar),
         }
+    }
+
+    /// DENY_TRIBUTE 4: stand by the contested altar. A tributing enemy in reach is the brain's
+    /// Engage (deny rule); here: bank our own gems, hit what is in range, else close in.
+    fn guard(&mut self, altar: Pos) -> Result<()> {
+        self.cast_support()?;
+        if self.me.gem_count().unwrap_or(0) > 0 && self.world.altar_in_range(self.my_pos).is_some() {
+            return self.tribute();
+        }
+        if self.vis.enemies.iter().any(|e| self.in_attack_range(e.pos)) {
+            return self.opportunistic_attack();
+        }
+        if self.my_pos.cheb(altar) > GUARD_HOLD_RADIUS && self.me.can_move()? {
+            if self.me.move_towards(vec2(altar)).unwrap_or(false) {
+                self.my_pos = pos(self.me.position()?);
+                self.out.moved = true;
+                self.out.tier = Some(Tier::Weighted);
+            }
+            return Ok(());
+        }
+        self.opportunistic_attack()
     }
 
     // ----- shopping -------------------------------------------------------

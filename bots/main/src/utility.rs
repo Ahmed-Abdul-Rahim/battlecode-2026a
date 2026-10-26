@@ -7,9 +7,36 @@
 //! ranged). U lives in learned.rs / the policy pack per map and is evolved by ES; all-zero
 //! U scores every option 0 and keeps the rule intent, i.e. identity.
 
-use crate::act::Visible;
+use crate::act::{EnemyView, Visible};
+use crate::bc_brain::context::EnemyNear;
 use crate::bc_brain::{Context, Intent};
 use crate::bc_core::Pos;
+
+/// Guard rails on the learned options (the U weights were evolved on engine 1.x and, on
+/// reverse-spiral and gold-rush, forced fights with any visible enemy and recalls at full
+/// health most turns: 52k / 32k overrides in 8 games each, champions looping or dying).
+/// Recall / walk home need a reason: low health, or a threat with a bag or a scratch.
+const HOME_HP: f32 = 0.6;
+const HOME_THREAT_HP: f32 = 0.85;
+/// A melee champion doesn't chase a ranged enemy further than this (it kites us to death).
+const MELEE_CHASE_RANGED: i32 = 2;
+
+/// Fight or support only what the router's duel estimate says we win.
+fn winnable(ctx: &Context, e: &EnemyView, my_range: i32) -> bool {
+    if e.ranged && my_range <= 1 && e.dist > MELEE_CHASE_RANGED {
+        return false;
+    }
+    let near = EnemyNear {
+        pos: e.pos,
+        dist: e.dist,
+        hp: e.hp,
+        max_hp: e.max_hp,
+        dps: e.dps,
+        gems: 0,
+        ranged: e.ranged,
+    };
+    crate::bc_brain::router::fight_advantage(ctx, &near) >= 1.0
+}
 
 /// Options, in U row order.
 pub const KEEP: usize = 0;
@@ -81,6 +108,12 @@ pub fn choose(
         ctx.dist_spawn.map_or(1.0, |d| f32::from(d) / 20.0),
         f32::from(u8::from(ctx.ranged)),
     ];
+    let threatened = enemy_dps > 0.0 || camp_dps > 0.0;
+    let go_home = !ctx.at_spawn
+        && (ctx.hp_frac() < HOME_HP
+            || (threatened && (ctx.gems > 0 || ctx.hp_frac() < HOME_THREAT_HP)));
+    let ally_in_trouble = ally_in_trouble.filter(|e| winnable(ctx, e, my_range));
+    let weakest = weakest.filter(|e| winnable(ctx, e, my_range));
     let score =
         |k: usize| -> f32 { u[k * PHI..(k + 1) * PHI].iter().zip(phi).map(|(w, x)| w * x).sum() };
     let step_from = camp_on_me.map(|c| c.pos).or_else(|| melee_on_me.map(|e| e.pos));
@@ -89,8 +122,8 @@ pub fn choose(
         (STEP_BACK, step_from.map(Intent::StepBack)),
         (SUPPORT, ally_in_trouble.map(|e| Intent::Engage(e.pos))),
         (FIGHT, weakest.map(|e| Intent::Engage(e.pos))),
-        (WALK_HOME, (!ctx.at_spawn).then_some(Intent::WalkHome)),
-        (RECALL, (!ctx.at_spawn).then_some(Intent::Retreat)),
+        (WALK_HOME, go_home.then_some(Intent::WalkHome)),
+        (RECALL, go_home.then_some(Intent::Retreat)),
     ];
     let keep = score(KEEP);
     let (best_k, best) = candidates

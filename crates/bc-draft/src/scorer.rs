@@ -61,6 +61,22 @@ fn prior(choice: DraftChoice, m: &MapDescriptor) -> f32 {
     }
 }
 
+/// Gem-heavy maps (little gold, so few items; gems are won in fights) reward base health:
+/// per pick, `DURABILITY_W x combat x (health / 1000 - 1)`, combat = how far the gem share is
+/// above one half (0 on ordinary maps, 1 on an all-gem map). Per body for Cassi & Issac.
+const DURABILITY_W: f32 = 0.6;
+
+fn durability(choice: DraftChoice, m: &MapDescriptor) -> f32 {
+    let combat = ((m.gem_share - 0.5) * 2.0).clamp(0.0, 1.0);
+    if combat == 0.0 {
+        return 0.0;
+    }
+    let bodies = choice.champions();
+    let hp: f32 = bodies.iter().map(|&k| bc_core::champion::builtin_kit(k).base_health).sum::<f32>()
+        / bodies.len() as f32;
+    DURABILITY_W * combat * (hp / 1000.0 - 1.0)
+}
+
 fn is_tank(v: &ChampVec) -> bool {
     v[0] >= 80
 }
@@ -77,7 +93,7 @@ pub fn score(
     vec_of: &dyn Fn(ChampionKind) -> ChampVec,
     weights: &ScorerWeights,
 ) -> f32 {
-    let mut s = prior(choice, map);
+    let mut s = prior(choice, map) + durability(choice, map);
     let mine: Vec<ChampVec> = choice.champions().iter().map(|&k| vec_of(k)).collect();
     let allies: Vec<ChampVec> =
         state.ally.iter().flat_map(|c| c.champions().iter().map(|&k| vec_of(k))).collect();
@@ -131,6 +147,17 @@ pub fn best_pick(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn gem_heavy_maps_favour_base_health() {
+        let mut m = crate::map::MapDescriptor::from_map(&crate::map::tests::sample_map());
+        m.gem_share = 0.3;
+        assert_eq!(durability(DraftChoice::Ryth, &m), 0.0, "ordinary map: no term");
+        m.gem_share = 1.0;
+        assert!(durability(DraftChoice::Ryth, &m) > 0.0);
+        assert!(durability(DraftChoice::CassiAndIssac, &m) < 0.0, "600 / 900 hp bodies");
+        assert!(durability(DraftChoice::Ryth, &m) > durability(DraftChoice::Tavi, &m));
+    }
     use crate::map::tests::sample_map;
     use bc_brain::champvec::from_kit;
     use bc_core::champion::builtin_kit;

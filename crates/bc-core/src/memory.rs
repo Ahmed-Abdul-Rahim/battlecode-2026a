@@ -192,7 +192,8 @@ pub mod knob {
     /// Squad pairs (slots 2k, 2k+1) join each other's camp group: value ×(this/10); 0 = off.
     pub const SQUAD_JOIN_X10: usize = 9;
     /// Camp value formula: 0 gems + gold/3, 1 gems + gold/10, 2 slots 0-1 gold / rest gems,
-    /// 4 gems + gold x0.6, 5 gems + gold (4/5 also prefer near camps in the opening).
+    /// 4 gems + gold x0.6, 5 gems + gold (4/5 also prefer near camps in the opening), 6 tempo
+    /// (gold x1.2 before the 3rd emblem, x0.6 mid game, x0.25 from round 1400).
     pub const VALUE_PROFILE: usize = 10;
     /// 1 = the last slot of a 4+ team farms far, quiet groups (distance weight 0.4).
     pub const REMOTE_FARMER: usize = 11;
@@ -200,7 +201,8 @@ pub mod knob {
     /// behind late or when the enemy is close to winning (only kills can stop them).
     pub const HUNT_MODE: usize = 12;
     /// 1 = stun / altar-lock / attack enemies channelling a tribute (stun, death or a new
-    /// lock cancels it; damage doesn't), and carry an altar lock (10 gold).
+    /// lock cancels it; damage doesn't), and carry an altar lock (10 gold); 4 = also, with 4+
+    /// champions, the last slot guards the contested altar.
     pub const DENY_TRIBUTE: usize = 13;
     /// 1 = bank every carried gem from ENDGAME_ROUND on (at round 2000 gems decide, then gold).
     pub const ENDGAME_BANK: usize = 14;
@@ -218,6 +220,8 @@ pub mod knob {
     pub const ALTAR_LOCK: usize = 18;
     /// Ladder meta (v7): draft Varg/Tavi/Cassi&Issac/Stellar/Prism; Tavi buys shards in the
     /// field (its passive), builds Strength on every passive, and hunts once geared.
+    /// Bit 2: where no plan / pack chose a roster, draft with the map-aware scorer instead of the
+    /// META list (the Tavi field shop / build / hunt still follow bit 1).
     pub const TAVI_META: usize = 19;
     /// 1 = cancel a recall when an enemy closes in (recall is a free kill otherwise);
     /// 2 = also only start one when nothing seen or remembered can reach us during it.
@@ -280,7 +284,7 @@ pub mod knob {
         (COMBAT_SEARCH, 0),
         (CAMP_SAFE, 0),
         (ALTAR_LOCK, 1),
-        (TAVI_META, 1),
+        (TAVI_META, 3),
         (RECALL_SAFE, 2),
         (FIGHT_V6, 0),
         (STUN_THREAT, 0),

@@ -285,8 +285,13 @@ fn default_knob(index: usize) -> u8 {
     crate::bc_core::memory::ThetaMatch::default().knob(index)
 }
 
+/// TAVI_META bit 1 drafts the fixed META list where nothing else chose a roster, unless bit 2
+/// hands that choice to the map-aware scorer (best_pick): META is an engine-1 ladder snapshot
+/// that never looks at the map (it forced Tavi and two fragile Cassi / Issac bodies onto an
+/// all-gem fight map).
 fn meta_draft() -> bool {
-    crate::bc_core::memory::ThetaMatch::default().knob(crate::bc_core::memory::knob::TAVI_META) > 0
+    let v = crate::bc_core::memory::ThetaMatch::default().knob(crate::bc_core::memory::knob::TAVI_META);
+    v & 1 != 0 && v & 2 == 0
 }
 
 const RANGED: [DraftChoice; 5] = [

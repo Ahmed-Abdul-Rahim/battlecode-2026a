@@ -34,8 +34,11 @@ MAGIC = bytes([0x50, 0x53, 0x43, 0x46, 0x47, 0x01, 0xA5, 0x5A])
 BLOCK = 128
 N_SLOTS = 16
 SLOT = "_ps{}"
-#: Our side's fitness, as league.fitness: win + 0.25 gem margin - 0.01 deaths.
-MARGIN_W, DEATH_W = 0.25, 0.01
+#: Our side's fitness, as league.fitness: win + 0.25 gem margin - 0.01 deaths, plus for a win
+#: SPEED_W x the share of the 2000 rounds left (a win by 1000 gems at round 900 beats one at
+#: 1999: less time for the enemy to come back).
+MARGIN_W, DEATH_W, SPEED_W = 0.25, 0.01, 0.1
+MAX_ROUNDS = 2000
 #: Games per batch: about 2-3 minutes at 14 jobs, so a stop loses little.
 BATCH_GAMES = 600
 
@@ -395,7 +398,8 @@ def stalls(r: dict) -> int:
 
 def fitness(r: dict) -> float:
     margin = (r["ours"] - r["theirs"]) / max(r["ours"] + r["theirs"], 1)
-    return r["res"] + MARGIN_W * margin - DEATH_W * r["deaths"]
+    speed = max(MAX_ROUNDS - r.get("rounds", MAX_ROUNDS), 0) / MAX_ROUNDS if r["res"] == 1.0 else 0.0
+    return r["res"] + MARGIN_W * margin - DEATH_W * r["deaths"] + SPEED_W * speed
 
 
 # ---------------------------------------------------------------- playing

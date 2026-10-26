@@ -111,6 +111,10 @@ pub struct MapDescriptor {
     pub holes: f32,
     pub bushes: f32,
     pub altars: f32,
+    /// Share of the map's value in gems (gems / (gems + gold / 3)): near 1, there is little
+    /// gold to buy items with and the gems are won in fights (adgato-gemcombat1: 1.0, median
+    /// pool map 0.38). Not part of [`Self::to_array`] (the θ map cache layout).
+    pub gem_share: f32,
 }
 
 impl MapDescriptor {
@@ -138,6 +142,12 @@ impl MapDescriptor {
             holes: m.hole_frac,
             bushes: m.bush_frac,
             altars: m.n_altars as f32 / 8.0,
+            gem_share: {
+                let gems: u32 = m.groups.iter().map(|g| g.gems).sum();
+                let gold: u32 = m.groups.iter().map(|g| g.gold).sum();
+                let total = gems as f32 + gold as f32 / 3.0;
+                if total > 0.0 { gems as f32 / total } else { 0.0 }
+            },
         }
     }
 

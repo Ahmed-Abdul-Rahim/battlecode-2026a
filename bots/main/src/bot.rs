@@ -54,6 +54,8 @@ pub struct Bot {
     target_kept: u8,
     /// CAMP_FEASIBLE bit 32: (group, until round) left to an ally who is already capturing it.
     skip_capture: Option<(usize, u32)>,
+    /// DENY_TRIBUTE 4: the contested altar the last slot holds (4+ champions only).
+    guard_altar: Option<Pos>,
     last_hp: f32,
     hurt_round: u32,
     last_pos: Pos,
@@ -244,6 +246,18 @@ const PANIC_BANK_HP: f32 = 0.9;
 /// and don't come back to that group for this many rounds (the capture takes 5, 3 with Capture).
 const ONE_CAPTURER_CALM: i32 = 6;
 const ONE_CAPTURER_SKIP: u32 = 6;
+/// VALUE_PROFILE 6 (tempo): gold weight early (fewer emblems than this) and from this round.
+const TEMPO_EMBLEMS: u32 = 3;
+const TEMPO_GOLD_EARLY: f32 = 1.2;
+const TEMPO_LATE_ROUND: u32 = 1400;
+const TEMPO_GOLD_LATE: f32 = 0.25;
+/// DENY_TRIBUTE 4 (altar guard): team size, altar contest slack (|our walk - theirs|, tiles),
+/// start round, health floor, and camps it still farms (centre within this of the altar).
+const GUARD_MIN_TEAM: usize = 4;
+const GUARD_CONTESTED_SLACK: i32 = 4;
+const GUARD_FROM_ROUND: u32 = 150;
+const GUARD_MIN_HP: f32 = 0.4;
+const GUARD_FARM_RADIUS: i32 = 6;
 /// MONOLITH_LIVE: attack once pooled team health lasts this fraction of the kill time.
 const MONOLITH_SLACK: f32 = 1.0;
 /// VALUE_PROFILE 4/5: the opening (near camps first: early gold compounds into items).
@@ -332,6 +346,23 @@ impl Bot {
         if plan_bits & 16 != 0 && !theta.plan.field_order.is_empty() {
             world.fields.prioritise_order(&theta.plan.field_order);
         }
+        // DENY_TRIBUTE 4: with 4+ champions the last slot guards the most contested altar
+        // (about as close to their spawn as to ours). SDK positions(): ~600 fuel each, once.
+        let guard_altar = if theta.knob(knob::DENY_TRIBUTE) >= 4 && allies.len() >= GUARD_MIN_TEAM && usize::from(slot) + 1 == allies.len() {
+            let theirs: Vec<Pos> = cambc::map::spawn_region(Team::Enemy)?.positions()?.into_iter().map(pos).collect();
+            let ours: Vec<Pos> = cambc::map::spawn_region(Team::Ally)?.positions()?.into_iter().map(pos).collect();
+            let near = |set: &[Pos], a: Pos| set.iter().map(|p| p.cheb(a)).min().unwrap_or(i32::MAX / 2);
+            cambc::map::altars()?
+                .positions()?
+                .into_iter()
+                .map(pos)
+                .map(|a| ((near(&ours, a) - near(&theirs, a)).abs(), a))
+                .filter(|&(gap, _)| gap <= GUARD_CONTESTED_SLACK)
+                .min_by_key(|&(gap, _)| gap)
+                .map(|(_, a)| a)
+        } else {
+            None
+        };
         let belief = Belief::new(&world.groups.iter().map(|g| g.max_respawn).collect::<Vec<_>>());
         let last_pos = me.position().map(pos).unwrap_or_default();
         if slot == 0 {
@@ -353,6 +384,7 @@ impl Bot {
             target_cost: 0,
             target_kept: 0,
             skip_capture: None,
+            guard_altar,
             last_hp: 0.0,
             hurt_round: 0,
             last_pos,
@@ -629,6 +661,26 @@ impl Bot {
                     }
                 }
             }
+            // DENY_TRIBUTE 4: the guard holds its altar instead of farming far away (it still
+            // takes camps right by the altar), from GUARD_FROM_ROUND on.
+            if let Some(a) = self.guard_altar {
+                let farm_by_altar = |g: u8| {
+                    self.world.groups.get(usize::from(g)).is_some_and(|gr| gr.center.cheb(a) <= GUARD_FARM_RADIUS)
+                };
+                let farming = match intent {
+                    Intent::ClearCamp(g) | Intent::Capture(g) | Intent::Approach(g) => !farm_by_altar(g),
+                    Intent::Hold => true,
+                    _ => false,
+                };
+                if farming
+                    && round >= GUARD_FROM_ROUND
+                    && !matches!(mode, Mode::Override(_))
+                    && ctx.hp_frac() > GUARD_MIN_HP
+                    && ctx.gems < ctx.knobs.big_bag()
+                {
+                    intent = Intent::Guard(a);
+                }
+            }
             // Deny tributes: an enemy channelling a tribute nearby loses the whole bag to a
             // stun, a kill or a fresh altar lock (damage alone doesn't stop it).
             let deny = self.theta.knob(knob::DENY_TRIBUTE) > 0;
@@ -674,6 +726,20 @@ impl Bot {
                     .iter()
                     .filter(|e| e.dist <= TAVI_HUNT_RADIUS && !e.on_spawn)
                     .filter(|e| e.gems >= 10 || e.tributing || e.hp < 0.5 * e.max_hp)
+                    // Only a fight the duel estimate says we win (a geared Tavi dove lone
+                    // "weak" targets it couldn't finish and fed the bag).
+                    .filter(|e| {
+                        let near = crate::bc_brain::context::EnemyNear {
+                            pos: e.pos,
+                            dist: e.dist,
+                            hp: e.hp,
+                            max_hp: e.max_hp,
+                            dps: e.dps,
+                            gems: e.gems,
+                            ranged: e.ranged,
+                        };
+                        crate::bc_brain::router::fight_advantage(&ctx, &near) >= 1.0
+                    })
                     .filter(|e| {
                         vis.enemies.iter().filter(|o| o.pos.cheb(e.pos) <= 4).count()
                             <= allies_near + 1
@@ -2169,7 +2235,7 @@ impl Bot {
         let plan_bits = self.theta.knob2(knob2::DRAFT_PLAN);
         let enemy_close = vis.enemies.iter().any(|e| !e.on_spawn && e.dist <= PLAN_ENEMY_CLOSE);
         // VALUE_PROFILE 4/5: near camps first in the opening (gold now beats gems later).
-        let opening = matches!(value_profile, 4 | 5) && round < OPENING_ROUNDS;
+        let opening = matches!(value_profile, 4..=6) && round < OPENING_ROUNDS;
         // Loop invariants, read once (scoring every group used ~1.5k fuel each).
         let slot = self.slot as usize;
         let emblems = self.emblems();
@@ -2182,6 +2248,13 @@ impl Bot {
         let ease_first = self.theta.knob2(knob2::EASE_FIRST) > 0;
         let ally_near = vis.allies.iter().any(|a| a.dist <= 6);
         let w_gem = crate::learned::w(crate::learned::GEM);
+        let tempo_gold = if self.emblems() < TEMPO_EMBLEMS {
+            TEMPO_GOLD_EARLY
+        } else if round >= TEMPO_LATE_ROUND {
+            TEMPO_GOLD_LATE
+        } else {
+            0.6
+        };
         let w_gold = crate::learned::w(crate::learned::GOLD);
         let w_reward = crate::learned::w(crate::learned::REWARD);
         let w_shared_small = crate::learned::w(crate::learned::SHARED_SMALL);
@@ -2266,6 +2339,11 @@ impl Bot {
             let mut value = match value_profile {
                 1 => g.gems as f32 + g.gold as f32 / 10.0,
                 4 => g.gems as f32 * w_gem + g.gold as f32 * 0.6 * w_gold,
+                // 6 = tempo: gold buys the items that speed every later clear, so it is worth
+                // the most early (fewer than TEMPO_EMBLEMS emblems) and little late (it only
+                // breaks ties at round 2000). corners: 20 gold-only groups on one half went
+                // unvisited while the team camped the gem half.
+                6 => g.gems as f32 * w_gem + g.gold as f32 * tempo_gold * w_gold,
                 5 => g.gems as f32 + g.gold as f32,
                 2 if self.slot < 2 => g.gems as f32 * 0.3 + g.gold as f32,
                 2 => g.gems as f32 + g.gold as f32 * 0.15,

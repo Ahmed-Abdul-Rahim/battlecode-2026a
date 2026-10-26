@@ -537,7 +537,7 @@ fn goal_of(intent: Intent, goals: &[Option<Intent>; HEADS[0]], vis: &Visible) ->
         Intent::Shop => G_SHOP,
         Intent::Retreat => G_RETREAT,
         Intent::WalkHome => G_WALK_HOME,
-        Intent::Hold => G_HOLD,
+        Intent::Hold | Intent::Guard(_) => G_HOLD,
         Intent::Kite(_) => G_KITE,
         Intent::StepBack(_) => G_STEP_BACK,
         Intent::Engage(p) => vis

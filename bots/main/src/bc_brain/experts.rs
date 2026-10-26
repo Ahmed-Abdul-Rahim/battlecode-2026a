@@ -107,6 +107,9 @@ pub enum Intent {
     StepBack(Pos),
     /// Walk home without recalling (no frozen channel).
     WalkHome,
+    /// DENY_TRIBUTE 4: hold the contested altar at this position (attack or stun enemies who
+    /// come to tribute, bank our own gems there).
+    Guard(Pos),
 }
 
 pub fn farm(ctx: &Context) -> Intent {
