@@ -229,6 +229,11 @@ const EN_ROUTE_MAX_CLEAR: f32 = 25.0;
 const EN_ROUTE_WIDE_MIN_DIST: i32 = 8;
 const EN_ROUTE_WIDE_MAX_CLEAR: f32 = 40.0;
 const EN_ROUTE_FREE_RADIUS: i32 = 4;
+/// knob2 TRIBUTE_DETOUR: extra walk allowed on the way to an altar, camp clear-time cap (turns),
+/// and the share of our health a weak camp may take while we carry gems.
+const TRIBUTE_DETOUR_MAX: i32 = 4;
+const TRIBUTE_DETOUR_CLEAR: f32 = 12.0;
+const TRIBUTE_DETOUR_HP: f32 = 0.35;
 /// MONOLITH_LIVE: attack once pooled team health lasts this fraction of the kill time.
 const MONOLITH_SLACK: f32 = 1.0;
 /// VALUE_PROFILE 4/5: the opening (near camps first: early gold compounds into items).
@@ -248,8 +253,14 @@ const LAST_STAND_MAX_GEMS: u32 = 20;
 impl Bot {
     pub fn new() -> Result<Self> {
         let theta = ThetaMatch::decode(cambc::draft_memory().bytes()).unwrap_or_default();
-        let mut world =
-            World::build(theta.knob(knob::SAFE_ALTAR) > 0, theta.knob2(knob2::CLUSTER) > 0)?;
+        // knob2 JUMP_HOLES: dash champions path over 1-wide hole gaps (~6k fuel, once).
+        let dash = theta.knob2(knob2::JUMP_HOLES) > 0
+            && cambc::self_champion()?.is_some_and(|me| me.abilities().iter().any(|a| a.is_dash()));
+        let mut world = World::build(
+            theta.knob(knob::SAFE_ALTAR) > 0,
+            theta.knob2(knob2::CLUSTER) > 0,
+            dash,
+        )?;
         // Policy pack: this map's learned parameters and hotspots (harness/pack.py). The draft
         // passes the fingerprint (hashing the map here cost ~50-60k fuel on big maps).
         let fp = if theta.map_fp != 0 {
@@ -908,6 +919,20 @@ impl Bot {
                 if hard {
                     telemetry::event(round, champ_name(self.kind), "upgrade_first", 1);
                     intent = Intent::Shop;
+                }
+            }
+            // knob2 TRIBUTE_DETOUR: on the way to an altar, pick up a reward or a weak camp that
+            // lies just off the route (the walk to the altar used to pass them by).
+            let detour_bits = self.theta.knob2(knob2::TRIBUTE_DETOUR);
+            if detour_bits > 0
+                && intent == Intent::Tribute
+                && quiet
+                && round < ENDGAME_ROUND
+                && !matches!(mode, Mode::Override(_))
+            {
+                if let Some(stop) = self.tribute_stop(my_pos, round, &chan, ctx.gems, ctx.knobs.big_bag(), detour_bits) {
+                    intent = stop;
+                    telemetry::event(round, champ_name(self.kind), "tribute_detour", 1);
                 }
             }
             // knob2 ENDGAME, ahead late: bank whatever we carry when nothing threatens us.
@@ -2441,6 +2466,59 @@ impl Bot {
             let cost = detour as f32 + clear;
             if pick.is_none_or(|(c, _)| cost < c) {
                 pick = Some((cost, i));
+            }
+        }
+        pick.map(|(_, i)| i)
+    }
+
+    /// knob2 TRIBUTE_DETOUR: the best stop within TRIBUTE_DETOUR_MAX extra tiles of the walk to
+    /// the altars: a waiting reward (bit 1, capture) or a weak camp (bit 2, clear; not with a big
+    /// bag, and only when it can't take more than TRIBUTE_DETOUR_HP of our health).
+    fn tribute_stop(
+        &self,
+        my_pos: Pos,
+        round: u32,
+        chan: &TeamChannel,
+        gems: u32,
+        big_bag: u32,
+        bits: u8,
+    ) -> Option<Intent> {
+        let fields = &self.world.fields;
+        let to_altar = i32::from(fields.distance(Goal::Altars, my_pos)?);
+        let dps = self.cur_dps.max(10.0);
+        let mut pick: Option<(f32, Intent)> = None;
+        for (i, g) in self.world.groups.iter().enumerate() {
+            if g.has_monolith || g.gold + g.gems == 0 || g.center.cheb(my_pos) > to_altar + TRIBUTE_DETOUR_MAX {
+                continue;
+            }
+            let state = self.belief.expected_state(i, round);
+            let reward = state == GroupState::RewardAvailable;
+            let alive = matches!(state, GroupState::Alive | GroupState::Unknown);
+            if !(reward && bits & 1 != 0 || alive && bits & 2 != 0 && gems < big_bag) {
+                continue;
+            }
+            if self.priority_index(i).is_some_and(|pi| chan.claimants(pi, self.slot as usize) > 0) {
+                continue;
+            }
+            let Some(d1) = self.group_distance(i, my_pos) else { continue };
+            let Some(d2) = g.tiles.iter().filter_map(|&t| fields.distance(Goal::Altars, t)).min() else { continue };
+            let detour = d1 as i32 + i32::from(d2) - to_altar;
+            if detour > TRIBUTE_DETOUR_MAX {
+                continue;
+            }
+            let clear = if reward { 0.0 } else { g.total_hp / dps };
+            if !reward {
+                let damage = g.total_strength * CAMP_DMG_FLOOR * clear;
+                if clear > TRIBUTE_DETOUR_CLEAR || damage > self.last_hp * TRIBUTE_DETOUR_HP {
+                    continue;
+                }
+            }
+            // Value per extra turn spent (detour walk + clear + the capture timer).
+            let value = (g.gems * 3 + g.gold) as f32;
+            let score = value / (detour.max(0) as f32 + clear + 5.0);
+            let intent = if reward { Intent::Capture(i as u8) } else { Intent::ClearCamp(i as u8) };
+            if pick.is_none_or(|(s, _)| score > s) {
+                pick = Some((score, intent));
             }
         }
         pick.map(|(_, i)| i)

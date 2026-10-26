@@ -12,7 +12,8 @@ edition = "2021"
 rust-version = "1.99"
 
 [workspace.lints.rust]
-unsafe_code = "forbid"
+# deny, not forbid: the wasm32-only simd128 kernel in bc-brain/int8.rs allows it locally.
+unsafe_code = "deny"
 
 [workspace.lints.clippy]
 all = { level = "warn", priority = -1 }

@@ -123,8 +123,16 @@ pub mod knob2 {
     /// spawn) while the enemy is in sight or the team is behind, 2 = skip groups whose `need`
     /// is more champions than are within reach. Slots 27/28 are PATH_CHASE / LOOT_GUARD.
     pub const DRAFT_PLAN: usize = 29;
+    /// 1 = champions with a dash path over 1-wide hole gaps (holes can be dashed over, walls
+    /// can't): their distance fields treat those holes as passable and the walker dashes across.
+    /// Islands only reachable that way stop counting as unreachable.
+    pub const JUMP_HOLES: usize = 30;
+    /// Walking to an altar, stop for what lies just off the way (detour <= 4 tiles) while no
+    /// enemy is near: bit 1 = a camp reward waiting to be captured, bit 2 = a weak camp we clear
+    /// fast and safely (only with a small bag: a camp kill drops the gems we carry).
+    pub const TRIBUTE_DETOUR: usize = 31;
 
-    pub const DEFAULTS: [(usize, u8); 28] = [
+    pub const DEFAULTS: [(usize, u8); 30] = [
         (PASSIVE_AWARE, 0),
         (FOCUS, 1),
         (ENDGAME, 1),
@@ -153,6 +161,8 @@ pub mod knob2 {
         (KEEP_BUYING, 1),
         (TEACHER, 0),
         (DRAFT_PLAN, 0),
+        (JUMP_HOLES, 1),
+        (TRIBUTE_DETOUR, 3),
     ];
 }
 

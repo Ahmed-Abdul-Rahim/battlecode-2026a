@@ -189,10 +189,7 @@ impl Mlp {
         for (li, layer) in self.layers.iter().enumerate() {
             let rows = layer.weights.chunks(layer.n_in.max(1));
             for (o, ((row, &bias), slot)) in rows.zip(&layer.bias).zip(b.iter_mut()).enumerate() {
-                let mut acc = bias;
-                for (w, x) in row.iter().zip(&a[..layer.n_in]) {
-                    acc += i32::from(*w) * i32::from(*x);
-                }
+                let acc = bias + dot(row, &a[..layer.n_in]);
                 if li == last {
                     if let Some(logit) = out.get_mut(o) {
                         *logit = acc;
@@ -223,6 +220,65 @@ impl Mlp {
         let mut logits = [0i32; MAX_WIDTH];
         let n = self.forward(input, film, &mut logits);
         (0..n).max_by_key(|&i| (logits[i], core::cmp::Reverse(i)))
+    }
+}
+
+/// Σ w·x over the common length. In the bot (wasm32) a simd128 kernel: measured in game on a
+/// 64×128 layer, 20.8k fuel instead of 51.1k for the scalar loop, same result.
+#[inline]
+fn dot(w: &[i8], x: &[i8]) -> i32 {
+    #[cfg(target_arch = "wasm32")]
+    {
+        // SAFETY: simd128 is part of the engine's wasm feature set (cambc's C++ SDK ships
+        // wasm_simd128.h; checked in game with bots/_probe).
+        #[allow(unsafe_code)]
+        unsafe {
+            simd::dot(w, x)
+        }
+    }
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        dot_scalar(w, x)
+    }
+}
+
+#[cfg_attr(target_arch = "wasm32", allow(dead_code))]
+fn dot_scalar(w: &[i8], x: &[i8]) -> i32 {
+    w.iter().zip(x).map(|(a, b)| i32::from(*a) * i32::from(*b)).sum()
+}
+
+#[cfg(target_arch = "wasm32")]
+#[allow(unsafe_code)]
+mod simd {
+    use core::arch::wasm32::{
+        i16x8_extend_high_i8x16, i16x8_extend_low_i8x16, i32x4_add, i32x4_dot_i16x8,
+        i32x4_extract_lane, i32x4_splat, v128_load,
+    };
+
+    #[target_feature(enable = "simd128")]
+    pub(super) unsafe fn dot(w: &[i8], x: &[i8]) -> i32 {
+        let n = w.len().min(x.len());
+        let mut acc = i32x4_splat(0);
+        let mut i = 0;
+        while i + 16 <= n {
+            // SAFETY: i + 16 <= n bounds both slices; v128_load takes unaligned addresses.
+            let (a, b) = unsafe {
+                (v128_load(w.as_ptr().add(i).cast()), v128_load(x.as_ptr().add(i).cast()))
+            };
+            let lo = i32x4_dot_i16x8(i16x8_extend_low_i8x16(a), i16x8_extend_low_i8x16(b));
+            let hi = i32x4_dot_i16x8(i16x8_extend_high_i8x16(a), i16x8_extend_high_i8x16(b));
+            acc = i32x4_add(acc, i32x4_add(lo, hi));
+            i += 16;
+        }
+        let mut s = i32x4_extract_lane::<0>(acc)
+            + i32x4_extract_lane::<1>(acc)
+            + i32x4_extract_lane::<2>(acc)
+            + i32x4_extract_lane::<3>(acc);
+        while i < n {
+            s += i32::from(w[i]) * i32::from(x[i]);
+            i += 1;
+        }
+        s
     }
 }
 

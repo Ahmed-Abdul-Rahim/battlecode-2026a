@@ -77,6 +77,10 @@ pub struct World {
     pub altars: Vec<Pos>,
     /// One own-spawn tile, as a straight-line hint before fields exist.
     pub spawn_hint: Pos,
+    /// knob2 JUMP_HOLES: hole tiles a dash can cross (standable ground on two opposite sides).
+    /// `Some` only for a champion with a dash on a map that has them; the fields then treat
+    /// these tiles as passable, and the walker dashes over them.
+    pub jump_holes: Option<BitGrid>,
     pub fields: FieldCache,
 }
 
@@ -110,7 +114,7 @@ impl World {
     /// altar exists (knob SAFE_ALTAR).
     /// `cluster`: also link each group to its cluster neighbours (only knob2 CLUSTER reads them;
     /// ~40k fuel on maps with many groups).
-    pub fn build(safe_altar: bool, cluster: bool) -> Result<Self> {
+    pub fn build(safe_altar: bool, cluster: bool, dash: bool) -> Result<Self> {
         let width = cambc::map::width()?;
         let height = cambc::map::height()?;
         let walls = cambc::map::walls()?;
@@ -203,6 +207,14 @@ impl World {
         let mut spawn_roots = ally_spawn.clone();
         spawn_roots.intersect_assign(&free)?;
 
+        let mut jump_holes = None;
+        if dash {
+            let narrow = narrow_holes(holes, &free)?;
+            if !narrow.is_empty()? {
+                blocked.intersect_assign(&narrow.complement()?)?;
+                jump_holes = Some(sdk::grid(&narrow, width, height)?);
+            }
+        }
         let fields = FieldCache::new(blocked, spawn_roots, altar_roots, roots, width, height)?;
         Ok(Self {
             width,
@@ -212,8 +224,16 @@ impl World {
             tile_group,
             altars: altar_list,
             spawn_hint,
+            jump_holes,
             fields,
         })
+    }
+
+    /// knob2 JUMP_HOLES: `h` is a hole a dash can cross from `from` (landing two tiles on).
+    pub fn jump_over(&self, from: Pos, h: Pos) -> Option<Pos> {
+        let jump = self.jump_holes.as_ref()?;
+        let d = h - from;
+        (d.x.abs() <= 1 && d.y.abs() <= 1 && jump.get(h)).then(|| h + d).filter(|&l| self.terrain.walkable(l))
     }
 
     pub fn group_at(&self, p: Pos) -> Option<usize> {
@@ -225,6 +245,27 @@ impl World {
         let range = cambc::constants().submit_gems_range;
         self.altars.iter().copied().find(|a| a.cheb(p) <= range)
     }
+}
+
+/// Holes with standable ground on both sides along one of the four axes (horizontal, vertical,
+/// both diagonals): a 2-step dash crosses them. Ten host shifts and intersections (~6k fuel).
+/// Wider gaps (and walls, which dashes can't cross) stay blocked.
+fn narrow_holes(holes: &Bitboard, stand: &Bitboard) -> Result<Bitboard> {
+    let shifted = |dx: i32, dy: i32| -> Result<Bitboard> {
+        let mut b = if dx != 0 { stand.shift_right(dx)? } else { stand.clone() };
+        if dy != 0 {
+            b = b.shift_up(dy)?;
+        }
+        Ok(b)
+    };
+    let mut out = Bitboard::new()?;
+    for (dx, dy) in [(1, 0), (0, 1), (1, 1), (1, -1)] {
+        let mut pair = shifted(dx, dy)?;
+        pair.intersect_assign(&shifted(-dx, -dy)?)?;
+        out.union_assign(&pair)?;
+    }
+    out.intersect_assign(holes)?;
+    Ok(out)
 }
 
 /// Distance fields keyed by goal, computed on demand.

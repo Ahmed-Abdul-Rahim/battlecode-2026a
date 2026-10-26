@@ -442,6 +442,9 @@ impl Exec<'_> {
         if !self.me.can_move()? {
             return Ok(());
         }
+        if self.jump(goal)? {
+            return Ok(());
+        }
         for _ in 0..2 {
             let occupied = self.occupied.clone();
             let is_occupied = |p: Pos| occupied.contains(&p);
@@ -802,6 +805,32 @@ impl Exec<'_> {
                 Ok(None)
             }
         }
+    }
+
+    /// knob2 JUMP_HOLES: when an optimal step of the (dash-aware) field is a crossable hole,
+    /// dash over it (dashes are walking-compatible). With the dash cooling down the normal
+    /// tiers run: they can't step onto the hole, so they repair sideways or wait at the edge.
+    fn jump(&mut self, goal: Goal) -> Result<bool> {
+        if self.world.jump_holes.is_none() || !self.world.fields.is_ready(goal) {
+            return Ok(false);
+        }
+        let fields = &self.world.fields;
+        let Some(here) = fields.distance(goal, self.my_pos) else { return Ok(false) };
+        let landing = fields
+            .next_steps(goal, self.my_pos)
+            .into_iter()
+            .map(|d| self.my_pos + d)
+            .filter_map(|h| self.world.jump_over(self.my_pos, h))
+            .filter(|&l| !self.occupied.contains(&l))
+            .find(|&l| fields.distance(goal, l).is_some_and(|d| d + 2 == here));
+        let Some(to) = landing else { return Ok(false) };
+        let from = self.my_pos;
+        if self.dash_to(to)? {
+            telemetry::event(0, "", "jump_hole", 1);
+            telemetry::draw_path(from, to, 0xff_99_33);
+            return Ok(true);
+        }
+        Ok(false)
     }
 
     /// Dash onto the tile next to `target` (melee: close a 2-3 tile gap and still attack).
