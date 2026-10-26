@@ -44,6 +44,7 @@ MIN_GAP = 25
 NULL_EVERY = 10
 N_OPPS = 32
 LABEL_MAPS = 8
+KEEP_D = 40
 BATCH = 600
 LOG_LIMIT = 4_000_000
 DIR = C.RUNS / "b"
@@ -97,7 +98,11 @@ def _parse(args) -> dict:
         pass
     lines = text.splitlines()
     if keep_d:
-        row["D"] = [list(map(int, ln.split()[1:])) for ln in lines if ln.startswith(prefix)]
+        # Only a random sample of the decision lines: keeping all of them (~1,500 a game) ran the
+        # PC out of memory (13 GB, 2026-10-26); labelling samples DECISIONS_PER_GAME anyway.
+        ds = [ln for ln in lines if ln.startswith(prefix)]
+        random.Random(r["replay"]).shuffle(ds)
+        row["D"] = [list(map(int, ln.split()[1:])) for ln in ds[:KEEP_D]]
     row["fired"] = sum(1 for ln in lines if ln.startswith("B "))
     return row
 

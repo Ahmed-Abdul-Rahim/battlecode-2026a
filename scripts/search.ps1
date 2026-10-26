@@ -16,6 +16,8 @@ $root = Split-Path -Parent $PSScriptRoot
 Set-Location $root
 $py = Join-Path $root ".venv\Scripts\python.exe"
 $logs = Join-Path $root "runs\search"
+# One BLAS thread: numpy is used lightly, and 16 BLAS threads failed to allocate on a low-memory PC.
+$env:OPENBLAS_NUM_THREADS = "1"
 function Py { & $py -X utf8 -u -m harness.search @args }
 function Log($m) { $line = "$(Get-Date -Format 'MM-dd HH:mm') $m"; Write-Host $line -ForegroundColor Cyan; $line | Out-File -Append -Encoding utf8 (Join-Path $logs "run.log") }
 function Running { Get-CimInstance Win32_Process -Filter "Name='python.exe'" | Where-Object { $_.CommandLine -match 'harness.search' } }
