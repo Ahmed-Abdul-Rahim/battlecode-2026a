@@ -228,7 +228,8 @@ pub mod knob {
     /// 2 = also only start one when nothing seen or remembered can reach us during it.
     pub const RECALL_SAFE: usize = 20;
     /// Fight bits: 1 focus the weakest enemy in reach and call it for the team, 2 join team
-    /// fights from 50% hp, 4 finish kills / fight when outnumbering, 8 last stand.
+    /// fights from 50% hp, 4 finish kills / fight when outnumbering, 8 last stand, 16 retreat
+    /// towards a healthy ally nearer than home (regroup).
     pub const FIGHT_V6: usize = 21;
     /// 1 = value stun / attack-reset kits (Tavi, Prism, Cassi, Ryth) on a 6-round fight horizon.
     pub const STUN_THREAT: usize = 22;
@@ -287,7 +288,7 @@ pub mod knob {
         (ALTAR_LOCK, 1),
         (TAVI_META, 3),
         (RECALL_SAFE, 2),
-        (FIGHT_V6, 0),
+        (FIGHT_V6, 16),
         (STUN_THREAT, 0),
         (CAMP_FEASIBLE, 56),
         (PASSIVE_ROLES, 0),

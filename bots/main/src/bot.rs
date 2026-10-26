@@ -1565,6 +1565,7 @@ impl Bot {
             tp_crystal: false,
             weak_first: false,
             dash_in: false,
+            regroup: self.theta.knob(knob::FIGHT_V6) & 16 != 0,
             field_shop: false,
             keep_buying: self.theta.knob2(knob2::KEEP_BUYING) > 0,
             recall_safe: false,

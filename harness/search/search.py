@@ -55,7 +55,7 @@ CATS: dict[str, list[int]] = {
 #: Bit-field knobs: each bit is its own on/off choice.
 BITS: dict[str, list[int]] = {
     "CAMP_SAFE": [1, 2],
-    "FIGHT_V6": [1, 2, 4, 8],
+    "FIGHT_V6": [1, 2, 4, 8, 16],
     "CAMP_FEASIBLE": [1, 2, 8, 16, 32],
     "COMBAT_FSM": [1, 2, 64, 128],
     "K2_DRAFT_PLAN": [1, 2, 4, 8, 16],

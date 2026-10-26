@@ -31,6 +31,9 @@ const ALTAR_LOCK_COST: u32 = 10;
 const CONTESTED_SLACK: i32 = 3;
 /// DENY_TRIBUTE 4: the guard stands within this many tiles of its altar.
 const GUARD_HOLD_RADIUS: i32 = 2;
+/// FIGHT_V6 bit 16 (regroup): allies within this many tiles with at least this health share.
+const REGROUP_RADIUS: i32 = 8;
+const REGROUP_ALLY_HP: f32 = 0.5;
 /// TP_CRYSTAL: teleport only when it saves this many steps (the channel itself takes 3
 /// turns), with no enemy this close, and buy one only with this much gold left over.
 const TP_MIN_SAVING: u16 = 7;
@@ -175,6 +178,8 @@ pub struct Exec<'a> {
     pub weak_first: bool,
     /// COMBAT_FSM 64|16: melee champions dash into attack range.
     pub dash_in: bool,
+    /// FIGHT_V6 bit 16: retreat towards a healthy ally close by instead of home alone.
+    pub regroup: bool,
     /// TAVI_META: Tavi buys shards anywhere on the map (its passive).
     pub field_shop: bool,
     /// knob2 KEEP_BUYING: once the build order is done, keep buying its last emblem.
@@ -567,6 +572,27 @@ impl Exec<'_> {
             }
             if !in_bush && self.duck_into_bush()? {
                 return Ok(());
+            }
+        }
+        // FIGHT_V6 bit 16: fall back on a healthy ally nearer than home. 49% of our deaths came
+        // while retreating, 43% with no ally within 5 tiles (104 debug games): walking home alone
+        // under fire from a chaser loses the race; next to an ally the chaser faces two.
+        if self.regroup && !self.vis.enemies.is_empty() && self.me.can_move()? {
+            let home = self.world.fields.distance(Goal::AllySpawn, self.my_pos).map_or(i32::MAX, i32::from);
+            let ally = self
+                .vis
+                .allies
+                .iter()
+                .filter(|a| a.hp >= REGROUP_ALLY_HP * a.max_hp && a.dist >= 2 && a.dist <= REGROUP_RADIUS && a.dist < home)
+                .min_by_key(|a| a.dist);
+            if let Some(a) = ally {
+                if self.me.move_towards(vec2(a.pos)).unwrap_or(false) {
+                    telemetry::event(0, "", "regroup", 1);
+                    self.my_pos = pos(self.me.position()?);
+                    self.out.moved = true;
+                    self.out.tier = Some(Tier::Weighted);
+                    return Ok(());
+                }
             }
         }
         let threats = self.vis.threats(None);
