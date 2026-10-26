@@ -258,9 +258,15 @@ def save_json(path: Path, obj) -> None:
 # ---------------------------------------------------------------- opponents and maps
 
 
+def map_key(stem: str) -> str:
+    """Map name without the platform's two-digit pool prefix (00ambush -> ambush). Some pool
+    maps have none (adgato-gemcombat1): only digits are stripped."""
+    return stem[2:] if stem[:2].isdigit() else stem
+
+
 def maps() -> dict[str, Path]:
-    """Map name (without the 00/01 prefix) -> file."""
-    return {p.stem[2:]: p for p in sorted(MAPS_DIR.glob("*.map26a"))}
+    """Map name (without the 00/01/02 prefix) -> file."""
+    return {map_key(p.stem): p for p in sorted(MAPS_DIR.glob("*.map26a"))}
 
 
 def opponents() -> dict[str, str]:

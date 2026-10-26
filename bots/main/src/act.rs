@@ -1132,6 +1132,14 @@ impl Exec<'_> {
         }
         let goal = enemy.pos;
         self.step_by(|p| p.cheb(goal))?;
+        // The greedy step only moves when a neighbour is Chebyshev-closer: a wall or hole
+        // between us stops the chase (about half of all Engage turns used it). The engine's
+        // shortest path (~5k fuel) goes around.
+        if !self.out.moved && self.me.can_move()? && self.me.move_towards(vec2(goal)).unwrap_or(false) {
+            self.my_pos = pos(self.me.position()?);
+            self.out.moved = true;
+            self.out.tier = Some(Tier::Weighted);
+        }
         if !self.ranged() && self.in_attack_range(enemy.pos) {
             self.attack_champion(&enemy.handle);
         }

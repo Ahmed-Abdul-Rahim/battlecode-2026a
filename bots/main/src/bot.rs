@@ -52,6 +52,8 @@ pub struct Bot {
     target_cost: u64,
     /// Turns the target was kept without rescoring because fuel was short.
     target_kept: u8,
+    /// CAMP_FEASIBLE bit 32: (group, until round) left to an ally who is already capturing it.
+    skip_capture: Option<(usize, u32)>,
     last_hp: f32,
     hurt_round: u32,
     last_pos: Pos,
@@ -234,6 +236,14 @@ const EN_ROUTE_FREE_RADIUS: i32 = 4;
 const TRIBUTE_DETOUR_MAX: i32 = 4;
 const TRIBUTE_DETOUR_CLEAR: f32 = 12.0;
 const TRIBUTE_DETOUR_HP: f32 = 0.35;
+/// TRIBUTE_DETOUR bit 4 (panic bank): altar at most this many steps away, and the damage that
+/// can reach us over the walk plus the channel stays under this share of our health.
+const PANIC_BANK_STEPS: u16 = 3;
+const PANIC_BANK_HP: f32 = 0.9;
+/// CAMP_FEASIBLE bit 32: leave a capture to an ally when no enemy is within this many tiles,
+/// and don't come back to that group for this many rounds (the capture takes 5, 3 with Capture).
+const ONE_CAPTURER_CALM: i32 = 6;
+const ONE_CAPTURER_SKIP: u32 = 6;
 /// MONOLITH_LIVE: attack once pooled team health lasts this fraction of the kill time.
 const MONOLITH_SLACK: f32 = 1.0;
 /// VALUE_PROFILE 4/5: the opening (near camps first: early gold compounds into items).
@@ -342,6 +352,7 @@ impl Bot {
             target: None,
             target_cost: 0,
             target_kept: 0,
+            skip_capture: None,
             last_hp: 0.0,
             hurt_round: 0,
             last_pos,
@@ -858,6 +869,53 @@ impl Bot {
                 intent = fixed;
                 if helping.is_some() {
                     assist = helping;
+                }
+            }
+            // knob2 TRIBUTE_DETOUR bit 4, panic bank: about to run (or hold) with gems while an
+            // altar is a few steps away: tribute instead. Damage doesn't cancel a tribute (a bag
+            // of 10 takes one turn); dying on the way home hands the bag to the killer, and half
+            // the gems we lost to deaths were within 4 tiles of an altar (80 debug games).
+            if self.theta.knob2(knob2::TRIBUTE_DETOUR) & 4 != 0
+                && ctx.gems > 0
+                && !matches!(mode, Mode::Override(_))
+                && matches!(
+                    intent,
+                    Intent::Retreat | Intent::Hold | Intent::Kite(_) | Intent::StepBack(_) | Intent::WalkHome
+                )
+            {
+                if let Some(steps) = ctx.dist_altar.filter(|&d| d <= PANIC_BANK_STEPS) {
+                    let turns = i32::from(steps) + ctx.gems.div_ceil(10).max(1) as i32;
+                    let danger = vis.reachable_dps(my_pos, turns);
+                    if danger * (turns as f32) < ctx.hp * PANIC_BANK_HP {
+                        intent = Intent::Tribute;
+                        telemetry::event(round, champ_name(self.kind), "panic_bank", i64::from(ctx.gems));
+                    }
+                }
+            }
+            // CAMP_FEASIBLE bit 32: one capturer is enough (more don't speed a capture up; they
+            // only split the reward). 24% of our capture turns had a second champion standing
+            // on the same group (80 debug games). The lower champion id keeps it, the other
+            // moves on unless an enemy could contest the capture.
+            if camp_bits & 32 != 0 {
+                if let Intent::Capture(g) = intent {
+                    let g = usize::from(g);
+                    let calm = vis.enemies.iter().all(|e| e.on_spawn || e.dist > ONE_CAPTURER_CALM);
+                    let other = vis.allies.iter().any(|a| {
+                        self.world.group_at(a.pos) == Some(g) && (a.kind as u8) < (self.kind as u8)
+                    });
+                    if calm && other {
+                        self.skip_capture = Some((g, round + ONE_CAPTURER_SKIP));
+                        self.target = None;
+                        self.score_targets(my_pos, round, &chan, &vis);
+                        if let Some(t) = self.target.filter(|&t| t != g) {
+                            intent = match self.belief.expected_state(t, round) {
+                                GroupState::RewardAvailable => Intent::Capture(t as u8),
+                                GroupState::Respawning => Intent::Approach(t as u8),
+                                _ => Intent::ClearCamp(t as u8),
+                            };
+                            telemetry::event(round, champ_name(self.kind), "one_capturer", 1);
+                        }
+                    }
                 }
             }
             // knob2 TEAM_UP: an ally within N tiles is trading hits with an enemy champion: go
@@ -2191,6 +2249,9 @@ impl Bot {
                 why!(rows.push(format!("[{i},\"skip:monolith_power\"]")));
                 continue;
             }
+            if self.skip_capture.is_some_and(|(g, until)| g == i && round < until) {
+                continue;
+            }
             let state = self.belief.expected_state(i, round);
             let Some(dist) = self.group_distance(i, my_pos) else {
                 why!(rows.push(format!("[{i},\"skip:unreachable\"]")));
@@ -2501,7 +2562,12 @@ impl Bot {
                 continue;
             }
             let Some(d1) = self.group_distance(i, my_pos) else { continue };
-            let Some(d2) = g.tiles.iter().filter_map(|&t| fields.distance(Goal::Altars, t)).min() else { continue };
+            // One lookup per group (the per-tile minimum cost ~74 fuel a tile and ran turns out of
+            // fuel on maps with many groups: road-of-riches +228 stalled turns in the A/B).
+            if fuel() < TARGET_REST_FUEL {
+                break;
+            }
+            let Some(d2) = g.tiles.first().and_then(|&t| fields.distance(Goal::Altars, t)) else { continue };
             let detour = d1 as i32 + i32::from(d2) - to_altar;
             if detour > TRIBUTE_DETOUR_MAX {
                 continue;

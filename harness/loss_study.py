@@ -129,7 +129,7 @@ def extract(m: dict, s: dict) -> dict:
     return {
         "match": m["matchId"],
         "time": m["createdAt"],
-        "map": m["map"][2:],
+        "map": (m["map"][2:] if m["map"][:2].isdigit() else m["map"]),
         "opp": them["name"],
         "result": us["result"],
         "end": m["endReason"],
@@ -238,7 +238,7 @@ def main(argv: list[str] | None = None) -> int:
         listed = [m for m in listed if m["status"] == "finished" and m["kind"] == "ranked"][: a.limit]
     else:
         listed = ranked_games(a.limit)
-    games = [m for m in listed if not want or m["map"][2:].replace("_", "-") in want]
+    games = [m for m in listed if not want or (m["map"][2:] if m["map"][:2].isdigit() else m["map"]).replace("_", "-") in want]
     if a.losses_only:
         games = [m for m in games if next(t for t in m["teams"] if t["teamId"] == TEAM_ID)["result"] == "loss"]
     recs = []

@@ -49,7 +49,7 @@ def make(store: C.Store) -> dict:
 
     geo = json.loads((C.ROOT / "data" / "map_geometry.json").read_text(encoding="utf-8"))
     groups = {m: len(geo[m]["centres"]) for m in C.maps()}
-    forced = {p.stem[2:] for p in (C.MAPS_DIR / "heldout").glob("*.map26a")}
+    forced = {C.map_key(p.stem) for p in (C.MAPS_DIR / "heldout").glob("*.map26a")}
     order = sorted(groups, key=lambda m: (groups[m], m))
     held = []
     for i in range(0, len(order), 4):

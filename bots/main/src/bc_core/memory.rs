@@ -131,7 +131,9 @@ pub mod knob2 {
     pub const JUMP_HOLES: usize = 30;
     /// Walking to an altar, stop for what lies just off the way (detour <= 4 tiles) while no
     /// enemy is near: bit 1 = a camp reward waiting to be captured, bit 2 = a weak camp we clear
-    /// fast and safely (only with a small bag: a camp kill drops the gems we carry).
+    /// fast and safely (only with a small bag: a camp kill drops the gems we carry); bit 4 =
+    /// panic bank: tribute instead of running when an altar is <= 3 steps away and we survive it.
+    /// Default 4: bits 1|2 were -0.014 +- 0.015 in a paired A/B on 20 maps (a per-map setting).
     pub const TRIBUTE_DETOUR: usize = 31;
 
     pub const DEFAULTS: [(usize, u8); 30] = [
@@ -164,7 +166,7 @@ pub mod knob2 {
         (TEACHER, 0),
         (DRAFT_PLAN, 0),
         (JUMP_HOLES, 0),
-        (TRIBUTE_DETOUR, 3),
+        (TRIBUTE_DETOUR, 4),
     ];
 }
 
@@ -227,7 +229,8 @@ pub mod knob {
     /// 1 = value stun / attack-reset kits (Tavi, Prism, Cassi, Ryth) on a 6-round fight horizon.
     pub const STUN_THREAT: usize = 22;
     /// Bits: 1 = discount camp groups the team can't survive yet (farm gold and gear up first);
-    /// 2 = early-game ramp: quick camps first until round 300 or the 2nd emblem.
+    /// 2 = early-game ramp: quick camps first until round 300 or the 2nd emblem; 32 = one
+    /// capturer per group (the others move on while no enemy is near).
     pub const CAMP_FEASIBLE: usize = 23;
     /// 1 = play to passives: Vesper Vale (+20/40% gold) farms gold groups until geared,
     /// Prism (+0.2 Focus per carried gem) collects gems and carries bigger bags.
@@ -282,7 +285,7 @@ pub mod knob {
         (RECALL_SAFE, 2),
         (FIGHT_V6, 0),
         (STUN_THREAT, 0),
-        (CAMP_FEASIBLE, 24),
+        (CAMP_FEASIBLE, 56),
         (PASSIVE_ROLES, 0),
         (DRAFT_BEST, 0),
         (SAFE_ALTAR, 1),
