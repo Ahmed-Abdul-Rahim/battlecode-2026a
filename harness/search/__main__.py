@@ -129,6 +129,14 @@ def report_baseline(store: C.Store, opps: dict, maps: dict) -> None:
 
 
 def cmd_splits(a) -> None:
+    if a.extend:
+        old = C.load_json(C.RUNS / "splits.json", None)
+        if not old:
+            raise SystemExit("no splits yet: run splits (without --extend) first")
+        s, added = split.extend(old)
+        C.save_json(C.RUNS / "splits.json", s)
+        print(f"added {len(added)} maps; {len(s['maps_train'])} train, {len(s['maps_heldout'])} held out")
+        return
     snap = C.check_snapshot()
     store = C.Store("baseline", snap["wasm"])
     s = split.make(store)
@@ -243,9 +251,10 @@ def main() -> None:
     p.add_argument("--slots", type=int, default=C.N_SLOTS)
     p.add_argument("--pack", type=Path, help="pack for the slots (default data/search/live-pack.bin)")
     sub.add_parser("smoke")
+    p = sub.add_parser("splits")
+    p.add_argument("--extend", action="store_true", help="add new pool maps, keep old assignments")
     p = sub.add_parser("baseline")
     p.add_argument("--hours", type=float)
-    sub.add_parser("splits")
     p = sub.add_parser("audit")
     p.add_argument("--hours", type=float)
     p = sub.add_parser("search")

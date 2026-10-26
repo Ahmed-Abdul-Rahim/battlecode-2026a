@@ -50,6 +50,37 @@ fingerprint and geometry and retires the old maps; it needs `cambc login` and ne
 2026a.battlecode.co.uk (blocked in the cloud session of 2026-10-26). Then `splits` and the steps
 above.
 
+## Run on the PC (engine 2.0.0 refresh, in order)
+
+    git fetch origin && git checkout claude/vigilant-archimedes-ptm9fj
+    .venv\Scripts\pip install --upgrade cambc==4.0.0
+    .venv\Scripts\python -m bctools.sync --bot main --check ; cargo test --workspace ; .venv\Scripts\pytest -q
+
+1. Check the new rule defaults with paired A/Bs (each ~30-60 min on 16 threads; flip a default
+   when dwin is below -2 SE). `--no-table` tests the rule itself, without the per-map plans:
+
+       python -m harness.ab regroup  --b-knob FIGHT_V6=0 --no-table              # retreat towards allies
+       python -m harness.ab panic    --b-knob K2_TRIBUTE_DETOUR=0 --no-table     # tribute instead of fleeing
+       python -m harness.ab onecap   --b-knob CAMP_FEASIBLE=24 --no-table        # one capturer per group
+       python -m harness.ab draft    --b-knob TAVI_META=1 --maps corners,gemfight,yellow-brick-road
+       python -m harness.ab tavibld  --b-knob TAVI_META=3                         # Tavi on the map's build
+
+   The arbiter guard rails, ally live stats, camp ranges and emblem-aware timers are code, not
+   knobs: they are measured by the snapshot below. Results land in runs\ab\<name>.json.
+2. `scripts\search.ps1 prepare` (snapshot on data\search\live-pack.bin, smoke, baseline, splits
+   --extend for the 30 new maps, audit). States from the engine-1 snapshot are archived.
+3. `scripts\search.ps1 run` (per-map search on all training maps, starfish and
+   yellow-brick-road included, then crossmap, mvp, B, held-out maps). Resumable; `status`, `stop`.
+4. `python -m harness.search verify` (submission build vs no table: per-map / per-opponent loss
+   table) and `scripts\search.ps1 candidate` (zip, not uploaded).
+5. Debug a weak map: `python -m bctools run main <opponent> --maps <map>` (debug build), then
+   `python -m harness.diagnose runs\<dir> main` (loops, arbiter overrides, deaths while
+   retreating / alone, bag losses near altars, extra capturers).
+
+Caveat: on the 30 new maps every mimic plays the same base bot (no ladder data for them yet),
+so their results are effectively one opponent; `python -m harness.league sync` after ladder
+matches on those maps refreshes the mimics.
+
 ## Commands
 
     python -m harness.search status | table | sstatus

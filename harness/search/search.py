@@ -194,8 +194,17 @@ class MapSearch:
         a = list(splits["opps_A"])
         rng.shuffle(a)
         self.opps_a, self.opps_b = a, list(splits["opps_B"])
-        self.state = self._load() or {"stage": "A", "round": 0, "alive": None, "cma": {}, "log": [],
-                                      "meta": {}, "accepted": None}
+        fresh = {"stage": "A", "round": 0, "alive": None, "cma": {}, "log": [], "meta": {},
+                 "accepted": None, "snap": snap}
+        self.state = self._load() or fresh
+        # A state from another snapshot (older engine / bot) measured other games: archive it and
+        # search again (a map "done" under engine 1 would otherwise never be searched again).
+        if self.state.get("snap") != snap:  # no snap recorded = a pre-engine-2.0.0 state
+            old = self.path.with_name(f"state-{str(self.state.get('snap'))[:12]}.pkl")
+            os.replace(self.path, old)
+            print(f"[{name}] state from snapshot {str(self.state.get('snap'))[:12]} archived to {old.name}")
+            self.state = fresh
+        self.state.setdefault("snap", snap)
 
     # ---- persistence
     def _load(self):
@@ -406,11 +415,15 @@ def run(maps: list[str] | None, hours: float | None) -> None:
 
 
 def table() -> dict:
-    """runs/search/table.json: the accepted settings per map (defaults where none passed)."""
+    """runs/search/table.json: the accepted settings per map (defaults where none passed), from
+    states of the current snapshot only (older ones are another engine's results)."""
     out = {}
+    snap = C.load_json(C.RUNS / "snapshot.json", {}).get("wasm")
     for d in sorted((C.RUNS / "search").glob("*/state.pkl")):
         with open(d, "rb") as f:
             st = pickle.load(f)
+        if snap and st.get("snap") != snap:
+            continue
         r = st.get("result")
         if r:
             out[d.parent.name] = r

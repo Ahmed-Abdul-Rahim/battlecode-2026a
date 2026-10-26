@@ -1,5 +1,6 @@
 # The offline plan search (harness/search), end to end. Every step saves its progress and
 # resumes where it stopped, so stopping or shutting down loses at most a few minutes.
+#   powershell -ExecutionPolicy Bypass -File scripts\search.ps1 prepare   # once per engine / bot change: snapshot, baseline, splits, audit
 #   powershell -ExecutionPolicy Bypass -File scripts\search.ps1 run       # everything, in order (resumable)
 #   powershell -ExecutionPolicy Bypass -File scripts\search.ps1 status    # what is done, what runs now
 #   powershell -ExecutionPolicy Bypass -File scripts\search.ps1 stop      # stop safely (resume with run)
@@ -10,7 +11,7 @@
 # opponents) -> B on top of A (tribute timing: labels with A active, net, A+B vs A+rules) ->
 # search the 10 held-out maps too (a complete 40-map table).
 # The PC stays awake while a step runs.
-param([Parameter(Position = 0)][ValidateSet("run", "status", "stop", "results", "candidate")][string]$cmd = "status")
+param([Parameter(Position = 0)][ValidateSet("prepare", "run", "status", "stop", "results", "candidate")][string]$cmd = "status")
 
 $root = Split-Path -Parent $PSScriptRoot
 Set-Location $root
@@ -29,6 +30,22 @@ function TrainLeft {
 }
 
 switch ($cmd) {
+    "prepare" {
+        # A new snapshot (engine 2.0.0 / bot changes): rebuild the slot pool on the reference pack,
+        # check patching, measure the base bot, add new pool maps to the splits, re-audit the knobs.
+        # Per-map states of the old snapshot are archived by the search itself.
+        if (Running) { Write-Host "a search step is already running (scripts\search.ps1 status)" -ForegroundColor Yellow; exit 1 }
+        Start-Process powershell -WindowStyle Hidden -ArgumentList "-ExecutionPolicy Bypass -File `"$PSScriptRoot\keepawake.ps1`""
+        Log "prepare: setup (slot pool on data\search\live-pack.bin)"
+        Py setup *>> (Join-Path $logs "prepare.log")
+        Py smoke *>> (Join-Path $logs "prepare.log")
+        Log "prepare: baseline (base bot vs every opponent, all maps)"
+        Py baseline *>> (Join-Path $logs "prepare.log")
+        Py splits --extend *>> (Join-Path $logs "prepare.log")
+        Log "prepare: audit (which knobs matter per map)"
+        Py audit *>> (Join-Path $logs "prepare.log")
+        Log "prepare done: scripts\search.ps1 run"
+    }
     "run" {
         if (Running) { Write-Host "a search step is already running (scripts\search.ps1 status)" -ForegroundColor Yellow; exit 1 }
         # Hold the stay-awake lock across the gaps between steps too (Windows slept "System Idle"
