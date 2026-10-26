@@ -76,9 +76,12 @@ switch ($cmd) {
         if (Test-Path (Join-Path $logs "run.log")) { Get-Content (Join-Path $logs "run.log") -Tail 3 }
     }
     "stop" {
-        Get-CimInstance Win32_Process | Where-Object { $_.CommandLine -match 'search\.ps1 run|queue_a\.ps1' -and $_.ProcessId -ne $PID } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }
+        # Wrappers first (go.ps1, search.ps1 prepare|run, queues), so nothing starts the next step;
+        # then the Python workers with their game processes. Progress is saved after every batch.
+        Get-CimInstance Win32_Process | Where-Object { $_.ProcessId -ne $PID -and $_.CommandLine -match 'go\.ps1|search\.ps1 (run|prepare)|queue_[a-z]+\.ps1|ab_checks\.ps1' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }
         Running | ForEach-Object { taskkill /PID $_.ProcessId /T /F | Out-Null }
-        Write-Host "stopped; progress is saved (resume: scripts\search.ps1 run)" -ForegroundColor Yellow
+        Get-Process cambc -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+        Write-Host "stopped; progress is saved (resume: scripts\search.ps1 run, or scripts\go.ps1 to include prepare)" -ForegroundColor Yellow
     }
     "results" {
         Py table
