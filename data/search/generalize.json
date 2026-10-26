@@ -1,0 +1,87 @@
+{
+ "maps": {
+  "big-world": {
+   "from": "ambush",
+   "n": 70,
+   "fit": 0.0709,
+   "fit_se": 0.0382,
+   "win": 0.0,
+   "win_se": 0.0352
+  },
+  "boss-battle": {
+   "from": "eight",
+   "n": 70,
+   "fit": 0.091,
+   "fit_se": 0.0663,
+   "win": -0.3143,
+   "win_se": 0.0661
+  },
+  "contest": {
+   "from": "rows",
+   "n": 70,
+   "fit": -0.039,
+   "fit_se": 0.0892,
+   "win": -0.0714,
+   "win_se": 0.0621
+  },
+  "elkring": {
+   "from": "eight",
+   "n": 70,
+   "fit": -0.2942,
+   "fit_se": 0.0719,
+   "win": -0.4143,
+   "win_se": 0.0627
+  },
+  "fragment": {
+   "from": "packs",
+   "n": 70,
+   "fit": 0.5352,
+   "fit_se": 0.109,
+   "win": 0.1571,
+   "win_se": 0.0723
+  },
+  "gem-fields": {
+   "from": "concentrated-wealth",
+   "n": 70,
+   "fit": -0.0383,
+   "fit_se": 0.0891,
+   "win": -0.0143,
+   "win_se": 0.0747
+  },
+  "monolith": {
+   "from": "rows",
+   "n": 70,
+   "fit": -0.4112,
+   "fit_se": 0.0882,
+   "win": -0.2714,
+   "win_se": 0.0703
+  },
+  "reverse-spiral": {
+   "from": "rows",
+   "n": 70,
+   "fit": 0.0287,
+   "fit_se": 0.0608,
+   "win": 0.0286,
+   "win_se": 0.0454
+  },
+  "road-of-riches": {
+   "from": "rows",
+   "n": 70,
+   "fit": -0.6734,
+   "fit_se": 0.0644,
+   "win": -0.4143,
+   "win_se": 0.0593
+  },
+  "yellow-brick-road": {
+   "from": "concentrated-wealth",
+   "n": 70,
+   "fit": 0.154,
+   "fit_se": 0.1065,
+   "win": 0.0571,
+   "win_se": 0.0758
+  }
+ },
+ "dwin": -0.1257,
+ "dwin_se": 0.066,
+ "complete": true
+}

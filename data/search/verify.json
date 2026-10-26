@@ -1,0 +1,295 @@
+{
+ "per_map": {
+  "ambush": {
+   "win": 0.6,
+   "win_se": 0.1028,
+   "fit": 0.7346,
+   "fit_se": 0.1099,
+   "extra_stalls": 0
+  },
+  "collision": {
+   "win": 0.2333,
+   "win_se": 0.1038,
+   "fit": 0.4499,
+   "fit_se": 0.129,
+   "extra_stalls": 0
+  },
+  "contest": {
+   "win": 0.4667,
+   "win_se": 0.1043,
+   "fit": 0.9757,
+   "fit_se": 0.136,
+   "extra_stalls": 0
+  },
+  "corners": {
+   "win": 0.0,
+   "win_se": 0.0,
+   "fit": 0.0,
+   "fit_se": 0.0,
+   "extra_stalls": 0
+  },
+  "eight": {
+   "win": 0.3333,
+   "win_se": 0.1207,
+   "fit": 0.716,
+   "fit_se": 0.1792,
+   "extra_stalls": 0
+  },
+  "elkring": {
+   "win": 0.5333,
+   "win_se": 0.0926,
+   "fit": 0.8115,
+   "fit_se": 0.1134,
+   "extra_stalls": 0
+  },
+  "expanse": {
+   "win": 0.0667,
+   "win_se": 0.0821,
+   "fit": 0.0516,
+   "fit_se": 0.0831,
+   "extra_stalls": 0
+  },
+  "fragment": {
+   "win": 0.3333,
+   "win_se": 0.0875,
+   "fit": 0.8166,
+   "fit_se": 0.1249,
+   "extra_stalls": 0
+  },
+  "gem-fields": {
+   "win": 0.3,
+   "win_se": 0.1088,
+   "fit": 0.4827,
+   "fit_se": 0.1277,
+   "extra_stalls": 0
+  },
+  "gemfight": {
+   "win": 0.0,
+   "win_se": 0.0,
+   "fit": 0.0,
+   "fit_se": 0.0,
+   "extra_stalls": 0
+  },
+  "great-wall": {
+   "win": 0.4,
+   "win_se": 0.1135,
+   "fit": 0.7578,
+   "fit_se": 0.1405,
+   "extra_stalls": 0
+  },
+  "interlock": {
+   "win": 0.5667,
+   "win_se": 0.1143,
+   "fit": 0.911,
+   "fit_se": 0.1472,
+   "extra_stalls": 0
+  },
+  "lanes": {
+   "win": 0.2333,
+   "win_se": 0.092,
+   "fit": 0.2617,
+   "fit_se": 0.1058,
+   "extra_stalls": 2
+  },
+  "lost-world": {
+   "win": 0.0667,
+   "win_se": 0.0667,
+   "fit": 0.2135,
+   "fit_se": 0.0934,
+   "extra_stalls": 0
+  },
+  "monolith": {
+   "win": 0.2,
+   "win_se": 0.1006,
+   "fit": 0.2844,
+   "fit_se": 0.1135,
+   "extra_stalls": 0
+  },
+  "packs": {
+   "win": 0.4,
+   "win_se": 0.1135,
+   "fit": 0.6668,
+   "fit_se": 0.1613,
+   "extra_stalls": 0
+  },
+  "pilgrimage": {
+   "win": 0.2,
+   "win_se": 0.0884,
+   "fit": 0.4595,
+   "fit_se": 0.1089,
+   "extra_stalls": 0
+  },
+  "quadrants": {
+   "win": -0.0333,
+   "win_se": 0.1015,
+   "fit": 0.0326,
+   "fit_se": 0.1165,
+   "extra_stalls": 0
+  },
+  "reverse-spiral": {
+   "win": 0.1667,
+   "win_se": 0.0692,
+   "fit": 0.1923,
+   "fit_se": 0.0873,
+   "extra_stalls": 0
+  },
+  "road-of-riches": {
+   "win": 0.7333,
+   "win_se": 0.0821,
+   "fit": 1.053,
+   "fit_se": 0.0874,
+   "extra_stalls": 0
+  },
+  "rows": {
+   "win": 0.1333,
+   "win_se": 0.0631,
+   "fit": 0.1384,
+   "fit_se": 0.0675,
+   "extra_stalls": 0
+  },
+  "rushbait-v2": {
+   "win": 0.0667,
+   "win_se": 0.1262,
+   "fit": 0.069,
+   "fit_se": 0.1469,
+   "extra_stalls": 0
+  },
+  "split": {
+   "win": 0.4333,
+   "win_se": 0.124,
+   "fit": 0.5791,
+   "fit_se": 0.1371,
+   "extra_stalls": 0
+  },
+  "stampede": {
+   "win": 0.2667,
+   "win_se": 0.0951,
+   "fit": 0.5296,
+   "fit_se": 0.1161,
+   "extra_stalls": 0
+  },
+  "swirl": {
+   "win": 0.5,
+   "win_se": 0.1045,
+   "fit": 1.0363,
+   "fit_se": 0.1446,
+   "extra_stalls": 0
+  },
+  "big-world": {
+   "win": 0.1333,
+   "win_se": 0.0631,
+   "fit": 0.2585,
+   "fit_se": 0.0734,
+   "extra_stalls": 0
+  },
+  "boss-battle": {
+   "win": 0.1667,
+   "win_se": 0.0692,
+   "fit": 0.645,
+   "fit_se": 0.065,
+   "extra_stalls": 0
+  },
+  "broken-curve": {
+   "win": 0.3667,
+   "win_se": 0.0895,
+   "fit": 0.4924,
+   "fit_se": 0.0992,
+   "extra_stalls": 0
+  },
+  "concentrated-wealth": {
+   "win": 0.5333,
+   "win_se": 0.0926,
+   "fit": 0.757,
+   "fit_se": 0.1085,
+   "extra_stalls": 0
+  },
+  "corridors": {
+   "win": 0.4,
+   "win_se": 0.1135,
+   "fit": 0.8088,
+   "fit_se": 0.1515,
+   "extra_stalls": 0
+  },
+  "elk-arena": {
+   "win": 0.2333,
+   "win_se": 0.0785,
+   "fit": 0.5973,
+   "fit_se": 0.1089,
+   "extra_stalls": 0
+  },
+  "fracture": {
+   "win": 0.7,
+   "win_se": 0.0851,
+   "fit": 1.0305,
+   "fit_se": 0.0911,
+   "extra_stalls": 0
+  },
+  "gold-rush": {
+   "win": 0.2,
+   "win_se": 0.1114,
+   "fit": 0.312,
+   "fit_se": 0.1285,
+   "extra_stalls": 0
+  },
+  "hooks": {
+   "win": 0.2333,
+   "win_se": 0.1038,
+   "fit": 0.4032,
+   "fit_se": 0.1763,
+   "extra_stalls": 0
+  },
+  "islands": {
+   "win": 0.3,
+   "win_se": 0.1189,
+   "fit": 0.3053,
+   "fit_se": 0.1304,
+   "extra_stalls": 0
+  },
+  "shortcut": {
+   "win": 0.5667,
+   "win_se": 0.1038,
+   "fit": 0.7968,
+   "fit_se": 0.1158,
+   "extra_stalls": 0
+  },
+  "starfish": {
+   "win": -0.1333,
+   "win_se": 0.1244,
+   "fit": 0.1877,
+   "fit_se": 0.1803,
+   "extra_stalls": 0
+  },
+  "starvation": {
+   "win": 0.2,
+   "win_se": 0.0743,
+   "fit": 0.4361,
+   "fit_se": 0.089,
+   "extra_stalls": 0
+  },
+  "the-farm": {
+   "win": 0.3667,
+   "win_se": 0.1015,
+   "fit": 0.6766,
+   "fit_se": 0.1208,
+   "extra_stalls": 0
+  },
+  "yellow-brick-road": {
+   "win": -0.0333,
+   "win_se": 0.0584,
+   "fit": -0.0488,
+   "fit_se": 0.0852,
+   "extra_stalls": 0
+  }
+ },
+ "all": {
+  "n": 1200,
+  "win": 0.2858,
+  "win_se": 0.016,
+  "fit": 0.4971,
+  "fit_se": 0.0207
+ },
+ "plan_vs_rules": 0.863,
+ "plan_vs_lg-v23-fuel": 0.85,
+ "ref_vs_rules": 0.487,
+ "ref_vs_lg-v23-fuel": 0.5
+}

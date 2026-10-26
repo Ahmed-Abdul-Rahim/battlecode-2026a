@@ -1,0 +1,110 @@
+{
+ "searched": [
+  "ambush",
+  "broken-curve",
+  "collision",
+  "concentrated-wealth",
+  "corridors",
+  "eight",
+  "elk-arena",
+  "expanse",
+  "fracture",
+  "gold-rush",
+  "great-wall",
+  "hooks",
+  "interlock",
+  "islands",
+  "lanes",
+  "lost-world",
+  "packs",
+  "pilgrimage",
+  "quadrants",
+  "rows",
+  "rushbait-v2",
+  "shortcut",
+  "split",
+  "stampede",
+  "starfish",
+  "starvation",
+  "swirl",
+  "the-farm"
+ ],
+ "plans": 28,
+ "gated_tau": 0.5,
+ "wknn_h": 2.5,
+ "heldout_oracle_dwin": 0.2625,
+ "methods": {
+  "defaults": {
+   "loo_searched": {
+    "dwin": 0.0,
+    "se": 0.0,
+    "worst": 0.0
+   },
+   "heldout": {
+    "dwin": 0.0,
+    "se": 0.0,
+    "worst": 0.0
+   }
+  },
+  "1nn": {
+   "loo_searched": {
+    "dwin": -0.0572,
+    "se": 0.0505,
+    "worst": -0.708
+   },
+   "heldout": {
+    "dwin": -0.0042,
+    "se": 0.0846,
+    "worst": -0.333
+   }
+  },
+  "gated": {
+   "loo_searched": {
+    "dwin": 0.0,
+    "se": 0.0,
+    "worst": 0.0
+   },
+   "heldout": {
+    "dwin": 0.0,
+    "se": 0.0,
+    "worst": 0.0
+   }
+  },
+  "wknn": {
+   "loo_searched": {
+    "dwin": -0.0246,
+    "se": 0.046,
+    "worst": -0.75
+   },
+   "heldout": {
+    "dwin": -0.0167,
+    "se": 0.0453,
+    "worst": -0.208
+   }
+  },
+  "robust": {
+   "loo_searched": {
+    "dwin": -0.0893,
+    "se": 0.0354,
+    "worst": -0.75
+   },
+   "heldout": {
+    "dwin": 0.0,
+    "se": 0.0,
+    "worst": 0.0
+   }
+  },
+  "mix": {
+   "loo_searched": {
+    "dwin": -0.0432,
+    "se": 0.0529,
+    "worst": -0.708
+   },
+   "heldout": {
+    "dwin": -0.0084,
+    "se": 0.0942,
+    "worst": -0.5
+   }
+  }
+ }
+}

@@ -1,0 +1,614 @@
+{
+ "maps": {
+  "ambush": {
+   "accepted": "c72878e2cb5",
+   "honest_fit": 0.5530999999999999,
+   "honest_win": 0.42810000000000004,
+   "b": {
+    "n": 70,
+    "fit": 0.5535,
+    "fit_se": 0.0628,
+    "win": 0.4286,
+    "win_se": 0.0596
+   },
+   "games": 10490,
+   "h2h": {
+    "n": 30,
+    "fit": 0.7346,
+    "fit_se": 0.1099,
+    "win": 0.6,
+    "win_se": 0.1028
+   },
+   "h2h_base_win": 0.3
+  },
+  "broken-curve": {
+   "accepted": "c8e1cbf00be",
+   "honest_fit": 0.5362,
+   "honest_win": 0.36924999999999997,
+   "b": {
+    "n": 70,
+    "fit": 0.5384,
+    "fit_se": 0.0702,
+    "win": 0.3714,
+    "win_se": 0.0649
+   },
+   "games": 6648,
+   "h2h": {
+    "n": 30,
+    "fit": 0.4924,
+    "fit_se": 0.0992,
+    "win": 0.3667,
+    "win_se": 0.0895
+   },
+   "h2h_base_win": 0.43333333333333335
+  },
+  "collision": {
+   "accepted": "cad0635e9f0",
+   "honest_fit": 0.15255000000000002,
+   "honest_win": 0.0286,
+   "b": {
+    "n": 70,
+    "fit": 0.1519,
+    "fit_se": 0.0614,
+    "win": 0.0286,
+    "win_se": 0.0454
+   },
+   "games": 6624,
+   "h2h": {
+    "n": 30,
+    "fit": 0.4499,
+    "fit_se": 0.129,
+    "win": 0.2333,
+    "win_se": 0.1038
+   },
+   "h2h_base_win": 0.6333333333333333
+  },
+  "concentrated-wealth": {
+   "accepted": "c837c494c6d",
+   "honest_fit": 0.41935,
+   "honest_win": 0.2696,
+   "b": {
+    "n": 70,
+    "fit": 0.4212,
+    "fit_se": 0.0749,
+    "win": 0.2714,
+    "win_se": 0.0573
+   },
+   "games": 10606,
+   "h2h": {
+    "n": 30,
+    "fit": 0.7577,
+    "fit_se": 0.1084,
+    "win": 0.5333,
+    "win_se": 0.0926
+   },
+   "h2h_base_win": 0.43333333333333335
+  },
+  "corners": {
+   "accepted": null,
+   "honest_fit": 0.46814999999999996,
+   "honest_win": 0.344,
+   "b": null,
+   "games": 6624
+  },
+  "corridors": {
+   "accepted": "c14df3fc094",
+   "honest_fit": 0.8027500000000001,
+   "honest_win": 0.38644999999999996,
+   "b": {
+    "n": 70,
+    "fit": 0.8017,
+    "fit_se": 0.0711,
+    "win": 0.3857,
+    "win_se": 0.0586
+   },
+   "games": 6648,
+   "h2h": {
+    "n": 30,
+    "fit": 0.8088,
+    "fit_se": 0.1515,
+    "win": 0.4,
+    "win_se": 0.1135
+   },
+   "h2h_base_win": 0.4
+  },
+  "eight": {
+   "accepted": "c7b32057bd5",
+   "honest_fit": 0.37655,
+   "honest_win": 0.1152,
+   "b": {
+    "n": 70,
+    "fit": 0.3748,
+    "fit_se": 0.0686,
+    "win": 0.1143,
+    "win_se": 0.0434
+   },
+   "games": 10622,
+   "h2h": {
+    "n": 30,
+    "fit": 0.716,
+    "fit_se": 0.1792,
+    "win": 0.3333,
+    "win_se": 0.1207
+   },
+   "h2h_base_win": 0.5666666666666667
+  },
+  "elk-arena": {
+   "accepted": "c4cf2c78416",
+   "honest_fit": 0.3133,
+   "honest_win": 0.07105,
+   "b": {
+    "n": 70,
+    "fit": 0.3144,
+    "fit_se": 0.0634,
+    "win": 0.0714,
+    "win_se": 0.0371
+   },
+   "games": 6624,
+   "h2h": {
+    "n": 30,
+    "fit": 0.0,
+    "fit_se": 0.0,
+    "win": 0.0,
+    "win_se": 0.0
+   },
+   "h2h_base_win": 0.5
+  },
+  "expanse": {
+   "accepted": "c144632f820",
+   "honest_fit": 0.2387,
+   "honest_win": 0.25815,
+   "b": {
+    "n": 70,
+    "fit": 0.2377,
+    "fit_se": 0.0685,
+    "win": 0.2571,
+    "win_se": 0.0665
+   },
+   "games": 6648,
+   "h2h": {
+    "n": 30,
+    "fit": 0.0316,
+    "fit_se": 0.022,
+    "win": 0.0333,
+    "win_se": 0.0232
+   },
+   "h2h_base_win": 0.5
+  },
+  "fracture": {
+   "accepted": "cc8f2ed11c2",
+   "honest_fit": 0.63835,
+   "honest_win": 0.31455,
+   "b": {
+    "n": 70,
+    "fit": 0.6381,
+    "fit_se": 0.0609,
+    "win": 0.3143,
+    "win_se": 0.0559
+   },
+   "games": 6648,
+   "h2h": {
+    "n": 30,
+    "fit": 0.0224,
+    "fit_se": 0.0224,
+    "win": 0.0167,
+    "win_se": 0.0167
+   },
+   "h2h_base_win": 0.5
+  },
+  "gemfight": {
+   "accepted": null,
+   "honest_fit": 0.0,
+   "honest_win": 0.0,
+   "b": null,
+   "games": 6490
+  },
+  "gold-rush": {
+   "accepted": "c365d122268",
+   "honest_fit": 0.41835,
+   "honest_win": 0.27044999999999997,
+   "b": {
+    "n": 70,
+    "fit": 0.42,
+    "fit_se": 0.0854,
+    "win": 0.2714,
+    "win_se": 0.0672
+   },
+   "games": 6590,
+   "h2h": {
+    "n": 30,
+    "fit": 0.0202,
+    "fit_se": 0.0202,
+    "win": 0.0167,
+    "win_se": 0.0167
+   },
+   "h2h_base_win": 0.5
+  },
+  "great-wall": {
+   "accepted": "c0d78cd0215",
+   "honest_fit": 0.6127,
+   "honest_win": 0.2843,
+   "b": {
+    "n": 70,
+    "fit": 0.6141,
+    "fit_se": 0.0935,
+    "win": 0.2857,
+    "win_se": 0.0738
+   },
+   "games": 6624,
+   "h2h": {
+    "n": 30,
+    "fit": 0.0,
+    "fit_se": 0.0,
+    "win": 0.0,
+    "win_se": 0.0
+   },
+   "h2h_base_win": 0.5
+  },
+  "hooks": {
+   "accepted": "c5a6ed31e1c",
+   "honest_fit": 0.21505000000000002,
+   "honest_win": 0.08495,
+   "b": {
+    "n": 70,
+    "fit": 0.2165,
+    "fit_se": 0.0887,
+    "win": 0.0857,
+    "win_se": 0.0488
+   },
+   "games": 6648,
+   "h2h": {
+    "n": 30,
+    "fit": 0.0243,
+    "fit_se": 0.0243,
+    "win": 0.0167,
+    "win_se": 0.0167
+   },
+   "h2h_base_win": 0.5
+  },
+  "interlock": {
+   "accepted": "c47210bd9d7",
+   "honest_fit": 0.46714999999999995,
+   "honest_win": 0.24105,
+   "b": {
+    "n": 70,
+    "fit": 0.4692,
+    "fit_se": 0.0729,
+    "win": 0.2429,
+    "win_se": 0.0591
+   },
+   "games": 6648,
+   "h2h": {
+    "n": 30,
+    "fit": 0.0222,
+    "fit_se": 0.0222,
+    "win": 0.0167,
+    "win_se": 0.0167
+   },
+   "h2h_base_win": 0.5
+  },
+  "islands": {
+   "accepted": "c50d63fd060",
+   "honest_fit": 0.44435,
+   "honest_win": 0.41095000000000004,
+   "b": {
+    "n": 70,
+    "fit": 0.4479,
+    "fit_se": 0.0813,
+    "win": 0.4143,
+    "win_se": 0.0747
+   },
+   "games": 6624,
+   "h2h": {
+    "n": 30,
+    "fit": 0.0176,
+    "fit_se": 0.0176,
+    "win": 0.0167,
+    "win_se": 0.0167
+   },
+   "h2h_base_win": 0.5
+  },
+  "lanes": {
+   "accepted": "ca9764ed1a5",
+   "honest_fit": 0.18585000000000002,
+   "honest_win": 0.1577,
+   "b": {
+    "n": 70,
+    "fit": 0.1856,
+    "fit_se": 0.0569,
+    "win": 0.1571,
+    "win_se": 0.0483
+   },
+   "games": 6574,
+   "h2h": {
+    "n": 30,
+    "fit": 0.0,
+    "fit_se": 0.0,
+    "win": 0.0,
+    "win_se": 0.0
+   },
+   "h2h_base_win": 0.5
+  },
+  "lost-world": {
+   "accepted": "c39406b862d",
+   "honest_fit": 0.14385,
+   "honest_win": 0.0294,
+   "b": {
+    "n": 70,
+    "fit": 0.1428,
+    "fit_se": 0.0429,
+    "win": 0.0286,
+    "win_se": 0.0286
+   },
+   "games": 6624,
+   "h2h": {
+    "n": 30,
+    "fit": 0.0,
+    "fit_se": 0.0,
+    "win": 0.0,
+    "win_se": 0.0
+   },
+   "h2h_base_win": 0.5
+  },
+  "packs": {
+   "accepted": "cc7c103dc33",
+   "honest_fit": 0.42325,
+   "honest_win": 0.22635,
+   "b": {
+    "n": 70,
+    "fit": 0.426,
+    "fit_se": 0.079,
+    "win": 0.2286,
+    "win_se": 0.0545
+   },
+   "games": 10680,
+   "h2h": {
+    "n": 30,
+    "fit": 0.0468,
+    "fit_se": 0.0325,
+    "win": 0.0333,
+    "win_se": 0.0232
+   },
+   "h2h_base_win": 0.5
+  },
+  "pilgrimage": {
+   "accepted": "cecb99ac8b8",
+   "honest_fit": 0.4651,
+   "honest_win": 0.15689999999999998,
+   "b": {
+    "n": 70,
+    "fit": 0.4658,
+    "fit_se": 0.0646,
+    "win": 0.1571,
+    "win_se": 0.0524
+   },
+   "games": 6590,
+   "h2h": {
+    "n": 30,
+    "fit": 0.0188,
+    "fit_se": 0.0188,
+    "win": 0.0167,
+    "win_se": 0.0167
+   },
+   "h2h_base_win": 0.5
+  },
+  "quadrants": {
+   "accepted": "c0ff009955a",
+   "honest_fit": 0.0244,
+   "honest_win": -0.0139,
+   "b": {
+    "n": 70,
+    "fit": 0.0653,
+    "fit_se": 0.0567,
+    "win": 0.0,
+    "win_se": 0.0498
+   },
+   "games": 6598,
+   "h2h": {
+    "n": 30,
+    "fit": 0.0391,
+    "fit_se": 0.0272,
+    "win": 0.0333,
+    "win_se": 0.0232
+   },
+   "h2h_base_win": 0.5
+  },
+  "rows": {
+   "accepted": "cb0bc2c0c99",
+   "honest_fit": 0.09490000000000001,
+   "honest_win": 0.08495,
+   "b": {
+    "n": 70,
+    "fit": 0.0958,
+    "fit_se": 0.0411,
+    "win": 0.0857,
+    "win_se": 0.0394
+   },
+   "games": 10656,
+   "h2h": {
+    "n": 30,
+    "fit": 0.0345,
+    "fit_se": 0.024,
+    "win": 0.0333,
+    "win_se": 0.0232
+   },
+   "h2h_base_win": 0.5
+  },
+  "rushbait-v2": {
+   "accepted": "c851833dc7c",
+   "honest_fit": 0.13545,
+   "honest_win": 0.08415,
+   "b": {
+    "n": 70,
+    "fit": 0.1168,
+    "fit_se": 0.0725,
+    "win": 0.0571,
+    "win_se": 0.0607
+   },
+   "games": 6490,
+   "h2h": {
+    "n": 30,
+    "fit": -0.0189,
+    "fit_se": 0.0451,
+    "win": 0.0,
+    "win_se": 0.0415
+   },
+   "h2h_base_win": 0.5166666666666667
+  },
+  "shortcut": {
+   "accepted": "ced5b609624",
+   "honest_fit": 0.7387999999999999,
+   "honest_win": 0.4812,
+   "b": {
+    "n": 70,
+    "fit": 0.7444,
+    "fit_se": 0.0755,
+    "win": 0.4857,
+    "win_se": 0.0635
+   },
+   "games": 6648,
+   "h2h": {
+    "n": 30,
+    "fit": 0.0659,
+    "fit_se": 0.042,
+    "win": 0.0667,
+    "win_se": 0.0396
+   },
+   "h2h_base_win": 0.5
+  },
+  "split": {
+   "accepted": "c24fbeef683",
+   "honest_fit": 0.39044999999999996,
+   "honest_win": 0.2173,
+   "b": {
+    "n": 70,
+    "fit": 0.3869,
+    "fit_se": 0.0583,
+    "win": 0.2143,
+    "win_se": 0.0534
+   },
+   "games": 6524,
+   "h2h": {
+    "n": 30,
+    "fit": 0.0429,
+    "fit_se": 0.0424,
+    "win": 0.0333,
+    "win_se": 0.0411
+   },
+   "h2h_base_win": 0.5
+  },
+  "stampede": {
+   "accepted": "c3f07a305c0",
+   "honest_fit": 0.47675,
+   "honest_win": 0.1863,
+   "b": {
+    "n": 70,
+    "fit": 0.4773,
+    "fit_se": 0.0805,
+    "win": 0.1857,
+    "win_se": 0.062
+   },
+   "games": 6624,
+   "h2h": {
+    "n": 30,
+    "fit": 0.0951,
+    "fit_se": 0.0829,
+    "win": 0.1,
+    "win_se": 0.0652
+   },
+   "h2h_base_win": 0.4666666666666667
+  },
+  "starfish": {
+   "accepted": "cb000e12c45",
+   "honest_fit": 0.39515,
+   "honest_win": 0.013099999999999999,
+   "b": {
+    "n": 70,
+    "fit": 0.4374,
+    "fit_se": 0.1091,
+    "win": 0.0429,
+    "win_se": 0.0688
+   },
+   "games": 6648,
+   "h2h": {
+    "n": 30,
+    "fit": -0.0551,
+    "fit_se": 0.1025,
+    "win": -0.05,
+    "win_se": 0.0555
+   },
+   "h2h_base_win": 0.48333333333333334
+  },
+  "starvation": {
+   "accepted": "cadee41665b",
+   "honest_fit": 0.45555,
+   "honest_win": 0.21649999999999997,
+   "b": {
+    "n": 70,
+    "fit": 0.453,
+    "fit_se": 0.0581,
+    "win": 0.2143,
+    "win_se": 0.0494
+   },
+   "games": 6648,
+   "h2h": {
+    "n": 30,
+    "fit": 0.2509,
+    "fit_se": 0.0554,
+    "win": 0.2,
+    "win_se": 0.0455
+   },
+   "h2h_base_win": 0.5166666666666667
+  },
+  "swirl": {
+   "accepted": "ca0936dcc31",
+   "honest_fit": 0.8239000000000001,
+   "honest_win": 0.3701,
+   "b": {
+    "n": 70,
+    "fit": 0.8252,
+    "fit_se": 0.0866,
+    "win": 0.3714,
+    "win_se": 0.0582
+   },
+   "games": 6648,
+   "h2h": {
+    "n": 30,
+    "fit": 0.1242,
+    "fit_se": 0.0836,
+    "win": 0.0667,
+    "win_se": 0.0522
+   },
+   "h2h_base_win": 0.5
+  },
+  "the-farm": {
+   "accepted": "c1c699b5847",
+   "honest_fit": 0.6102000000000001,
+   "honest_win": 0.33089999999999997,
+   "b": {
+    "n": 70,
+    "fit": 0.6078,
+    "fit_se": 0.0809,
+    "win": 0.3286,
+    "win_se": 0.0601
+   },
+   "games": 6648,
+   "h2h": {
+    "n": 30,
+    "fit": 0.1828,
+    "fit_se": 0.0808,
+    "win": 0.1167,
+    "win_se": 0.062
+   },
+   "h2h_base_win": 0.48333333333333334
+  }
+ },
+ "honest_fit": 0.4007,
+ "honest_win": 0.2139,
+ "honest_win_se": 0.0259,
+ "accepted": 28,
+ "h2h_dwin": 0.1155,
+ "worst_accepted_b_win": 0.0,
+ "gate": true,
+ "ceiling_report": false
+}

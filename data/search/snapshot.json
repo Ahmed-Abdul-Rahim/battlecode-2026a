@@ -1,0 +1,9 @@
+{
+ "wasm": "ba24f0511a4fbe13fe52e6d3b8cb3a8d340ac901",
+ "slots": 16,
+ "pack_sha1": "a16a2de42e3ffe66f98d6f06796ac71c11a4bf6b",
+ "commit": "90fc7b051a2d259af84e51c6c27b3b8b4fc31b48",
+ "dirty": true,
+ "cambc": "cambc 3.0.5",
+ "time": "2026-10-24T11:34:33"
+}
