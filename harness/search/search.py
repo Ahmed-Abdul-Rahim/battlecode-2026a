@@ -50,6 +50,7 @@ CATS: dict[str, list[int]] = {
     "HUNT_MODE": [0, 1, 2],
     "EN_ROUTE": [0, 1, 2],
     "K2_GOLD_ORDER": [0, 1, 2],
+    "K2_JUMP_HOLES": [0, 1],
 }
 #: Bit-field knobs: each bit is its own on/off choice.
 BITS: dict[str, list[int]] = {

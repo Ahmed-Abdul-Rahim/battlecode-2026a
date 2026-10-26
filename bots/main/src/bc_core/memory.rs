@@ -125,7 +125,9 @@ pub mod knob2 {
     pub const DRAFT_PLAN: usize = 29;
     /// 1 = champions with a dash path over 1-wide hole gaps (holes can be dashed over, walls
     /// can't): their distance fields treat those holes as passable and the walker dashes across.
-    /// Islands only reachable that way stop counting as unreachable.
+    /// Islands only reachable that way stop counting as unreachable. Off by default: paired A/B
+    /// on 19 hole maps was neutral overall (+0.006 +- 0.017) but map-dependent (great-wall +0.32,
+    /// gem-fields +0.18, islands -0.21): a per-map plan setting.
     pub const JUMP_HOLES: usize = 30;
     /// Walking to an altar, stop for what lies just off the way (detour <= 4 tiles) while no
     /// enemy is near: bit 1 = a camp reward waiting to be captured, bit 2 = a weak camp we clear
@@ -161,7 +163,7 @@ pub mod knob2 {
         (KEEP_BUYING, 1),
         (TEACHER, 0),
         (DRAFT_PLAN, 0),
-        (JUMP_HOLES, 1),
+        (JUMP_HOLES, 0),
         (TRIBUTE_DETOUR, 3),
     ];
 }

@@ -66,7 +66,7 @@ PROBES: list[tuple[str, str, list[int], str, str]] = [
     ("K2_CLUSTER", "knob", [10], "map", "cluster value (per-turn compute: fuel)"),
     ("K2_KEEP_BUYING", "knob", [0], "map", "keep buying the last emblem"),
     ("K2_DRAFT_PLAN", "knob", [1, 4, 8, 16, 29], "map", "v3 plan readers (bits)"),
-    ("K2_JUMP_HOLES", "knob", [0], "map", "dash champions path over 1-wide hole gaps"),
+    ("K2_JUMP_HOLES", "knob", [1], "map", "dash champions path over 1-wide hole gaps"),
     ("K2_TRIBUTE_DETOUR", "knob", [0, 1], "map", "rewards / weak camps on the way to an altar"),
     ("draft", "draft", [1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 13, 14], "map", "roster (draft_prefs profile)"),
     ("style", "style", [], "map", "data/styles.json bundles"),

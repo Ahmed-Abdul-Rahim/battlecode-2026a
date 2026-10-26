@@ -1,0 +1,256 @@
+{
+ "per_map": {
+  "ambush": {
+   "winA": 0.964,
+   "winB": 0.821,
+   "dwin": 0.1429,
+   "dwin_se": 0.0847,
+   "dfit": 0.1238,
+   "dfit_se": 0.093,
+   "dstalls": 0
+  },
+  "expanse": {
+   "winA": 0.929,
+   "winB": 0.929,
+   "dwin": 0.0,
+   "dwin_se": 0.0514,
+   "dfit": -0.0005,
+   "dfit_se": 0.0524,
+   "dstalls": 0
+  },
+  "gem-fields": {
+   "winA": 0.929,
+   "winB": 0.75,
+   "dwin": 0.1786,
+   "dwin_se": 0.0899,
+   "dfit": 0.2376,
+   "dfit_se": 0.1009,
+   "dstalls": 0
+  },
+  "gemfight": {
+   "winA": 0.821,
+   "winB": 0.857,
+   "dwin": -0.0357,
+   "dwin_se": 0.081,
+   "dfit": -0.0235,
+   "dfit_se": 0.1234,
+   "dstalls": 0
+  },
+  "great-wall": {
+   "winA": 1.0,
+   "winB": 0.679,
+   "dwin": 0.3214,
+   "dwin_se": 0.0899,
+   "dfit": 0.4419,
+   "dfit_se": 0.1056,
+   "dstalls": 0
+  },
+  "lost-world": {
+   "winA": 1.0,
+   "winB": 0.964,
+   "dwin": 0.0357,
+   "dwin_se": 0.0357,
+   "dfit": 0.0767,
+   "dfit_se": 0.0505,
+   "dstalls": 0
+  },
+  "pilgrimage": {
+   "winA": 0.929,
+   "winB": 0.929,
+   "dwin": 0.0,
+   "dwin_se": 0.0727,
+   "dfit": 0.0056,
+   "dfit_se": 0.083,
+   "dstalls": 0
+  },
+  "reverse-spiral": {
+   "winA": 0.857,
+   "winB": 0.964,
+   "dwin": -0.1071,
+   "dwin_se": 0.0595,
+   "dfit": -0.1505,
+   "dfit_se": 0.0807,
+   "dstalls": 0
+  },
+  "road-of-riches": {
+   "winA": 1.0,
+   "winB": 0.964,
+   "dwin": 0.0357,
+   "dwin_se": 0.0357,
+   "dfit": 0.1087,
+   "dfit_se": 0.0472,
+   "dstalls": 0
+  },
+  "rushbait-v2": {
+   "winA": 0.714,
+   "winB": 0.857,
+   "dwin": -0.1429,
+   "dwin_se": 0.0991,
+   "dfit": -0.2683,
+   "dfit_se": 0.1243,
+   "dstalls": 0
+  },
+  "split": {
+   "winA": 0.893,
+   "winB": 0.964,
+   "dwin": -0.0714,
+   "dwin_se": 0.0714,
+   "dfit": -0.0791,
+   "dfit_se": 0.0801,
+   "dstalls": 0
+  },
+  "swirl": {
+   "winA": 0.821,
+   "winB": 0.821,
+   "dwin": 0.0,
+   "dwin_se": 0.0,
+   "dfit": 0.0,
+   "dfit_se": 0.0,
+   "dstalls": 0
+  },
+  "big-world": {
+   "winA": 1.0,
+   "winB": 1.0,
+   "dwin": 0.0,
+   "dwin_se": 0.0,
+   "dfit": -0.0263,
+   "dfit_se": 0.0061,
+   "dstalls": 0
+  },
+  "concentrated-wealth": {
+   "winA": 0.857,
+   "winB": 0.964,
+   "dwin": -0.1071,
+   "dwin_se": 0.0787,
+   "dfit": -0.2481,
+   "dfit_se": 0.1206,
+   "dstalls": 0
+  },
+  "fracture": {
+   "winA": 0.893,
+   "winB": 0.893,
+   "dwin": 0.0,
+   "dwin_se": 0.0727,
+   "dfit": -0.0329,
+   "dfit_se": 0.0806,
+   "dstalls": 0
+  },
+  "gold-rush": {
+   "winA": 0.714,
+   "winB": 0.643,
+   "dwin": 0.0714,
+   "dwin_se": 0.1019,
+   "dfit": 0.0711,
+   "dfit_se": 0.116,
+   "dstalls": 0
+  },
+  "islands": {
+   "winA": 0.536,
+   "winB": 0.75,
+   "dwin": -0.2143,
+   "dwin_se": 0.1074,
+   "dfit": -0.2074,
+   "dfit_se": 0.1172,
+   "dstalls": 0
+  },
+  "shortcut": {
+   "winA": 0.929,
+   "winB": 0.929,
+   "dwin": 0.0,
+   "dwin_se": 0.0727,
+   "dfit": -0.0821,
+   "dfit_se": 0.0872,
+   "dstalls": 0
+  },
+  "starvation": {
+   "winA": 1.0,
+   "winB": 1.0,
+   "dwin": 0.0,
+   "dwin_se": 0.0,
+   "dfit": -0.0136,
+   "dfit_se": 0.0216,
+   "dstalls": 0
+  }
+ },
+ "opps": [
+  "rules",
+  "top-intercontinental-fish",
+  "top-prism-best-girl",
+  "top-willow-best-girl",
+  "top-univardisty-of-shingtonwash",
+  "top-3",
+  "top-procless",
+  "top-policy-wonk",
+  "top-claudus-maximus",
+  "top-trzy-kwaterki",
+  "top-sponge-albert-and-bob",
+  "top-sneaky-bush-campers",
+  "top-santa-claude",
+  "top-ohhhhhh-caml"
+ ],
+ "all": {
+  "n": 532,
+  "dwin": 0.0056,
+  "dwin_se": 0.0169,
+  "dfit": -0.0035,
+  "dfit_se": 0.0209
+ },
+ "per_opp": {
+  "rules": {
+   "A": 0.737,
+   "B": 0.842
+  },
+  "top-intercontinental-fish": {
+   "A": 0.974,
+   "B": 0.842
+  },
+  "top-prism-best-girl": {
+   "A": 0.895,
+   "B": 0.895
+  },
+  "top-willow-best-girl": {
+   "A": 0.974,
+   "B": 0.947
+  },
+  "top-univardisty-of-shingtonwash": {
+   "A": 0.895,
+   "B": 0.842
+  },
+  "top-3": {
+   "A": 0.947,
+   "B": 0.947
+  },
+  "top-procless": {
+   "A": 0.868,
+   "B": 0.868
+  },
+  "top-policy-wonk": {
+   "A": 0.789,
+   "B": 0.868
+  },
+  "top-claudus-maximus": {
+   "A": 0.921,
+   "B": 0.737
+  },
+  "top-trzy-kwaterki": {
+   "A": 0.868,
+   "B": 0.895
+  },
+  "top-sponge-albert-and-bob": {
+   "A": 0.895,
+   "B": 0.868
+  },
+  "top-sneaky-bush-campers": {
+   "A": 0.974,
+   "B": 0.895
+  },
+  "top-santa-claude": {
+   "A": 0.816,
+   "B": 0.947
+  },
+  "top-ohhhhhh-caml": {
+   "A": 0.816,
+   "B": 0.895
+  }
+ }
+}
