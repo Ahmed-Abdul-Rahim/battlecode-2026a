@@ -1333,6 +1333,45 @@ fn camp_groups_use_host_membership_and_state_variants() {
         Some(ErrorCode::ApiNotInVision)
     );
 }
+
+#[test]
+fn capture_state_decodes_timer_and_propagates_host_visibility_errors() {
+    setup();
+    crate::init().unwrap();
+    let groups = crate::map::camp_groups().unwrap();
+    for tag in 0..5 {
+        fake::hook(move |name, args| {
+            if name != "camp_group_capture_state" { return None; }
+            unsafe { (args[1] as *mut i32).write(3); (args[1] as *mut i32).add(1).write(tag); }
+            Some(0)
+        });
+        let state = groups[0].capture_state().unwrap();
+        assert_eq!(state.timer, 3);
+        assert_eq!(state.state, CampGroupCaptureType::try_from(tag).unwrap());
+    }
+    fake::hook(|name, _| (name == "camp_group_capture_state").then_some(97));
+    assert_eq!(groups[0].capture_state().unwrap_err().code(), Some(ErrorCode::ApiNotInVision));
+    fake::hook(|name, args| {
+        if name != "camp_group_capture_state" { return None; }
+        unsafe { (args[1] as *mut i32).add(1).write(99); }
+        Some(0)
+    });
+    assert!(groups[0].capture_state().is_err());
+}
+
+#[test]
+fn item_selection_covers_every_family_stat_and_tier() {
+    for (family_index, &family) in ItemFamily::ALL.iter().enumerate() {
+        for (stat_index, &stat) in ItemStat::ALL.iter().enumerate() {
+            for shard in [true, false] {
+                assert_eq!(crate::get_item_enum(family, stat, shard), ItemType::ALL[family_index * 6 + stat_index * 2 + usize::from(!shard)]);
+            }
+        }
+    }
+    assert_eq!(crate::get_item_enum(ItemFamily::Greed, ItemStat::Health, false), ItemType::GreedEmblemOfHealth);
+    assert!(ItemFamily::try_from(14).is_err());
+    assert!(ItemStat::try_from(3).is_err());
+}
 #[test]
 fn bytemuck_traits_round_trip_sdk_types() {
     let values = [Vec2::new(-1, 2), Vec2::new(3, -4)];
@@ -1340,7 +1379,7 @@ fn bytemuck_traits_round_trip_sdk_types() {
     assert_eq!(bytemuck::cast_slice::<u8, Vec2>(bytes), values);
     assert_eq!(bytemuck::cast::<_, u32>(ChampionState::ALIVE | ChampionState::CAN_CAST), 1 | 1 << 11);
     assert_eq!(bytemuck::checked::try_cast::<u32, ItemType>(41), Ok(ItemType::BruiserEmblemOfHealth));
-    assert!(bytemuck::checked::try_cast::<u32, ItemType>(42).is_err());
+    assert!(bytemuck::checked::try_cast::<u32, ItemType>(84).is_err());
     assert!(bytemuck::checked::try_cast::<u8, PassiveType>(9).is_err());
     assert_eq!(bytemuck::cast::<_, i32>(ChampionType::Tavi), 11);
 }
@@ -1856,6 +1895,8 @@ fn item_metadata_is_engine_backed_and_decodes_public_fields() {
         }
         Some(0)
     });
+    assert_eq!(ItemType::MonsterEmblemOfStrength.info().unwrap().cost, first.cost);
+    crate::shop::reset_items_for_tests();
     let second = ItemType::MonsterEmblemOfStrength.info().unwrap();
     assert_eq!(second.cost, 99);
     assert_eq!(second.result, None);
@@ -1990,7 +2031,8 @@ fn item_metadata_forwards_all_kinds_and_validates_runtime_tags() {
         assert_eq!(info.cost, kind as u32 + 100);
         assert_eq!(info.result, None);
     }
-    for (passive, result) in [(6, 0xff), (0, 42), (0, 43)] {
+    crate::shop::reset_items_for_tests();
+    for (passive, result) in [(12, 0xff), (0, 84), (0, 85)] {
         fake::hook(move |name, args| {
             if name != "item_info" {
                 return None;
@@ -2308,7 +2350,7 @@ fn value_traits() {
     copy_eq::<AbilityInfo>();
     copy_eq::<BuffCollection>();
     copy_eq::<ChampionStats>();
-    assert_eq!(ItemCounts::default(), ItemCounts([0; 42]));
+    assert_eq!(ItemCounts::default(), ItemCounts([0; 84]));
 }
 
 #[test]

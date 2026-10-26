@@ -4,6 +4,10 @@
 //! Raw enum tags and ABI-only fields are validated or kept private by typed wrappers.
 #![allow(non_snake_case)]
 use crate::Vec2;
+#[repr(C)]
+#[derive(Clone, Copy, Default)]
+pub(crate) struct CampGroupCaptureState { pub timer: i32, pub state: i32 }
+const _: () = { assert!(core::mem::size_of::<CampGroupCaptureState>() == 8); };
 /// Exact engine item record; private fields retained even when not publicly exposed.
 #[repr(C)]
 #[derive(Clone, Copy, Default)]
@@ -604,6 +608,8 @@ unsafe extern "C" {
     #[link_name = "camp_group_cooldown"]
     pub(crate) fn camp_group_cooldown(group: u32, out_cooldown: *mut i32) -> i32;
     /// Exact C-ABI `camp_group_state` host operation; pointer buffers obey the module safety contract.
+    #[link_name = "camp_group_capture_state"]
+    pub(crate) fn camp_group_capture_state(group: u32, out_state: *mut CampGroupCaptureState) -> i32;
     #[link_name = "camp_group_state"]
     pub(crate) fn camp_group_state(group: u32, out_state: *mut u32) -> i32;
     /// Exact C-ABI `camp_buffs` host operation; pointer buffers obey the module safety contract.
@@ -2187,4 +2193,9 @@ pub(crate) unsafe fn DistanceField_ComputeToWithExpansionCount(
             out_expansions as usize,
         ],
     ) as i32
+}
+
+#[cfg(test)]
+pub(crate) unsafe fn camp_group_capture_state(group: u32, out_state: *mut CampGroupCaptureState) -> i32 {
+    crate::fake::call("camp_group_capture_state", &[group as usize, out_state as usize]) as i32
 }

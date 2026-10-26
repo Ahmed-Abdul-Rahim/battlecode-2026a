@@ -16,7 +16,7 @@ pub fn primary_stat(kind: ChampionKind) -> Stat {
 }
 
 /// Emblems to complete, in order. Jungle first (30% less camp damage) because
-/// camp kills destroy carried gems; Monster next (10% more camp damage).
+/// camp kills destroy carried gems; Monster next (15% more camp damage since engine 2.0.0).
 pub fn build_order(kind: ChampionKind) -> Vec<(Family, Stat)> {
     build_order_profile(kind, 0)
 }
@@ -26,7 +26,9 @@ pub fn build_order(kind: ChampionKind) -> Vec<(Family, Stat)> {
 /// 3 Power/Bruiser primary (as strong ladder teams buy), 4 Power/Jungle/Monster primary,
 /// then default order after: 5 Power ×2, 6 Treasure, 7 Durability(Health), 8 Home, 9 Bruiser;
 /// 10 RedDragon (Monster, Power, all Strength), 11 every passive on the primary stat,
-/// 12 Tavi field build (every passive on Strength, then Power), 13 best-bot Power build.
+/// 12 Tavi field build (every passive on Strength, then Power), 13 best-bot Power build;
+/// engine 2.0.0 families: 14 Skirmish/Hunter fighter, 15 Capture/Prospector farmer,
+/// 16 Greed (25 shards for 35 shards of stats), 17 Collectors (one emblem per family).
 pub fn build_order_profile(kind: ChampionKind, profile: u8) -> Vec<(Family, Stat)> {
     let primary = primary_stat(kind);
     let (p, j, m, b) = (
@@ -90,6 +92,42 @@ pub fn build_order_profile(kind: ChampionKind, profile: u8) -> Vec<(Family, Stat
             order.extend([s(Family::Power); 8]);
             return order;
         }
+        // Fighter: +5% damage to champions and +50 gold per kill, then stack Power.
+        14 => {
+            let mut order = vec![(Family::Skirmish, primary), (Family::Hunter, primary), m];
+            order.extend([p; 8]);
+            return order;
+        }
+        // Farmer: captures in 3 turns instead of 5, +25% cluster gold and gems, Monster's
+        // +15% camp damage, then Power.
+        15 => {
+            let mut order =
+                vec![(Family::Capture, primary), (Family::Prospector, primary), m, j];
+            order.extend([p; 7]);
+            return order;
+        }
+        // Greed: one Monster for early camps, then Greed emblems (35 shards of stats per
+        // 25 shards bought, 1.4x vs Power's 1.2x, but nothing until the 25th shard).
+        16 => {
+            let g = (Family::Greed, primary);
+            return vec![m, g, g, g];
+        }
+        // Collectors: +1% damage per unique family, so one emblem of each useful family
+        // (Collectors counts itself), then Power.
+        17 => {
+            let mut order = vec![
+                (Family::Collectors, primary),
+                m,
+                j,
+                (Family::Skirmish, primary),
+                (Family::Capture, primary),
+                (Family::Durability, Stat::Health),
+                (Family::Home, Stat::Health),
+                (Family::Tribute, primary),
+            ];
+            order.extend([p; 4]);
+            return order;
+        }
         _ => {}
     }
     default_order(kind)
@@ -99,7 +137,7 @@ fn default_order(kind: ChampionKind) -> Vec<(Family, Stat)> {
     let primary = primary_stat(kind);
     let mut order = vec![(Family::Jungle, Stat::Health)];
     if kind == ChampionKind::VesperVale {
-        // +20% gold stacks with her passive for +40%.
+        // +10% gold (engine 2.0.0; was +20%) stacks with her passive.
         order.push((Family::Treasure, Stat::Strength));
     }
     order.push((Family::Monster, primary));
@@ -140,6 +178,20 @@ pub fn affordable(gold: u32) -> u32 {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn engine2_profiles_use_new_families() {
+        for profile in 14..=17 {
+            let order = build_order_profile(ChampionKind::Varg, profile);
+            assert!(order.iter().any(|&(f, _)| f as u8 >= Family::Tribute as u8), "{profile}");
+        }
+        // Greed needs 25 shards per emblem: the 6th Greed shard is still Greed.
+        let order = build_order_profile(ChampionKind::Varg, 16);
+        let mut l = Ledger::new(ChampionKind::Varg);
+        l.items[item_id(Family::Monster, Stat::Strength, true) as usize] = 1;
+        l.items[item_id(Family::Greed, Stat::Strength, false) as usize] = 7;
+        assert_eq!(next_shard(&order, &l), Some(item_id(Family::Greed, Stat::Strength, false)));
+    }
 
     #[test]
     fn complete_order_keeps_buying_its_last_emblem() {

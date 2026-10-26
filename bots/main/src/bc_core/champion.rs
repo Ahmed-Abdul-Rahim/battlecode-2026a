@@ -291,7 +291,7 @@ fn ability(
     Some(AbilitySpec { kind, modifier, range, radius, duration, excludes_walking, targets })
 }
 
-/// Kit table transcribed from docs/GameRules.md (engine 1.0.0, cambc 3.0.1). The bot overlays
+/// Kit table transcribed from docs/GameRules.md (engine 2.0.0, cambc 4.0.0 balance patch). The bot overlays
 /// the engine's live base stats at start-up (bots/main/src/sdk.rs), so this is the fallback.
 #[must_use]
 pub fn builtin_kit(kind: ChampionKind) -> KitInfo {
@@ -322,14 +322,14 @@ pub fn builtin_kit(kind: ChampionKind) -> KitInfo {
             65.0,
             30.0,
             3.0,
-            70.0,
+            100.0,
             13.0,
             ability(Damage, 2.0, 4.0, 0.0, 0, true, foe),
             ability(Cc, 0.0, 4.0, 0.0, 1, false, foe),
             Passive::None,
         ),
         ChampionKind::Issac => {
-            k(Melee, 1, 900.0, 80.0, 40.0, 3.0, 100.0, 10.0, reset, dash, Passive::None)
+            k(Melee, 1, 900.0, 80.0, 45.0, 3.0, 100.0, 10.0, reset, dash, Passive::None)
         }
         ChampionKind::Ryth => k(
             Melee,
@@ -337,7 +337,7 @@ pub fn builtin_kit(kind: ChampionKind) -> KitInfo {
             1200.0,
             100.0,
             45.0,
-            5.0,
+            4.5,
             100.0,
             10.0,
             ability(AoeDamage, 1.0, 4.0, 1.0, 1, true, GROUND),
@@ -345,13 +345,13 @@ pub fn builtin_kit(kind: ChampionKind) -> KitInfo {
             Passive::HealthStrength,
         ),
         ChampionKind::VesperVale => {
-            k(Ranged, 3, 900.0, 100.0, 50.0, 5.0, 100.0, 10.0, reset, dash, Passive::BonusGold)
+            k(Ranged, 3, 900.0, 100.0, 45.0, 5.0, 100.0, 10.0, reset, dash, Passive::BonusGold)
         }
         ChampionKind::Prism => k(
             Ranged,
             3,
             700.0,
-            60.0,
+            65.0,
             35.0,
             2.5,
             80.0,
@@ -368,7 +368,7 @@ pub fn builtin_kit(kind: ChampionKind) -> KitInfo {
             30.0,
             3.5,
             85.0,
-            9.0,
+            8.5,
             ability(Damage, 2.0, 4.0, 0.0, 0, true, foe),
             ability(AoeDamage, 1.4, 4.0, 1.0, 0, true, GROUND),
             Passive::None,
@@ -392,9 +392,9 @@ pub fn builtin_kit(kind: ChampionKind) -> KitInfo {
             1200.0,
             100.0,
             45.0,
-            5.0,
+            4.5,
             60.0,
-            15.0,
+            14.0,
             reset,
             ability(Damage, 2.0, 4.0, 0.0, 0, true, foe),
             Passive::StunImmunity,
@@ -409,7 +409,7 @@ pub fn builtin_kit(kind: ChampionKind) -> KitInfo {
             100.0,
             10.0,
             reset,
-            ability(Cc, 1.4, 4.0, 0.0, 1, true, foe),
+            ability(Cc, 1.6, 4.0, 0.0, 1, true, foe),
             Passive::RemoteShop,
         ),
         ChampionKind::Willow => k(
@@ -419,7 +419,7 @@ pub fn builtin_kit(kind: ChampionKind) -> KitInfo {
             50.0,
             55.0,
             3.0,
-            120.0,
+            140.0,
             5.0,
             ability(Heal, 3.0, 4.0, 0.0, 0, false, ALLIES),
             reset,
@@ -434,7 +434,7 @@ pub fn builtin_kit(kind: ChampionKind) -> KitInfo {
             5.0,
             100.0,
             9.0,
-            ability(Cc, 0.75, 4.0, 0.0, 1, true, foe),
+            ability(Cc, 1.1, 4.0, 0.0, 1, true, foe),
             dash,
             Passive::Retaliation,
         ),
@@ -443,7 +443,7 @@ pub fn builtin_kit(kind: ChampionKind) -> KitInfo {
             1,
             1000.0,
             100.0,
-            40.0,
+            45.0,
             5.0,
             100.0,
             10.0,
@@ -457,9 +457,9 @@ pub fn builtin_kit(kind: ChampionKind) -> KitInfo {
             1000.0,
             100.0,
             40.0,
-            4.0,
+            3.0,
             100.0,
-            12.0,
+            10.0,
             ability(Shield, 1.5, 0.0, 0.0, 5, false, SELF),
             // Dash 2 tiles, 1.5 x Focus to radius 1 on landing, one-turn stun.
             ability(Cc, 1.5, 2.0, 1.0, 1, false, GROUND),
@@ -530,7 +530,7 @@ mod tests {
         let ryth = builtin_kit(ChampionKind::Ryth);
         assert_eq!(ryth.stats_with([2, 0, 0]).0, 1400.0);
         assert_eq!(builtin_kit(ChampionKind::Varg).passive, Passive::SplashAttack);
-        assert_eq!(builtin_kit(ChampionKind::Tavi).abilities[1].unwrap().modifier, 1.4);
+        assert_eq!(builtin_kit(ChampionKind::Tavi).abilities[1].unwrap().modifier, 1.6, "engine 2.0.0 patch");
         assert_eq!(missing_health_bonus(ChampionKind::HeartOfRuin, 0.5), 1.25);
         assert_eq!(missing_health_bonus(ChampionKind::Varg, 0.1), 1.0);
     }

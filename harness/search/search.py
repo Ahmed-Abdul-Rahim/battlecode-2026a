@@ -44,7 +44,7 @@ GRIDS: dict[str, list[int | None]] = {
 }
 #: Categorical knobs: the values to choose from.
 CATS: dict[str, list[int]] = {
-    "BUILD_PROFILE": list(range(14)),
+    "BUILD_PROFILE": list(range(18)),
     "VALUE_PROFILE": [0, 1, 2, 4, 5],
     "RECALL_SAFE": [0, 1, 2],
     "HUNT_MODE": [0, 1, 2],

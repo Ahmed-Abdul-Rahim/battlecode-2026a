@@ -1473,6 +1473,11 @@ struct item_info;
 struct consumable_info;
 enum class item_passive : std::uint32_t;
 
+/// Item family, independent of its stat and shard/emblem tier.
+enum class item_family : std::int32_t { monster, power, durability, treasure, jungle, home, bruiser, tribute, capture, prospector, hunter, skirmish, greed, collectors };
+/// Stat selected for an item.
+enum class item_stat : std::int32_t { strength, focus, health };
+
 /// Purchasable item types.
 class item_type
 {
@@ -1482,15 +1487,15 @@ public:
 	{
 		/// Monster shard: 30 gold, adds the champion's strength growth.
 		monster_shard_of_strength,
-		/// Monster emblem: combined from five monster strength shards; 10% more damage to camps.
+		/// Monster emblem: combined from five monster strength shards; 15% more damage to camps.
 		monster_emblem_of_strength,
 		/// Monster shard: 30 gold, adds the champion's focus growth.
 		monster_shard_of_focus,
-		/// Monster emblem: combined from five monster focus shards; 10% more damage to camps.
+		/// Monster emblem: combined from five monster focus shards; 15% more damage to camps.
 		monster_emblem_of_focus,
 		/// Monster shard: 30 gold, adds the champion's health growth.
 		monster_shard_of_health,
-		/// Monster emblem: combined from five monster health shards; 10% more damage to camps.
+		/// Monster emblem: combined from five monster health shards; 15% more damage to camps.
 		monster_emblem_of_health,
 		/// Power shard: 30 gold, adds the champion's strength growth.
 		power_shard_of_strength,
@@ -1518,15 +1523,15 @@ public:
 		durability_emblem_of_health,
 		/// Treasure shard: 30 gold, adds the champion's strength growth.
 		treasure_shard_of_strength,
-		/// Treasure emblem: combined from five treasure strength shards; 20% more gold gained.
+		/// Treasure emblem: combined from five treasure strength shards; 10% more gold gained.
 		treasure_emblem_of_strength,
 		/// Treasure shard: 30 gold, adds the champion's focus growth.
 		treasure_shard_of_focus,
-		/// Treasure emblem: combined from five treasure focus shards; 20% more gold gained.
+		/// Treasure emblem: combined from five treasure focus shards; 10% more gold gained.
 		treasure_emblem_of_focus,
 		/// Treasure shard: 30 gold, adds the champion's health growth.
 		treasure_shard_of_health,
-		/// Treasure emblem: combined from five treasure health shards; 20% more gold gained.
+		/// Treasure emblem: combined from five treasure health shards; 10% more gold gained.
 		treasure_emblem_of_health,
 		/// Jungle shard: 30 gold, adds the champion's strength growth.
 		jungle_shard_of_strength,
@@ -1564,21 +1569,63 @@ public:
 		bruiser_shard_of_health,
 		/// Bruiser emblem: combined from five bruiser health shards; five health shards plus one of each other stat instead of a passive.
 		bruiser_emblem_of_health,
+		tribute_shard_of_strength,
+		tribute_emblem_of_strength,
+		tribute_shard_of_focus,
+		tribute_emblem_of_focus,
+		tribute_shard_of_health,
+		tribute_emblem_of_health,
+		capture_shard_of_strength,
+		capture_emblem_of_strength,
+		capture_shard_of_focus,
+		capture_emblem_of_focus,
+		capture_shard_of_health,
+		capture_emblem_of_health,
+		prospector_shard_of_strength,
+		prospector_emblem_of_strength,
+		prospector_shard_of_focus,
+		prospector_emblem_of_focus,
+		prospector_shard_of_health,
+		prospector_emblem_of_health,
+		hunter_shard_of_strength,
+		hunter_emblem_of_strength,
+		hunter_shard_of_focus,
+		hunter_emblem_of_focus,
+		hunter_shard_of_health,
+		hunter_emblem_of_health,
+		skirmish_shard_of_strength,
+		skirmish_emblem_of_strength,
+		skirmish_shard_of_focus,
+		skirmish_emblem_of_focus,
+		skirmish_shard_of_health,
+		skirmish_emblem_of_health,
+		greed_shard_of_strength,
+		greed_emblem_of_strength,
+		greed_shard_of_focus,
+		greed_emblem_of_focus,
+		greed_shard_of_health,
+		greed_emblem_of_health,
+		collectors_shard_of_strength,
+		collectors_emblem_of_strength,
+		collectors_shard_of_focus,
+		collectors_emblem_of_focus,
+		collectors_shard_of_health,
+		collectors_emblem_of_health,
 		/// Number of item types; not a valid item.
 		count
 	};
 
 	/// Known values and the end sentinel, exposed as wrapper constants.
 	static const item_type monster_shard_of_strength;
-	/// Monster emblem: combined from five monster strength shards; 10% more damage to camps.
+	/// Monster emblem: combined from five monster strength shards; 15% more damage to camps.
 	static const item_type monster_emblem_of_strength;
 	/// Monster shard: 30 gold, adds the champion's focus growth.
 	static const item_type monster_shard_of_focus;
-	/// Monster emblem: combined from five monster focus shards; 10% more damage to camps.
+	/// Monster emblem: combined from five monster focus shards; 15% more damage to camps.
 	static const item_type monster_emblem_of_focus;
 	/// Monster shard: 30 gold, adds the champion's health growth.
 	static const item_type monster_shard_of_health;
-	/// Monster emblem: combined from five monster health shards; 10% more damage to camps.
+	/// Monster emblem: combined from five monster health shards; 15% more damage to camps.
 	static const item_type monster_emblem_of_health;
 	/// Power shard: 30 gold, adds the champion's strength growth.
 	static const item_type power_shard_of_strength;
@@ -1606,15 +1653,15 @@ public:
 	static const item_type durability_emblem_of_health;
 	/// Treasure shard: 30 gold, adds the champion's strength growth.
 	static const item_type treasure_shard_of_strength;
-	/// Treasure emblem: combined from five treasure strength shards; 20% more gold gained.
+	/// Treasure emblem: combined from five treasure strength shards; 10% more gold gained.
 	static const item_type treasure_emblem_of_strength;
 	/// Treasure shard: 30 gold, adds the champion's focus growth.
 	static const item_type treasure_shard_of_focus;
-	/// Treasure emblem: combined from five treasure focus shards; 20% more gold gained.
+	/// Treasure emblem: combined from five treasure focus shards; 10% more gold gained.
 	static const item_type treasure_emblem_of_focus;
 	/// Treasure shard: 30 gold, adds the champion's health growth.
 	static const item_type treasure_shard_of_health;
-	/// Treasure emblem: combined from five treasure health shards; 20% more gold gained.
+	/// Treasure emblem: combined from five treasure health shards; 10% more gold gained.
 	static const item_type treasure_emblem_of_health;
 	/// Jungle shard: 30 gold, adds the champion's strength growth.
 	static const item_type jungle_shard_of_strength;
@@ -1652,6 +1699,48 @@ public:
 	static const item_type bruiser_shard_of_health;
 	/// Bruiser emblem: combined from five bruiser health shards; five health shards plus one of each other stat instead of a passive.
 	static const item_type bruiser_emblem_of_health;
+	static const item_type tribute_shard_of_strength;
+	static const item_type tribute_emblem_of_strength;
+	static const item_type tribute_shard_of_focus;
+	static const item_type tribute_emblem_of_focus;
+	static const item_type tribute_shard_of_health;
+	static const item_type tribute_emblem_of_health;
+	static const item_type capture_shard_of_strength;
+	static const item_type capture_emblem_of_strength;
+	static const item_type capture_shard_of_focus;
+	static const item_type capture_emblem_of_focus;
+	static const item_type capture_shard_of_health;
+	static const item_type capture_emblem_of_health;
+	static const item_type prospector_shard_of_strength;
+	static const item_type prospector_emblem_of_strength;
+	static const item_type prospector_shard_of_focus;
+	static const item_type prospector_emblem_of_focus;
+	static const item_type prospector_shard_of_health;
+	static const item_type prospector_emblem_of_health;
+	static const item_type hunter_shard_of_strength;
+	static const item_type hunter_emblem_of_strength;
+	static const item_type hunter_shard_of_focus;
+	static const item_type hunter_emblem_of_focus;
+	static const item_type hunter_shard_of_health;
+	static const item_type hunter_emblem_of_health;
+	static const item_type skirmish_shard_of_strength;
+	static const item_type skirmish_emblem_of_strength;
+	static const item_type skirmish_shard_of_focus;
+	static const item_type skirmish_emblem_of_focus;
+	static const item_type skirmish_shard_of_health;
+	static const item_type skirmish_emblem_of_health;
+	static const item_type greed_shard_of_strength;
+	static const item_type greed_emblem_of_strength;
+	static const item_type greed_shard_of_focus;
+	static const item_type greed_emblem_of_focus;
+	static const item_type greed_shard_of_health;
+	static const item_type greed_emblem_of_health;
+	static const item_type collectors_shard_of_strength;
+	static const item_type collectors_emblem_of_strength;
+	static const item_type collectors_shard_of_focus;
+	static const item_type collectors_emblem_of_focus;
+	static const item_type collectors_shard_of_health;
+	static const item_type collectors_emblem_of_health;
 	/// Number of item types; not a valid item.
 	static const item_type count;
 
@@ -1690,6 +1779,17 @@ public:
 private:
 	enum_type value_{};
 };
+
+/// Select an item without spelling out its full enum name.
+/// @param family Emblem family.
+/// @param stat Stat granted by the item.
+/// @param shard True selects a shard (default); false selects an emblem.
+[[nodiscard]] constexpr item_type get_item_enum(item_family family, item_stat stat, bool shard = true)
+{
+ const auto f = static_cast<std::int32_t>(family), s = static_cast<std::int32_t>(stat);
+ if (f < 0 || f >= 14 || s < 0 || s >= 3) throw std::invalid_argument("invalid item family or stat");
+ return item_type{ static_cast<std::uint32_t>(f * 6 + s * 2 + (shard ? 0 : 1)) };
+}
 
 inline constexpr item_type item_type::monster_shard_of_strength{ enum_type::monster_shard_of_strength };
 inline constexpr item_type item_type::monster_emblem_of_strength{ enum_type::monster_emblem_of_strength };
@@ -1733,6 +1833,48 @@ inline constexpr item_type item_type::bruiser_shard_of_focus{ enum_type::bruiser
 inline constexpr item_type item_type::bruiser_emblem_of_focus{ enum_type::bruiser_emblem_of_focus };
 inline constexpr item_type item_type::bruiser_shard_of_health{ enum_type::bruiser_shard_of_health };
 inline constexpr item_type item_type::bruiser_emblem_of_health{ enum_type::bruiser_emblem_of_health };
+inline constexpr item_type item_type::tribute_shard_of_strength{ enum_type::tribute_shard_of_strength };
+inline constexpr item_type item_type::tribute_emblem_of_strength{ enum_type::tribute_emblem_of_strength };
+inline constexpr item_type item_type::tribute_shard_of_focus{ enum_type::tribute_shard_of_focus };
+inline constexpr item_type item_type::tribute_emblem_of_focus{ enum_type::tribute_emblem_of_focus };
+inline constexpr item_type item_type::tribute_shard_of_health{ enum_type::tribute_shard_of_health };
+inline constexpr item_type item_type::tribute_emblem_of_health{ enum_type::tribute_emblem_of_health };
+inline constexpr item_type item_type::capture_shard_of_strength{ enum_type::capture_shard_of_strength };
+inline constexpr item_type item_type::capture_emblem_of_strength{ enum_type::capture_emblem_of_strength };
+inline constexpr item_type item_type::capture_shard_of_focus{ enum_type::capture_shard_of_focus };
+inline constexpr item_type item_type::capture_emblem_of_focus{ enum_type::capture_emblem_of_focus };
+inline constexpr item_type item_type::capture_shard_of_health{ enum_type::capture_shard_of_health };
+inline constexpr item_type item_type::capture_emblem_of_health{ enum_type::capture_emblem_of_health };
+inline constexpr item_type item_type::prospector_shard_of_strength{ enum_type::prospector_shard_of_strength };
+inline constexpr item_type item_type::prospector_emblem_of_strength{ enum_type::prospector_emblem_of_strength };
+inline constexpr item_type item_type::prospector_shard_of_focus{ enum_type::prospector_shard_of_focus };
+inline constexpr item_type item_type::prospector_emblem_of_focus{ enum_type::prospector_emblem_of_focus };
+inline constexpr item_type item_type::prospector_shard_of_health{ enum_type::prospector_shard_of_health };
+inline constexpr item_type item_type::prospector_emblem_of_health{ enum_type::prospector_emblem_of_health };
+inline constexpr item_type item_type::hunter_shard_of_strength{ enum_type::hunter_shard_of_strength };
+inline constexpr item_type item_type::hunter_emblem_of_strength{ enum_type::hunter_emblem_of_strength };
+inline constexpr item_type item_type::hunter_shard_of_focus{ enum_type::hunter_shard_of_focus };
+inline constexpr item_type item_type::hunter_emblem_of_focus{ enum_type::hunter_emblem_of_focus };
+inline constexpr item_type item_type::hunter_shard_of_health{ enum_type::hunter_shard_of_health };
+inline constexpr item_type item_type::hunter_emblem_of_health{ enum_type::hunter_emblem_of_health };
+inline constexpr item_type item_type::skirmish_shard_of_strength{ enum_type::skirmish_shard_of_strength };
+inline constexpr item_type item_type::skirmish_emblem_of_strength{ enum_type::skirmish_emblem_of_strength };
+inline constexpr item_type item_type::skirmish_shard_of_focus{ enum_type::skirmish_shard_of_focus };
+inline constexpr item_type item_type::skirmish_emblem_of_focus{ enum_type::skirmish_emblem_of_focus };
+inline constexpr item_type item_type::skirmish_shard_of_health{ enum_type::skirmish_shard_of_health };
+inline constexpr item_type item_type::skirmish_emblem_of_health{ enum_type::skirmish_emblem_of_health };
+inline constexpr item_type item_type::greed_shard_of_strength{ enum_type::greed_shard_of_strength };
+inline constexpr item_type item_type::greed_emblem_of_strength{ enum_type::greed_emblem_of_strength };
+inline constexpr item_type item_type::greed_shard_of_focus{ enum_type::greed_shard_of_focus };
+inline constexpr item_type item_type::greed_emblem_of_focus{ enum_type::greed_emblem_of_focus };
+inline constexpr item_type item_type::greed_shard_of_health{ enum_type::greed_shard_of_health };
+inline constexpr item_type item_type::greed_emblem_of_health{ enum_type::greed_emblem_of_health };
+inline constexpr item_type item_type::collectors_shard_of_strength{ enum_type::collectors_shard_of_strength };
+inline constexpr item_type item_type::collectors_emblem_of_strength{ enum_type::collectors_emblem_of_strength };
+inline constexpr item_type item_type::collectors_shard_of_focus{ enum_type::collectors_shard_of_focus };
+inline constexpr item_type item_type::collectors_emblem_of_focus{ enum_type::collectors_emblem_of_focus };
+inline constexpr item_type item_type::collectors_shard_of_health{ enum_type::collectors_shard_of_health };
+inline constexpr item_type item_type::collectors_emblem_of_health{ enum_type::collectors_emblem_of_health };
 inline constexpr item_type item_type::count{ enum_type::count };
 
 /// Engine-provided consumable price and inventory carry limit.
@@ -1858,7 +2000,7 @@ private:
 using item = item_type;
 
 /// Optional item passive tags; no passive is represented by an empty optional.
-enum class item_passive : std::uint32_t { monster = 1, durability, treasure, jungle, home };
+enum class item_passive : std::uint32_t { monster = 1, durability, treasure, jungle, home, tribute, capture, prospector, hunter, skirmish, collectors };
 
 /// Format as "(x, y)".
 /// @param value Value to format.
@@ -2150,6 +2292,12 @@ enum class item_passive : std::uint32_t { monster = 1, durability, treasure, jun
 	case item_passive::treasure: return "treasure";
 	case item_passive::jungle: return "jungle";
 	case item_passive::home: return "home";
+	case item_passive::tribute: return "tribute";
+	case item_passive::capture: return "capture";
+	case item_passive::prospector: return "prospector";
+	case item_passive::hunter: return "hunter";
+	case item_passive::skirmish: return "skirmish";
+	case item_passive::collectors: return "collectors";
 	default: break;
 	}
 	return "item_passive(" + std::to_string(static_cast<std::uint32_t>(value)) + ")";
@@ -2203,6 +2351,48 @@ enum class item_passive : std::uint32_t { monster = 1, durability, treasure, jun
 	case item_type::enum_type::bruiser_emblem_of_focus: return "bruiser_emblem_of_focus";
 	case item_type::enum_type::bruiser_shard_of_health: return "bruiser_shard_of_health";
 	case item_type::enum_type::bruiser_emblem_of_health: return "bruiser_emblem_of_health";
+	case item_type::enum_type::tribute_shard_of_strength: return "tribute_shard_of_strength";
+	case item_type::enum_type::tribute_emblem_of_strength: return "tribute_emblem_of_strength";
+	case item_type::enum_type::tribute_shard_of_focus: return "tribute_shard_of_focus";
+	case item_type::enum_type::tribute_emblem_of_focus: return "tribute_emblem_of_focus";
+	case item_type::enum_type::tribute_shard_of_health: return "tribute_shard_of_health";
+	case item_type::enum_type::tribute_emblem_of_health: return "tribute_emblem_of_health";
+	case item_type::enum_type::capture_shard_of_strength: return "capture_shard_of_strength";
+	case item_type::enum_type::capture_emblem_of_strength: return "capture_emblem_of_strength";
+	case item_type::enum_type::capture_shard_of_focus: return "capture_shard_of_focus";
+	case item_type::enum_type::capture_emblem_of_focus: return "capture_emblem_of_focus";
+	case item_type::enum_type::capture_shard_of_health: return "capture_shard_of_health";
+	case item_type::enum_type::capture_emblem_of_health: return "capture_emblem_of_health";
+	case item_type::enum_type::prospector_shard_of_strength: return "prospector_shard_of_strength";
+	case item_type::enum_type::prospector_emblem_of_strength: return "prospector_emblem_of_strength";
+	case item_type::enum_type::prospector_shard_of_focus: return "prospector_shard_of_focus";
+	case item_type::enum_type::prospector_emblem_of_focus: return "prospector_emblem_of_focus";
+	case item_type::enum_type::prospector_shard_of_health: return "prospector_shard_of_health";
+	case item_type::enum_type::prospector_emblem_of_health: return "prospector_emblem_of_health";
+	case item_type::enum_type::hunter_shard_of_strength: return "hunter_shard_of_strength";
+	case item_type::enum_type::hunter_emblem_of_strength: return "hunter_emblem_of_strength";
+	case item_type::enum_type::hunter_shard_of_focus: return "hunter_shard_of_focus";
+	case item_type::enum_type::hunter_emblem_of_focus: return "hunter_emblem_of_focus";
+	case item_type::enum_type::hunter_shard_of_health: return "hunter_shard_of_health";
+	case item_type::enum_type::hunter_emblem_of_health: return "hunter_emblem_of_health";
+	case item_type::enum_type::skirmish_shard_of_strength: return "skirmish_shard_of_strength";
+	case item_type::enum_type::skirmish_emblem_of_strength: return "skirmish_emblem_of_strength";
+	case item_type::enum_type::skirmish_shard_of_focus: return "skirmish_shard_of_focus";
+	case item_type::enum_type::skirmish_emblem_of_focus: return "skirmish_emblem_of_focus";
+	case item_type::enum_type::skirmish_shard_of_health: return "skirmish_shard_of_health";
+	case item_type::enum_type::skirmish_emblem_of_health: return "skirmish_emblem_of_health";
+	case item_type::enum_type::greed_shard_of_strength: return "greed_shard_of_strength";
+	case item_type::enum_type::greed_emblem_of_strength: return "greed_emblem_of_strength";
+	case item_type::enum_type::greed_shard_of_focus: return "greed_shard_of_focus";
+	case item_type::enum_type::greed_emblem_of_focus: return "greed_emblem_of_focus";
+	case item_type::enum_type::greed_shard_of_health: return "greed_shard_of_health";
+	case item_type::enum_type::greed_emblem_of_health: return "greed_emblem_of_health";
+	case item_type::enum_type::collectors_shard_of_strength: return "collectors_shard_of_strength";
+	case item_type::enum_type::collectors_emblem_of_strength: return "collectors_emblem_of_strength";
+	case item_type::enum_type::collectors_shard_of_focus: return "collectors_shard_of_focus";
+	case item_type::enum_type::collectors_emblem_of_focus: return "collectors_emblem_of_focus";
+	case item_type::enum_type::collectors_shard_of_health: return "collectors_shard_of_health";
+	case item_type::enum_type::collectors_emblem_of_health: return "collectors_emblem_of_health";
 	default: break;
 	}
 	return "item_type(" + std::to_string(static_cast<std::uint32_t>(static_cast<item_type::enum_type>(value))) + ")";
@@ -2242,13 +2432,20 @@ struct item_info
 
 [[nodiscard]] inline item_info item_type::info() const
 {
+	static std::array<std::optional<item_info>, static_cast<std::size_t>(enum_type::count)> cache;
+	const auto index = static_cast<std::size_t>(value_);
+	if (index < cache.size() && cache[index])
+		return *cache[index];
 	detail::item_info data{};
 	detail::check(detail::sdk_item_info(static_cast<std::uint32_t>(value_), &data));
-	return { data.cost, data.combine_count,
+	const item_info result{ data.cost, data.combine_count,
 		data.combine_count == 0 ? std::nullopt : std::optional{ static_cast<item_type>(data.result) },
 		data.health_points, data.strength_points, data.focus_points,
 		data.passive == 0 ? std::nullopt : std::optional{ static_cast<item_passive>(data.passive) },
 		data.passive_magnitude, data.purchasable != 0 };
+	if (index < cache.size())
+		cache[index] = result;
+	return result;
 }
 
 [[nodiscard]] inline std::uint32_t item_type::cost() const { return info().cost; }
@@ -2532,7 +2729,7 @@ namespace detail
 /// Reject actions or private queries for a champion other than the authenticated self.
 inline void require_self(std::uint32_t handle)
 {
-	const auto own = sdk_my_champion();
+	const auto own = cached_my_champion;
 	if (own < 0 || handle != static_cast<std::uint32_t>(own))
 		throw std::invalid_argument("action is only available for self");
 }
@@ -3180,7 +3377,7 @@ public:
 	/// Get the tile captured in this altar-lock observation.
 	[[nodiscard]] vec2 position() const noexcept { return { value_.x, value_.y }; }
 	/// Get the owning team relative to the authenticated bot.
-	[[nodiscard]] team team() const { return value_.team == static_cast<std::uint32_t>(detail::sdk_my_team()) ? team::ally : team::enemy; }
+	[[nodiscard]] team team() const { return value_.team == static_cast<std::uint32_t>(detail::cached_my_team) ? team::ally : team::enemy; }
 	/// Check whether this altar lock belongs to the observing team.
 	[[nodiscard]] bool is_ally() const { return team() == cambc::team::ally; }
 	/// Check whether this altar lock belongs to the opposing team.
@@ -3211,6 +3408,7 @@ class ability
 			return;
 		}
 		detail::check(code);
+		targets_ = props.targets;
 		if (props.kind == 0)
 			return;
 		initialize(props);
@@ -3281,11 +3479,13 @@ public:
 	/// Check whether this ability is ready to cast.
 	[[nodiscard]] bool is_ready() const;
 
-	/// Query the engine's live target-category flags.
+	/// Get the target-category flags of the owner's immutable ability design.
 	[[nodiscard]] ability_target_mask valid_targets() const
 	{
 		if (design_)
 			return info_ ? std::visit([](const auto& value) { return value.valid_targets; }, *info_) : ability_target_mask{};
+		if (!info_error_)
+			return ability_target_mask::from_bits_retain(targets_);
 		detail::ability_props props{};
 		detail::check(detail::sdk_champion_ability_props(owner_, slot_, &props));
 		return ability_target_mask::from_bits_retain(props.targets);
@@ -3462,6 +3662,7 @@ private:
 	bool design_{};
 	std::optional<ability_info> info_;
 	std::optional<error> info_error_;
+	std::uint32_t targets_{};
 };
 
 /// Champion handle with live queries and self-only actions.
@@ -3508,7 +3709,7 @@ public:
 	/// Get the passive effect tag from the champion's immutable design.
 	[[nodiscard]] passive_type passive() const { return static_cast<passive_type>(load_design(champion_name()).definition.passive_type); }
 	/// Get the owning team relative to the authenticated bot; live champions read it without vision.
-	[[nodiscard]] team team() const { return (design_type_ ? info().team : identity().team) == detail::sdk_my_team() ? team::ally : team::enemy; }
+	[[nodiscard]] team team() const { return (design_type_ ? info().team : identity().team) == detail::cached_my_team ? team::ally : team::enemy; }
 	/// Check whether this champion belongs to the observing team.
 	[[nodiscard]] bool is_ally() const { return team() == cambc::team::ally; }
 	/// Check whether this champion belongs to the opposing team.
@@ -3617,7 +3818,8 @@ public:
 	/// Query the visible champion's remaining channel rounds; no active channel throws.
 	[[nodiscard]] std::int32_t remaining_channel_time() const
 	{
-		(void)info();
+		if (design_type_)
+			throw error{ error_code::api_not_in_vision, "design champion has no live state" };
 		std::int32_t result{};
 		detail::check(detail::sdk_champion_channel_time(handle_, &result));
 		return result;
@@ -3989,8 +4191,11 @@ inline bool ability::is_ready() const
 {
 	if (!info())
 		return false;
-	return !is_on_cooldown() &&
-		detail::handle_access::make_champion(static_cast<handle_champion_t>(owner_)).can_cast();
+	if (is_on_cooldown())
+		return false;
+	detail::champion_info state{};
+	detail::check(detail::sdk_champion(owner_, &state));
+	return champion_state::from_bits_retain(state.state).contains(champion_state::can_cast);
 }
 
 
@@ -4078,7 +4283,7 @@ namespace detail
 /// Authenticated champion view initialised at startup; absent in draft perspectives.
 inline std::optional<champion> cached_self = []() -> std::optional<champion>
 {
-	const auto handle = detail::sdk_my_champion();
+	const auto handle = detail::cached_my_champion;
 	if (handle == -1)
 		return std::nullopt;
 	return cambc::detail::handle_access::make_champion(static_cast<handle_champion_t>(handle));
@@ -4089,7 +4294,7 @@ inline std::optional<champion> cached_self = []() -> std::optional<champion>
 [[nodiscard]] inline cambc::champion& self() { return detail::cached_self.value(); }
 
 /// Check whether this bot instance is running the draft rather than controlling a champion.
-[[nodiscard]] inline bool is_draft() noexcept { return detail::sdk_my_champion() == -1; }
+[[nodiscard]] inline bool is_draft() noexcept { return detail::cached_my_champion == -1; }
 
 /// Get all champion handles on one side, including champions outside vision.
 /// @param side Team to include.
@@ -4168,7 +4373,7 @@ private:
 
 	explicit ward(const detail::ward_info& raw)
 		: owner_{ raw.owner }, position_{ raw.x, raw.y },
-		  team_{ raw.team == static_cast<std::uint32_t>(detail::sdk_my_team()) ? team::ally : team::enemy },
+		  team_{ raw.team == static_cast<std::uint32_t>(detail::cached_my_team) ? team::ally : team::enemy },
 		  remaining_time_{ raw.timer < 0 ? std::nullopt : std::optional{ raw.timer } }
 	{
 	}
@@ -4201,7 +4406,7 @@ public:
 	/// Construct a live view of the champion in the teleport reservation.
 	[[nodiscard]] cambc::champion champion() const { return detail::handle_access::make_champion(static_cast<handle_champion_t>(value_.champion)); }
 	/// Get the owning team relative to the authenticated bot.
-	[[nodiscard]] team team() const { return value_.team == static_cast<std::uint32_t>(detail::sdk_my_team()) ? team::ally : team::enemy; }
+	[[nodiscard]] team team() const { return value_.team == static_cast<std::uint32_t>(detail::cached_my_team) ? team::ally : team::enemy; }
 	/// Check whether this teleport belongs to the observing team.
 	[[nodiscard]] bool is_ally() const { return team() == cambc::team::ally; }
 	/// Check whether this teleport belongs to the opposing team.
@@ -4467,6 +4672,11 @@ struct camp_group_respawning { std::int32_t timer; };
 /// Current camp-group state: alive, reward available, or respawning with a timer.
 using camp_group_state = std::variant<camp_group_alive, camp_group_reward_available, camp_group_respawning>;
 
+/// Capture status relative to the querying champion's team.
+enum class camp_group_capture_type : std::int32_t { no_capture_available, ally_capturing, contested, enemy_capturing, capture_available };
+/// Capture countdown and status; timer is the configured maximum when not capturing.
+struct camp_group_capture_state { std::int32_t timer; camp_group_capture_type state; };
+
 /// A physical camp cluster and its rewards.
 class camp_group
 {
@@ -4504,6 +4714,15 @@ public:
 		case 0: throw error{ error_code::api_not_in_vision, "camp group state is unknown" };
 		default: throw std::runtime_error("unknown engine camp group state");
 		}
+	}
+
+	/// Read current capture progress; group visibility is required, champion visibility is not.
+	[[nodiscard]] camp_group_capture_state capture_state() const
+	{
+		detail::camp_group_capture_state value{};
+		detail::check(detail::sdk_camp_group_capture_state(static_cast<std::uint32_t>(handle_), &value));
+		if (value.state < 0 || value.state > 4) throw std::runtime_error("unknown engine capture state");
+		return { value.timer, static_cast<camp_group_capture_type>(value.state) };
 	}
 
 	/// Get the configured camp-group respawn duration in rounds.
@@ -5187,7 +5406,7 @@ inline void draw_line(vec2 from, vec2 to, std::uint32_t rgb)
 }
 } // namespace debug
 
-/// Get the fuel left in the current turn's budget; the first draft turn gets 10x and each champion's first turn gets 2x.
+/// Get the fuel left in the current turn's budget; the first draft turn gets 100x and each champion's first turn gets 2x.
 [[nodiscard]] inline std::uint64_t fuel_remaining()
 {
 	const auto remaining = detail::sdk_fuel_remaining();

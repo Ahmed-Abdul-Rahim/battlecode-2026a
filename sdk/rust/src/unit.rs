@@ -413,7 +413,6 @@ impl Champion {
     }
     /// Query the current channel countdown for a visible live champion.
     pub fn remaining_channel_time(&self) -> Result<i32> {
-        self.info()?;
         let h = self.handle()?;
         query(|p| unsafe { sys::champion_channel_time(h.0, p) })
     }
@@ -505,7 +504,7 @@ impl Champion {
     /// Query and return an independent owning item-count snapshot.
     pub fn item_count(&self) -> Result<ItemCounts> {
         let h = self.handle()?;
-        let mut result = [0; 42];
+        let mut result = [0; 84];
         check(unsafe { sys::champion_items(h.0, result.as_mut_ptr()) })?;
         Ok(ItemCounts(result))
     }

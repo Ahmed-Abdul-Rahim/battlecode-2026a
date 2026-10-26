@@ -49,6 +49,7 @@ pub(crate) fn reset_for_tests() {
         state.borrow_mut().take();
     });
     crate::board::reset_layout_for_tests();
+    crate::shop::reset_items_for_tests();
 }
 /// Initialise immutable SDK data. A static constructor runs this before `main` on the first
 /// turn's fuel, so calling it is only needed to retry or inspect a failed initialisation.
@@ -232,7 +233,7 @@ pub fn resign() -> Result<()> {
     flush_output();
     check(unsafe { sys::resign() })
 }
-/// Return remaining guest fuel (10x on a team's first draft turn, 2x on each champion's first turn); invalid negative host values return an error.
+/// Return remaining guest fuel (100x on a team's first draft turn, 2x on each champion's first turn); invalid negative host values return an error.
 pub fn fuel_remaining() -> Result<u64> {
     let value = unsafe { sys::fuel_remaining() };
     u64::try_from(value).map_err(|_| Error::invalid_value("fuel", value))
@@ -278,6 +279,14 @@ pub enum CampGroupState {
     RewardAvailable,
     /// The group is respawning with a remaining engine countdown.
     Respawning(i32),
+}
+/// Capture countdown and status from the visible group, even when its occupants are hidden.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub struct CampGroupCaptureState {
+    /// Remaining turns while capturing; configured maximum otherwise.
+    pub timer: i32,
+    /// State relative to your team.
+    pub state: crate::CampGroupCaptureType,
 }
 /// Camp membership and rewards queried from the host; live state is queried separately.
 #[derive(Clone, Debug)]
@@ -354,6 +363,11 @@ impl CampGroup {
             }
         }
         Ok(false)
+    }
+    /// Read capture progress; hidden groups return ApiNotInVision. Occupants need not be visible.
+    pub fn capture_state(&self) -> Result<CampGroupCaptureState> {
+        let raw: sys::CampGroupCaptureState = query(|p| unsafe { sys::camp_group_capture_state(self.handle.0, p) })?;
+        Ok(CampGroupCaptureState { timer: raw.timer, state: raw.state.try_into()? })
     }
     /// Query group state only when its spawn mask intersects current vision.
     /// Hidden/unknown groups return `ApiNotInVision`; invalid runtime tags remain errors.

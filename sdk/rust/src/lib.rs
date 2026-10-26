@@ -20,17 +20,18 @@ pub use sys::{CampStats, ChampionStats};
 pub(crate) use types::detail::{self, Entity, EntityKind, EntityTarget};
 pub use types::*;
 pub use unit::*;
-pub use world::{AltarLock, CampGroup, CampGroupState, DraftMemory, SharedMemory, Teleport, Ward};
+pub use world::{AltarLock, CampGroup, CampGroupState, CampGroupCaptureState, DraftMemory, SharedMemory, Teleport, Ward};
 /// Re-exported so bots can use the SDK's pinned version without their own dependency.
 pub use bitflags;
 /// Re-exported so bots can use the SDK's pinned version without their own dependency.
 pub use bytemuck;
 /// Map geometry and immutable terrain/spawn/camp snapshots.
 pub mod map {
+    pub use crate::CampGroupCaptureType;
     pub use crate::world::{
         altars, bushes, camp, camp_groups, height, holes, is_in_bounds, reflect_horizontal,
         reflect_vertical, rotate_180, spawn_region, symmetry, walls, width, CampGroup,
-        CampGroupState,
+        CampGroupState, CampGroupCaptureState,
     };
 }
 /// Live visibility, occupancy and visible-entity queries.

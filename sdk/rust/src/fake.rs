@@ -305,7 +305,7 @@ pub fn call(name: &str, a: &[usize]) -> i64 {
                     0
                 }
                 "champion_items" | "champion_consumables" => {
-                    let n = if name == "champion_items" { 42 } else { 4 };
+                    let n = if name == "champion_items" { 84 } else { 4 };
                     let p = a[1] as *mut u32;
                     for i in 0..n {
                         p.add(i).write(i as u32);

@@ -252,6 +252,43 @@ if TYPE_CHECKING:
         WARD: ClassVar[BuffRestrictions]
 
 
+    class ItemFamily(IntEnum):
+        """ItemFamily selection values."""
+        @staticmethod
+        def to_string(value: int) -> str: ...
+        MONSTER = 0
+        POWER = 1
+        DURABILITY = 2
+        TREASURE = 3
+        JUNGLE = 4
+        HOME = 5
+        BRUISER = 6
+        TRIBUTE = 7
+        CAPTURE = 8
+        PROSPECTOR = 9
+        HUNTER = 10
+        SKIRMISH = 11
+        GREED = 12
+        COLLECTORS = 13
+
+    class ItemStat(IntEnum):
+        """ItemStat selection values."""
+        @staticmethod
+        def to_string(value: int) -> str: ...
+        STRENGTH = 0
+        FOCUS = 1
+        HEALTH = 2
+
+    class CampGroupCaptureType(IntEnum):
+        """CampGroupCaptureType selection values."""
+        @staticmethod
+        def to_string(value: int) -> str: ...
+        NO_CAPTURE_AVAILABLE = 0
+        ALLY_CAPTURING = 1
+        CONTESTED = 2
+        ENEMY_CAPTURING = 3
+        CAPTURE_AVAILABLE = 4
+
     class ItemPassive(IntEnum):
         """Item passive group."""
 
@@ -263,6 +300,12 @@ if TYPE_CHECKING:
         TREASURE = 3
         JUNGLE = 4
         HOME = 5
+        TRIBUTE = 6
+        CAPTURE = 7
+        PROSPECTOR = 8
+        HUNTER = 9
+        SKIRMISH = 10
+        COLLECTORS = 11
 
 else:
 
@@ -443,6 +486,37 @@ else:
         _flags._known = _known
     del _flags, _known, _name, _value
 
+    class ItemFamily:
+        __slots__ = ()
+        MONSTER = 0
+        POWER = 1
+        DURABILITY = 2
+        TREASURE = 3
+        JUNGLE = 4
+        HOME = 5
+        BRUISER = 6
+        TRIBUTE = 7
+        CAPTURE = 8
+        PROSPECTOR = 9
+        HUNTER = 10
+        SKIRMISH = 11
+        GREED = 12
+        COLLECTORS = 13
+
+    class ItemStat:
+        __slots__ = ()
+        STRENGTH = 0
+        FOCUS = 1
+        HEALTH = 2
+
+    class CampGroupCaptureType:
+        __slots__ = ()
+        NO_CAPTURE_AVAILABLE = 0
+        ALLY_CAPTURING = 1
+        CONTESTED = 2
+        ENEMY_CAPTURING = 3
+        CAPTURE_AVAILABLE = 4
+
     class ItemPassive:
         __slots__ = ()
 
@@ -451,6 +525,12 @@ else:
         TREASURE = 3
         JUNGLE = 4
         HOME = 5
+        TRIBUTE = 6
+        CAPTURE = 7
+        PROSPECTOR = 8
+        HUNTER = 9
+        SKIRMISH = 10
+        COLLECTORS = 11
 
 if TYPE_CHECKING:
 
@@ -744,7 +824,7 @@ if not TYPE_CHECKING:
         prefix = cls.__name__
         cls.to_string = staticmethod(lambda value: f"{prefix}.{names.get(value, value)}")
 
-    for _cls in (Team, Symmetry, CampType, CampState, PassiveType, ChampionType, ChampionDraft, AbilityKind, BuffTypes, ItemPassive, ErrorCode):
+    for _cls in (Team, Symmetry, CampType, CampState, PassiveType, ChampionType, ChampionDraft, AbilityKind, BuffTypes, ItemFamily, ItemStat, CampGroupCaptureType, ItemPassive, ErrorCode):
         _add_to_string(_cls)
     del _cls
     for _name in ("DEAD", "ALIVE", "ASLEEP"):
@@ -813,6 +893,48 @@ _ITEM_NAMES = (
     "BRUISER_EMBLEM_OF_FOCUS",
     "BRUISER_SHARD_OF_HEALTH",
     "BRUISER_EMBLEM_OF_HEALTH",
+    "TRIBUTE_SHARD_OF_STRENGTH",
+    "TRIBUTE_EMBLEM_OF_STRENGTH",
+    "TRIBUTE_SHARD_OF_FOCUS",
+    "TRIBUTE_EMBLEM_OF_FOCUS",
+    "TRIBUTE_SHARD_OF_HEALTH",
+    "TRIBUTE_EMBLEM_OF_HEALTH",
+    "CAPTURE_SHARD_OF_STRENGTH",
+    "CAPTURE_EMBLEM_OF_STRENGTH",
+    "CAPTURE_SHARD_OF_FOCUS",
+    "CAPTURE_EMBLEM_OF_FOCUS",
+    "CAPTURE_SHARD_OF_HEALTH",
+    "CAPTURE_EMBLEM_OF_HEALTH",
+    "PROSPECTOR_SHARD_OF_STRENGTH",
+    "PROSPECTOR_EMBLEM_OF_STRENGTH",
+    "PROSPECTOR_SHARD_OF_FOCUS",
+    "PROSPECTOR_EMBLEM_OF_FOCUS",
+    "PROSPECTOR_SHARD_OF_HEALTH",
+    "PROSPECTOR_EMBLEM_OF_HEALTH",
+    "HUNTER_SHARD_OF_STRENGTH",
+    "HUNTER_EMBLEM_OF_STRENGTH",
+    "HUNTER_SHARD_OF_FOCUS",
+    "HUNTER_EMBLEM_OF_FOCUS",
+    "HUNTER_SHARD_OF_HEALTH",
+    "HUNTER_EMBLEM_OF_HEALTH",
+    "SKIRMISH_SHARD_OF_STRENGTH",
+    "SKIRMISH_EMBLEM_OF_STRENGTH",
+    "SKIRMISH_SHARD_OF_FOCUS",
+    "SKIRMISH_EMBLEM_OF_FOCUS",
+    "SKIRMISH_SHARD_OF_HEALTH",
+    "SKIRMISH_EMBLEM_OF_HEALTH",
+    "GREED_SHARD_OF_STRENGTH",
+    "GREED_EMBLEM_OF_STRENGTH",
+    "GREED_SHARD_OF_FOCUS",
+    "GREED_EMBLEM_OF_FOCUS",
+    "GREED_SHARD_OF_HEALTH",
+    "GREED_EMBLEM_OF_HEALTH",
+    "COLLECTORS_SHARD_OF_STRENGTH",
+    "COLLECTORS_EMBLEM_OF_STRENGTH",
+    "COLLECTORS_SHARD_OF_FOCUS",
+    "COLLECTORS_EMBLEM_OF_FOCUS",
+    "COLLECTORS_SHARD_OF_HEALTH",
+    "COLLECTORS_EMBLEM_OF_HEALTH",
 )
 
 
@@ -864,6 +986,48 @@ class ItemType(int):
     BRUISER_EMBLEM_OF_FOCUS: ClassVar[ItemType]
     BRUISER_SHARD_OF_HEALTH: ClassVar[ItemType]
     BRUISER_EMBLEM_OF_HEALTH: ClassVar[ItemType]
+    TRIBUTE_SHARD_OF_STRENGTH: ClassVar[ItemType]
+    TRIBUTE_EMBLEM_OF_STRENGTH: ClassVar[ItemType]
+    TRIBUTE_SHARD_OF_FOCUS: ClassVar[ItemType]
+    TRIBUTE_EMBLEM_OF_FOCUS: ClassVar[ItemType]
+    TRIBUTE_SHARD_OF_HEALTH: ClassVar[ItemType]
+    TRIBUTE_EMBLEM_OF_HEALTH: ClassVar[ItemType]
+    CAPTURE_SHARD_OF_STRENGTH: ClassVar[ItemType]
+    CAPTURE_EMBLEM_OF_STRENGTH: ClassVar[ItemType]
+    CAPTURE_SHARD_OF_FOCUS: ClassVar[ItemType]
+    CAPTURE_EMBLEM_OF_FOCUS: ClassVar[ItemType]
+    CAPTURE_SHARD_OF_HEALTH: ClassVar[ItemType]
+    CAPTURE_EMBLEM_OF_HEALTH: ClassVar[ItemType]
+    PROSPECTOR_SHARD_OF_STRENGTH: ClassVar[ItemType]
+    PROSPECTOR_EMBLEM_OF_STRENGTH: ClassVar[ItemType]
+    PROSPECTOR_SHARD_OF_FOCUS: ClassVar[ItemType]
+    PROSPECTOR_EMBLEM_OF_FOCUS: ClassVar[ItemType]
+    PROSPECTOR_SHARD_OF_HEALTH: ClassVar[ItemType]
+    PROSPECTOR_EMBLEM_OF_HEALTH: ClassVar[ItemType]
+    HUNTER_SHARD_OF_STRENGTH: ClassVar[ItemType]
+    HUNTER_EMBLEM_OF_STRENGTH: ClassVar[ItemType]
+    HUNTER_SHARD_OF_FOCUS: ClassVar[ItemType]
+    HUNTER_EMBLEM_OF_FOCUS: ClassVar[ItemType]
+    HUNTER_SHARD_OF_HEALTH: ClassVar[ItemType]
+    HUNTER_EMBLEM_OF_HEALTH: ClassVar[ItemType]
+    SKIRMISH_SHARD_OF_STRENGTH: ClassVar[ItemType]
+    SKIRMISH_EMBLEM_OF_STRENGTH: ClassVar[ItemType]
+    SKIRMISH_SHARD_OF_FOCUS: ClassVar[ItemType]
+    SKIRMISH_EMBLEM_OF_FOCUS: ClassVar[ItemType]
+    SKIRMISH_SHARD_OF_HEALTH: ClassVar[ItemType]
+    SKIRMISH_EMBLEM_OF_HEALTH: ClassVar[ItemType]
+    GREED_SHARD_OF_STRENGTH: ClassVar[ItemType]
+    GREED_EMBLEM_OF_STRENGTH: ClassVar[ItemType]
+    GREED_SHARD_OF_FOCUS: ClassVar[ItemType]
+    GREED_EMBLEM_OF_FOCUS: ClassVar[ItemType]
+    GREED_SHARD_OF_HEALTH: ClassVar[ItemType]
+    GREED_EMBLEM_OF_HEALTH: ClassVar[ItemType]
+    COLLECTORS_SHARD_OF_STRENGTH: ClassVar[ItemType]
+    COLLECTORS_EMBLEM_OF_STRENGTH: ClassVar[ItemType]
+    COLLECTORS_SHARD_OF_FOCUS: ClassVar[ItemType]
+    COLLECTORS_EMBLEM_OF_FOCUS: ClassVar[ItemType]
+    COLLECTORS_SHARD_OF_HEALTH: ClassVar[ItemType]
+    COLLECTORS_EMBLEM_OF_HEALTH: ClassVar[ItemType]
     COUNT: ClassVar[int] = len(_ITEM_NAMES)
 
     def __new__(cls, value: int) -> ItemType:
@@ -921,6 +1085,19 @@ class ItemType(int):
     def is_purchasable(self) -> bool:
         """Return whether the item can be bought directly from the shop."""
         return self.info().purchasable
+
+
+def get_item_enum(family: ItemFamily, stat: ItemStat, shard: bool = True) -> ItemType:
+    """Select an item by family and stat; shard=False selects the completed emblem.
+
+    Args:
+        family: Item family.
+        stat: Stat granted by the item.
+        shard: Select a shard (default True) or an emblem (False).
+    """
+    if not isinstance(family, int) or not 0 <= family < 14 or not isinstance(stat, int) or not 0 <= stat < 3:
+        raise ValueError("invalid item family or stat")
+    return ItemType(family * 6 + stat * 2 + (0 if shard else 1))
 
 
 _item_infos: list[Optional[ItemInfo]] = [None] * len(_ITEM_NAMES)
@@ -1399,12 +1576,13 @@ def _target_entity(target: Union[Unit, AltarLock]) -> _bc.Entity:
 class Ability:
     """One of a champion's two ability slots."""
 
-    __slots__ = ("_owner", "_slot", "_design", "_info", "_info_error")
+    __slots__ = ("_owner", "_slot", "_design", "_info", "_info_error", "_targets")
     _owner: _ChampionHandle
     _slot: int
     _design: bool
     _info: Optional[AbilityInfo]
     _info_error: Optional[Error]
+    _targets: int
 
     def __init__(self) -> None:
         raise TypeError("Ability cannot be constructed directly")
@@ -1431,8 +1609,9 @@ class Ability:
         self._design = False
         self._info = None
         self._info_error = None
+        self._targets = 0
         try:
-            self._info = _bc.ability_props(owner, slot)[0]
+            self._info, self._targets = _bc.ability_props(owner, slot)
         except Error as failure:
             if failure.code != ErrorCode.API_NOT_IN_VISION:
                 raise
@@ -1447,6 +1626,7 @@ class Ability:
         self._design = True
         self._info = info
         self._info_error = None
+        self._targets = 0
         return self
 
     def slot(self) -> int:
@@ -1468,13 +1648,15 @@ class Ability:
         return (
             self.info() is not None
             and not self.is_on_cooldown()
-            and Champion._new(self._owner).can_cast()
+            and ChampionState.CAN_CAST in ChampionState(_bc.champion_get(self._owner, 8))
         )
 
     def valid_targets(self) -> AbilityTargetMask:
         """Return the categories of target the ability accepts."""
         if self._design:
             return AbilityTargetMask(0 if self._info is None else self._info.valid_targets)
+        if self._info_error is None:
+            return AbilityTargetMask(self._targets)
         return AbilityTargetMask(_bc.ability_props(self._owner, self._slot)[1])
 
     def valid_tiles(self) -> Bitboard:

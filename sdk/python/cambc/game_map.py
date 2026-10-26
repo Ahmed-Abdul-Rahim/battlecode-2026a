@@ -12,6 +12,7 @@ else:
     from . import _cache
 
 from . import (
+    CampGroupCaptureType,
     Bitboard,
     Camp,
     _CampGroupHandle,
@@ -111,6 +112,13 @@ def spawn_region(team: Team) -> Bitboard:
     raise ValueError("invalid team")
 
 
+class CampGroupCaptureState(_bc.CampGroupCaptureState):
+    """Timer and capture status; occupants can be hidden when the group is visible."""
+    __slots__ = ()
+    timer: int
+    state: CampGroupCaptureType
+
+
 class CampGroupAlive(_bc.CampGroupAlive):
     __slots__ = ()
 
@@ -171,6 +179,16 @@ class CampGroup:
     def gem_value(self) -> int:
         """Return the gems awarded for clearing the group."""
         return self._gems
+
+    def capture_state(self) -> CampGroupCaptureState:
+        """Read capture progress; raises API_NOT_IN_VISION for a hidden group.
+
+        Timer is the remaining countdown while capturing, or the configured maximum otherwise.
+        """
+        value = _bc.camp_group_capture_state(self._handle)
+        if value.state not in range(5):
+            raise RuntimeError("unknown engine capture state")
+        return CampGroupCaptureState(value.timer, value.state)
 
     def state(self) -> CampGroupState:
         """Return the group's current state."""

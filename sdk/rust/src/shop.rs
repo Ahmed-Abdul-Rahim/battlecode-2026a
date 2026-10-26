@@ -15,6 +15,18 @@ pub enum ItemPassive {
     Jungle = 4,
     /// The engine Home item passive.
     Home = 5,
+    /// The engine Tribute item passive.
+    Tribute = 6,
+    /// The engine Capture item passive.
+    Capture = 7,
+    /// The engine Prospector item passive.
+    Prospector = 8,
+    /// The engine Hunter item passive.
+    Hunter = 9,
+    /// The engine Skirmish item passive.
+    Skirmish = 10,
+    /// The engine Collectors item passive.
+    Collectors = 11,
 }
 impl TryFrom<u32> for ItemPassive {
     type Error = Error;
@@ -25,6 +37,12 @@ impl TryFrom<u32> for ItemPassive {
             3 => Ok(Self::Treasure),
             4 => Ok(Self::Jungle),
             5 => Ok(Self::Home),
+            6 => Ok(Self::Tribute),
+            7 => Ok(Self::Capture),
+            8 => Ok(Self::Prospector),
+            9 => Ok(Self::Hunter),
+            10 => Ok(Self::Skirmish),
+            11 => Ok(Self::Collectors),
             _ => Err(Error::invalid_value("item passive", v as i64)),
         }
     }
@@ -105,8 +123,13 @@ impl ItemType {
     /// Query a fresh owned item record, checking passive/result tags.
     /// Engine errors and unknown runtime enum values remain explicit SDK errors.
     pub fn info(self) -> Result<ItemInfo> {
+        let index = self as usize;
+        // SAFETY: bots are single-threaded and no reference into the cache outlives this call.
+        if let Some(Some(info)) = unsafe { (*items()).get(index) } {
+            return Ok(*info);
+        }
         let raw = query(|p| unsafe { sys::item_info(self as u32, p) })?;
-        Ok(ItemInfo {
+        let info = ItemInfo {
             cost: raw.cost,
             combine_count: raw.combine_count,
             result: if raw.result == 0xff {
@@ -124,8 +147,34 @@ impl ItemType {
             },
             passive_magnitude: raw.passive_magnitude,
             purchasable: raw.purchasable != 0,
-        })
+        };
+        if let Some(slot) = unsafe { (*items()).get_mut(index) } {
+            *slot = Some(info);
+        }
+        Ok(info)
     }
+}
+type ItemCache = [Option<ItemInfo>; ItemType::ALL.len()];
+/// Immutable item designs, filled on first query.
+#[cfg(not(test))]
+fn items() -> *mut ItemCache {
+    struct Items(core::cell::UnsafeCell<ItemCache>);
+    // SAFETY: bot guests are single-threaded.
+    unsafe impl Sync for Items {}
+    static ITEMS: Items = Items(core::cell::UnsafeCell::new([None; ItemType::ALL.len()]));
+    ITEMS.0.get()
+}
+#[cfg(test)]
+fn items() -> *mut ItemCache {
+    thread_local! {
+        static ITEMS: core::cell::UnsafeCell<ItemCache> =
+            const { core::cell::UnsafeCell::new([None; ItemType::ALL.len()]) };
+    }
+    ITEMS.with(|items| items.get())
+}
+#[cfg(test)]
+pub(crate) fn reset_items_for_tests() {
+    unsafe { *items() = [None; ItemType::ALL.len()] };
 }
 impl ConsumableType {
     /// Get the purchase cost in gold.

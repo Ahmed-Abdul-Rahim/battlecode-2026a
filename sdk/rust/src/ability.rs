@@ -292,6 +292,7 @@ pub struct Ability {
     owner: Option<ChampionHandle>,
     slot: u32,
     info: Result<Option<AbilityInfo>>,
+    targets: u32,
 }
 impl PartialEq for Ability {
     fn eq(&self, b: &Self) -> bool {
@@ -308,6 +309,7 @@ impl Ability {
     /// Capture slot metadata once, retaining visibility failure for hidden roster members.
     pub(crate) fn live(owner: ChampionHandle, slot: u32) -> Result<Self> {
         let raw = query(|p| unsafe { sys::champion_ability_props(owner.0, slot, p) });
+        let targets = raw.as_ref().map_or(0, |p| p.targets);
         let info = match raw {
             Ok(p) => AbilityInfo::decode(p),
             Err(e) if e.code() == Some(ErrorCode::ApiNotInVision) => Err(e),
@@ -322,6 +324,7 @@ impl Ability {
             owner: Some(owner),
             slot,
             info,
+            targets,
         })
     }
     /// Decode draft-safe slot metadata straight into `dst`.
@@ -338,6 +341,7 @@ impl Ability {
             core::ptr::addr_of_mut!((*dst).owner).write(None);
             core::ptr::addr_of_mut!((*dst).slot).write(slot);
             core::ptr::addr_of_mut!((*dst).info).write(Ok(info));
+            core::ptr::addr_of_mut!((*dst).targets).write(raw.targets);
         }
         Ok(())
     }
@@ -348,6 +352,7 @@ impl Ability {
             owner: None,
             slot,
             info: Ok(AbilityInfo::decode(raw)?),
+            targets: raw.targets,
         })
     }
     /// Require a live owner; draft designs cannot query timers or cast.
@@ -425,11 +430,14 @@ impl Ability {
         if self.info()?.is_none() || self.is_on_cooldown()? {
             return Ok(false);
         }
-        crate::unit::Champion::new(self.owner()?)?.can_cast()
+        let owner = self.owner()?;
+        let state = query(|p| unsafe { sys::champion(owner.0, p) })?.state as u32;
+        Ok(crate::ChampionState::from_bits_retain(state).contains(crate::ChampionState::CAN_CAST))
     }
-    /// Query current live targeting flags, or use cached flags for a draft design.
+    /// Get the targeting flags of the owner's immutable ability design.
     pub fn valid_targets(&self) -> Result<AbilityTargetMask> {
         match self.owner {
+            Some(_) if self.info.is_ok() => Ok(AbilityTargetMask::from_bits_retain(self.targets)),
             Some(h) => Ok(AbilityTargetMask::from_bits_retain(
                 query(|p| unsafe { sys::champion_ability_props(h.0, self.slot, p) })?.targets,
             )),

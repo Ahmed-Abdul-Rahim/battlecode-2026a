@@ -396,6 +396,8 @@ extern "C"
 	BC_IMPORT("map_camp_group_of") std::int32_t sdk_map_camp_group_of(std::uint32_t, std::uint32_t*);
 	BC_IMPORT("map_camp_at") std::int32_t sdk_map_camp_at(std::int32_t, std::int32_t, std::uint32_t*);
 	BC_IMPORT("camp_group_cooldown") std::int32_t sdk_camp_group_cooldown(std::uint32_t, std::int32_t*);
+	struct camp_group_capture_state { std::int32_t timer, state; };
+	BC_IMPORT("camp_group_capture_state") std::int32_t sdk_camp_group_capture_state(std::uint32_t, camp_group_capture_state*);
 	BC_IMPORT("camp_group_state") std::int32_t sdk_camp_group_state(std::uint32_t, std::uint32_t*);
 	BC_IMPORT("camp_buffs") std::int32_t sdk_camp_buffs(std::uint32_t, camp_buff_data*, std::uint32_t, std::uint32_t*);
 	BC_IMPORT("bc_camp_group_max_respawn") std::int32_t sdk_bc_camp_group_max_respawn(std::uint32_t, std::int32_t*);
@@ -577,10 +579,14 @@ inline const metadata cached_metadata = []
 	return cached_metadata;
 }
 
+/// Authenticated champion handle (-1 while drafting) and absolute team; fixed for the match.
+inline const std::int32_t cached_my_champion = sdk_my_champion();
+inline const std::int32_t cached_my_team = sdk_my_team();
+
 /// Translate a relative team into the engine's absolute team index; invalid tags throw.
 [[nodiscard]] inline std::int32_t absolute_team(team value)
 {
-	const auto own = sdk_my_team();
+	const auto own = cached_my_team;
 	switch (value)
 	{
 	case team::ally:

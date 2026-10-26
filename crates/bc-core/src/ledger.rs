@@ -18,10 +18,18 @@ pub enum Family {
     Jungle = 4,
     Home = 5,
     Bruiser = 6,
+    // Engine 2.0.0 families.
+    Tribute = 7,
+    Capture = 8,
+    Prospector = 9,
+    Hunter = 10,
+    Skirmish = 11,
+    Greed = 12,
+    Collectors = 13,
 }
 
 impl Family {
-    pub const ALL: [Self; 7] = [
+    pub const ALL: [Self; 14] = [
         Self::Monster,
         Self::Power,
         Self::Durability,
@@ -29,7 +37,33 @@ impl Family {
         Self::Jungle,
         Self::Home,
         Self::Bruiser,
+        Self::Tribute,
+        Self::Capture,
+        Self::Prospector,
+        Self::Hunter,
+        Self::Skirmish,
+        Self::Greed,
+        Self::Collectors,
     ];
+
+    /// Shards that combine into one emblem of this family (Greed: 25 shards, 750 gold).
+    #[must_use]
+    pub const fn shards_per_emblem(self) -> u32 {
+        match self {
+            Self::Greed => 25,
+            _ => SHARDS_PER_EMBLEM,
+        }
+    }
+
+    /// Shards' worth of stats one emblem gives (Power +1 on completion, Greed 35 for 25).
+    #[must_use]
+    pub const fn stat_shards_per_emblem(self) -> u32 {
+        match self {
+            Self::Power => 6,
+            Self::Greed => 35,
+            _ => SHARDS_PER_EMBLEM,
+        }
+    }
 }
 
 /// Stat order inside a family in SDK `ItemType` order.
@@ -46,7 +80,7 @@ impl Stat {
 }
 
 /// Number of `cambc::ItemType` values.
-pub const ITEM_TYPES: usize = 42;
+pub const ITEM_TYPES: usize = 84;
 pub const SHARD_COST: u32 = 30;
 pub const SHARDS_PER_EMBLEM: u32 = 5;
 
@@ -175,12 +209,9 @@ impl Ledger {
         Family::ALL
             .iter()
             .map(|&f| {
-                let per_emblem = match f {
-                    Family::Power => 6,
-                    _ => SHARDS_PER_EMBLEM,
-                };
                 u32::from(self.shard_progress(f, stat))
-                    + u32::from(self.items[item_id(f, stat, true) as usize]) * per_emblem
+                    + u32::from(self.items[item_id(f, stat, true) as usize])
+                        * f.stat_shards_per_emblem()
             })
             .sum()
     }
@@ -217,11 +248,14 @@ mod tests {
         assert_eq!(item_id(Family::Power, Stat::Strength, false), 6);
         assert_eq!(item_id(Family::Jungle, Stat::Focus, true), 27);
         assert_eq!(item_id(Family::Bruiser, Stat::Health, true), 41);
+        assert_eq!(item_id(Family::Tribute, Stat::Strength, false), 42);
+        assert_eq!(item_id(Family::Greed, Stat::Health, true), 77);
+        assert_eq!(item_id(Family::Collectors, Stat::Health, true), 83);
         for id in 0..ITEM_TYPES as u8 {
             let (f, s, e) = decode_item(id).unwrap();
             assert_eq!(item_id(f, s, e), id);
         }
-        assert!(decode_item(42).is_none());
+        assert!(decode_item(84).is_none());
     }
 
     #[test]
