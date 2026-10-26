@@ -22,7 +22,9 @@ from harness.search import common as C
 from harness.search import generalize as G
 from harness.search import search as S
 
-PLANS_PER_MAP = 2
+PLANS_PER_MAP = 1
+#: Scoring opponents per (plan, map) cell: 30 plans x 40 maps x 35 opponents was ~150k games.
+CELL_OPPS = 12
 
 
 def proven() -> dict[str, dict]:
@@ -76,6 +78,12 @@ def mix_plan(target: str, pool: list[str], z: dict, plans: dict) -> bytes:
     return C.record(draft=roster, overrides=ov)
 
 
+def cell_opps(splits: dict) -> list[str]:
+    import random
+
+    return sorted(random.Random(31).sample(splits["opps_B"], CELL_OPPS))
+
+
 def run(hours: float | None = None) -> None:
     snap = C.check_snapshot()
     splits = C.load_json(C.RUNS / "splits.json", None)
@@ -88,14 +96,14 @@ def run(hours: float | None = None) -> None:
     games = []
     for m in searched + held:
         for pid in ["base", *plans]:
-            games += [C.Game(pid, m, o, s) for o in splits["opps_B"] for s in "ab"]
+            games += [C.Game(pid, m, o, s) for o in cell_opps(splits) for s in "ab"]
     # Mix-and-match plans: one per map, built without that map (leave-one-map-out).
     for m in searched + held:
         pool = [s for s in searched if s != m]
         if len(pool) >= 2:
             pid = f"mix:{m}"
             recs[pid] = mix_plan(m, pool, z, plans)
-            games += [C.Game(pid, m, o, s) for o in splits["opps_B"] for s in "ab"]
+            games += [C.Game(pid, m, o, s) for o in cell_opps(splits) for s in "ab"]
     print(f"{len(plans)} proven plans, {len(searched)} searched + {len(held)} held-out maps, {len(games)} games")
     if not C.play(games, recs, store, C.opponents(), C.deadline_from(hours)):
         print("stopped at the deadline: run crossmap again to continue")
