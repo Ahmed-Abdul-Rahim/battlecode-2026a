@@ -16,7 +16,7 @@ from harness.search import common as C
 def build_reference() -> str:
     d = C.ROOT / "bots" / "sub-ref"
     C._copy_source(C.slot_dir(0), d)
-    shutil.copy2(C.MAIN / "bots" / "main" / "src" / "pack" / "pack.bin", d / "src" / "pack" / "pack.bin")
+    shutil.copy2(C.REFERENCE_PACK, d / "src" / "pack" / "pack.bin")
     C.runner.build(str(d), release=True)
     return str(d)
 

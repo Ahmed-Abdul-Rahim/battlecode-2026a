@@ -20,6 +20,7 @@ import argparse
 import os
 import statistics
 import time
+from pathlib import Path
 
 from harness.search import common as C
 from harness.search import split
@@ -28,7 +29,9 @@ from harness.search import split
 def cmd_setup(a) -> None:
     t0 = time.time()
     C.build_rules()
-    snap = C.build_slots(a.slots)
+    # The slots run candidates on the reference pack (no per-map table): BC_MAIN's pack may hold
+    # the table by now. data/search/live-pack.bin also carries the folded engine-1 map plans.
+    snap = C.build_slots(a.slots, pack=a.pack or C.REFERENCE_PACK)
     print(f"snapshot {snap['wasm'][:12]} ({snap['slots']} slots, commit {snap['commit'][:8]}"
           f"{' dirty' if snap['dirty'] else ''}) in {time.time() - t0:.0f}s")
 
@@ -238,6 +241,7 @@ def main() -> None:
     sub = ap.add_subparsers(dest="cmd", required=True)
     p = sub.add_parser("setup")
     p.add_argument("--slots", type=int, default=C.N_SLOTS)
+    p.add_argument("--pack", type=Path, help="pack for the slots (default data/search/live-pack.bin)")
     sub.add_parser("smoke")
     p = sub.add_parser("baseline")
     p.add_argument("--hours", type=float)

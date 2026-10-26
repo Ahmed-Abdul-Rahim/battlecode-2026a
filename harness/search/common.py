@@ -28,6 +28,8 @@ from bctools import replay, runner  # noqa: E402
 #: The main checkout: mimic bots and the live pack.bin come from there (they're gitignored).
 MAIN = Path(os.environ.get("BC_MAIN", r"D:\Code\battlecode"))
 RUNS = ROOT / "runs" / "search"
+#: The pack without the per-map plan table (search slots, verify's reference build).
+REFERENCE_PACK = ROOT / "data" / "search" / "live-pack.bin"
 MAPS_DIR = ROOT / "maps"
 
 MAGIC = bytes([0x50, 0x53, 0x43, 0x46, 0x47, 0x01, 0xA5, 0x5A])

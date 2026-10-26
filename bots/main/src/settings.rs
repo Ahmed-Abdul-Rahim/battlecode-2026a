@@ -7,7 +7,7 @@
 //!
 //! Record (little-endian): version u8 (0 = none), draft profile u8 (0 = keep; see
 //! `draft::draft_prefs`), override count u8, reserved u8, then (slot u8, value u8) × count,
-//! with slots 0..32 = knob and 32..64 = knob2. The patch block wins over the pack.
+//! with slots 0..32 = knob and 32..64 = knob2. The patch block is layered over the pack entry.
 //!
 //! Version 2 (pack only; maps where the best plan depends on the side): team A's spawn tile x u8,
 //! y u8, the length of team A's record u8, then team A's record and team B's record (both v1).
@@ -82,9 +82,22 @@ fn decode_entry(b: &[u8]) -> Option<Settings> {
     Settings::decode(if team_a { rec_a } else { rec_b })
 }
 
-/// This map's settings: the patched block, else the pack's table entry, else none.
+/// This map's settings: the pack's table entry with the patched block (a search candidate)
+/// layered on top: a candidate's draft profile and knobs win, knobs it doesn't set keep the
+/// pack's value. (The pack holds the engine-1 hand plans that used to sit under every
+/// candidate in map_plans.rs; replacing the whole entry dropped them for candidates only.)
 #[must_use]
 pub fn for_map(fingerprint: u32) -> Option<Settings> {
-    patched().or_else(|| decode_entry(crate::pack::lookup(fingerprint).plan))
+    let pack = decode_entry(crate::pack::lookup(fingerprint).plan);
+    match (pack, patched()) {
+        (Some(mut base), Some(cand)) => {
+            if cand.draft != 0 {
+                base.draft = cand.draft;
+            }
+            base.overrides.extend(cand.overrides);
+            Some(base)
+        }
+        (base, cand) => cand.or(base),
+    }
 }
 
