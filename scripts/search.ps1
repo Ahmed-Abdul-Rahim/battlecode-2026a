@@ -15,6 +15,9 @@ param([Parameter(Position = 0)][ValidateSet("prepare", "run", "status", "stop", 
 
 $root = Split-Path -Parent $PSScriptRoot
 Set-Location $root
+# Self-contained checkout: opponents, rules bot and slots all come from this worktree (the default
+# would be the league checkout, whose bots are built on the old engine).
+$env:BC_MAIN = $root
 $py = Join-Path $root ".venv\Scripts\python.exe"
 $logs = Join-Path $root "runs\search"
 # One BLAS thread: numpy is used lightly, and 16 BLAS threads failed to allocate on a low-memory PC.
@@ -55,21 +58,14 @@ switch ($cmd) {
             Log "search session ($(TrainLeft) training maps left)"
             Py search --hours 3 *>> (Join-Path $logs "search.log")
         }
-        Log "training maps done; cross-map generalisation study"
-        Py crossmap run *>> (Join-Path $logs "crossmap.log")
-        Log "generalisation study done; MVP check (A + rules vs our rule bot)"
-        Py mvp *>> (Join-Path $logs "mvp.log")
-        Log "MVP check done; B on top of A (tribute timing)"
-        Py branch setup *>> (Join-Path $logs "b_tribute.log")
-        Py branch labels --decision tribute *>> (Join-Path $logs "b_tribute.log")
-        Py branch train --decision tribute *>> (Join-Path $logs "b_tribute.log")
-        Py branch eval --decision tribute *>> (Join-Path $logs "b_tribute.log")
-        Log "B done; searching the 10 held-out maps (complete 40-map table)"
+        Log "training maps done; searching the held-out maps (complete table)"
         $held = (& $py -X utf8 -c "import json;print(','.join(json.load(open('runs/search/splits.json'))['maps_heldout']))" | Select-Object -Last 1)
         while ([int](HeldLeft) -gt 0) {
             Log "held-out search session ($(HeldLeft) maps left)"
             Py search --maps $held --hours 3 *>> (Join-Path $logs "search.log")
         }
+        Log "all maps searched; MVP check (A + rules vs the rules bot, the fresh top 10)"
+        Py mvp *>> (Join-Path $logs "mvp.log")
         Log "all done: scripts\search.ps1 results"
     }
     "status" {
