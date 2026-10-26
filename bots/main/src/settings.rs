@@ -8,6 +8,10 @@
 //! Record (little-endian): version u8 (0 = none), draft profile u8 (0 = keep; see
 //! `draft::draft_prefs`), override count u8, reserved u8, then (slot u8, value u8) × count,
 //! with slots 0..32 = knob and 32..64 = knob2. The patch block wins over the pack.
+//!
+//! Version 2 (pack only; maps where the best plan depends on the side): team A's spawn tile x u8,
+//! y u8, the length of team A's record u8, then team A's record and team B's record (both v1).
+//! The draft picks the one whose spawn tile is in its own spawn region.
 
 use crate::bc_core::memory::{ThetaMatch, KNOB2_COUNT, KNOB_COUNT};
 
@@ -66,9 +70,21 @@ fn patched() -> Option<Settings> {
     Settings::decode(&b[MAGIC.len()..])
 }
 
+/// A pack entry: v1 as is; v2 picks team A's or team B's record by our spawn region.
+fn decode_entry(b: &[u8]) -> Option<Settings> {
+    if b.first() != Some(&2) {
+        return Settings::decode(b);
+    }
+    let (&x, &y, &len_a) = (b.get(1)?, b.get(2)?, b.get(3)?);
+    let (rec_a, rec_b) = b.get(4..)?.split_at_checked(usize::from(len_a))?;
+    let ours = cambc::map::spawn_region(cambc::Team::Ally).ok()?;
+    let team_a = ours.is_set(crate::sdk::vec2(crate::bc_core::Pos::new(i32::from(x), i32::from(y)))).unwrap_or(false);
+    Settings::decode(if team_a { rec_a } else { rec_b })
+}
+
 /// This map's settings: the patched block, else the pack's table entry, else none.
 #[must_use]
 pub fn for_map(fingerprint: u32) -> Option<Settings> {
-    patched().or_else(|| Settings::decode(crate::pack::lookup(fingerprint).plan))
+    patched().or_else(|| decode_entry(crate::pack::lookup(fingerprint).plan))
 }
 

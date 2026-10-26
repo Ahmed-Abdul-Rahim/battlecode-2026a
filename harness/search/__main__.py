@@ -202,6 +202,12 @@ def cmd_crossmap(a) -> None:
     crossmap.run(a.hours) if a.action == "run" else crossmap.report()
 
 
+def cmd_side(a) -> None:
+    from harness.search import side
+
+    side.run(a.map, a.side, a.hours)
+
+
 def cmd_status(a) -> None:
     snap = C.load_json(C.RUNS / "snapshot.json", {})
     print("snapshot:", snap.get("wasm", "-")[:12], snap.get("time", ""))
@@ -244,6 +250,10 @@ def main() -> None:
     p.add_argument("--maps", required=True)
     p.add_argument("--hours", type=float)
     sub.add_parser("warm-report")
+    p = sub.add_parser("side")
+    p.add_argument("--map", required=True)
+    p.add_argument("--side", choices=["a", "b"], required=True)
+    p.add_argument("--hours", type=float)
     p = sub.add_parser("crossmap")
     p.add_argument("action", choices=["run", "report"])
     p.add_argument("--hours", type=float)
@@ -259,7 +269,7 @@ def main() -> None:
      "audit": cmd_audit, "search": cmd_search, "table": cmd_table, "sstatus": cmd_sstatus,
      "mvp": cmd_mvp, "export": cmd_export, "generalize": cmd_generalize,
      "branch": cmd_branch, "warm": cmd_warm, "warm-report": cmd_warm_report,
-     "crossmap": cmd_crossmap,
+     "crossmap": cmd_crossmap, "side": cmd_side,
      "status": cmd_status}[a.cmd](a)
 
 

@@ -99,6 +99,20 @@ def export() -> None:
         if r["accepted"]:
             s = C.Store(f"search/{m}", C.check_snapshot()["wasm"])
             recs[m] = s.cands[r["accepted"]]
+    # Side-specific maps (harness/search/side.py): v2 record = team A's spawn tile, then team A's
+    # and team B's records; a side without its own plan keeps the map plan (or the defaults).
+    from harness.search import side as SD
+
+    geo = C.load_json(C.ROOT / "data" / "map_geometry.json", {})
+    for m in table:
+        sa, sb = SD.accepted(m, "a"), SD.accepted(m, "b")
+        if not (sa or sb):
+            continue
+        base = recs.get(m, "")
+        ra, rb = bytes.fromhex(sa or base), bytes.fromhex(sb or base)
+        ax, ay = geo[m]["spawn_a"]
+        recs[m] = (bytes([2, ax, ay, len(ra)]) + ra + rb).hex()
+        print(f"{m}: side-specific plan (team A {'own' if sa else 'map'} plan, team B {'own' if sb else 'map'} plan)")
     C.save_json(C.ROOT / "league" / "plan_table.json", {
         "_doc": "harness/search per-map plan settings (settings.rs records, hex); pack tag 6",
         "snapshot": C.check_snapshot()["wasm"],
