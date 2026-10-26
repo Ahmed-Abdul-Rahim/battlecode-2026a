@@ -1,7 +1,7 @@
 //! Draft turns: score champions for this map with bc-draft, pick, then write
 //! θ_match (camp priority, knobs, champion vectors) to draft memory.
 //!
-//! Fuel: the first draft turn has 10× fuel (1M) and pays for map analysis once;
+//! Fuel: the first draft turn has 10M fuel (engine 2.0.0; was 1M) and pays for map analysis once;
 //! later picks get only 100k, so everything reusable is cached and θ_match is
 //! (re)written only on the first and last pick (~40k each).
 

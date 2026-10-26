@@ -58,6 +58,7 @@ BITS: dict[str, list[int]] = {
     "CAMP_FEASIBLE": [1, 2, 8, 16],
     "COMBAT_FSM": [1, 2, 64, 128],
     "K2_DRAFT_PLAN": [1, 2, 4, 8, 16],
+    "K2_TRIBUTE_DETOUR": [1, 2],
 }
 ROSTERS = [0, 1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 13, 14]
 POP = 12

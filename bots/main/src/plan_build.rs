@@ -1,5 +1,5 @@
 //! Draft side of the match plan (bc_core::plan): the map analysis on the first draft turn
-//! (1M fuel, whole map in view) and the roster-dependent part on the last pick (100k).
+//! (10M fuel since engine 2.0.0, whole map in view) and the roster-dependent part on the last pick (100k).
 //! Champions read the result from draft memory instead of computing it at 100k per turn.
 
 use crate::bc_core::champion::ChampionKind;
@@ -11,8 +11,10 @@ use cambc::{Bitboard, DistanceField, Result, Team};
 
 /// Fuel the first draft turn keeps back after the analysis (it still has to pick and write).
 const KEEP_FUEL: u64 = 400_000;
-/// Neighbour search radius (walking steps) from each group.
-const NEIGHBOUR_STEPS: u16 = 40;
+/// Neighbour search radius (walking steps) from each group. Engine 2.0.0 gives the first draft
+/// turn 10M fuel (the analysis used ~0.8M of it), so the search reaches every group and goes
+/// further than the 40 steps that fitted in 1M.
+const NEIGHBOUR_STEPS: u16 = 96;
 /// Groups at most this many steps apart (by walking) join one cluster.
 const CLUSTER_STEPS: u8 = 6;
 /// COLD: this many steps (/2) farther from the enemy spawn than from ours.

@@ -24,7 +24,7 @@ PROBES: list[tuple[str, str, list[int], str, str]] = [
     ("TRIBUTE_DISTANCE_SCALE", "knob", [3, 25], "map", "gems per altar tile x0.1"),
     ("RECALL_GOLD", "knob", [6, 40], "map", "shop trip gold x10"),
     ("FIGHT_MARGIN_PCT", "knob", [5, 60], "turn", "router fight threshold"),
-    ("BUILD_PROFILE", "knob", [0, 4], "map", "emblem order (shop.rs profiles)"),
+    ("BUILD_PROFILE", "knob", [0, 4, 14, 15, 16, 17], "map", "emblem order (shop.rs profiles; 14-17 engine 2.0.0 families)"),
     ("SQUAD_JOIN_X10", "knob", [15], "map", "pairs join each other's group"),
     ("VALUE_PROFILE", "knob", [0, 5], "map", "camp value formula"),
     ("REMOTE_FARMER", "knob", [1], "map", "last slot farms far groups"),
@@ -66,6 +66,8 @@ PROBES: list[tuple[str, str, list[int], str, str]] = [
     ("K2_CLUSTER", "knob", [10], "map", "cluster value (per-turn compute: fuel)"),
     ("K2_KEEP_BUYING", "knob", [0], "map", "keep buying the last emblem"),
     ("K2_DRAFT_PLAN", "knob", [1, 4, 8, 16, 29], "map", "v3 plan readers (bits)"),
+    ("K2_JUMP_HOLES", "knob", [0], "map", "dash champions path over 1-wide hole gaps"),
+    ("K2_TRIBUTE_DETOUR", "knob", [0, 1], "map", "rewards / weak camps on the way to an altar"),
     ("draft", "draft", [1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 13, 14], "map", "roster (draft_prefs profile)"),
     ("style", "style", [], "map", "data/styles.json bundles"),
 ]
