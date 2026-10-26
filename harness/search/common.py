@@ -297,7 +297,9 @@ def fresh_top() -> dict[str, str]:
     led = load_json(ROOT / "league" / "ledger.json", {})
     out = {}
     for p in led.get("pool", []):
-        d = ROOT / "bots" / f"mimic-{p['slug']}"
+        # Own folders (bots/top-<slug>): the same teams may also be search opponents as mimic-<slug>
+        # (older builds); the final test must not share a bot with the search.
+        d = ROOT / "bots" / f"top-{p['slug']}"
         if injected(d).exists():
             out[f"top-{p['slug']}"] = str(d)
     return out
@@ -307,7 +309,7 @@ def ensure_opponents(names: list[str]) -> None:
     """Build these opponents if their wasm is missing (a fresh checkout builds lazily, and
     opponents() lists only built bots). Names as opponents() keys: "top-<slug>" = mimic-<slug>."""
     for n in names:
-        d = ROOT / "bots" / ("_rules" if n == "rules" else ("mimic-" + n[4:] if n.startswith("top-") else n))
+        d = ROOT / "bots" / ("_rules" if n == "rules" else n)
         if not injected(d).exists() and (d / "src").exists():
             runner.build(str(d), release=True)
 
@@ -316,6 +318,10 @@ def build_rules() -> None:
     """Our rule bot as it is on league today (the main checkout's bots/main), as an opponent."""
     d = ROOT / "bots" / "_rules"
     _copy_source(MAIN / "bots" / "main", d)
+    # No per-map table: bots/main's own pack may carry an earlier search's plans, so "rules" is the
+    # bot on the reference pack (the pack every slot and verify's reference are built on).
+    if REFERENCE_PACK.exists():
+        shutil.copy2(REFERENCE_PACK, d / "src" / "pack" / "pack.bin")
     runner.build(str(d), release=True)
 
 

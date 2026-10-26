@@ -225,6 +225,12 @@ def cmd_verify(a) -> None:
     verify.run(a.maps.split(",") if getattr(a, "maps", None) else None)
 
 
+def cmd_opponents(a) -> None:
+    from harness.search import opponents
+
+    opponents.run(a.src)
+
+
 def cmd_status(a) -> None:
     snap = C.load_json(C.RUNS / "snapshot.json", {})
     print("snapshot:", snap.get("wasm", "-")[:12], snap.get("time", ""))
@@ -284,13 +290,15 @@ def main() -> None:
     p.add_argument("--hours", type=float)
     p = sub.add_parser("generalize")
     p.add_argument("--hours", type=float)
+    p = sub.add_parser("opponents")
+    p.add_argument("--from", dest="src")
     sub.add_parser("status")
     a = ap.parse_args()
     {"setup": cmd_setup, "smoke": cmd_smoke, "baseline": cmd_baseline, "splits": cmd_splits,
      "audit": cmd_audit, "search": cmd_search, "table": cmd_table, "sstatus": cmd_sstatus,
      "mvp": cmd_mvp, "export": cmd_export, "generalize": cmd_generalize,
      "branch": cmd_branch, "warm": cmd_warm, "warm-report": cmd_warm_report,
-     "crossmap": cmd_crossmap, "side": cmd_side, "verify": cmd_verify,
+     "crossmap": cmd_crossmap, "side": cmd_side, "verify": cmd_verify, "opponents": cmd_opponents,
      "status": cmd_status}[a.cmd](a)
 
 

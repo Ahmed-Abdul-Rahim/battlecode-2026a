@@ -43,7 +43,7 @@ def make(store: C.Store) -> dict:
     for o in {r["opp"] for r in rows}:
         rs = [r["res"] for r in rows if r["opp"] == o]
         win[o] = sum(rs) / len(rs)
-    opps = [o for o in C.opponents() if o not in HEAD_TO_HEAD]
+    opps = [o for o in C.opponents() if o not in HEAD_TO_HEAD and not o.startswith("top-")]
     fa = faithful()
     a1, b1 = _halves([o for o in opps if o in fa], win, rng)
     a2, b2 = _halves([o for o in opps if o not in fa], win, rng)
