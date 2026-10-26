@@ -31,6 +31,9 @@ function TrainLeft {
 switch ($cmd) {
     "run" {
         if (Running) { Write-Host "a search step is already running (scripts\search.ps1 status)" -ForegroundColor Yellow; exit 1 }
+        # Hold the stay-awake lock across the gaps between steps too (Windows slept "System Idle"
+        # in the second between two steps).
+        Start-Process powershell -WindowStyle Hidden -ArgumentList "-ExecutionPolicy Bypass -File `"$PSScriptRoot\keepawake.ps1`""
         while ([int](TrainLeft) -gt 0) {
             Log "search session ($(TrainLeft) training maps left)"
             Py search --hours 3 *>> (Join-Path $logs "search.log")
