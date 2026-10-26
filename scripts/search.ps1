@@ -7,7 +7,8 @@
 #   powershell -ExecutionPolicy Bypass -File scripts\search.ps1 candidate # pack the table into a submission zip (no upload)
 # `run` order: per-map search over all training maps in 3-hour sessions -> cross-map
 # generalisation study -> MVP check (A + rules vs our rule bot, the fresh top 10 and the scoring
-# opponents) -> B on top of A (tribute timing: labels with A active, net, A+B vs A+rules).
+# opponents) -> B on top of A (tribute timing: labels with A active, net, A+B vs A+rules) ->
+# search the 10 held-out maps too (a complete 40-map table).
 # The PC stays awake while a step runs.
 param([Parameter(Position = 0)][ValidateSet("run", "status", "stop", "results", "candidate")][string]$cmd = "status")
 
@@ -18,6 +19,9 @@ $logs = Join-Path $root "runs\search"
 function Py { & $py -X utf8 -u -m harness.search @args }
 function Log($m) { $line = "$(Get-Date -Format 'MM-dd HH:mm') $m"; Write-Host $line -ForegroundColor Cyan; $line | Out-File -Append -Encoding utf8 (Join-Path $logs "run.log") }
 function Running { Get-CimInstance Win32_Process -Filter "Name='python.exe'" | Where-Object { $_.CommandLine -match 'harness.search' } }
+function HeldLeft {
+    & $py -X utf8 -c "import sys,json;sys.path.insert(0,'.');from harness.search import search as S;sp=json.load(open('runs/search/splits.json'));t=S.table();print(sum(1 for m in sp['maps_heldout'] if m not in t))" 2>$null | Select-Object -Last 1
+}
 function TrainLeft {
     & $py -X utf8 -c "import sys,json;sys.path.insert(0,'.');from harness.search import search as S;sp=json.load(open('runs/search/splits.json'));t=S.table();print(sum(1 for m in sp['maps_train'] if m not in t))" 2>$null | Select-Object -Last 1
 }
@@ -38,6 +42,12 @@ switch ($cmd) {
         Py branch labels --decision tribute *>> (Join-Path $logs "b_tribute.log")
         Py branch train --decision tribute *>> (Join-Path $logs "b_tribute.log")
         Py branch eval --decision tribute *>> (Join-Path $logs "b_tribute.log")
+        Log "B done; searching the 10 held-out maps (complete 40-map table)"
+        $held = (& $py -X utf8 -c "import json;print(','.join(json.load(open('runs/search/splits.json'))['maps_heldout']))" | Select-Object -Last 1)
+        while ([int](HeldLeft) -gt 0) {
+            Log "held-out search session ($(HeldLeft) maps left)"
+            Py search --maps $held --hours 3 *>> (Join-Path $logs "search.log")
+        }
         Log "all done: scripts\search.ps1 results"
     }
     "status" {
