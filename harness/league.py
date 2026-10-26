@@ -544,7 +544,7 @@ def suspended(results: list[runner.MatchResult], bot: str) -> int:
         if bot not in (r.bot_a, r.bot_b):
             continue
         try:
-            bad += replay.exhausted_turns(replay.load(r.replay).team("a" if r.bot_a == bot else "b"))
+            bad += replay.exhausted_turns(replay.load_fuel(r.replay, "a" if r.bot_a == bot else "b"))
         except (OSError, KeyError, ValueError):
             continue
     return bad

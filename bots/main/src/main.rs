@@ -33,6 +33,19 @@ mod world;
 /// A turn right after start-up needs about this much fuel (observe, target, path, act).
 const INIT_TURN_MIN_FUEL: u64 = 70_000;
 
+/// Debug runs: linear-memory size (64 KiB pages) every 250 rounds, to catch unbounded growth
+/// over a 2000-round game (bctools: `E` lines with kind "mem_pages").
+fn memory_probe() {
+    cambc::debug_block! {
+        #[cfg(target_arch = "wasm32")]
+        if let Ok(round) = cambc::round_number() {
+            if round % 250 == 0 {
+                telemetry::event(round, "", "mem_pages", core::arch::wasm32::memory_size(0) as i64);
+            }
+        }
+    }
+}
+
 fn main() -> cambc::Result<()> {
     let mut bot: Option<bot::Bot> = None;
     loop {
@@ -57,6 +70,7 @@ fn main() -> cambc::Result<()> {
                     telemetry::error("turn", &e);
                 }
             }
+            memory_probe();
         }
         cambc::end_turn();
     }

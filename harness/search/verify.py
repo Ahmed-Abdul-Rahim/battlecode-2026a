@@ -21,12 +21,20 @@ def build_reference() -> str:
     return str(d)
 
 
-def run() -> dict:
+def build_submission() -> str:
+    """The submission build: this worktree's bots/main as it is (its pack.bin holds the table)."""
+    d = C.ROOT / "bots" / "sub-plan"
+    C._copy_source(C.ROOT / "bots" / "main", d)
+    C.runner.build(str(d), release=True)
+    return str(d)
+
+
+def run(maps_only: list[str] | None = None) -> dict:
     splits = C.load_json(C.RUNS / "splits.json", None)
-    cand, ref = str(C.ROOT / "bots" / "sub-plan"), build_reference()
+    cand, ref = build_submission(), build_reference()
     opps = C.opponents()
     test = [o for o in splits["head_to_head"]] + sorted(C.fresh_top())
-    maps = C.maps()
+    maps = {m: p for m, p in C.maps().items() if not maps_only or m in maps_only}
     games, meta = [], []
     for m, path in maps.items():
         for o in test:
@@ -49,12 +57,23 @@ def run() -> dict:
         rep["per_map"][m] = {**C._mean_se(dw, "win"), **C._mean_se(df, "fit"), "extra_stalls": st}
         allw += dw
         allf += df
+    # Absolute results per map and per opponent: where the submission still loses.
+    rep["abs_map"] = {}
+    for m in maps:
+        for name in ("plan", "ref"):
+            v = [rows[(name, m, o, s)]["res"] for o in test for s in "ab"]
+            rep["abs_map"].setdefault(m, {})[name] = round(sum(v) / len(v), 3)
+    rep["abs_opp"] = {}
+    for o in test:
+        for name in ("plan", "ref"):
+            v = [rows[(name, m, o, s)]["res"] for m in maps for s in "ab"]
+            rep["abs_opp"].setdefault(o, {})[name] = round(sum(v) / len(v), 3)
     rep["all"] = {"n": len(allw), **C._mean_se(allw, "win"), **C._mean_se(allf, "fit")}
     for name in ("plan", "ref"):
         for o in splits["head_to_head"]:
             v = [rows[(name, m, o, s)]["res"] for m in maps for s in "ab"]
             rep[f"{name}_vs_{o}"] = round(sum(v) / len(v), 3)
-    C.save_json(C.RUNS / "verify.json", rep)
+    C.save_json(C.RUNS / ("verify.json" if not maps_only else "verify-subset.json"), rep)
     a = rep["all"]
     print(f"submission build vs reference (no table), {a['n']} paired games: Δwin {a['win']:+.3f} ± {a['win_se']:.3f}, "
           f"Δfit {a['fit']:+.3f} ± {a['fit_se']:.3f}")
@@ -64,4 +83,10 @@ def run() -> dict:
     print("  weakest maps:", ", ".join(f"{m} {v['win']:+.2f}" for m, v in worst))
     stalls = sum(v["extra_stalls"] for v in rep["per_map"].values())
     print(f"  extra out-of-fuel turns (all maps): {stalls:+d}")
+    print("  lowest absolute win rate (submission / no table):")
+    for m, v in sorted(rep["abs_map"].items(), key=lambda kv: kv[1]["plan"])[:10]:
+        print(f"    {m:22s} {v['plan']:.3f} / {v['ref']:.3f}")
+    print("  per opponent (submission / no table):")
+    for o, v in sorted(rep["abs_opp"].items(), key=lambda kv: kv[1]["plan"]):
+        print(f"    {o:40s} {v['plan']:.3f} / {v['ref']:.3f}")
     return rep

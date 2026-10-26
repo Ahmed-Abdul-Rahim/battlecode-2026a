@@ -322,15 +322,29 @@ class Store:
         self.snap = snap
         self.path = self.dir / "games.jsonl"
         self.rows: dict[str, dict] = {}
+        #: Rows per candidate: select() and paired() are called per candidate in every ranking
+        #: (stage A sorts arms by score), so a full scan each time was O(rows) per call.
+        self.by_cand: dict[str, list[dict]] = {}
         if self.path.exists():
-            for line in self.path.read_text(encoding="utf-8").splitlines():
-                try:
-                    r = json.loads(line)
-                except json.JSONDecodeError:
-                    continue  # a line cut by a power loss
-                if r.get("snap") == snap:
-                    self.rows[Game(r["cand"], r["map"], r["opp"], r["side"]).key(snap)] = r
+            # Streamed: games.jsonl reaches ~190 MB, and read_text().splitlines() held the file
+            # twice over (text + line list) on top of the parsed rows.
+            with open(self.path, encoding="utf-8") as f:
+                for line in f:
+                    try:
+                        r = json.loads(line)
+                    except json.JSONDecodeError:
+                        continue  # a line cut by a power loss
+                    if r.get("snap") == snap:
+                        self._put(r)
         self.cands: dict[str, str] = load_json(self.dir / "cands.json", {})
+
+    def _put(self, r: dict) -> None:
+        key = Game(r["cand"], r["map"], r["opp"], r["side"]).key(self.snap)
+        old = self.rows.get(key)
+        if old is not None:
+            self.by_cand[r["cand"]].remove(old)
+        self.rows[key] = r
+        self.by_cand.setdefault(r["cand"], []).append(r)
 
     def has(self, g: Game) -> bool:
         return g.key(self.snap) in self.rows
@@ -350,16 +364,13 @@ class Store:
         with open(self.path, "a", encoding="utf-8") as f:
             for r in rows:
                 f.write(json.dumps(r, separators=(",", ":")) + "\n")
-                self.rows[Game(r["cand"], r["map"], r["opp"], r["side"]).key(self.snap)] = r
+                self._put(r)
             f.flush()
             os.fsync(f.fileno())
 
     def select(self, cand: str | None = None, **eq) -> list[dict]:
-        return [
-            r
-            for r in self.rows.values()
-            if (cand is None or r["cand"] == cand) and all(r.get(k) == v for k, v in eq.items())
-        ]
+        rows = self.rows.values() if cand is None else self.by_cand.get(cand, [])
+        return [r for r in rows if all(r.get(k) == v for k, v in eq.items())]
 
 
 def stalls(r: dict) -> int:
@@ -398,7 +409,7 @@ def _row(res: runner.MatchResult, g: Game, snap: str, us: str) -> dict:
     except (OSError, ValueError, KeyError):
         row["picks"] = []
     try:
-        log = replay.load(res.replay).team("a" if a else "b")
+        log = replay.load_fuel(res.replay, "a" if a else "b")
         k = len(row["picks"])
         champ = log.fuel[k:]
         row["draft_fuel"] = log.fuel[:k]

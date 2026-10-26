@@ -211,7 +211,7 @@ def cmd_side(a) -> None:
 def cmd_verify(a) -> None:
     from harness.search import verify
 
-    verify.run()
+    verify.run(a.maps.split(",") if getattr(a, "maps", None) else None)
 
 
 def cmd_status(a) -> None:
@@ -256,7 +256,8 @@ def main() -> None:
     p.add_argument("--maps", required=True)
     p.add_argument("--hours", type=float)
     sub.add_parser("warm-report")
-    sub.add_parser("verify")
+    p = sub.add_parser("verify")
+    p.add_argument("--maps", help="comma-separated subset (default: every map)")
     p = sub.add_parser("side")
     p.add_argument("--map", required=True)
     p.add_argument("--side", choices=["a", "b"], required=True)

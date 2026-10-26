@@ -25,7 +25,7 @@ import sys
 sys.path.insert(0, ".")
 from pathlib import Path
 from harness.search import common as C
-C.runner.build(str(Path("bots/_rules")), release=True)  # archived league rule bot, as the search used it
+C.runner.build("_rules", release=True)  # archived league rule bot, as the search used it
 snap = C.build_slots(pack=Path("runs/search/live-pack.bin"))
 print("slots built:", snap["wasm"][:12])
 EOF

@@ -17,6 +17,7 @@ no build step), so batches are large.
 
 from __future__ import annotations
 
+import io
 import json
 import os
 import random
@@ -96,14 +97,27 @@ def _parse(args) -> dict:
             text = z.read(f"team-{side}.stdout").decode("utf-8", "replace").replace("\x00", "")
     except (OSError, KeyError, zipfile.BadZipFile):
         pass
-    lines = text.splitlines()
+    # One pass over the text (no full line list): count B lines and reservoir-sample KEEP_D
+    # decision lines. Keeping all of them (~1,500 a game) ran the PC out of memory (13 GB,
+    # 2026-10-26); labelling samples DECISIONS_PER_GAME anyway.
+    rng = random.Random(r["replay"])
+    ds: list[str] = []
+    seen = fired = 0
+    for ln in io.StringIO(text):
+        if ln.startswith("B "):
+            fired += 1
+        elif keep_d and ln.startswith(prefix):
+            seen += 1
+            if len(ds) < KEEP_D:
+                ds.append(ln)
+            else:
+                k = rng.randrange(seen)
+                if k < KEEP_D:
+                    ds[k] = ln
+    del text
     if keep_d:
-        # Only a random sample of the decision lines: keeping all of them (~1,500 a game) ran the
-        # PC out of memory (13 GB, 2026-10-26); labelling samples DECISIONS_PER_GAME anyway.
-        ds = [ln for ln in lines if ln.startswith(prefix)]
-        random.Random(r["replay"]).shuffle(ds)
-        row["D"] = [list(map(int, ln.split()[1:])) for ln in ds[:KEEP_D]]
-    row["fired"] = sum(1 for ln in lines if ln.startswith("B "))
+        row["D"] = [list(map(int, ln.split()[1:])) for ln in ds]
+    row["fired"] = fired
     return row
 
 
@@ -117,12 +131,13 @@ class Log:
         self.path = DIR / f"{name}.jsonl"
         self.rows: dict[str, dict] = {}
         if self.path.exists():
-            for ln in self.path.read_text(encoding="utf-8").splitlines():
-                try:
-                    r = json.loads(ln)
-                except json.JSONDecodeError:
-                    continue
-                self.rows[_key(r)] = r["row"]
+            with open(self.path, encoding="utf-8") as f:  # streamed, as C.Store
+                for ln in f:
+                    try:
+                        r = json.loads(ln)
+                    except json.JSONDecodeError:
+                        continue
+                    self.rows[_key(r)] = r["row"]
 
     def get(self, j: dict) -> dict | None:
         return self.rows.get(_key(j))

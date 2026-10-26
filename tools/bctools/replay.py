@@ -83,20 +83,27 @@ def parse_fuel(data: bytes) -> tuple[list[int], list[int]]:
     return budgets, list(struct.unpack_from(f"<{n}Q", body))
 
 
-def load(path: str | Path) -> Bundle:
+def load(path: str | Path, sides: tuple[str, ...] = ("a", "b"), stdout: bool = True) -> Bundle:
+    """Read a replay bundle. `sides` limits which teams are read; `stdout=False` skips the
+    telemetry text (up to the log limit per team, 20 MB by default) and reads only fuel."""
     path = Path(path)
     teams: dict[str, TeamLog] = {}
     with zipfile.ZipFile(path) as z:
         names = set(z.namelist())
-        for side in ("a", "b"):
-            stdout = f"team-{side}.stdout"
-            log = parse_stdout(z.read(stdout).decode("utf-8", "replace")) if stdout in names else TeamLog()
+        for side in sides:
+            out = f"team-{side}.stdout"
+            log = parse_stdout(z.read(out).decode("utf-8", "replace")) if stdout and out in names else TeamLog()
             fuel = f"team-{side}.fuel"
             if fuel in names:
                 log.budgets, log.fuel = parse_fuel(z.read(fuel))
             teams[side] = log
         replay_bytes = z.getinfo("replay.repl26a").file_size if "replay.repl26a" in names else 0
     return Bundle(path, teams, replay_bytes)
+
+
+def load_fuel(path: str | Path, side: str) -> TeamLog:
+    """One team's fuel record only: what the out-of-fuel counts need, without the stdout."""
+    return load(path, sides=(side,), stdout=False).team(side)
 
 
 #: A suspended turn is recorded as having used exactly its whole budget.
