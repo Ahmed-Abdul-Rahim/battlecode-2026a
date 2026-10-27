@@ -360,7 +360,9 @@ class Store:
                         r = json.loads(line)
                     except json.JSONDecodeError:
                         continue  # a line cut by a power loss
-                    if r.get("snap") == snap:
+                    # A game that never produced a result (rounds 0) is not a result: older runs
+                    # stored such failures as draws; they are played again.
+                    if r.get("snap") == snap and not failed_row(r):
                         self._put(r)
         self.cands: dict[str, str] = load_json(self.dir / "cands.json", {})
 
@@ -456,6 +458,11 @@ def _row(res: runner.MatchResult, g: Game, snap: str, us: str) -> dict:
     return row
 
 
+def failed_row(r: dict) -> bool:
+    """A row of a game that never ran to a result (no rounds played, no replay)."""
+    return r.get("rounds", 1) == 0 and r.get("oof", 0) == -1
+
+
 def play(
     games: list[Game],
     recs: dict[str, bytes],
@@ -467,6 +474,7 @@ def play(
     """Play every game not yet in the store, in batches of at most N_SLOTS candidates and
     BATCH_GAMES games. Returns False if it stopped at the deadline with games left."""
     snap = store.snap
+    tries: dict[Game, int] = {}
     todo = [g for g in dict.fromkeys(games) if not store.has(g)]
     for c in {g.cand for g in todo}:
         store.register(c, recs[c])
@@ -498,11 +506,22 @@ def play(
         t0 = time.time()
         results = runner.run_games(triples, out, release=True, log_limit=0)
         rows = [_row(r, g, snap, us) for r, (g, us) in zip(results, meta)]
-        store.add(rows)
+        # Games that failed to produce a result (a start-up failure with memory tight, a killed
+        # process) are retried, never stored as draws: 3 attempts, then stop loudly.
+        good = [r for r in rows if not failed_row(r)]
+        bad = [g for r, (g, _) in zip(rows, meta) if failed_row(r)]
+        for g in bad:
+            tries[g] = tries.get(g, 0) + 1
+            if tries[g] >= 3:
+                raise RuntimeError(f"game failed to produce a result 3 times: {g} (log: {out})")
+        store.add(good)
         shutil.rmtree(out, ignore_errors=True)
-        done = set(batch)
+        done = {g for g in batch if g not in set(bad)}
         todo = [g for g in todo if g not in done]
-        log(f"  batch {len(batch)} games, {len(cands)} cands, {time.time() - t0:.0f}s, {len(todo)} left")
+        log(f"  batch {len(batch)} games, {len(cands)} cands, {time.time() - t0:.0f}s, {len(todo)} left"
+            + (f", {len(bad)} failed (retrying)" if bad else ""))
+        if bad:
+            time.sleep(30)  # let memory settle before the retry
     return True
 
 
