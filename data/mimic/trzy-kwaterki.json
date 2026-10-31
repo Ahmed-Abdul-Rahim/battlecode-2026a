@@ -352,7 +352,7 @@
   ]
  },
  "cadence": {
-  "bag": 26.1,
+  "bag": 26.6,
   "first_emblem": 199,
   "shops_per_100r": 1.17
  },
@@ -376,7 +376,7 @@
    0
   ]
  },
- "games": 185,
+ "games": 195,
  "opening": {
   "ambush": [
    {
@@ -1219,5 +1219,5 @@
   ]
  },
  "team": "Trzy Kwaterki",
- "win_rate": 0.741
+ "win_rate": 0.744
 }

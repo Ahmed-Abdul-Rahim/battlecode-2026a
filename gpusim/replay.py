@@ -36,6 +36,9 @@ TAGS = {
     (0, 8): ("buy_consumable", 8),  # u32 consumable, u32 count
     (0, 9): ("use_consumable", 9),  # u8 consumable, u32 x, u32 y
     (3, 0): ("end_turn", 0),
+    # A turn that ended without its own end_turn (the bot ran out of fuel): zero payload; with
+    # it the end-turn count matches rounds x champions + picks exactly (boss-battle 23891 + 119).
+    (3, 1): ("end_turn", 0),
 }
 # cambc champion enum (draft picks) -> names in the statistics roster
 CHAMPION_ENUM = {1: "Vesper Vale", 3: "Cassi & Issac", 4: "Stellar", 5: "Prism", 6: "Marcella", 8: "Ren"}
@@ -135,3 +138,35 @@ def check_moves(ts: list[Turn]) -> tuple[int, int]:
                 ok += max(abs(p[0] - last[t.champion][0]), abs(p[1] - last[t.champion][1])) <= 2
             last[t.champion] = p
     return ok, n
+
+
+def camp_ids(map_bytes: bytes, camps: list[tuple[int, int, int]], w: int, h: int) -> dict[int, int]:
+    """Engine camp id -> index into `camps` ((kind, x, y) in map-dump order).
+
+    The .map26a file lists one camp per mirrored pair as (kind u8, x u8, y u8) records; the engine
+    numbers file record k as camp 2k and its mirror image as 2k + 1 (found from the attack
+    records of 20 games: every id's attackers stood in range of exactly that camp). The mirror is
+    the map's symmetry: a point reflection or a flip of one axis, whichever maps the dump's camps
+    onto each other."""
+    where = {(x, y): i for i, (_, x, y) in enumerate(camps)}
+    n = len(camps) // 2
+    start = None
+    for o in range(len(map_bytes) - 3 * n + 1):
+        if all(
+            (map_bytes[o + 3 * k + 1], map_bytes[o + 3 * k + 2]) in where
+            and camps[where[(map_bytes[o + 3 * k + 1], map_bytes[o + 3 * k + 2])]][0] == map_bytes[o + 3 * k]
+            for k in range(n)
+        ):
+            start = o
+            break
+    if start is None:
+        raise ValueError("camp list not found in the map file")
+    recs = [(map_bytes[start + 3 * k + 1], map_bytes[start + 3 * k + 2]) for k in range(n)]
+    mirrors = [lambda x, y: (w - 1 - x, h - 1 - y), lambda x, y: (w - 1 - x, y), lambda x, y: (x, h - 1 - y)]
+    mirror = max(mirrors, key=lambda f: sum(f(x, y) in where for x, y in recs))
+    out = {}
+    for k, (x, y) in enumerate(recs):
+        out[2 * k] = where[(x, y)]
+        if mirror(x, y) in where:
+            out[2 * k + 1] = where[mirror(x, y)]
+    return out

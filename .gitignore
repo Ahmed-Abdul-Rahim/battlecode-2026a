@@ -43,6 +43,8 @@ bots/*/target/
 # League / training scratch: candidates (_*), mimics and upload snapshots are rebuilt locally
 bots/_*/
 bots/mimic-*/
+bots/mimx-*/
+bots/sub-*/
 bots/lg-v*/
 bots/xpl-*/
 bots/main-v*/

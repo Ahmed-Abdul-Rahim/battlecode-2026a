@@ -252,7 +252,7 @@
   ]
  },
  "cadence": {
-  "bag": 31.4,
+  "bag": 40.2,
   "first_emblem": 148,
   "shops_per_100r": 0.99
  },
@@ -264,19 +264,19 @@
   ],
   "4": [
    1,
-   2,
    11,
-   10
+   2,
+   0
   ],
   "5": [
    1,
-   2,
    11,
-   6,
-   10
+   2,
+   0,
+   6
   ]
  },
- "games": 5,
+ "games": 15,
  "opening": {
   "shortcut": [
    {
@@ -457,5 +457,5 @@
   ]
  },
  "team": "Claudus Maximus",
- "win_rate": 0.8
+ "win_rate": 0.6
 }
